@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // ApplyPatchUpdateFileOperation - The `update_file` variant of an `apply_patch_call.operation`. Carries a V4A diff describing edits to an existing file.

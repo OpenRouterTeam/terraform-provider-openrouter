@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type AllowedTools struct {
@@ -44,13 +44,11 @@ type AllowedToolsUnionType string
 const (
 	AllowedToolsUnionTypeArrayOfStr   AllowedToolsUnionType = "arrayOfStr"
 	AllowedToolsUnionTypeAllowedTools AllowedToolsUnionType = "allowed_tools"
-	AllowedToolsUnionTypeAny          AllowedToolsUnionType = "any"
 )
 
 type AllowedToolsUnion struct {
 	ArrayOfStr   []string      `queryParam:"inline" union:"member"`
 	AllowedTools *AllowedTools `queryParam:"inline" union:"member"`
-	Any          any           `queryParam:"inline" union:"member"`
 
 	Type AllowedToolsUnionType
 }
@@ -70,15 +68,6 @@ func CreateAllowedToolsUnionAllowedTools(allowedTools AllowedTools) AllowedTools
 	return AllowedToolsUnion{
 		AllowedTools: &allowedTools,
 		Type:         typ,
-	}
-}
-
-func CreateAllowedToolsUnionAny(anyT any) AllowedToolsUnion {
-	typ := AllowedToolsUnionTypeAny
-
-	return AllowedToolsUnion{
-		Any:  anyT,
-		Type: typ,
 	}
 }
 
@@ -103,14 +92,6 @@ func (u *AllowedToolsUnion) UnmarshalJSON(data []byte) error {
 		})
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  AllowedToolsUnionTypeAny,
-			Value: anyVar,
-		})
-	}
-
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for AllowedToolsUnion", string(data))
 	}
@@ -130,9 +111,6 @@ func (u *AllowedToolsUnion) UnmarshalJSON(data []byte) error {
 	case AllowedToolsUnionTypeAllowedTools:
 		u.AllowedTools = best.Value.(*AllowedTools)
 		return nil
-	case AllowedToolsUnionTypeAny:
-		u.Any = best.Value.(any)
-		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for AllowedToolsUnion", string(data))
@@ -145,10 +123,6 @@ func (u AllowedToolsUnion) MarshalJSON() ([]byte, error) {
 
 	if u.AllowedTools != nil {
 		return utils.MarshalJSON(u.AllowedTools, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type AllowedToolsUnion: all fields are null")
@@ -324,14 +298,12 @@ const (
 	RequireApprovalUnionTypeRequireApproval       RequireApprovalUnionType = "require_approval"
 	RequireApprovalUnionTypeRequireApprovalAlways RequireApprovalUnionType = "require_approval_Always"
 	RequireApprovalUnionTypeRequireApprovalNever  RequireApprovalUnionType = "require_approval_Never"
-	RequireApprovalUnionTypeAny                   RequireApprovalUnionType = "any"
 )
 
 type RequireApprovalUnion struct {
 	RequireApproval       *RequireApproval       `queryParam:"inline" union:"member"`
 	RequireApprovalAlways *RequireApprovalAlways `queryParam:"inline" union:"member"`
 	RequireApprovalNever  *RequireApprovalNever  `queryParam:"inline" union:"member"`
-	Any                   any                    `queryParam:"inline" union:"member"`
 
 	Type RequireApprovalUnionType
 }
@@ -360,15 +332,6 @@ func CreateRequireApprovalUnionRequireApprovalNever(requireApprovalNever Require
 	return RequireApprovalUnion{
 		RequireApprovalNever: &requireApprovalNever,
 		Type:                 typ,
-	}
-}
-
-func CreateRequireApprovalUnionAny(anyT any) RequireApprovalUnion {
-	typ := RequireApprovalUnionTypeAny
-
-	return RequireApprovalUnion{
-		Any:  anyT,
-		Type: typ,
 	}
 }
 
@@ -401,14 +364,6 @@ func (u *RequireApprovalUnion) UnmarshalJSON(data []byte) error {
 		})
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  RequireApprovalUnionTypeAny,
-			Value: anyVar,
-		})
-	}
-
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for RequireApprovalUnion", string(data))
 	}
@@ -431,9 +386,6 @@ func (u *RequireApprovalUnion) UnmarshalJSON(data []byte) error {
 	case RequireApprovalUnionTypeRequireApprovalNever:
 		u.RequireApprovalNever = best.Value.(*RequireApprovalNever)
 		return nil
-	case RequireApprovalUnionTypeAny:
-		u.Any = best.Value.(any)
-		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for RequireApprovalUnion", string(data))
@@ -450,10 +402,6 @@ func (u RequireApprovalUnion) MarshalJSON() ([]byte, error) {
 
 	if u.RequireApprovalNever != nil {
 		return utils.MarshalJSON(u.RequireApprovalNever, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type RequireApprovalUnion: all fields are null")

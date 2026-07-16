@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/types"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/types"
 )
 
 type ResponsesRequestPluginType string
@@ -255,6 +255,59 @@ func (u ResponsesRequestPlugin) MarshalJSON() ([]byte, error) {
 	}
 
 	return nil, errors.New("could not marshal union type ResponsesRequestPlugin: all fields are null")
+}
+
+type ReasoningConfig struct {
+	// Controls which reasoning is available to the model. `auto` uses the model default (same as omitting); `all_turns` includes reasoning from earlier turns passed in input; `current_turn` limits to the current turn only. Only supported by OpenAI GPT-5.6 and newer.
+	Context *ReasoningContext `json:"context,omitzero"`
+	Effort  *ReasoningEffort  `json:"effort,omitzero"`
+	// Selects the reasoning mode. `standard` is the default; `pro` engages deeper reasoning on models that support it, billed at standard token rates. Only supported by OpenAI GPT-5.6 and newer.
+	Mode      *ReasoningMode             `json:"mode,omitzero"`
+	Summary   *ReasoningSummaryVerbosity `json:"summary,omitzero"`
+	Enabled   *bool                      `json:"enabled,omitzero"`
+	MaxTokens *int64                     `json:"max_tokens,omitzero"`
+}
+
+func (r *ReasoningConfig) GetContext() *ReasoningContext {
+	if r == nil {
+		return nil
+	}
+	return r.Context
+}
+
+func (r *ReasoningConfig) GetEffort() *ReasoningEffort {
+	if r == nil {
+		return nil
+	}
+	return r.Effort
+}
+
+func (r *ReasoningConfig) GetMode() *ReasoningMode {
+	if r == nil {
+		return nil
+	}
+	return r.Mode
+}
+
+func (r *ReasoningConfig) GetSummary() *ReasoningSummaryVerbosity {
+	if r == nil {
+		return nil
+	}
+	return r.Summary
+}
+
+func (r *ReasoningConfig) GetEnabled() *bool {
+	if r == nil {
+		return nil
+	}
+	return r.Enabled
+}
+
+func (r *ReasoningConfig) GetMaxTokens() *int64 {
+	if r == nil {
+		return nil
+	}
+	return r.MaxTokens
 }
 
 type ResponsesRequestServiceTier string

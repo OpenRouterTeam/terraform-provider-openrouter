@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	tfTypes "github.com/speakeasy/terraform-provider-openrouter/internal/provider/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/operations"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/shared"
+	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 )
 
 func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabilityDestinationResponse(ctx context.Context, resp *shared.CreateObservabilityDestinationResponse) diag.Diagnostics {
@@ -4005,9 +4005,7 @@ func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDesti
 	config := make(map[string]interface{})
 	for configKey := range r.Config {
 		var configInst interface{}
-		if !r.Config[configKey].IsUnknown() && !r.Config[configKey].IsNull() {
-			_ = json.Unmarshal([]byte(r.Config[configKey].ValueString()), &configInst)
-		}
+		_ = json.Unmarshal([]byte(r.Config[configKey].ValueString()), &configInst)
 		config[configKey] = configInst
 	}
 	enabled := new(bool)
@@ -4127,9 +4125,7 @@ func (r *ObservabilityDestinationResourceModel) ToSharedUpdateObservabilityDesti
 	config := make(map[string]interface{})
 	for configKey := range r.Config {
 		var configInst interface{}
-		if !r.Config[configKey].IsUnknown() && !r.Config[configKey].IsNull() {
-			_ = json.Unmarshal([]byte(r.Config[configKey].ValueString()), &configInst)
-		}
+		_ = json.Unmarshal([]byte(r.Config[configKey].ValueString()), &configInst)
 		config[configKey] = configInst
 	}
 	enabled := new(bool)

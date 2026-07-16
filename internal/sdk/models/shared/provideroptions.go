@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // ProviderOptions - Provider-specific options keyed by provider slug. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
@@ -120,6 +120,7 @@ type ProviderOptions struct {
 	Streamlake          map[string]any `json:"streamlake,omitzero"`
 	Switchpoint         map[string]any `json:"switchpoint,omitzero"`
 	Targon              map[string]any `json:"targon,omitzero"`
+	Tencent             map[string]any `json:"tencent,omitzero"`
 	Tenstorrent         map[string]any `json:"tenstorrent,omitzero"`
 	Together            map[string]any `json:"together,omitzero"`
 	TogetherLite        map[string]any `json:"together-lite,omitzero"`
@@ -926,6 +927,13 @@ func (p *ProviderOptions) GetTargon() map[string]any {
 		return nil
 	}
 	return p.Targon
+}
+
+func (p *ProviderOptions) GetTencent() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Tencent
 }
 
 func (p *ProviderOptions) GetTenstorrent() map[string]any {

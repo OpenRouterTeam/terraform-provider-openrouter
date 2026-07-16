@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // AdvisorNestedTool - A tool made available to the advisor sub-agent. Only OpenRouter server tools (e.g. openrouter:web_search) are supported; function tools are rejected because the advisor has no way to execute them. The advisor tool may not list itself.

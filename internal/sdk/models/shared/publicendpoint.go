@@ -3,9 +3,7 @@
 package shared
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type Pricing struct {
@@ -166,53 +164,6 @@ func (p *Pricing) GetWebSearch() *string {
 	return p.WebSearch
 }
 
-type PublicEndpointQuantization string
-
-const (
-	PublicEndpointQuantizationInt4    PublicEndpointQuantization = "int4"
-	PublicEndpointQuantizationInt8    PublicEndpointQuantization = "int8"
-	PublicEndpointQuantizationFp4     PublicEndpointQuantization = "fp4"
-	PublicEndpointQuantizationFp6     PublicEndpointQuantization = "fp6"
-	PublicEndpointQuantizationFp8     PublicEndpointQuantization = "fp8"
-	PublicEndpointQuantizationFp16    PublicEndpointQuantization = "fp16"
-	PublicEndpointQuantizationBf16    PublicEndpointQuantization = "bf16"
-	PublicEndpointQuantizationFp32    PublicEndpointQuantization = "fp32"
-	PublicEndpointQuantizationUnknown PublicEndpointQuantization = "unknown"
-)
-
-func (e PublicEndpointQuantization) ToPointer() *PublicEndpointQuantization {
-	return &e
-}
-func (e *PublicEndpointQuantization) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "int4":
-		fallthrough
-	case "int8":
-		fallthrough
-	case "fp4":
-		fallthrough
-	case "fp6":
-		fallthrough
-	case "fp8":
-		fallthrough
-	case "fp16":
-		fallthrough
-	case "bf16":
-		fallthrough
-	case "fp32":
-		fallthrough
-	case "unknown":
-		*e = PublicEndpointQuantization(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for PublicEndpointQuantization: %v", v)
-	}
-}
-
 // PublicEndpoint - Information about a specific model endpoint
 type PublicEndpoint struct {
 	ContextLength int64 `json:"context_length"`
@@ -221,17 +172,17 @@ type PublicEndpoint struct {
 	MaxCompletionTokens *int64           `json:"max_completion_tokens"`
 	MaxPromptTokens     *int64           `json:"max_prompt_tokens"`
 	// The unique identifier for the model (permaslug)
-	ModelID                 string                      `json:"model_id"`
-	ModelName               string                      `json:"model_name"`
-	Name                    string                      `json:"name"`
-	Pricing                 Pricing                     `json:"pricing"`
-	ProviderName            ProviderName                `json:"provider_name"`
-	Quantization            *PublicEndpointQuantization `json:"quantization"`
-	Status                  *EndpointStatus             `json:"status,omitzero"`
-	SupportedParameters     []Parameter                 `json:"supported_parameters"`
-	SupportsImplicitCaching bool                        `json:"supports_implicit_caching"`
-	Tag                     string                      `json:"tag"`
-	ThroughputLast30m       *PercentileStats            `json:"throughput_last_30m"`
+	ModelID                 string           `json:"model_id"`
+	ModelName               string           `json:"model_name"`
+	Name                    string           `json:"name"`
+	Pricing                 Pricing          `json:"pricing"`
+	ProviderName            ProviderName     `json:"provider_name"`
+	Quantization            *Quantization    `json:"quantization"`
+	Status                  *EndpointStatus  `json:"status,omitzero"`
+	SupportedParameters     []Parameter      `json:"supported_parameters"`
+	SupportsImplicitCaching bool             `json:"supports_implicit_caching"`
+	Tag                     string           `json:"tag"`
+	ThroughputLast30m       *PercentileStats `json:"throughput_last_30m"`
 	// Uptime percentage over the last 1 day, calculated as successful requests / (successful + error requests) * 100. Rate-limited requests are excluded. Returns null if insufficient data.
 	UptimeLast1d  *float64 `json:"uptime_last_1d"`
 	UptimeLast30m *float64 `json:"uptime_last_30m"`
@@ -302,7 +253,7 @@ func (p *PublicEndpoint) GetProviderName() ProviderName {
 	return p.ProviderName
 }
 
-func (p *PublicEndpoint) GetQuantization() *PublicEndpointQuantization {
+func (p *PublicEndpoint) GetQuantization() *Quantization {
 	if p == nil {
 		return nil
 	}

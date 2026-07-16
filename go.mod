@@ -1,4 +1,4 @@
-module github.com/speakeasy/terraform-provider-openrouter
+module github.com/openrouter/terraform-provider-openrouter
 
 go 1.25.10
 

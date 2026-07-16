@@ -93,6 +93,7 @@ const (
 	ProviderNameStealth         ProviderName = "Stealth"
 	ProviderNameStreamLake      ProviderName = "StreamLake"
 	ProviderNameSwitchpoint     ProviderName = "Switchpoint"
+	ProviderNameTencent         ProviderName = "Tencent"
 	ProviderNameTenstorrent     ProviderName = "Tenstorrent"
 	ProviderNameTogether        ProviderName = "Together"
 	ProviderNameUpstage         ProviderName = "Upstage"
@@ -281,6 +282,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "StreamLake":
 		fallthrough
 	case "Switchpoint":
+		fallthrough
+	case "Tencent":
 		fallthrough
 	case "Tenstorrent":
 		fallthrough

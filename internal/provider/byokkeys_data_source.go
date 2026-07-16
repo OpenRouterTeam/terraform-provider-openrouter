@@ -11,8 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	tfTypes "github.com/speakeasy/terraform-provider-openrouter/internal/provider/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk"
+	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -109,7 +109,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			},
 			"provider_slug": schema.StringAttribute{
 				Optional:    true,
-				Description: `Optional provider slug to filter by (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-nova", "ambient", "anthropic", "arcee-ai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "cloudflare", "cohere", "crusoe", "darkbloom", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "mancer", "mara", "meta", "minimax", "mistral", "modelrun", "modular", "moonshotai", "morph", "ncompass", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "quiver", "recraft", "reka", "relace", "sail-research", "sakana", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tenstorrent", "together", "upstage", "venice", "wafer", "wandb", "xai", "xiaomi", "z-ai"]`,
+				Description: `Optional provider slug to filter by (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-nova", "ambient", "anthropic", "arcee-ai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "cloudflare", "cohere", "crusoe", "darkbloom", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "mancer", "mara", "meta", "minimax", "mistral", "modelrun", "modular", "moonshotai", "morph", "ncompass", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "quiver", "recraft", "reka", "relace", "sail-research", "sakana", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "together", "upstage", "venice", "wafer", "wandb", "xai", "xiaomi", "z-ai"]`,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"ai21",
@@ -195,6 +195,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 						"stepfun",
 						"streamlake",
 						"switchpoint",
+						"tencent",
 						"tenstorrent",
 						"together",
 						"upstage",

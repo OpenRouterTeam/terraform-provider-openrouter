@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type EditTypeInputTokens string
@@ -328,13 +328,11 @@ type ClearToolInputsType string
 const (
 	ClearToolInputsTypeBoolean    ClearToolInputsType = "boolean"
 	ClearToolInputsTypeArrayOfStr ClearToolInputsType = "arrayOfStr"
-	ClearToolInputsTypeAny        ClearToolInputsType = "any"
 )
 
 type ClearToolInputs struct {
 	Boolean    *bool    `queryParam:"inline" union:"member"`
 	ArrayOfStr []string `queryParam:"inline" union:"member"`
-	Any        any      `queryParam:"inline" union:"member"`
 
 	Type ClearToolInputsType
 }
@@ -354,15 +352,6 @@ func CreateClearToolInputsArrayOfStr(arrayOfStr []string) ClearToolInputs {
 	return ClearToolInputs{
 		ArrayOfStr: arrayOfStr,
 		Type:       typ,
-	}
-}
-
-func CreateClearToolInputsAny(anyT any) ClearToolInputs {
-	typ := ClearToolInputsTypeAny
-
-	return ClearToolInputs{
-		Any:  anyT,
-		Type: typ,
 	}
 }
 
@@ -387,14 +376,6 @@ func (u *ClearToolInputs) UnmarshalJSON(data []byte) error {
 		})
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  ClearToolInputsTypeAny,
-			Value: anyVar,
-		})
-	}
-
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for ClearToolInputs", string(data))
 	}
@@ -414,9 +395,6 @@ func (u *ClearToolInputs) UnmarshalJSON(data []byte) error {
 	case ClearToolInputsTypeArrayOfStr:
 		u.ArrayOfStr = best.Value.([]string)
 		return nil
-	case ClearToolInputsTypeAny:
-		u.Any = best.Value.(any)
-		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for ClearToolInputs", string(data))
@@ -429,10 +407,6 @@ func (u ClearToolInputs) MarshalJSON() ([]byte, error) {
 
 	if u.ArrayOfStr != nil {
 		return utils.MarshalJSON(u.ArrayOfStr, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ClearToolInputs: all fields are null")
@@ -1549,60 +1523,6 @@ func (m *MessagesRequestTool) GetAdditionalProperties() map[string]any {
 	return m.AdditionalProperties
 }
 
-type ToolTypeEphemeral string
-
-const (
-	ToolTypeEphemeralEphemeral ToolTypeEphemeral = "ephemeral"
-)
-
-func (e ToolTypeEphemeral) ToPointer() *ToolTypeEphemeral {
-	return &e
-}
-func (e *ToolTypeEphemeral) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "ephemeral":
-		*e = ToolTypeEphemeral(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for ToolTypeEphemeral: %v", v)
-	}
-}
-
-// Caching - Enable automatic prompt caching. When set at the top level, the system automatically applies cache breakpoints to the last cacheable block in the request. When set on an individual content block, it marks an explicit cache breakpoint; block-level markers also work on OpenAI models that support explicit prompt caching — OpenRouter converts them to the provider's native format.
-type Caching struct {
-	TTL  *AnthropicCacheControlTTL `json:"ttl,omitzero"`
-	Type ToolTypeEphemeral         `json:"type"`
-}
-
-func (c Caching) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(c, "", false)
-}
-
-func (c *Caching) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &c, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *Caching) GetTTL() *AnthropicCacheControlTTL {
-	if c == nil {
-		return nil
-	}
-	return c.TTL
-}
-
-func (c *Caching) GetType() ToolTypeEphemeral {
-	if c == nil {
-		return ToolTypeEphemeral("")
-	}
-	return c.Type
-}
-
 type NameAdvisor string
 
 const (
@@ -1653,7 +1573,7 @@ type ToolAdvisor20260301 struct {
 	AllowedCallers []AnthropicAllowedCallers `json:"allowed_callers,omitzero"`
 	// Enable automatic prompt caching. When set at the top level, the system automatically applies cache breakpoints to the last cacheable block in the request. When set on an individual content block, it marks an explicit cache breakpoint; block-level markers also work on OpenAI models that support explicit prompt caching — OpenRouter converts them to the provider's native format.
 	CacheControl *AnthropicCacheControlDirective `json:"cache_control,omitzero"`
-	Caching      *Caching                        `json:"caching,omitzero"`
+	Caching      *AnthropicCacheControlDirective `json:"caching,omitzero"`
 	DeferLoading *bool                           `json:"defer_loading,omitzero"`
 	MaxUses      *int64                          `json:"max_uses,omitzero"`
 	Model        string                          `json:"model"`
@@ -1686,7 +1606,7 @@ func (t *ToolAdvisor20260301) GetCacheControl() *AnthropicCacheControlDirective 
 	return t.CacheControl
 }
 
-func (t *ToolAdvisor20260301) GetCaching() *Caching {
+func (t *ToolAdvisor20260301) GetCaching() *AnthropicCacheControlDirective {
 	if t == nil {
 		return nil
 	}

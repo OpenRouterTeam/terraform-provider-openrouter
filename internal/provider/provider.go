@@ -13,8 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/shared"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 	"net/http"
 )
 

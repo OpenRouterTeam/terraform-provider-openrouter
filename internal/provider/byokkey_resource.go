@@ -15,8 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	speakeasy_stringplanmodifier "github.com/speakeasy/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk"
+	speakeasy_stringplanmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -125,7 +125,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 					stringplanmodifier.RequiresReplaceIfConfigured(),
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
-				Description: `The upstream provider this credential authenticates against, as a lowercase slug (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-nova", "ambient", "anthropic", "arcee-ai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "cloudflare", "cohere", "crusoe", "darkbloom", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "mancer", "mara", "meta", "minimax", "mistral", "modelrun", "modular", "moonshotai", "morph", "ncompass", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "quiver", "recraft", "reka", "relace", "sail-research", "sakana", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tenstorrent", "together", "upstage", "venice", "wafer", "wandb", "xai", "xiaomi", "z-ai"]; Requires replacement if changed.`,
+				Description: `The upstream provider this credential authenticates against, as a lowercase slug (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-nova", "ambient", "anthropic", "arcee-ai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "cloudflare", "cohere", "crusoe", "darkbloom", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "mancer", "mara", "meta", "minimax", "mistral", "modelrun", "modular", "moonshotai", "morph", "ncompass", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "quiver", "recraft", "reka", "relace", "sail-research", "sakana", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "together", "upstage", "venice", "wafer", "wandb", "xai", "xiaomi", "z-ai"]; Requires replacement if changed.`,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"ai21",
@@ -211,6 +211,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 						"stepfun",
 						"streamlake",
 						"switchpoint",
+						"tencent",
 						"tenstorrent",
 						"together",
 						"upstage",

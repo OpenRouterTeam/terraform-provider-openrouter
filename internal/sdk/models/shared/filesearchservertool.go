@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type FiltersType string
@@ -318,96 +318,202 @@ func (f *Filters) GetValue() FileSearchServerToolValue2 {
 type FiltersUnionType string
 
 const (
-	FiltersUnionTypeFilters        FiltersUnionType = "filters"
-	FiltersUnionTypeCompoundFilter FiltersUnionType = "CompoundFilter"
-	FiltersUnionTypeAny            FiltersUnionType = "any"
+	FiltersUnionTypeEq  FiltersUnionType = "eq"
+	FiltersUnionTypeNe  FiltersUnionType = "ne"
+	FiltersUnionTypeGt  FiltersUnionType = "gt"
+	FiltersUnionTypeGte FiltersUnionType = "gte"
+	FiltersUnionTypeLt  FiltersUnionType = "lt"
+	FiltersUnionTypeLte FiltersUnionType = "lte"
+	FiltersUnionTypeAnd FiltersUnionType = "and"
+	FiltersUnionTypeOr  FiltersUnionType = "or"
 )
 
 type FiltersUnion struct {
 	Filters        *Filters        `queryParam:"inline" union:"member"`
 	CompoundFilter *CompoundFilter `queryParam:"inline" union:"member"`
-	Any            any             `queryParam:"inline" union:"member"`
 
 	Type FiltersUnionType
 }
 
-func CreateFiltersUnionFilters(filters Filters) FiltersUnion {
-	typ := FiltersUnionTypeFilters
+func CreateFiltersUnionEq(eq Filters) FiltersUnion {
+	typ := FiltersUnionTypeEq
+
+	typStr := FiltersType(typ)
+	eq.Type = typStr
 
 	return FiltersUnion{
-		Filters: &filters,
+		Filters: &eq,
 		Type:    typ,
 	}
 }
 
-func CreateFiltersUnionCompoundFilter(compoundFilter CompoundFilter) FiltersUnion {
-	typ := FiltersUnionTypeCompoundFilter
+func CreateFiltersUnionNe(ne Filters) FiltersUnion {
+	typ := FiltersUnionTypeNe
+
+	typStr := FiltersType(typ)
+	ne.Type = typStr
 
 	return FiltersUnion{
-		CompoundFilter: &compoundFilter,
+		Filters: &ne,
+		Type:    typ,
+	}
+}
+
+func CreateFiltersUnionGt(gt Filters) FiltersUnion {
+	typ := FiltersUnionTypeGt
+
+	typStr := FiltersType(typ)
+	gt.Type = typStr
+
+	return FiltersUnion{
+		Filters: &gt,
+		Type:    typ,
+	}
+}
+
+func CreateFiltersUnionGte(gte Filters) FiltersUnion {
+	typ := FiltersUnionTypeGte
+
+	typStr := FiltersType(typ)
+	gte.Type = typStr
+
+	return FiltersUnion{
+		Filters: &gte,
+		Type:    typ,
+	}
+}
+
+func CreateFiltersUnionLt(lt Filters) FiltersUnion {
+	typ := FiltersUnionTypeLt
+
+	typStr := FiltersType(typ)
+	lt.Type = typStr
+
+	return FiltersUnion{
+		Filters: &lt,
+		Type:    typ,
+	}
+}
+
+func CreateFiltersUnionLte(lte Filters) FiltersUnion {
+	typ := FiltersUnionTypeLte
+
+	typStr := FiltersType(typ)
+	lte.Type = typStr
+
+	return FiltersUnion{
+		Filters: &lte,
+		Type:    typ,
+	}
+}
+
+func CreateFiltersUnionAnd(and CompoundFilter) FiltersUnion {
+	typ := FiltersUnionTypeAnd
+
+	typStr := CompoundFilterType(typ)
+	and.Type = typStr
+
+	return FiltersUnion{
+		CompoundFilter: &and,
 		Type:           typ,
 	}
 }
 
-func CreateFiltersUnionAny(anyT any) FiltersUnion {
-	typ := FiltersUnionTypeAny
+func CreateFiltersUnionOr(or CompoundFilter) FiltersUnion {
+	typ := FiltersUnionTypeOr
+
+	typStr := CompoundFilterType(typ)
+	or.Type = typStr
 
 	return FiltersUnion{
-		Any:  anyT,
-		Type: typ,
+		CompoundFilter: &or,
+		Type:           typ,
 	}
 }
 
 func (u *FiltersUnion) UnmarshalJSON(data []byte) error {
 
-	var candidates []utils.UnionCandidate
-
-	// Collect all valid candidates
-	var filters Filters = Filters{}
-	if err := utils.UnmarshalJSON(data, &filters, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  FiltersUnionTypeFilters,
-			Value: &filters,
-		})
+	type discriminator struct {
+		Type string `json:"type"`
 	}
 
-	var compoundFilter CompoundFilter = CompoundFilter{}
-	if err := utils.UnmarshalJSON(data, &compoundFilter, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  FiltersUnionTypeCompoundFilter,
-			Value: &compoundFilter,
-		})
+	dis := new(discriminator)
+	if err := json.Unmarshal(data, &dis); err != nil {
+		return fmt.Errorf("could not unmarshal discriminator: %w", err)
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  FiltersUnionTypeAny,
-			Value: anyVar,
-		})
-	}
+	switch dis.Type {
+	case "eq":
+		filters := new(Filters)
+		if err := utils.UnmarshalJSON(data, &filters, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == eq) type Filters within FiltersUnion: %w", string(data), err)
+		}
 
-	if len(candidates) == 0 {
-		return fmt.Errorf("could not unmarshal `%s` into any supported union types for FiltersUnion", string(data))
-	}
-
-	// Pick the best candidate using multi-stage filtering
-	best := utils.PickBestUnionCandidate(candidates, data)
-	if best == nil {
-		return fmt.Errorf("could not unmarshal `%s` into any supported union types for FiltersUnion", string(data))
-	}
-
-	// Set the union type and value based on the best candidate
-	u.Type = best.Type.(FiltersUnionType)
-	switch best.Type {
-	case FiltersUnionTypeFilters:
-		u.Filters = best.Value.(*Filters)
+		u.Filters = filters
+		u.Type = FiltersUnionTypeEq
 		return nil
-	case FiltersUnionTypeCompoundFilter:
-		u.CompoundFilter = best.Value.(*CompoundFilter)
+	case "ne":
+		filters := new(Filters)
+		if err := utils.UnmarshalJSON(data, &filters, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == ne) type Filters within FiltersUnion: %w", string(data), err)
+		}
+
+		u.Filters = filters
+		u.Type = FiltersUnionTypeNe
 		return nil
-	case FiltersUnionTypeAny:
-		u.Any = best.Value.(any)
+	case "gt":
+		filters := new(Filters)
+		if err := utils.UnmarshalJSON(data, &filters, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == gt) type Filters within FiltersUnion: %w", string(data), err)
+		}
+
+		u.Filters = filters
+		u.Type = FiltersUnionTypeGt
+		return nil
+	case "gte":
+		filters := new(Filters)
+		if err := utils.UnmarshalJSON(data, &filters, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == gte) type Filters within FiltersUnion: %w", string(data), err)
+		}
+
+		u.Filters = filters
+		u.Type = FiltersUnionTypeGte
+		return nil
+	case "lt":
+		filters := new(Filters)
+		if err := utils.UnmarshalJSON(data, &filters, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == lt) type Filters within FiltersUnion: %w", string(data), err)
+		}
+
+		u.Filters = filters
+		u.Type = FiltersUnionTypeLt
+		return nil
+	case "lte":
+		filters := new(Filters)
+		if err := utils.UnmarshalJSON(data, &filters, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == lte) type Filters within FiltersUnion: %w", string(data), err)
+		}
+
+		u.Filters = filters
+		u.Type = FiltersUnionTypeLte
+		return nil
+	case "and":
+		compoundFilter := new(CompoundFilter)
+		if err := utils.UnmarshalJSON(data, &compoundFilter, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == and) type CompoundFilter within FiltersUnion: %w", string(data), err)
+		}
+
+		u.CompoundFilter = compoundFilter
+		u.Type = FiltersUnionTypeAnd
+		return nil
+	case "or":
+		compoundFilter := new(CompoundFilter)
+		if err := utils.UnmarshalJSON(data, &compoundFilter, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == or) type CompoundFilter within FiltersUnion: %w", string(data), err)
+		}
+
+		u.CompoundFilter = compoundFilter
+		u.Type = FiltersUnionTypeOr
 		return nil
 	}
 
@@ -421,10 +527,6 @@ func (u FiltersUnion) MarshalJSON() ([]byte, error) {
 
 	if u.CompoundFilter != nil {
 		return utils.MarshalJSON(u.CompoundFilter, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type FiltersUnion: all fields are null")
@@ -534,6 +636,62 @@ func (f *FileSearchServerTool) GetFilters() *FiltersUnion {
 		return nil
 	}
 	return f.Filters
+}
+
+func (f *FileSearchServerTool) GetFiltersEq() *Filters {
+	if v := f.GetFilters(); v != nil {
+		return v.Filters
+	}
+	return nil
+}
+
+func (f *FileSearchServerTool) GetFiltersNe() *Filters {
+	if v := f.GetFilters(); v != nil {
+		return v.Filters
+	}
+	return nil
+}
+
+func (f *FileSearchServerTool) GetFiltersGt() *Filters {
+	if v := f.GetFilters(); v != nil {
+		return v.Filters
+	}
+	return nil
+}
+
+func (f *FileSearchServerTool) GetFiltersGte() *Filters {
+	if v := f.GetFilters(); v != nil {
+		return v.Filters
+	}
+	return nil
+}
+
+func (f *FileSearchServerTool) GetFiltersLt() *Filters {
+	if v := f.GetFilters(); v != nil {
+		return v.Filters
+	}
+	return nil
+}
+
+func (f *FileSearchServerTool) GetFiltersLte() *Filters {
+	if v := f.GetFilters(); v != nil {
+		return v.Filters
+	}
+	return nil
+}
+
+func (f *FileSearchServerTool) GetFiltersAnd() *CompoundFilter {
+	if v := f.GetFilters(); v != nil {
+		return v.CompoundFilter
+	}
+	return nil
+}
+
+func (f *FileSearchServerTool) GetFiltersOr() *CompoundFilter {
+	if v := f.GetFilters(); v != nil {
+		return v.CompoundFilter
+	}
+	return nil
 }
 
 func (f *FileSearchServerTool) GetMaxNumResults() *int64 {

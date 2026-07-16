@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/planmodifiers/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/utils"
 )
 
 // UseHoistedValue returns a plan modifier that copies the value from the active

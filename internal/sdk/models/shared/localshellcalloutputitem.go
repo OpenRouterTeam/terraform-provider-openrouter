@@ -5,37 +5,8 @@ package shared
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
-
-type LocalShellCallOutputItemStatus string
-
-const (
-	LocalShellCallOutputItemStatusInProgress LocalShellCallOutputItemStatus = "in_progress"
-	LocalShellCallOutputItemStatusCompleted  LocalShellCallOutputItemStatus = "completed"
-	LocalShellCallOutputItemStatusIncomplete LocalShellCallOutputItemStatus = "incomplete"
-)
-
-func (e LocalShellCallOutputItemStatus) ToPointer() *LocalShellCallOutputItemStatus {
-	return &e
-}
-func (e *LocalShellCallOutputItemStatus) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "in_progress":
-		fallthrough
-	case "completed":
-		fallthrough
-	case "incomplete":
-		*e = LocalShellCallOutputItemStatus(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for LocalShellCallOutputItemStatus: %v", v)
-	}
-}
 
 type LocalShellCallOutputItemType string
 
@@ -62,10 +33,10 @@ func (e *LocalShellCallOutputItemType) UnmarshalJSON(data []byte) error {
 
 // LocalShellCallOutputItem - Output from a local shell command execution
 type LocalShellCallOutputItem struct {
-	ID     string                          `json:"id"`
-	Output string                          `json:"output"`
-	Status *LocalShellCallOutputItemStatus `json:"status,omitzero"`
-	Type   LocalShellCallOutputItemType    `json:"type"`
+	ID     string                       `json:"id"`
+	Output string                       `json:"output"`
+	Status *ToolCallStatus              `json:"status,omitzero"`
+	Type   LocalShellCallOutputItemType `json:"type"`
 }
 
 func (l LocalShellCallOutputItem) MarshalJSON() ([]byte, error) {
@@ -93,7 +64,7 @@ func (l *LocalShellCallOutputItem) GetOutput() string {
 	return l.Output
 }
 
-func (l *LocalShellCallOutputItem) GetStatus() *LocalShellCallOutputItemStatus {
+func (l *LocalShellCallOutputItem) GetStatus() *ToolCallStatus {
 	if l == nil {
 		return nil
 	}

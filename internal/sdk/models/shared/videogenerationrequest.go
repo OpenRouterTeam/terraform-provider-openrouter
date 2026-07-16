@@ -5,7 +5,7 @@ package shared
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // VideoGenerationRequestAspectRatio - Aspect ratio of the generated video
@@ -170,6 +170,7 @@ type VideoGenerationRequestOptions struct {
 	Streamlake          map[string]any `json:"streamlake,omitzero"`
 	Switchpoint         map[string]any `json:"switchpoint,omitzero"`
 	Targon              map[string]any `json:"targon,omitzero"`
+	Tencent             map[string]any `json:"tencent,omitzero"`
 	Tenstorrent         map[string]any `json:"tenstorrent,omitzero"`
 	Together            map[string]any `json:"together,omitzero"`
 	TogetherLite        map[string]any `json:"together-lite,omitzero"`
@@ -976,6 +977,13 @@ func (v *VideoGenerationRequestOptions) GetTargon() map[string]any {
 		return nil
 	}
 	return v.Targon
+}
+
+func (v *VideoGenerationRequestOptions) GetTencent() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Tencent
 }
 
 func (v *VideoGenerationRequestOptions) GetTenstorrent() map[string]any {

@@ -20,13 +20,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	speakeasy_boolplanmodifier "github.com/speakeasy/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
-	speakeasy_float64planmodifier "github.com/speakeasy/terraform-provider-openrouter/internal/planmodifiers/float64planmodifier"
-	speakeasy_stringplanmodifier "github.com/speakeasy/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
-	speakeasy_planmodifierutils "github.com/speakeasy/terraform-provider-openrouter/internal/planmodifiers/utils"
-	tfTypes "github.com/speakeasy/terraform-provider-openrouter/internal/provider/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/validators"
+	speakeasy_boolplanmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
+	speakeasy_float64planmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/float64planmodifier"
+	speakeasy_stringplanmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
+	speakeasy_planmodifierutils "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/utils"
+	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
+	"github.com/openrouter/terraform-provider-openrouter/internal/validators"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.

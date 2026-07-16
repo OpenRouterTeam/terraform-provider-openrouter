@@ -2,92 +2,6 @@
 
 package shared
 
-import (
-	"encoding/json"
-	"fmt"
-)
-
-// Tokenizer type used by the model
-type Tokenizer string
-
-const (
-	TokenizerRouter   Tokenizer = "Router"
-	TokenizerMedia    Tokenizer = "Media"
-	TokenizerOther    Tokenizer = "Other"
-	TokenizerGpt      Tokenizer = "GPT"
-	TokenizerClaude   Tokenizer = "Claude"
-	TokenizerGemini   Tokenizer = "Gemini"
-	TokenizerGemma    Tokenizer = "Gemma"
-	TokenizerGrok     Tokenizer = "Grok"
-	TokenizerCohere   Tokenizer = "Cohere"
-	TokenizerNova     Tokenizer = "Nova"
-	TokenizerQwen     Tokenizer = "Qwen"
-	TokenizerYi       Tokenizer = "Yi"
-	TokenizerDeepSeek Tokenizer = "DeepSeek"
-	TokenizerMistral  Tokenizer = "Mistral"
-	TokenizerLlama2   Tokenizer = "Llama2"
-	TokenizerLlama3   Tokenizer = "Llama3"
-	TokenizerLlama4   Tokenizer = "Llama4"
-	TokenizerPaLm     Tokenizer = "PaLM"
-	TokenizerRwkv     Tokenizer = "RWKV"
-	TokenizerQwen3    Tokenizer = "Qwen3"
-)
-
-func (e Tokenizer) ToPointer() *Tokenizer {
-	return &e
-}
-func (e *Tokenizer) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "Router":
-		fallthrough
-	case "Media":
-		fallthrough
-	case "Other":
-		fallthrough
-	case "GPT":
-		fallthrough
-	case "Claude":
-		fallthrough
-	case "Gemini":
-		fallthrough
-	case "Gemma":
-		fallthrough
-	case "Grok":
-		fallthrough
-	case "Cohere":
-		fallthrough
-	case "Nova":
-		fallthrough
-	case "Qwen":
-		fallthrough
-	case "Yi":
-		fallthrough
-	case "DeepSeek":
-		fallthrough
-	case "Mistral":
-		fallthrough
-	case "Llama2":
-		fallthrough
-	case "Llama3":
-		fallthrough
-	case "Llama4":
-		fallthrough
-	case "PaLM":
-		fallthrough
-	case "RWKV":
-		fallthrough
-	case "Qwen3":
-		*e = Tokenizer(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for Tokenizer: %v", v)
-	}
-}
-
 // Architecture - Model architecture information
 type Architecture struct {
 	// Supported input modalities
@@ -98,7 +12,7 @@ type Architecture struct {
 	Modality *string `json:"modality"`
 	// Supported output modalities
 	OutputModalities []OutputModality `json:"output_modalities"`
-	Tokenizer        *Tokenizer       `json:"tokenizer"`
+	Tokenizer        *ModelGroup      `json:"tokenizer"`
 }
 
 func (a *Architecture) GetInputModalities() []InputModality {
@@ -129,7 +43,7 @@ func (a *Architecture) GetOutputModalities() []OutputModality {
 	return a.OutputModalities
 }
 
-func (a *Architecture) GetTokenizer() *Tokenizer {
+func (a *Architecture) GetTokenizer() *ModelGroup {
 	if a == nil {
 		return nil
 	}
