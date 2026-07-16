@@ -3,8 +3,8 @@
 package operations
 
 import (
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/shared"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 	"net/http"
 )
 

@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type Modality string
@@ -583,14 +583,12 @@ type StopType string
 const (
 	StopTypeStr        StopType = "str"
 	StopTypeArrayOfStr StopType = "arrayOfStr"
-	StopTypeAny        StopType = "any"
 )
 
 // Stop sequences (up to 4)
 type Stop struct {
 	Str        *string  `queryParam:"inline" union:"member"`
 	ArrayOfStr []string `queryParam:"inline" union:"member"`
-	Any        any      `queryParam:"inline" union:"member"`
 
 	Type StopType
 }
@@ -610,15 +608,6 @@ func CreateStopArrayOfStr(arrayOfStr []string) Stop {
 	return Stop{
 		ArrayOfStr: arrayOfStr,
 		Type:       typ,
-	}
-}
-
-func CreateStopAny(anyT any) Stop {
-	typ := StopTypeAny
-
-	return Stop{
-		Any:  anyT,
-		Type: typ,
 	}
 }
 
@@ -643,14 +632,6 @@ func (u *Stop) UnmarshalJSON(data []byte) error {
 		})
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  StopTypeAny,
-			Value: anyVar,
-		})
-	}
-
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for Stop", string(data))
 	}
@@ -670,9 +651,6 @@ func (u *Stop) UnmarshalJSON(data []byte) error {
 	case StopTypeArrayOfStr:
 		u.ArrayOfStr = best.Value.([]string)
 		return nil
-	case StopTypeAny:
-		u.Any = best.Value.(any)
-		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for Stop", string(data))
@@ -685,10 +663,6 @@ func (u Stop) MarshalJSON() ([]byte, error) {
 
 	if u.ArrayOfStr != nil {
 		return utils.MarshalJSON(u.ArrayOfStr, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type Stop: all fields are null")

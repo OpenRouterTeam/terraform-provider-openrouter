@@ -5,7 +5,7 @@ package hooks
 import (
 	"context"
 	"errors"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/config"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/config"
 	"net/http"
 )
 

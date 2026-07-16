@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type FunctionCallOutputItemDetail string
@@ -270,35 +270,6 @@ func (u FunctionCallOutputItemOutputUnion2) MarshalJSON() ([]byte, error) {
 	return nil, errors.New("could not marshal union type FunctionCallOutputItemOutputUnion2: all fields are null")
 }
 
-type FunctionCallOutputItemStatus string
-
-const (
-	FunctionCallOutputItemStatusInProgress FunctionCallOutputItemStatus = "in_progress"
-	FunctionCallOutputItemStatusCompleted  FunctionCallOutputItemStatus = "completed"
-	FunctionCallOutputItemStatusIncomplete FunctionCallOutputItemStatus = "incomplete"
-)
-
-func (e FunctionCallOutputItemStatus) ToPointer() *FunctionCallOutputItemStatus {
-	return &e
-}
-func (e *FunctionCallOutputItemStatus) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "in_progress":
-		fallthrough
-	case "completed":
-		fallthrough
-	case "incomplete":
-		*e = FunctionCallOutputItemStatus(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for FunctionCallOutputItemStatus: %v", v)
-	}
-}
-
 type FunctionCallOutputItemTypeFunctionCallOutput string
 
 const (
@@ -327,7 +298,7 @@ type FunctionCallOutputItem struct {
 	CallID string                                       `json:"call_id"`
 	ID     *string                                      `json:"id,omitzero"`
 	Output FunctionCallOutputItemOutputUnion2           `json:"output"`
-	Status *FunctionCallOutputItemStatus                `json:"status,omitzero"`
+	Status *ToolCallStatus                              `json:"status,omitzero"`
 	Type   FunctionCallOutputItemTypeFunctionCallOutput `json:"type"`
 }
 
@@ -363,7 +334,7 @@ func (f *FunctionCallOutputItem) GetOutput() FunctionCallOutputItemOutputUnion2 
 	return f.Output
 }
 
-func (f *FunctionCallOutputItem) GetStatus() *FunctionCallOutputItemStatus {
+func (f *FunctionCallOutputItem) GetStatus() *ToolCallStatus {
 	if f == nil {
 		return nil
 	}

@@ -3,7 +3,7 @@
 package typeconvert
 
 import (
-	sdkTypes "github.com/speakeasy/terraform-provider-openrouter/internal/sdk/types"
+	sdkTypes "github.com/openrouter/terraform-provider-openrouter/internal/sdk/types"
 )
 
 // Converts a date types.Date to string.

@@ -6,8 +6,8 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/operations"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/shared"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 )
 
 func (r *ByokKeyResourceModel) RefreshFromSharedCreateBYOKKeyResponse(ctx context.Context, resp *shared.CreateBYOKKeyResponse) diag.Diagnostics {

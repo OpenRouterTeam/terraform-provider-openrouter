@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // PercentileLatencyCutoffs - Percentile-based latency cutoffs. All specified cutoffs must be met for an endpoint to be preferred.

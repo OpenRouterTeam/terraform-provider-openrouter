@@ -4,8 +4,8 @@ package operations
 
 import (
 	"errors"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/retry"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/retry"
 	"time"
 )
 

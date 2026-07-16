@@ -6,8 +6,8 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	tfTypes "github.com/speakeasy/terraform-provider-openrouter/internal/provider/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/operations"
+	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
 )
 
 func (r *CreditsDataSourceModel) RefreshFromOperationsGetCreditsResponseBody(ctx context.Context, resp *operations.GetCreditsResponseBody) diag.Diagnostics {

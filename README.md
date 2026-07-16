@@ -46,7 +46,7 @@ terraform {
   required_providers {
     openrouter = {
       source  = "speakeasy/openrouter"
-      version = "0.0.7"
+      version = "0.0.8"
     }
   }
 }
@@ -135,7 +135,7 @@ Terraform searches for the `.terraformrc` file in your home directory and applie
 provider_installation {
 
   dev_overrides {
-      "registry.terraform.io/speakeasy/openrouter" = "<PATH>"
+      "registry.terraform.io/openrouter/openrouter" = "<PATH>"
   }
 
   # For all other providers, install them directly from their origin provider

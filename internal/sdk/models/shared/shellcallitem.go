@@ -5,7 +5,7 @@ package shared
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type ShellCallItemAction struct {
@@ -46,35 +46,6 @@ func (s *ShellCallItemAction) GetTimeoutMs() *int64 {
 	return s.TimeoutMs
 }
 
-type ShellCallItemStatus string
-
-const (
-	ShellCallItemStatusInProgress ShellCallItemStatus = "in_progress"
-	ShellCallItemStatusCompleted  ShellCallItemStatus = "completed"
-	ShellCallItemStatusIncomplete ShellCallItemStatus = "incomplete"
-)
-
-func (e ShellCallItemStatus) ToPointer() *ShellCallItemStatus {
-	return &e
-}
-func (e *ShellCallItemStatus) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "in_progress":
-		fallthrough
-	case "completed":
-		fallthrough
-	case "incomplete":
-		*e = ShellCallItemStatus(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for ShellCallItemStatus: %v", v)
-	}
-}
-
 type ShellCallItemType string
 
 const (
@@ -100,12 +71,12 @@ func (e *ShellCallItemType) UnmarshalJSON(data []byte) error {
 
 // ShellCallItem - A shell command execution call (newer variant)
 type ShellCallItem struct {
-	Action      ShellCallItemAction  `json:"action"`
-	CallID      string               `json:"call_id"`
-	Environment any                  `json:"environment,omitzero"`
-	ID          *string              `json:"id,omitzero"`
-	Status      *ShellCallItemStatus `json:"status,omitzero"`
-	Type        ShellCallItemType    `json:"type"`
+	Action      ShellCallItemAction `json:"action"`
+	CallID      string              `json:"call_id"`
+	Environment any                 `json:"environment,omitzero"`
+	ID          *string             `json:"id,omitzero"`
+	Status      *ToolCallStatus     `json:"status,omitzero"`
+	Type        ShellCallItemType   `json:"type"`
 }
 
 func (s ShellCallItem) MarshalJSON() ([]byte, error) {
@@ -147,7 +118,7 @@ func (s *ShellCallItem) GetID() *string {
 	return s.ID
 }
 
-func (s *ShellCallItem) GetStatus() *ShellCallItemStatus {
+func (s *ShellCallItem) GetStatus() *ToolCallStatus {
 	if s == nil {
 		return nil
 	}

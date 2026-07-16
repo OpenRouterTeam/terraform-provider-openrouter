@@ -4,7 +4,7 @@ package setplanmodifier
 
 import (
 	"context"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/planmodifiers/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 )

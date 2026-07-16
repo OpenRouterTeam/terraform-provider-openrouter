@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/optionalnullable"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/optionalnullable"
 )
 
 func PopulateHeaders(_ context.Context, req *http.Request, headers interface{}, globals interface{}) {

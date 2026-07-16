@@ -6,9 +6,9 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	tfTypes "github.com/speakeasy/terraform-provider-openrouter/internal/provider/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/operations"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/shared"
+	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 )
 
 func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservabilityDestinationsResponse(ctx context.Context, resp *shared.ListObservabilityDestinationsResponse) diag.Diagnostics {

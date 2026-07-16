@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // DataCollection - Data collection setting. If no available model provider meets the requirement, your request will return an error.
@@ -360,14 +360,12 @@ type ProviderPreferencesSortType string
 const (
 	ProviderPreferencesSortTypeProviderSort       ProviderPreferencesSortType = "ProviderSort"
 	ProviderPreferencesSortTypeProviderSortConfig ProviderPreferencesSortType = "ProviderSortConfig"
-	ProviderPreferencesSortTypeAny                ProviderPreferencesSortType = "any"
 )
 
 // ProviderPreferencesSort - The sorting strategy to use for this request, if "order" is not specified. When set, no load balancing is performed.
 type ProviderPreferencesSort struct {
 	ProviderSort       *ProviderSort       `queryParam:"inline" union:"member"`
 	ProviderSortConfig *ProviderSortConfig `queryParam:"inline" union:"member"`
-	Any                any                 `queryParam:"inline" union:"member"`
 
 	Type ProviderPreferencesSortType
 }
@@ -387,15 +385,6 @@ func CreateProviderPreferencesSortProviderSortConfig(providerSortConfig Provider
 	return ProviderPreferencesSort{
 		ProviderSortConfig: &providerSortConfig,
 		Type:               typ,
-	}
-}
-
-func CreateProviderPreferencesSortAny(anyT any) ProviderPreferencesSort {
-	typ := ProviderPreferencesSortTypeAny
-
-	return ProviderPreferencesSort{
-		Any:  anyT,
-		Type: typ,
 	}
 }
 
@@ -420,14 +409,6 @@ func (u *ProviderPreferencesSort) UnmarshalJSON(data []byte) error {
 		})
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  ProviderPreferencesSortTypeAny,
-			Value: anyVar,
-		})
-	}
-
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for ProviderPreferencesSort", string(data))
 	}
@@ -447,9 +428,6 @@ func (u *ProviderPreferencesSort) UnmarshalJSON(data []byte) error {
 	case ProviderPreferencesSortTypeProviderSortConfig:
 		u.ProviderSortConfig = best.Value.(*ProviderSortConfig)
 		return nil
-	case ProviderPreferencesSortTypeAny:
-		u.Any = best.Value.(any)
-		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for ProviderPreferencesSort", string(data))
@@ -462,10 +440,6 @@ func (u ProviderPreferencesSort) MarshalJSON() ([]byte, error) {
 
 	if u.ProviderSortConfig != nil {
 		return utils.MarshalJSON(u.ProviderSortConfig, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ProviderPreferencesSort: all fields are null")

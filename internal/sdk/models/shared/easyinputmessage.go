@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type EasyInputMessageDetail string
@@ -234,13 +234,11 @@ type EasyInputMessageContentUnion2Type string
 const (
 	EasyInputMessageContentUnion2TypeArrayOfEasyInputMessageContentUnion1 EasyInputMessageContentUnion2Type = "arrayOfEasyInputMessageContentUnion1"
 	EasyInputMessageContentUnion2TypeStr                                  EasyInputMessageContentUnion2Type = "str"
-	EasyInputMessageContentUnion2TypeAny                                  EasyInputMessageContentUnion2Type = "any"
 )
 
 type EasyInputMessageContentUnion2 struct {
 	ArrayOfEasyInputMessageContentUnion1 []EasyInputMessageContentUnion1 `queryParam:"inline" union:"member"`
 	Str                                  *string                         `queryParam:"inline" union:"member"`
-	Any                                  any                             `queryParam:"inline" union:"member"`
 
 	Type EasyInputMessageContentUnion2Type
 }
@@ -259,15 +257,6 @@ func CreateEasyInputMessageContentUnion2Str(str string) EasyInputMessageContentU
 
 	return EasyInputMessageContentUnion2{
 		Str:  &str,
-		Type: typ,
-	}
-}
-
-func CreateEasyInputMessageContentUnion2Any(anyT any) EasyInputMessageContentUnion2 {
-	typ := EasyInputMessageContentUnion2TypeAny
-
-	return EasyInputMessageContentUnion2{
-		Any:  anyT,
 		Type: typ,
 	}
 }
@@ -293,14 +282,6 @@ func (u *EasyInputMessageContentUnion2) UnmarshalJSON(data []byte) error {
 		})
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  EasyInputMessageContentUnion2TypeAny,
-			Value: anyVar,
-		})
-	}
-
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for EasyInputMessageContentUnion2", string(data))
 	}
@@ -320,9 +301,6 @@ func (u *EasyInputMessageContentUnion2) UnmarshalJSON(data []byte) error {
 	case EasyInputMessageContentUnion2TypeStr:
 		u.Str = best.Value.(*string)
 		return nil
-	case EasyInputMessageContentUnion2TypeAny:
-		u.Any = best.Value.(any)
-		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for EasyInputMessageContentUnion2", string(data))
@@ -335,10 +313,6 @@ func (u EasyInputMessageContentUnion2) MarshalJSON() ([]byte, error) {
 
 	if u.Str != nil {
 		return utils.MarshalJSON(u.Str, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type EasyInputMessageContentUnion2: all fields are null")
@@ -395,14 +369,12 @@ type EasyInputMessagePhaseUnionType string
 const (
 	EasyInputMessagePhaseUnionTypeEasyInputMessagePhaseCommentary  EasyInputMessagePhaseUnionType = "EasyInputMessage_phase_Commentary"
 	EasyInputMessagePhaseUnionTypeEasyInputMessagePhaseFinalAnswer EasyInputMessagePhaseUnionType = "EasyInputMessage_phase_FinalAnswer"
-	EasyInputMessagePhaseUnionTypeAny                              EasyInputMessagePhaseUnionType = "any"
 )
 
 // EasyInputMessagePhaseUnion - The phase of an assistant message. Use `commentary` for an intermediate assistant message and `final_answer` for the final assistant message. For follow-up requests with models like `gpt-5.3-codex` and later, preserve and resend phase on all assistant messages. Omitting it can degrade performance. Not used for user messages.
 type EasyInputMessagePhaseUnion struct {
 	EasyInputMessagePhaseCommentary  *EasyInputMessagePhaseCommentary  `queryParam:"inline" union:"member"`
 	EasyInputMessagePhaseFinalAnswer *EasyInputMessagePhaseFinalAnswer `queryParam:"inline" union:"member"`
-	Any                              any                               `queryParam:"inline" union:"member"`
 
 	Type EasyInputMessagePhaseUnionType
 }
@@ -422,15 +394,6 @@ func CreateEasyInputMessagePhaseUnionEasyInputMessagePhaseFinalAnswer(easyInputM
 	return EasyInputMessagePhaseUnion{
 		EasyInputMessagePhaseFinalAnswer: &easyInputMessagePhaseFinalAnswer,
 		Type:                             typ,
-	}
-}
-
-func CreateEasyInputMessagePhaseUnionAny(anyT any) EasyInputMessagePhaseUnion {
-	typ := EasyInputMessagePhaseUnionTypeAny
-
-	return EasyInputMessagePhaseUnion{
-		Any:  anyT,
-		Type: typ,
 	}
 }
 
@@ -455,14 +418,6 @@ func (u *EasyInputMessagePhaseUnion) UnmarshalJSON(data []byte) error {
 		})
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  EasyInputMessagePhaseUnionTypeAny,
-			Value: anyVar,
-		})
-	}
-
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for EasyInputMessagePhaseUnion", string(data))
 	}
@@ -482,9 +437,6 @@ func (u *EasyInputMessagePhaseUnion) UnmarshalJSON(data []byte) error {
 	case EasyInputMessagePhaseUnionTypeEasyInputMessagePhaseFinalAnswer:
 		u.EasyInputMessagePhaseFinalAnswer = best.Value.(*EasyInputMessagePhaseFinalAnswer)
 		return nil
-	case EasyInputMessagePhaseUnionTypeAny:
-		u.Any = best.Value.(any)
-		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for EasyInputMessagePhaseUnion", string(data))
@@ -497,10 +449,6 @@ func (u EasyInputMessagePhaseUnion) MarshalJSON() ([]byte, error) {
 
 	if u.EasyInputMessagePhaseFinalAnswer != nil {
 		return utils.MarshalJSON(u.EasyInputMessagePhaseFinalAnswer, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type EasyInputMessagePhaseUnion: all fields are null")

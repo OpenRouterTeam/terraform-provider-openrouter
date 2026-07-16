@@ -5,8 +5,8 @@ package operations
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/shared"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 	"net/http"
 )
 
@@ -97,6 +97,7 @@ const (
 	ProviderStepfun         Provider = "stepfun"
 	ProviderStreamlake      Provider = "streamlake"
 	ProviderSwitchpoint     Provider = "switchpoint"
+	ProviderTencent         Provider = "tencent"
 	ProviderTenstorrent     Provider = "tenstorrent"
 	ProviderTogether        Provider = "together"
 	ProviderUpstage         Provider = "upstage"
@@ -282,6 +283,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "streamlake":
 		fallthrough
 	case "switchpoint":
+		fallthrough
+	case "tencent":
 		fallthrough
 	case "tenstorrent":
 		fallthrough

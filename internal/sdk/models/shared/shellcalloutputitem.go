@@ -5,7 +5,7 @@ package shared
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type ShellCallOutputItemOutput struct {
@@ -54,35 +54,6 @@ func (s *ShellCallOutputItemOutput) GetAdditionalProperties() map[string]any {
 	return s.AdditionalProperties
 }
 
-type ShellCallOutputItemStatus string
-
-const (
-	ShellCallOutputItemStatusInProgress ShellCallOutputItemStatus = "in_progress"
-	ShellCallOutputItemStatusCompleted  ShellCallOutputItemStatus = "completed"
-	ShellCallOutputItemStatusIncomplete ShellCallOutputItemStatus = "incomplete"
-)
-
-func (e ShellCallOutputItemStatus) ToPointer() *ShellCallOutputItemStatus {
-	return &e
-}
-func (e *ShellCallOutputItemStatus) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "in_progress":
-		fallthrough
-	case "completed":
-		fallthrough
-	case "incomplete":
-		*e = ShellCallOutputItemStatus(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for ShellCallOutputItemStatus: %v", v)
-	}
-}
-
 type ShellCallOutputItemType string
 
 const (
@@ -112,7 +83,7 @@ type ShellCallOutputItem struct {
 	ID              *string                     `json:"id,omitzero"`
 	MaxOutputLength *int64                      `json:"max_output_length,omitzero"`
 	Output          []ShellCallOutputItemOutput `json:"output"`
-	Status          *ShellCallOutputItemStatus  `json:"status,omitzero"`
+	Status          *ToolCallStatus             `json:"status,omitzero"`
 	Type            ShellCallOutputItemType     `json:"type"`
 }
 
@@ -155,7 +126,7 @@ func (s *ShellCallOutputItem) GetOutput() []ShellCallOutputItemOutput {
 	return s.Output
 }
 
-func (s *ShellCallOutputItem) GetStatus() *ShellCallOutputItemStatus {
+func (s *ShellCallOutputItem) GetStatus() *ToolCallStatus {
 	if s == nil {
 		return nil
 	}

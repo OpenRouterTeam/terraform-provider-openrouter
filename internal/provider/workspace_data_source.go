@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.

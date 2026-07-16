@@ -5,7 +5,7 @@ package shared
 import (
 	"errors"
 	"fmt"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type ChatAssistantMessageContentType string
@@ -13,14 +13,12 @@ type ChatAssistantMessageContentType string
 const (
 	ChatAssistantMessageContentTypeStr                     ChatAssistantMessageContentType = "str"
 	ChatAssistantMessageContentTypeArrayOfChatContentItems ChatAssistantMessageContentType = "arrayOfChatContentItems"
-	ChatAssistantMessageContentTypeAny                     ChatAssistantMessageContentType = "any"
 )
 
 // ChatAssistantMessageContent - Assistant message content
 type ChatAssistantMessageContent struct {
 	Str                     *string            `queryParam:"inline" union:"member"`
 	ArrayOfChatContentItems []ChatContentItems `queryParam:"inline" union:"member"`
-	Any                     any                `queryParam:"inline" union:"member"`
 
 	Type ChatAssistantMessageContentType
 }
@@ -40,15 +38,6 @@ func CreateChatAssistantMessageContentArrayOfChatContentItems(arrayOfChatContent
 	return ChatAssistantMessageContent{
 		ArrayOfChatContentItems: arrayOfChatContentItems,
 		Type:                    typ,
-	}
-}
-
-func CreateChatAssistantMessageContentAny(anyT any) ChatAssistantMessageContent {
-	typ := ChatAssistantMessageContentTypeAny
-
-	return ChatAssistantMessageContent{
-		Any:  anyT,
-		Type: typ,
 	}
 }
 
@@ -73,14 +62,6 @@ func (u *ChatAssistantMessageContent) UnmarshalJSON(data []byte) error {
 		})
 	}
 
-	var anyVar any = nil
-	if err := utils.UnmarshalJSON(data, &anyVar, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  ChatAssistantMessageContentTypeAny,
-			Value: anyVar,
-		})
-	}
-
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for ChatAssistantMessageContent", string(data))
 	}
@@ -100,9 +81,6 @@ func (u *ChatAssistantMessageContent) UnmarshalJSON(data []byte) error {
 	case ChatAssistantMessageContentTypeArrayOfChatContentItems:
 		u.ArrayOfChatContentItems = best.Value.([]ChatContentItems)
 		return nil
-	case ChatAssistantMessageContentTypeAny:
-		u.Any = best.Value.(any)
-		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for ChatAssistantMessageContent", string(data))
@@ -115,10 +93,6 @@ func (u ChatAssistantMessageContent) MarshalJSON() ([]byte, error) {
 
 	if u.ArrayOfChatContentItems != nil {
 		return utils.MarshalJSON(u.ArrayOfChatContentItems, "", true)
-	}
-
-	if u.Any != nil {
-		return utils.MarshalJSON(u.Any, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ChatAssistantMessageContent: all fields are null")
