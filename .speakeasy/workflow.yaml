@@ -3,7 +3,7 @@ speakeasyVersion: latest
 sources:
     OpenRouter API:
         inputs:
-            - location: https://raw.githubusercontent.com/OpenRouterTeam/typescript-sdk/refs/heads/main/.speakeasy/in.openapi.yaml
+            - location: .speakeasy/in.openapi.yaml
         overlays:
             - location: .speakeasy/speakeasy-modifications-overlay.yaml
             - location: .speakeasy/terraform-entities-overlay.yaml

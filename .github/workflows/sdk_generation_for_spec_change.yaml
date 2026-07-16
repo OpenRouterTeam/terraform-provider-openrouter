@@ -1,8 +1,7 @@
 name: Generate (spec change merged)
-# The OpenAPI spec is sourced remotely from OpenRouterTeam/typescript-sdk
-# (see .speakeasy/workflow.yaml), so unlike the TypeScript SDK repo this
-# trigger fires on merged changes to the local generation inputs: the
-# overlays and workflow/gen configuration.
+# Fires when the monorepo's SDK-release flow (openrouter-web
+# sdk-release-prs.yaml) merges a spec update to .speakeasy/in.openapi.yaml,
+# or when local generation inputs (overlays, workflow/gen config) change.
 permissions:
   checks: write
   contents: write
@@ -24,6 +23,7 @@ permissions:
     branches:
       - main
     paths:
+      - .speakeasy/in.openapi.yaml
       - .speakeasy/workflow.yaml
       - .speakeasy/gen.yaml
       - .speakeasy/speakeasy-modifications-overlay.yaml

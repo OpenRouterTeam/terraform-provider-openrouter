@@ -10,7 +10,6 @@ import (
 type ProviderName string
 
 const (
-	ProviderNameMeta            ProviderName = "Meta"
 	ProviderNameAkashMl         ProviderName = "AkashML"
 	ProviderNameAi21            ProviderName = "AI21"
 	ProviderNameAionLabs        ProviderName = "AionLabs"
@@ -61,6 +60,7 @@ const (
 	ProviderNameLiquid          ProviderName = "Liquid"
 	ProviderNameMara            ProviderName = "Mara"
 	ProviderNameMancer2         ProviderName = "Mancer 2"
+	ProviderNameMeta            ProviderName = "Meta"
 	ProviderNameMinimax         ProviderName = "Minimax"
 	ProviderNameModelRun        ProviderName = "ModelRun"
 	ProviderNameMistral         ProviderName = "Mistral"
@@ -116,8 +116,6 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
-	case "Meta":
-		fallthrough
 	case "AkashML":
 		fallthrough
 	case "AI21":
@@ -217,6 +215,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "Mara":
 		fallthrough
 	case "Mancer 2":
+		fallthrough
+	case "Meta":
 		fallthrough
 	case "Minimax":
 		fallthrough

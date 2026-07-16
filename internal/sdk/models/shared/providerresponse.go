@@ -27,7 +27,6 @@ const (
 	ProviderResponseProviderNameLynn2           ProviderResponseProviderName = "Lynn 2"
 	ProviderResponseProviderNameLynn            ProviderResponseProviderName = "Lynn"
 	ProviderResponseProviderNameMancer          ProviderResponseProviderName = "Mancer"
-	ProviderResponseProviderNameMeta            ProviderResponseProviderName = "Meta"
 	ProviderResponseProviderNameModal           ProviderResponseProviderName = "Modal"
 	ProviderResponseProviderNameNineteen        ProviderResponseProviderName = "Nineteen"
 	ProviderResponseProviderNameOctoAi          ProviderResponseProviderName = "OctoAI"
@@ -90,6 +89,7 @@ const (
 	ProviderResponseProviderNameLiquid          ProviderResponseProviderName = "Liquid"
 	ProviderResponseProviderNameMara            ProviderResponseProviderName = "Mara"
 	ProviderResponseProviderNameMancer2         ProviderResponseProviderName = "Mancer 2"
+	ProviderResponseProviderNameMeta            ProviderResponseProviderName = "Meta"
 	ProviderResponseProviderNameMinimax         ProviderResponseProviderName = "Minimax"
 	ProviderResponseProviderNameModelRun        ProviderResponseProviderName = "ModelRun"
 	ProviderResponseProviderNameMistral         ProviderResponseProviderName = "Mistral"
@@ -176,8 +176,6 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 	case "Lynn":
 		fallthrough
 	case "Mancer":
-		fallthrough
-	case "Meta":
 		fallthrough
 	case "Modal":
 		fallthrough
@@ -302,6 +300,8 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 	case "Mara":
 		fallthrough
 	case "Mancer 2":
+		fallthrough
+	case "Meta":
 		fallthrough
 	case "Minimax":
 		fallthrough
