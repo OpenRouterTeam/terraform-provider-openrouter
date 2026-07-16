@@ -42,7 +42,7 @@ terraform:
     httpHeaders: ""
     tlsSkipVerify: ""
   additionalResources: []
-  author: speakeasy
+  author: openrouter
   baseErrorName: OpenRouterError
   debugLogging: {}
   defaultErrorName: APIError
