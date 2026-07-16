@@ -1,0 +1,32 @@
+speakeasyVersion: 1.790.2
+sources:
+    OpenRouter API:
+        sourceNamespace: open-router-api
+        sourceRevisionDigest: sha256:744c49a2b7e0e21e3b2b3f6de42cca3dd98a5bfbdf2b596c64bf75ac0432b2ed
+        sourceBlobDigest: sha256:53fb48f48fa7007ce7d447b1b37ce9c2dc069921e3a49b74443ca85b48e026c4
+        tags:
+            - latest
+            - 1.0.0
+targets:
+    open-router:
+        source: OpenRouter API
+        sourceNamespace: open-router-api
+        sourceRevisionDigest: sha256:744c49a2b7e0e21e3b2b3f6de42cca3dd98a5bfbdf2b596c64bf75ac0432b2ed
+        sourceBlobDigest: sha256:53fb48f48fa7007ce7d447b1b37ce9c2dc069921e3a49b74443ca85b48e026c4
+workflow:
+    workflowVersion: 1.0.0
+    speakeasyVersion: latest
+    sources:
+        OpenRouter API:
+            inputs:
+                - location: https://raw.githubusercontent.com/OpenRouterTeam/typescript-sdk/refs/heads/main/.speakeasy/in.openapi.yaml
+            overlays:
+                - location: .speakeasy/speakeasy-modifications-overlay.yaml
+                - location: .speakeasy/terraform-entities-overlay.yaml
+            output: .speakeasy/out.openapi.yaml
+            registry:
+                location: registry.speakeasyapi.dev/openrouter/sdk/open-router-api
+    targets:
+        open-router:
+            target: terraform
+            source: OpenRouter API

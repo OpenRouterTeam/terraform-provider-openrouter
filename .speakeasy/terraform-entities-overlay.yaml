@@ -1,0 +1,303 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Terraform Entity Annotations
+  version: 0.0.1
+  description: >-
+    Maps OpenRouter management API operations to Terraform resources via
+    x-speakeasy-entity / x-speakeasy-entity-operation. Phase 1: ApiKey,
+    Guardrail, Workspace, ByokKey.
+actions:
+  # ---------------------------------------------------------------------------
+  # Cleanup: upstream spec carries a stray entity annotation on a streaming
+  # chunk schema; it must not materialize as a Terraform entity.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["ChatStreamChunk"]["x-speakeasy-entity"]
+    remove: true
+
+  # ---------------------------------------------------------------------------
+  # ApiKey  (POST /keys, GET/PATCH/DELETE /keys/{hash})
+  # Schemas are inline, so the entity annotation goes on the request body
+  # schema AND each response's `data` property (same entity name on both sides).
+  # ---------------------------------------------------------------------------
+  - target: $["paths"]["/keys"]["post"]
+    update:
+      x-speakeasy-entity-operation: ApiKey#create
+  - target: $["paths"]["/keys"]["post"]["requestBody"]["content"]["application/json"]["schema"]
+    update:
+      x-speakeasy-entity: ApiKey
+  - target: $["paths"]["/keys"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["properties"]["data"]
+    update:
+      x-speakeasy-entity: ApiKey
+  # The one-time secret returned alongside `data` on create; flattens into the
+  # resource and must be hidden from console output.
+  - target: $["paths"]["/keys"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["properties"]["key"]
+    update:
+      x-speakeasy-param-sensitive: true
+
+  - target: $["paths"]["/keys/{hash}"]["get"]
+    update:
+      x-speakeasy-entity-operation: ApiKey#read
+  - target: $["paths"]["/keys/{hash}"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["properties"]["data"]
+    update:
+      x-speakeasy-entity: ApiKey
+
+  # PATCH also runs as create step 2: `disabled` is only settable via PATCH,
+  # so a config with disabled=true must invoke update right after create.
+  - target: $["paths"]["/keys/{hash}"]["patch"]
+    update:
+      x-speakeasy-entity-operation:
+        - ApiKey#create#2
+        - ApiKey#update
+  - target: $["paths"]["/keys/{hash}"]["patch"]["requestBody"]["content"]["application/json"]["schema"]
+    update:
+      x-speakeasy-entity: ApiKey
+  - target: $["paths"]["/keys/{hash}"]["patch"]["responses"]["200"]["content"]["application/json"]["schema"]["properties"]["data"]
+    update:
+      x-speakeasy-entity: ApiKey
+
+  - target: $["paths"]["/keys/{hash}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: ApiKey#delete
+
+  # ---------------------------------------------------------------------------
+  # Guardrail  (POST /guardrails, GET/PATCH/DELETE /guardrails/{id})
+  # Component-based: annotate the Guardrail model plus its request schemas.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["Guardrail"]
+    update:
+      x-speakeasy-entity: Guardrail
+  - target: $["components"]["schemas"]["CreateGuardrailRequest"]
+    update:
+      x-speakeasy-entity: Guardrail
+  - target: $["components"]["schemas"]["UpdateGuardrailRequest"]
+    update:
+      x-speakeasy-entity: Guardrail
+
+  - target: $["paths"]["/guardrails"]["post"]
+    update:
+      x-speakeasy-entity-operation: Guardrail#create
+  - target: $["paths"]["/guardrails/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation: Guardrail#read
+  - target: $["paths"]["/guardrails/{id}"]["patch"]
+    update:
+      x-speakeasy-entity-operation: Guardrail#update
+  - target: $["paths"]["/guardrails/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: Guardrail#delete
+
+  # ---------------------------------------------------------------------------
+  # Workspace  (POST /workspaces, GET/PATCH/DELETE /workspaces/{id})
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["Workspace"]
+    update:
+      x-speakeasy-entity: Workspace
+  - target: $["components"]["schemas"]["CreateWorkspaceRequest"]
+    update:
+      x-speakeasy-entity: Workspace
+  - target: $["components"]["schemas"]["UpdateWorkspaceRequest"]
+    update:
+      x-speakeasy-entity: Workspace
+
+  - target: $["paths"]["/workspaces"]["post"]
+    update:
+      x-speakeasy-entity-operation: Workspace#create
+  - target: $["paths"]["/workspaces/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation: Workspace#read
+  - target: $["paths"]["/workspaces/{id}"]["patch"]
+    update:
+      x-speakeasy-entity-operation: Workspace#update
+  - target: $["paths"]["/workspaces/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: Workspace#delete
+
+  # ---------------------------------------------------------------------------
+  # ByokKey  (POST /byok, GET/PATCH/DELETE /byok/{id})
+  # PascalCase name (ByokKey -> openrouter_byok_key); the raw BYOKKey component
+  # name would produce broken underscore naming. The provider credential `key`
+  # is write-only at the API level (never echoed back) and must stay sensitive.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["BYOKKey"]
+    update:
+      x-speakeasy-entity: ByokKey
+  - target: $["components"]["schemas"]["CreateBYOKKeyRequest"]
+    update:
+      x-speakeasy-entity: ByokKey
+  - target: $["components"]["schemas"]["UpdateBYOKKeyRequest"]
+    update:
+      x-speakeasy-entity: ByokKey
+  - target: $["components"]["schemas"]["CreateBYOKKeyRequest"]["properties"]["key"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["UpdateBYOKKeyRequest"]["properties"]["key"]
+    update:
+      x-speakeasy-param-sensitive: true
+  # `provider` is a reserved Terraform root attribute name; expose it as
+  # `provider_slug` on the resource (API field remapped internally).
+  - target: $["components"]["schemas"]["BYOKKey"]["properties"]["provider"]
+    update:
+      x-speakeasy-name-override: provider_slug
+  - target: $["components"]["schemas"]["CreateBYOKKeyRequest"]["properties"]["provider"]
+    update:
+      x-speakeasy-name-override: provider_slug
+
+  - target: $["paths"]["/byok"]["post"]
+    update:
+      x-speakeasy-entity-operation: ByokKey#create
+  - target: $["paths"]["/byok/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation: ByokKey#read
+  - target: $["paths"]["/byok/{id}"]["patch"]
+    update:
+      x-speakeasy-entity-operation: ByokKey#update
+  - target: $["paths"]["/byok/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: ByokKey#delete
+
+  # ---------------------------------------------------------------------------
+  # Data sources (read-only). Data sources are inferred from Entity#read
+  # operations; plural PascalCase entities for list endpoints.
+  # ---------------------------------------------------------------------------
+  - target: $["paths"]["/keys"]["get"]
+    update:
+      x-speakeasy-entity-operation: ApiKeys#read
+  - target: $["paths"]["/guardrails"]["get"]
+    update:
+      x-speakeasy-entity-operation: Guardrails#read
+  - target: $["paths"]["/workspaces"]["get"]
+    update:
+      x-speakeasy-entity-operation: Workspaces#read
+  - target: $["paths"]["/byok"]["get"]
+    update:
+      x-speakeasy-entity-operation: ByokKeys#read
+  # `provider` query param would become a reserved root attribute on the
+  # byok_keys data source; remap to provider_slug.
+  - target: $["paths"]["/byok"]["get"]["parameters"][3]
+    update:
+      x-speakeasy-name-override: provider_slug
+  - target: $["paths"]["/guardrails/assignments/keys"]["get"]
+    update:
+      x-speakeasy-entity-operation: GuardrailKeyAssignments#read
+  - target: $["paths"]["/guardrails/assignments/members"]["get"]
+    update:
+      x-speakeasy-entity-operation: GuardrailMemberAssignments#read
+  - target: $["paths"]["/workspaces/{id}/members"]["get"]
+    update:
+      x-speakeasy-entity-operation: WorkspaceMembers#read
+  - target: $["paths"]["/workspaces/{id}/budgets"]["get"]
+    update:
+      x-speakeasy-entity-operation: WorkspaceBudgets#read
+  - target: $["paths"]["/models"]["get"]
+    update:
+      x-speakeasy-entity-operation: Models#read
+  - target: $["paths"]["/model/{author}/{slug}"]["get"]
+    update:
+      x-speakeasy-entity-operation: Model#read
+  - target: $["paths"]["/providers"]["get"]
+    update:
+      x-speakeasy-entity-operation: Providers#read
+  - target: $["paths"]["/presets"]["get"]
+    update:
+      x-speakeasy-entity-operation: Presets#read
+  - target: $["paths"]["/presets/{slug}"]["get"]
+    update:
+      x-speakeasy-entity-operation: Preset#read
+  - target: $["paths"]["/credits"]["get"]
+    update:
+      x-speakeasy-entity-operation: Credits#read
+
+  # ---------------------------------------------------------------------------
+  # ObservabilityDestination (EXPERIMENTAL: 17-variant discriminated oneOf;
+  # if generation fails on union reconciliation, remove this block only)
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["ObservabilityDestination"]
+    update:
+      x-speakeasy-entity: ObservabilityDestination
+  - target: $["components"]["schemas"]["CreateObservabilityDestinationRequest"]
+    update:
+      x-speakeasy-entity: ObservabilityDestination
+  - target: $["components"]["schemas"]["UpdateObservabilityDestinationRequest"]
+    update:
+      x-speakeasy-entity: ObservabilityDestination
+  - target: $["paths"]["/observability/destinations"]["post"]
+    update:
+      x-speakeasy-entity-operation: ObservabilityDestination#create
+  - target: $["paths"]["/observability/destinations/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation: ObservabilityDestination#read
+  - target: $["paths"]["/observability/destinations/{id}"]["patch"]
+    update:
+      x-speakeasy-entity-operation: ObservabilityDestination#update
+  - target: $["paths"]["/observability/destinations/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: ObservabilityDestination#delete
+  - target: $["paths"]["/observability/destinations"]["get"]
+    update:
+      x-speakeasy-entity-operation: ObservabilityDestinations#read
+
+  # Secret-bearing config fields across destination variants
+  - target: $["components"]["schemas"]["ObservabilityArizeDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityArizeDestination"]["properties"]["config"]["properties"]["spaceKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityBraintrustDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityClickhouseDestination"]["properties"]["config"]["properties"]["password"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityDatadogDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityGrafanaDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityLangfuseDestination"]["properties"]["config"]["properties"]["publicKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityLangfuseDestination"]["properties"]["config"]["properties"]["secretKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityLangsmithDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityNewrelicDestination"]["properties"]["config"]["properties"]["licenseKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityOpikDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityPosthogDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityRampDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityS3Destination"]["properties"]["config"]["properties"]["accessKeyId"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityS3Destination"]["properties"]["config"]["properties"]["secretAccessKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityS3Destination"]["properties"]["config"]["properties"]["sessionToken"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilitySentryDestination"]["properties"]["config"]["properties"]["dsn"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["token"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["ObservabilityWeaveDestination"]["properties"]["config"]["properties"]["apiKey"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["CreateObservabilityDestinationRequest"]["properties"]["config"]
+    update:
+      x-speakeasy-param-sensitive: true
+  - target: $["components"]["schemas"]["UpdateObservabilityDestinationRequest"]["properties"]["config"]
+    update:
+      x-speakeasy-param-sensitive: true

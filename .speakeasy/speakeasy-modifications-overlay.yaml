@@ -1,0 +1,479 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Speakeasy Modifications
+  version: 0.0.3
+  x-speakeasy-metadata:
+    after: ""
+    before: ""
+    type: speakeasy-modifications
+actions:
+  - target: $["paths"]["/guardrails/assignments/keys"]["get"]
+    update:
+      x-speakeasy-name-override: listApiKeyAssignments
+    x-speakeasy-metadata:
+      after: sdk.guardrails.listApiKeyAssignments()
+      before: sdk.Guardrails.listKeyAssignments()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/observability/destinations"]["post"]
+    update:
+      x-speakeasy-name-override: createDestination
+    x-speakeasy-metadata:
+      after: sdk.observability.createDestination()
+      before: sdk.Observability.create()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/chat/completions"]["post"]
+    update:
+      x-speakeasy-group: chats
+      x-speakeasy-name-override: createCompletion
+    x-speakeasy-metadata:
+      after: sdk.chats.createCompletion()
+      before: sdk.chat.send()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/keys/{hash}"]["delete"]
+    update:
+      x-speakeasy-group: apiKeys
+    x-speakeasy-metadata:
+      after: sdk.apiKeys.delete()
+      before: sdk.API Keys.delete()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/generation"]["get"]
+    update:
+      x-speakeasy-name-override: get
+    x-speakeasy-metadata:
+      after: sdk.generations.get()
+      before: sdk.Generations.getGeneration()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/byok"]["get"]
+    update:
+      x-speakeasy-group: byok
+    x-speakeasy-metadata:
+      after: sdk.byok.list()
+      before: sdk.BYOK.list()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/endpoints/zdr"]["get"]
+    update:
+      x-speakeasy-name-override: listZdr
+    x-speakeasy-metadata:
+      after: sdk.endpoints.listZdr()
+      before: sdk.Endpoints.listZdrEndpoints()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/audio/speech"]["post"]
+    update:
+      x-speakeasy-group: tts
+    x-speakeasy-metadata:
+      after: sdk.tts.createSpeech()
+      before: sdk.TTS.createSpeech()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/presets/{slug}/messages"]["post"]
+    update:
+      x-speakeasy-name-override: createMessage
+    x-speakeasy-metadata:
+      after: sdk.presets.createMessage()
+      before: sdk.Presets.createPresetsMessages()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/workspaces/{id}/members/add"]["post"]
+    update:
+      x-speakeasy-name-override: addMembers
+    x-speakeasy-metadata:
+      after: sdk.workspaces.addMembers()
+      before: sdk.Workspaces.bulkAddMembers()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/files/{file_id}/content"]["get"]
+    update:
+      x-speakeasy-name-override: downloadContent
+    x-speakeasy-metadata:
+      after: sdk.files.downloadContent()
+      before: sdk.Files.download()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/observability/destinations/{id}"]["patch"]
+    update:
+      x-speakeasy-name-override: updateDestination
+    x-speakeasy-metadata:
+      after: sdk.observability.updateDestination()
+      before: sdk.Observability.update()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/key"]["get"]
+    update:
+      x-speakeasy-group: apiKeys
+      x-speakeasy-name-override: getCurrent
+    x-speakeasy-metadata:
+      after: sdk.apiKeys.getCurrent()
+      before: sdk.API Keys.getCurrentKeyMetadata()
+      created_at: 1784213797351
+      reviewed_at: 1784213827357
+      type: method-name
+  - target: $["paths"]["/benchmarks"]["get"]
+    update:
+      x-speakeasy-name-override: list
+    x-speakeasy-metadata:
+      after: sdk.benchmarks.list()
+      before: sdk.Benchmarks.getBenchmarks()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/audio/transcriptions"]["post"]
+    update:
+      x-speakeasy-group: stt
+    x-speakeasy-metadata:
+      after: sdk.stt.createTranscription()
+      before: sdk.STT.createTranscription()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/byok/{id}"]["get"]
+    update:
+      x-speakeasy-group: byok
+    x-speakeasy-metadata:
+      after: sdk.byok.get()
+      before: sdk.BYOK.get()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/keys"]["get"]
+    update:
+      x-speakeasy-group: apiKeys
+    x-speakeasy-metadata:
+      after: sdk.apiKeys.list()
+      before: sdk.API Keys.list()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/observability/destinations/{id}"]["get"]
+    update:
+      x-speakeasy-name-override: getDestination
+    x-speakeasy-metadata:
+      after: sdk.observability.getDestination()
+      before: sdk.Observability.get()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/videos"]["post"]
+    update:
+      x-speakeasy-group: videoGeneration
+    x-speakeasy-metadata:
+      after: sdk.videoGeneration.generate()
+      before: sdk.Video Generation.generate()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/generation/content"]["get"]
+    update:
+      x-speakeasy-name-override: listContent
+    x-speakeasy-metadata:
+      after: sdk.generations.listContent()
+      before: sdk.Generations.listGenerationContent()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/classifications/task"]["get"]
+    update:
+      x-speakeasy-name-override: getTask
+    x-speakeasy-metadata:
+      after: sdk.classifications.getTask()
+      before: sdk.Classifications.getTaskClassifications()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/videos/{jobId}/content"]["get"]
+    update:
+      x-speakeasy-group: videoGeneration
+      x-speakeasy-name-override: downloadContent
+    x-speakeasy-metadata:
+      after: sdk.videoGeneration.downloadContent()
+      before: sdk.Video Generation.getVideoContent()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/byok/{id}"]["patch"]
+    update:
+      x-speakeasy-group: byok
+    x-speakeasy-metadata:
+      after: sdk.byok.update()
+      before: sdk.BYOK.update()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/keys/{hash}"]["get"]
+    update:
+      x-speakeasy-group: apiKeys
+      x-speakeasy-name-override: getByHash
+    x-speakeasy-metadata:
+      after: sdk.apiKeys.getByHash()
+      before: sdk.API Keys.get()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/responses"]["post"]
+    update:
+      x-speakeasy-group: responses
+    x-speakeasy-metadata:
+      after: sdk.responses.send()
+      before: sdk.beta.responses.send()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/byok/{id}"]["delete"]
+    update:
+      x-speakeasy-group: byok
+    x-speakeasy-metadata:
+      after: sdk.byok.delete()
+      before: sdk.BYOK.delete()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/models/{author}/{slug}/endpoints"]["get"]
+    update:
+      x-speakeasy-name-override: listForModel
+    x-speakeasy-metadata:
+      after: sdk.endpoints.listForModel()
+      before: sdk.Endpoints.list()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/presets/{slug}/responses"]["post"]
+    update:
+      x-speakeasy-name-override: createResponse
+    x-speakeasy-metadata:
+      after: sdk.presets.createResponse()
+      before: sdk.Presets.createPresetsResponses()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/keys"]["post"]
+    update:
+      x-speakeasy-group: apiKeys
+    x-speakeasy-metadata:
+      after: sdk.apiKeys.create()
+      before: sdk.API Keys.create()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/messages"]["post"]
+    update:
+      x-speakeasy-group: anthropicMessages
+    x-speakeasy-metadata:
+      after: sdk.anthropicMessages.create()
+      before: sdk.Anthropic Messages.create()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/images/models/{author}/{slug}/endpoints"]["get"]
+    update:
+      x-speakeasy-name-override: getModelEndpoints
+    x-speakeasy-metadata:
+      after: sdk.images.getModelEndpoints()
+      before: sdk.Images.listModelEndpoints()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/rerank"]["post"]
+    update:
+      x-speakeasy-name-override: submit
+    x-speakeasy-metadata:
+      after: sdk.rerank.submit()
+      before: sdk.Rerank.rerank()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/observability/destinations/{id}"]["delete"]
+    update:
+      x-speakeasy-name-override: deleteDestination
+    x-speakeasy-metadata:
+      after: sdk.observability.deleteDestination()
+      before: sdk.Observability.delete()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/observability/destinations"]["get"]
+    update:
+      x-speakeasy-name-override: listDestinations
+    x-speakeasy-metadata:
+      after: sdk.observability.listDestinations()
+      before: sdk.Observability.list()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/guardrails/{id}/assignments/members"]["get"]
+    update:
+      x-speakeasy-name-override: listMemberAssignmentsByGuardrail
+    x-speakeasy-metadata:
+      after: sdk.guardrails.listMemberAssignmentsByGuardrail()
+      before: sdk.Guardrails.listGuardrailMemberAssignments()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/videos/models"]["get"]
+    update:
+      x-speakeasy-group: videos
+      x-speakeasy-name-override: listModels
+    x-speakeasy-metadata:
+      after: sdk.videos.listModels()
+      before: sdk.Video Generation.listVideosModels()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/byok"]["post"]
+    update:
+      x-speakeasy-group: byok
+    x-speakeasy-metadata:
+      after: sdk.byok.create()
+      before: sdk.BYOK.create()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/analytics/meta"]["get"]
+    update:
+      x-speakeasy-group: analytics
+      x-speakeasy-name-override: getMeta
+    x-speakeasy-metadata:
+      after: sdk.analytics.getMeta()
+      before: sdk.beta.Analytics.getAnalyticsMeta()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/auth/keys/code"]["post"]
+    update:
+      x-speakeasy-group: oauth
+    x-speakeasy-metadata:
+      after: sdk.oauth.createAuthCode()
+      before: sdk.OAuth.createAuthCode()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/credits"]["get"]
+    update:
+      x-speakeasy-name-override: get
+    x-speakeasy-metadata:
+      after: sdk.credits.get()
+      before: sdk.Credits.getCredits()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/analytics/query"]["post"]
+    update:
+      x-speakeasy-group: analytics
+      x-speakeasy-name-override: query
+    x-speakeasy-metadata:
+      after: sdk.analytics.query()
+      before: sdk.beta.Analytics.queryAnalytics()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/guardrails/{id}/assignments/keys"]["get"]
+    update:
+      x-speakeasy-name-override: listKeyAssignments
+    x-speakeasy-metadata:
+      after: sdk.guardrails.listKeyAssignments()
+      before: sdk.Guardrails.listGuardrailKeyAssignments()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/keys/{hash}"]["patch"]
+    update:
+      x-speakeasy-group: apiKeys
+    x-speakeasy-metadata:
+      after: sdk.apiKeys.update()
+      before: sdk.API Keys.update()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/videos/{jobId}"]["get"]
+    update:
+      x-speakeasy-group: videos
+      x-speakeasy-name-override: getGenerationStatus
+    x-speakeasy-metadata:
+      after: sdk.videos.getGenerationStatus()
+      before: sdk.Video Generation.getGeneration()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/presets/{slug}/chat/completions"]["post"]
+    update:
+      x-speakeasy-name-override: createChatCompletion
+    x-speakeasy-metadata:
+      after: sdk.presets.createChatCompletion()
+      before: sdk.Presets.createPresetsChatCompletions()
+      created_at: 1784213797351
+      reviewed_at: 1784213827358
+      type: method-name
+  - target: $["paths"]["/auth/keys"]["post"]
+    update:
+      x-speakeasy-name-override: exchangeAuthCodeForApiKey
+    x-speakeasy-metadata:
+      after: sdk.oAuth.exchangeAuthCodeForApiKey()
+      before: sdk.OAuth.exchangeAuthCodeForAPIKey()
+      created_at: 1784214026716
+      type: method-name
+  - target: $["paths"]["/datasets/rankings-daily"]["get"]
+    update:
+      x-speakeasy-name-override: listRankingsDaily
+    x-speakeasy-metadata:
+      after: sdk.datasets.listRankingsDaily()
+      before: sdk.Datasets.getRankingsDaily()
+      created_at: 1784214026716
+      type: method-name
+  - target: $["paths"]["/guardrails/{id}/assignments/keys/remove"]["post"]
+    update:
+      x-speakeasy-name-override: bulkUnassignKeysFromGuardrail
+    x-speakeasy-metadata:
+      after: sdk.guardrails.bulkUnassignKeysFromGuardrail()
+      before: sdk.Guardrails.bulkUnassignKeys()
+      created_at: 1784214026716
+      type: method-name
+  - target: $["paths"]["/model/{author}/{slug}"]["get"]
+    update:
+      x-speakeasy-name-override: getModel
+    x-speakeasy-metadata:
+      after: sdk.models.getModel()
+      before: sdk.Models.get()
+      created_at: 1784214026716
+      type: method-name
+  - target: $["paths"]["/guardrails/{id}"]["get"]
+    update:
+      x-speakeasy-name-override: getGuardrail
+    x-speakeasy-metadata:
+      after: sdk.guardrails.getGuardrail()
+      before: sdk.Guardrails.get()
+      created_at: 1784214026716
+      type: method-name
+  - target: $["paths"]["/files/{file_id}"]["get"]
+    update:
+      x-speakeasy-name-override: getMetadata
+    x-speakeasy-metadata:
+      after: sdk.files.getMetadata()
+      before: sdk.Files.retrieve()
+      created_at: 1784214026716
+      type: method-name
+  - target: $["paths"]["/presets/{slug}"]["get"]
+    update:
+      x-speakeasy-name-override: getPreset
+    x-speakeasy-metadata:
+      after: sdk.presets.getPreset()
+      before: sdk.Presets.get()
+      created_at: 1784214026716
+      type: method-name
