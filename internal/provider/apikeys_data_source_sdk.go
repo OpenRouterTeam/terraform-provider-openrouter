@@ -6,9 +6,9 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/provider/typeconvert"
-	tfTypes "github.com/speakeasy/terraform-provider-openrouter/internal/provider/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/openrouter/terraform-provider-openrouter/internal/provider/typeconvert"
+	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
 )
 
 func (r *APIKeysDataSourceModel) RefreshFromOperationsListResponseBody(ctx context.Context, resp *operations.ListResponseBody) diag.Diagnostics {

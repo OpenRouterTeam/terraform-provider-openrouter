@@ -6,8 +6,8 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/provider/typeconvert"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/openrouter/terraform-provider-openrouter/internal/provider/typeconvert"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
 )
 
 func (r *APIKeyDataSourceModel) RefreshFromOperationsGetKeyData(ctx context.Context, resp *operations.GetKeyData) diag.Diagnostics {

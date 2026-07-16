@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	tfTypes "github.com/speakeasy/terraform-provider-openrouter/internal/provider/types"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/operations"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk/models/shared"
+	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 )
 
 func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabilityDestinationResponse(ctx context.Context, resp *shared.CreateObservabilityDestinationResponse) diag.Diagnostics {

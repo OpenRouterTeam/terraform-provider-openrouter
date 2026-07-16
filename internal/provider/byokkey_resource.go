@@ -15,8 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	speakeasy_stringplanmodifier "github.com/speakeasy/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/sdk"
+	speakeasy_stringplanmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
+	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.

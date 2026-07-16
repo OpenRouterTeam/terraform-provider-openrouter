@@ -8,7 +8,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/speakeasy/terraform-provider-openrouter/internal/provider"
+	"github.com/openrouter/terraform-provider-openrouter/internal/provider"
 )
 
 // Run "go generate" to generate the docs for the registry/website on each regeneration of the provider.
@@ -30,7 +30,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/speakeasy/openrouter",
+		Address: "registry.terraform.io/openrouter/openrouter",
 		Debug:   debug,
 	}
 
