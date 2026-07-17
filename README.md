@@ -45,8 +45,8 @@ To install this provider, copy and paste this code into your Terraform configura
 terraform {
   required_providers {
     openrouter = {
-      source  = "speakeasy/openrouter"
-      version = "0.0.8"
+      source  = "openrouter/openrouter"
+      version = "0.0.9"
     }
   }
 }

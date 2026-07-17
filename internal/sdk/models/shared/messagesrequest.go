@@ -707,6 +707,7 @@ func (m *Metadata) GetUserID() *string {
 type MessagesRequestPluginType string
 
 const (
+	MessagesRequestPluginTypeAutoBetaRouter     MessagesRequestPluginType = "auto-beta-router"
 	MessagesRequestPluginTypeAutoRouter         MessagesRequestPluginType = "auto-router"
 	MessagesRequestPluginTypeContextCompression MessagesRequestPluginType = "context-compression"
 	MessagesRequestPluginTypeFileParser         MessagesRequestPluginType = "file-parser"
@@ -720,6 +721,7 @@ const (
 
 type MessagesRequestPlugin struct {
 	AutoRouterPlugin         *AutoRouterPlugin         `queryParam:"inline" union:"member"`
+	AutoBetaRouterPlugin     *AutoBetaRouterPlugin     `queryParam:"inline" union:"member"`
 	ModerationPlugin         *ModerationPlugin         `queryParam:"inline" union:"member"`
 	WebSearchPlugin          *WebSearchPlugin          `queryParam:"inline" union:"member"`
 	WebFetchPlugin           *WebFetchPlugin           `queryParam:"inline" union:"member"`
@@ -730,6 +732,15 @@ type MessagesRequestPlugin struct {
 	FusionPlugin             *FusionPlugin             `queryParam:"inline" union:"member"`
 
 	Type MessagesRequestPluginType
+}
+
+func CreateMessagesRequestPluginAutoBetaRouter(autoBetaRouter AutoBetaRouterPlugin) MessagesRequestPlugin {
+	typ := MessagesRequestPluginTypeAutoBetaRouter
+
+	return MessagesRequestPlugin{
+		AutoBetaRouterPlugin: &autoBetaRouter,
+		Type:                 typ,
+	}
 }
 
 func CreateMessagesRequestPluginAutoRouter(autoRouter AutoRouterPlugin) MessagesRequestPlugin {
@@ -825,6 +836,15 @@ func (u *MessagesRequestPlugin) UnmarshalJSON(data []byte) error {
 	}
 
 	switch dis.ID {
+	case "auto-beta-router":
+		autoBetaRouterPlugin := new(AutoBetaRouterPlugin)
+		if err := utils.UnmarshalJSON(data, &autoBetaRouterPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == auto-beta-router) type AutoBetaRouterPlugin within MessagesRequestPlugin: %w", string(data), err)
+		}
+
+		u.AutoBetaRouterPlugin = autoBetaRouterPlugin
+		u.Type = MessagesRequestPluginTypeAutoBetaRouter
+		return nil
 	case "auto-router":
 		autoRouterPlugin := new(AutoRouterPlugin)
 		if err := utils.UnmarshalJSON(data, &autoRouterPlugin, "", true, nil); err != nil {
@@ -914,6 +934,10 @@ func (u *MessagesRequestPlugin) UnmarshalJSON(data []byte) error {
 func (u MessagesRequestPlugin) MarshalJSON() ([]byte, error) {
 	if u.AutoRouterPlugin != nil {
 		return utils.MarshalJSON(u.AutoRouterPlugin, "", true)
+	}
+
+	if u.AutoBetaRouterPlugin != nil {
+		return utils.MarshalJSON(u.AutoBetaRouterPlugin, "", true)
 	}
 
 	if u.ModerationPlugin != nil {
