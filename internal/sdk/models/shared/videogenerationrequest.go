@@ -98,6 +98,7 @@ type VideoGenerationRequestOptions struct {
 	FakeProvider        map[string]any `json:"fake-provider,omitzero"`
 	Featherless         map[string]any `json:"featherless,omitzero"`
 	Fireworks           map[string]any `json:"fireworks,omitzero"`
+	FishAudio           map[string]any `json:"fish-audio,omitzero"`
 	Friendli            map[string]any `json:"friendli,omitzero"`
 	Gmicloud            map[string]any `json:"gmicloud,omitzero"`
 	GoogleAiStudio      map[string]any `json:"google-ai-studio,omitzero"`
@@ -473,6 +474,13 @@ func (v *VideoGenerationRequestOptions) GetFireworks() map[string]any {
 		return nil
 	}
 	return v.Fireworks
+}
+
+func (v *VideoGenerationRequestOptions) GetFishAudio() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.FishAudio
 }
 
 func (v *VideoGenerationRequestOptions) GetFriendli() map[string]any {

@@ -572,7 +572,7 @@ func (e *Direction) UnmarshalJSON(data []byte) error {
 
 type OrderBy struct {
 	Direction Direction `json:"direction"`
-	// Field to order by
+	// Field to order by: a metric included in `metrics` (or "request_count", which may be ordered by without being requested), a requested dimension, or "date".
 	Field string `json:"field"`
 }
 

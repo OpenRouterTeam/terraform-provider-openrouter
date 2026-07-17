@@ -43,6 +43,7 @@ const (
 	BYOKProviderSlugDigitalocean    BYOKProviderSlug = "digitalocean"
 	BYOKProviderSlugFeatherless     BYOKProviderSlug = "featherless"
 	BYOKProviderSlugFireworks       BYOKProviderSlug = "fireworks"
+	BYOKProviderSlugFishAudio       BYOKProviderSlug = "fish-audio"
 	BYOKProviderSlugFriendli        BYOKProviderSlug = "friendli"
 	BYOKProviderSlugGmicloud        BYOKProviderSlug = "gmicloud"
 	BYOKProviderSlugGoogleAiStudio  BYOKProviderSlug = "google-ai-studio"
@@ -178,6 +179,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "featherless":
 		fallthrough
 	case "fireworks":
+		fallthrough
+	case "fish-audio":
 		fallthrough
 	case "friendli":
 		fallthrough
