@@ -1,0 +1,69 @@
+name: Acceptance Tests
+
+# Live acceptance tests against a dedicated OpenRouter TEST organization.
+#
+# Safety model:
+# - Never triggered by pull_request: the management key is exposed only to
+#   schedule/dispatch runs of code already on main (or a branch a maintainer
+#   explicitly dispatches).
+# - Secret lives in the `acceptance-testing` environment as
+#   OPENROUTER_MANAGEMENT_KEY. It MUST be a Management API key
+#   (sk-or-mgmt-...) issued from a dedicated test org with $0 credits:
+#   management keys cannot spend on inference, and a zero-credit org makes
+#   any inference key minted during tests unusable.
+# - Concurrency group serializes runs; parallel runs mutating one account
+#   produce flaky state and cap collisions (5 destinations per type).
+# - Tests namespace resources as tf-acc-<run_id>-* and a TestMain sweeper
+#   deletes tf-acc-* leftovers from crashed runs before each suite.
+# - openrouter_byok_key is excluded: it needs a real provider credential we
+#   refuse to store in CI.
+
+on:
+  schedule:
+    - cron: 30 1 * * * # nightly, after the 00:00 generation cron
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tf-acceptance
+  cancel-in-progress: false
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    environment: acceptance-testing
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Run acceptance tests
+        env:
+          TF_ACC: "1"
+          OPENROUTER_MANAGEMENT_KEY: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
+        run: go test ./internal/acceptance/... -v -timeout 30m
+
+  # Unit-mode smoke on the same schedule: proves the module still builds and
+  # that acceptance tests skip cleanly without TF_ACC (the PR-safe path).
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Build
+        run: go build ./...
+      - name: Test (acceptance skipped without TF_ACC)
+        run: go test ./internal/acceptance/... -v -timeout 5m

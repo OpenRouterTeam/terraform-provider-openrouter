@@ -34,7 +34,8 @@ terraform:
   version: 0.0.11
   additionalActions: []
   additionalDataSources: []
-  additionalDependencies: {}
+  additionalDependencies:
+    github.com/hashicorp/terraform-plugin-testing: v1.15.0
   additionalEphemeralResources: []
   additionalFunctions: []
   additionalListResources: []
