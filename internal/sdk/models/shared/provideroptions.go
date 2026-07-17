@@ -48,6 +48,7 @@ type ProviderOptions struct {
 	FakeProvider        map[string]any `json:"fake-provider,omitzero"`
 	Featherless         map[string]any `json:"featherless,omitzero"`
 	Fireworks           map[string]any `json:"fireworks,omitzero"`
+	FishAudio           map[string]any `json:"fish-audio,omitzero"`
 	Friendli            map[string]any `json:"friendli,omitzero"`
 	Gmicloud            map[string]any `json:"gmicloud,omitzero"`
 	GoogleAiStudio      map[string]any `json:"google-ai-studio,omitzero"`
@@ -423,6 +424,13 @@ func (p *ProviderOptions) GetFireworks() map[string]any {
 		return nil
 	}
 	return p.Fireworks
+}
+
+func (p *ProviderOptions) GetFishAudio() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.FishAudio
 }
 
 func (p *ProviderOptions) GetFriendli() map[string]any {

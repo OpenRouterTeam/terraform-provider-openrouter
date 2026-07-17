@@ -43,6 +43,7 @@ const (
 	ProviderNameDigitalOcean    ProviderName = "DigitalOcean"
 	ProviderNameFeatherless     ProviderName = "Featherless"
 	ProviderNameFireworks       ProviderName = "Fireworks"
+	ProviderNameFishAudio       ProviderName = "Fish Audio"
 	ProviderNameFriendli        ProviderName = "Friendli"
 	ProviderNameGmiCloud        ProviderName = "GMICloud"
 	ProviderNameGoogle          ProviderName = "Google"
@@ -182,6 +183,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "Featherless":
 		fallthrough
 	case "Fireworks":
+		fallthrough
+	case "Fish Audio":
 		fallthrough
 	case "Friendli":
 		fallthrough
