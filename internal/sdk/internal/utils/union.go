@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 )
 
 // UnionCandidate represents a candidate type during union deserialization

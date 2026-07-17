@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // StopServerToolsWhenHasToolCall - Stop after a tool with this name has been called.

@@ -5,6 +5,13 @@ package provider
 import (
 	"context"
 	"fmt"
+	speakeasy_boolplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
+	speakeasy_float64planmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/float64planmodifier"
+	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
+	speakeasy_planmodifierutils "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/utils"
+	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
@@ -20,13 +27,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	speakeasy_boolplanmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
-	speakeasy_float64planmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/float64planmodifier"
-	speakeasy_stringplanmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
-	speakeasy_planmodifierutils "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/utils"
-	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
-	"github.com/openrouter/terraform-provider-openrouter/internal/validators"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.

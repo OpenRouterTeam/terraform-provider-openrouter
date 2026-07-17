@@ -15,8 +15,8 @@ OpenRouter API: OpenAI-compatible API with additional OpenRouter features
 terraform {
   required_providers {
     openrouter = {
-      source  = "openrouter/openrouter"
-      version = "0.0.12"
+      source  = "OpenRouterTeam/openrouter"
+      version = "0.0.13"
     }
   }
 }

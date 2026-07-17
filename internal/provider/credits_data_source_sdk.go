@@ -4,10 +4,10 @@ package provider
 
 import (
 	"context"
+	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
 )
 
 func (r *CreditsDataSourceModel) RefreshFromOperationsGetCreditsResponseBody(ctx context.Context, resp *operations.GetCreditsResponseBody) diag.Diagnostics {

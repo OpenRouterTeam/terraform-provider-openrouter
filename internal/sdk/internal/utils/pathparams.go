@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/optionalnullable"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/optionalnullable"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 )
 
 func GenerateURL(_ context.Context, serverURL, path string, pathParams interface{}, globals interface{}) (string, error) {

@@ -4,9 +4,9 @@ package validators
 
 import (
 	"context"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/types"
 )
 
 var _ validator.String = DateValidator{}

@@ -5,7 +5,7 @@ package shared
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // CreateObservabilityDestinationRequestType - The destination type. Only stable destination types are accepted.

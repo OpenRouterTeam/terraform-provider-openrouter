@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // STTSegment - A timestamped transcript segment, returned when response_format is verbose_json

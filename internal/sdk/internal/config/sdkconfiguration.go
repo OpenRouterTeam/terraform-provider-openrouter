@@ -4,7 +4,7 @@ package config
 
 import (
 	"context"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/retry"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/retry"
 	"net/http"
 	"time"
 )

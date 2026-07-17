@@ -4,10 +4,10 @@ package provider
 
 import (
 	"context"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/typeconvert"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/openrouter/terraform-provider-openrouter/internal/provider/typeconvert"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
 )
 
 func (r *APIKeyDataSourceModel) RefreshFromOperationsGetKeyData(ctx context.Context, resp *operations.GetKeyData) diag.Diagnostics {

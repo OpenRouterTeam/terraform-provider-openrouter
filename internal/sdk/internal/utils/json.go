@@ -14,7 +14,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 )
 
 func MarshalJSON(v interface{}, tag reflect.StructTag, topLevel bool) ([]byte, error) {

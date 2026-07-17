@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // MessagesFallbackParam - Fallback model to try when the primary model fails or refuses. Only the `model` field is supported; per-attempt overrides are rejected.

@@ -31,7 +31,7 @@ generation:
     generateNewTests: true
     skipResponseBodyAssertions: false
 terraform:
-  version: 0.0.12
+  version: 0.0.13
   additionalActions: []
   additionalDataSources: []
   additionalDependencies:
@@ -43,7 +43,7 @@ terraform:
     httpHeaders: ""
     tlsSkipVerify: ""
   additionalResources: []
-  author: openrouter
+  author: OpenRouterTeam
   baseErrorName: OpenRouterError
   debugLogging: {}
   defaultErrorName: APIError

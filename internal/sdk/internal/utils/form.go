@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/optionalnullable"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/optionalnullable"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 )
 
 func populateForm(paramName string, explode bool, objType reflect.Type, objValue reflect.Value, delimiter string, defaultValue *string, allowEmptyValue map[string]struct{}, getFieldName func(reflect.StructField) string) url.Values {

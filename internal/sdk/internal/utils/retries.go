@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/retry"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/retry"
 	"io"
 	"math"
 	"math/rand"

@@ -5,6 +5,11 @@ package provider
 import (
 	"context"
 	"fmt"
+	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
+	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
+	speakeasy_objectvalidators "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators/objectvalidators"
+	speakeasy_stringvalidators "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators/stringvalidators"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -15,11 +20,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	speakeasy_stringplanmodifier "github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
-	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
-	speakeasy_objectvalidators "github.com/openrouter/terraform-provider-openrouter/internal/validators/objectvalidators"
-	speakeasy_stringvalidators "github.com/openrouter/terraform-provider-openrouter/internal/validators/stringvalidators"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.

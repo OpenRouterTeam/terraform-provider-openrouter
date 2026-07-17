@@ -45,8 +45,8 @@ To install this provider, copy and paste this code into your Terraform configura
 terraform {
   required_providers {
     openrouter = {
-      source  = "openrouter/openrouter"
-      version = "0.0.11"
+      source  = "OpenRouterTeam/openrouter"
+      version = "0.0.13"
     }
   }
 }
@@ -135,7 +135,7 @@ Terraform searches for the `.terraformrc` file in your home directory and applie
 provider_installation {
 
   dev_overrides {
-      "registry.terraform.io/openrouter/openrouter" = "<PATH>"
+      "registry.terraform.io/OpenRouterTeam/openrouter" = "<PATH>"
   }
 
   # For all other providers, install them directly from their origin provider

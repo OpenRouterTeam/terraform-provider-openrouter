@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // ModelBenchmarks - Third-party benchmark rankings for this model. Omitted when no benchmark data is available.

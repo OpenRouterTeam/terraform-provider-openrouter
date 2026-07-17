@@ -5,6 +5,8 @@ package provider
 import (
 	"context"
 	"fmt"
+	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -12,8 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.

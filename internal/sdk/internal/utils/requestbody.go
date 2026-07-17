@@ -15,7 +15,7 @@ import (
 	"reflect"
 	"regexp"
 
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/optionalnullable"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/optionalnullable"
 )
 
 const (

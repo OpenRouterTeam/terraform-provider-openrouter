@@ -4,7 +4,7 @@ package listplanmodifier
 
 import (
 	"context"
-	"github.com/openrouter/terraform-provider-openrouter/internal/planmodifiers/utils"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 )

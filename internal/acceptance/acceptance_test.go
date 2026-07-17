@@ -25,7 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/openrouter/terraform-provider-openrouter/internal/provider"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider"
 )
 
 // runPrefix namespaces every resource created by this test run so the

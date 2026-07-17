@@ -4,6 +4,8 @@ package provider
 
 import (
 	"context"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
@@ -13,8 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 	"net/http"
 )
 

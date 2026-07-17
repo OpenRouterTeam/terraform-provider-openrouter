@@ -12,8 +12,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/optionalnullable"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/optionalnullable"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 )
 
 func PopulateQueryParams(_ context.Context, req *http.Request, queryParams interface{}, globals interface{}, allowEmptyValue map[string]struct{}) error {

@@ -4,11 +4,11 @@ package provider
 
 import (
 	"context"
+	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	tfTypes "github.com/openrouter/terraform-provider-openrouter/internal/provider/types"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/operations"
-	"github.com/openrouter/terraform-provider-openrouter/internal/sdk/models/shared"
 )
 
 func (r *PresetsDataSourceModel) RefreshFromSharedListPresetsResponse(ctx context.Context, resp *shared.ListPresetsResponse) diag.Diagnostics {
