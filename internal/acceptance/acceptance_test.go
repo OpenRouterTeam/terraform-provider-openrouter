@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/openrouter/terraform-provider-openrouter/internal/provider"
 )
@@ -101,7 +102,17 @@ resource "openrouter_api_key" "test" {
 				ResourceName:      "openrouter_api_key.test",
 				ImportState:       true,
 				ImportStateVerify: true,
-				// Never returned by GET; only present from the create response.
+				// The resource imports by hash (no id attribute), so the
+				// harness default (id) cannot resolve the import ID.
+				ImportStateIdFunc: func(s *terraform.State) (string, error) {
+					rs, ok := s.RootModule().Resources["openrouter_api_key.test"]
+					if !ok {
+						return "", fmt.Errorf("resource not found in state")
+					}
+					return rs.Primary.Attributes["hash"], nil
+				},
+				// key: never returned by GET; only present from the create
+				// response.
 				ImportStateVerifyIgnore: []string{"key"},
 			},
 			{
@@ -133,9 +144,10 @@ func TestAccGuardrail_Lifecycle(t *testing.T) {
 			{
 				Config: providerConfig() + fmt.Sprintf(`
 resource "openrouter_guardrail" "test" {
-  name        = %q
-  description = "acceptance test guardrail"
-  limit_usd   = 1
+  name           = %q
+  description    = "acceptance test guardrail"
+  limit_usd      = 1
+  reset_interval = "monthly"
 }
 `, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -151,9 +163,10 @@ resource "openrouter_guardrail" "test" {
 			{
 				Config: providerConfig() + fmt.Sprintf(`
 resource "openrouter_guardrail" "test" {
-  name        = %q
-  description = "acceptance test guardrail (updated)"
-  limit_usd   = 2
+  name           = %q
+  description    = "acceptance test guardrail (updated)"
+  limit_usd      = 2
+  reset_interval = "monthly"
 }
 `, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
