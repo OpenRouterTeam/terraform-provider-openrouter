@@ -5,14 +5,14 @@ management:
   docVersion: 1.0.0
   speakeasyVersion: 1.790.2
   generationVersion: 2.918.3
-  releaseVersion: 0.0.11
-  configChecksum: 0d3fbff8077e8ddcd459ba8046846a2b
+  releaseVersion: 0.0.12
+  configChecksum: 1e660b3f703b0d360b4f645ac22635fc
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 1e1c4b0b-e3cd-4848-b7b5-0e58fbde277e
-  pristine_commit_hash: 64c6b51d07b0cdbae0b5a7b4172a3b4b3f4a5e7b
-  pristine_tree_hash: f6b3593c2d748f6ab768c5b1c6fa2359423c46f2
+  generation_id: 1377700e-2142-4f39-8735-c530920846ec
+  pristine_commit_hash: 6e8db90f107d928990852ec31849f5b08accb4d7
+  pristine_tree_hash: 52cac366b7e5a65e77b5e8a7d2979b021e37354f
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:bf13635fe5f34bb5d4647535be7e4c8531d6c8e3
-    pristine_git_object: 151136c7d143883614b7612083a656bc4f991995
+    last_write_checksum: sha1:c7c3a3d6436294db34eab6e564fdf560ff73dc51
+    pristine_git_object: 84e6fd581f2774a287032b14adb0ba82112fdb5c
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -187,8 +187,8 @@ trackedFiles:
     pristine_git_object: aa3188be8244ec0f60c7429756249358424bae75
   go.mod:
     id: c47645c391ad
-    last_write_checksum: sha1:c696b26c1a548d3fe1719ce24064ff501045a278
-    pristine_git_object: 75bc244da035fccbe7f39b4c56b019ca062dbb24
+    last_write_checksum: sha1:19a292dde17e6569b66c36e75a70d6a7b158d810
+    pristine_git_object: c5f03d6d0a1a5f327dbbd958d0bd53dfa863cf61
   internal/planmodifiers/boolplanmodifier/suppress_diff.go:
     id: 3cf85b98963e
     last_write_checksum: sha1:3ee259d4a12a6d558885c155ae374b2b0d6ff833
@@ -3299,8 +3299,8 @@ trackedFiles:
     pristine_git_object: a54fabe730f9efc940117661ccb35be43234af47
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:2a11afd7edd9672c0a4ac900e94380a98905bc55
-    pristine_git_object: fe678c1b95742457599a29b1eb30fc58b2fc3a2b
+    last_write_checksum: sha1:6e90097b87ff6d742d266536b8e61585f4b16afb
+    pristine_git_object: d9249166e6257bbe5e9009829b1795c90fd525ab
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4901,4 +4901,3 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(Fish Audio)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Fish Audio)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(fish-audio)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(fish-audio)` **Added**\n  *  `response.data.provider_slug.enum(fish-audio)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(fish-audio)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(fish-audio)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Fish Audio)` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Fish Audio)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Fish Audio)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.fish-audio` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.fish-audio` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Fish Audio)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Fish Audio)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Fish Audio)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.fish-audio` **Added**\n"
