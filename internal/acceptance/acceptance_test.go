@@ -102,6 +102,8 @@ resource "openrouter_api_key" "test" {
 				ResourceName:      "openrouter_api_key.test",
 				ImportState:       true,
 				ImportStateVerify: true,
+				// The resource's identifier attribute is hash, not id.
+				ImportStateVerifyIdentifierAttribute: "hash",
 				// The resource imports by hash (no id attribute), so the
 				// harness default (id) cannot resolve the import ID.
 				ImportStateIdFunc: func(s *terraform.State) (string, error) {
