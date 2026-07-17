@@ -5,14 +5,14 @@ management:
   docVersion: 1.0.0
   speakeasyVersion: 1.790.2
   generationVersion: 2.918.3
-  releaseVersion: 0.0.13
-  configChecksum: 71ffdc4cbdbb5de1e2489b21e9292b39
+  releaseVersion: 0.0.14
+  configChecksum: 697a1839cc905cb122c89ec837921388
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 625e5299-6ce4-4aa6-9862-c3ff61018215
-  pristine_commit_hash: 0315f4b40fe5070a081850ab26bb870b4b259bb8
-  pristine_tree_hash: e594f15eab10a0c77c9b0912563879a306f6dc7b
+  generation_id: cfed3126-e468-4ef4-9cd7-0a6fa78261dd
+  pristine_commit_hash: 6efa057393bd88373078a21ba9e4cbeebc94d3f4
+  pristine_tree_hash: 1d6fb35657d85b6abebf98cb5629567f5b43b4a5
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:389ebaca322b86301890b144e76d6136804ef6d4
-    pristine_git_object: 8b5fac167dbe9466a0b2fde389a97eb223aca94a
+    last_write_checksum: sha1:c27140bbf2a3ff7f5899d670c308f24213d6af08
+    pristine_git_object: 5f330fe9d4bf45330a482c03098c3f575760660a
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3299,8 +3299,8 @@ trackedFiles:
     pristine_git_object: f2a0d19d6d3f4620d490d64d21e980f573691348
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:721c451be975a35e5a19dfa7d33f8be4be620820
-    pristine_git_object: 152aeb4a359268661592aa6c9d12b3428c40fc24
+    last_write_checksum: sha1:a79c3a5d1cf7696a13e5272f4a213dff134cb098
+    pristine_git_object: ab9abaa16aef2ef6757c3266c6434670419e32c9
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8

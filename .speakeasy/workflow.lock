@@ -2,8 +2,8 @@ speakeasyVersion: 1.790.2
 sources:
     OpenRouter API:
         sourceNamespace: open-router-api
-        sourceRevisionDigest: sha256:a1980967cef6f0938caece571d8cf58d506824b3a7f550abead2348bed990e2d
-        sourceBlobDigest: sha256:6b5e8e95e75a795053384724ccb537f14a7e3a0ab3c8920a44662b3e424ab22b
+        sourceRevisionDigest: sha256:52c9f6d8259e82438e8d29e60f21ffe829daa487b96984601966772151d077b3
+        sourceBlobDigest: sha256:21a7674ea75e404bb2d9bf0317b067626c0496048c1deffe26e05a83e6587cdd
         tags:
             - latest
             - 1.0.0
@@ -11,8 +11,8 @@ targets:
     open-router:
         source: OpenRouter API
         sourceNamespace: open-router-api
-        sourceRevisionDigest: sha256:a1980967cef6f0938caece571d8cf58d506824b3a7f550abead2348bed990e2d
-        sourceBlobDigest: sha256:6b5e8e95e75a795053384724ccb537f14a7e3a0ab3c8920a44662b3e424ab22b
+        sourceRevisionDigest: sha256:52c9f6d8259e82438e8d29e60f21ffe829daa487b96984601966772151d077b3
+        sourceBlobDigest: sha256:21a7674ea75e404bb2d9bf0317b067626c0496048c1deffe26e05a83e6587cdd
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest

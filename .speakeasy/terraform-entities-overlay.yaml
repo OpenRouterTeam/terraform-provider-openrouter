@@ -2,11 +2,13 @@ overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:
   title: Terraform Entity Annotations
-  version: 0.0.1
+  version: 1.0.0
   description: >-
-    Maps OpenRouter management API operations to Terraform resources via
-    x-speakeasy-entity / x-speakeasy-entity-operation. Phase 1: ApiKey,
-    Guardrail, Workspace, ByokKey.
+    Maps OpenRouter management API operations to Terraform entities via
+    x-speakeasy-entity / x-speakeasy-entity-operation. Resources: ApiKey,
+    Guardrail, Workspace, ByokKey, ObservabilityDestination. Plus read-only
+    data-source entities for management lists and the model/provider/preset
+    /credits catalog.
 actions:
   # ---------------------------------------------------------------------------
   # Cleanup: upstream spec carries a stray entity annotation on a streaming

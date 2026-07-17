@@ -124,11 +124,14 @@ annotations** — they are not infrastructure.
    Gotcha fixed along the way: `provider` is a reserved TF root attribute — BYOK's
    `provider` field and the `/byok` list query param are renamed `provider_slug`
    via `x-speakeasy-name-override` (wire format unchanged).
-6. **Smoke test** (remaining): `go run main.go --debug` + `TF_REATTACH_PROVIDERS`
-   plan/apply of an `openrouter_api_key` against a real account — needs a
-   provisioning-scoped API key (Linear DEV-488).
-7. **Housekeeping**: README resource list regenerated automatically ✅; publishing
-   checklist tracked in Linear DEV-489.
+6. ~~**Smoke test**~~ ✅ Exceeded: CI acceptance suite (`internal/acceptance/`,
+   `.github/workflows/acceptance.yaml`) runs create → import → update for
+   api_key, guardrail, workspace, and observability_destination against the
+   live API nightly — green (Linear DEV-488). Live findings: api_key imports
+   by `hash`; `POST /guardrails` requires `reset_interval` with `limit_usd`
+   (spec gap, upstream candidate).
+7. **Housekeeping**: README resource list regenerated automatically ✅;
+   publishing checklist tracked in Linear DEV-489.
 
 ## Deferred (blocked or needs design)
 
