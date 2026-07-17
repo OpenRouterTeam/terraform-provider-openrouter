@@ -13,6 +13,7 @@ type ContentFilterAction string
 const (
 	ContentFilterActionRedact ContentFilterAction = "redact"
 	ContentFilterActionBlock  ContentFilterAction = "block"
+	ContentFilterActionFlag   ContentFilterAction = "flag"
 )
 
 func (e ContentFilterAction) ToPointer() *ContentFilterAction {
@@ -27,6 +28,8 @@ func (e *ContentFilterAction) UnmarshalJSON(data []byte) error {
 	case "redact":
 		fallthrough
 	case "block":
+		fallthrough
+	case "flag":
 		*e = ContentFilterAction(v)
 		return nil
 	default:

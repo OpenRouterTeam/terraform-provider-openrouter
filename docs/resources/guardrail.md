@@ -70,7 +70,7 @@ resource "openrouter_guardrail" "my_guardrail" {
 
 - `allowed_models` (List of String) Array of model identifiers (slug or canonical_slug accepted)
 - `allowed_providers` (List of String) List of allowed provider IDs
-- `content_filter_builtins` (Attributes List) Builtin content filters to apply. The "flag" action is only supported for "regex-prompt-injection"; PII slugs (email, phone, ssn, credit-card, ip-address, person-name, address) accept "block" or "redact" only. (see [below for nested schema](#nestedatt--content_filter_builtins))
+- `content_filter_builtins` (Attributes List) Builtin content filters to apply. Every builtin slug supports "block", "redact", and the detect-only "flag" action. (see [below for nested schema](#nestedatt--content_filter_builtins))
 - `content_filters` (Attributes List) Custom regex content filters to apply to request messages (see [below for nested schema](#nestedatt--content_filters))
 - `description` (String) Description of the guardrail
 - `enforce_zdr` (Boolean, Deprecated) Deprecated. Use enforce_zdr_anthropic, enforce_zdr_openai, enforce_zdr_google, enforce_zdr_xai, and enforce_zdr_other instead. When provided, its value is copied into any of those per-provider fields that are not explicitly specified on the request.
@@ -107,7 +107,7 @@ Optional:
 
 Optional:
 
-- `action` (String) Action taken when the pattern matches. Not Null; must be one of ["redact", "block"]
+- `action` (String) Action taken when the pattern matches. Not Null; must be one of ["redact", "block", "flag"]
 - `label` (String) Optional label used in redaction placeholders or error messages
 - `pattern` (String) A regex pattern to match against request content. Not Null
 

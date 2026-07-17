@@ -147,7 +147,7 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 						},
 					},
 				},
-				Description: `Builtin content filters to apply. The "flag" action is only supported for "regex-prompt-injection"; PII slugs (email, phone, ssn, credit-card, ip-address, person-name, address) accept "block" or "redact" only.`,
+				Description: `Builtin content filters to apply. Every builtin slug supports "block", "redact", and the detect-only "flag" action.`,
 			},
 			"content_filters": schema.ListNestedAttribute{
 				Computed: true,
@@ -160,12 +160,13 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 						"action": schema.StringAttribute{
 							Computed:    true,
 							Optional:    true,
-							Description: `Action taken when the pattern matches. Not Null; must be one of ["redact", "block"]`,
+							Description: `Action taken when the pattern matches. Not Null; must be one of ["redact", "block", "flag"]`,
 							Validators: []validator.String{
 								speakeasy_stringvalidators.NotNull(),
 								stringvalidator.OneOf(
 									"redact",
 									"block",
+									"flag",
 								),
 							},
 						},

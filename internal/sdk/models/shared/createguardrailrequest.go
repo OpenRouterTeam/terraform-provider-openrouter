@@ -11,7 +11,7 @@ type CreateGuardrailRequest struct {
 	AllowedModels []string `json:"allowed_models,omitzero"`
 	// List of allowed provider IDs
 	AllowedProviders []string `json:"allowed_providers,omitzero"`
-	// Builtin content filters to apply. The "flag" action is only supported for "regex-prompt-injection"; PII slugs (email, phone, ssn, credit-card, ip-address, person-name, address) accept "block" or "redact" only.
+	// Builtin content filters to apply. Every builtin slug supports "block", "redact", and the detect-only "flag" action.
 	ContentFilterBuiltins []ContentFilterBuiltinEntryInput `json:"content_filter_builtins,omitzero"`
 	// Custom regex content filters to apply to request messages
 	ContentFilters []ContentFilterEntry `json:"content_filters,omitzero"`
