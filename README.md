@@ -1,40 +1,17 @@
-# openrouter
+![hero illustration](./assets/banner.png)
 
-Terraform Provider for the *openrouter* API.
+# OpenRouter Terraform Provider
+
+The [OpenRouter Terraform Provider](https://registry.terraform.io/providers/OpenRouterTeam/openrouter/latest) lets you manage OpenRouter as infrastructure-as-code: API keys, guardrails, workspaces, BYOK provider credentials, and observability destinations — with full lifecycle support, drift detection, and import.
+
+To learn more about the underlying platform, check out the [OpenRouter Documentation](https://openrouter.ai/docs). Reference docs for every resource and data source are on the [Terraform Registry](https://registry.terraform.io/providers/OpenRouterTeam/openrouter/latest/docs).
 
 [![Built by Speakeasy](https://img.shields.io/badge/Built_by-SPEAKEASY-374151?style=for-the-badge&labelColor=f3f4f6)](https://www.speakeasy.com/?utm_source=openrouter&utm_campaign=terraform)
 [![License: MIT](https://img.shields.io/badge/LICENSE_//_MIT-3b5bdb?style=for-the-badge&labelColor=eff6ff)](https://opensource.org/licenses/MIT)
 
+<!-- No Summary [summary] -->
 
-## 🏗 **Welcome to your new Terraform Provider!** 🏗
-
-It has been generated successfully based on your OpenAPI spec. However, it is not yet ready for production use. Here are some next steps:
-- [ ] 🛠 Add resources and datasources to your SDK by [annotating your OAS](https://www.speakeasy.com/docs/customize-terraform/terraform-extensions#map-api-entities-to-terraform-resources)
-- [ ] ♻️ Refine your terraform provider quickly by iterating locally with the [Speakeasy CLI](https://github.com/speakeasy-api/speakeasy)
-- [ ] 🎁 Publish your terraform provider to hashicorp registry by [configuring automatic publishing](https://www.speakeasy.com/docs/terraform-publishing)
-- [ ] ✨ When ready to productionize, delete this section from the README
-
-<!-- Start Summary [summary] -->
-## Summary
-
-OpenRouter API: OpenAI-compatible API with additional OpenRouter features
-
-For more information about the API: [OpenRouter Documentation](https://openrouter.ai/docs)
-<!-- End Summary [summary] -->
-
-<!-- Start Table of Contents [toc] -->
-## Table of Contents
-<!-- $toc-max-depth=2 -->
-* [openrouter](#openrouter)
-  * [🏗 **Welcome to your new Terraform Provider!** 🏗](#welcome-to-your-new-terraform-provider)
-  * [Installation](#installation)
-  * [Authentication](#authentication)
-  * [Available Resources and Data Sources](#available-resources-and-data-sources)
-  * [Testing the provider locally](#testing-the-provider-locally)
-* [Development](#development)
-  * [Contributions](#contributions)
-
-<!-- End Table of Contents [toc] -->
+<!-- No Table of Contents [toc] -->
 
 <!-- Start Installation [installation] -->
 ## Installation
@@ -46,7 +23,7 @@ terraform {
   required_providers {
     openrouter = {
       source  = "OpenRouterTeam/openrouter"
-      version = "0.0.13"
+      version = "0.0.14"
     }
   }
 }
@@ -56,6 +33,35 @@ provider "openrouter" {
 }
 ```
 <!-- End Installation [installation] -->
+
+## Provider Usage
+
+Authenticate with a [Management API key](https://openrouter.ai/settings/management-keys) (`sk-or-mgmt-...`) — management keys administer resources but cannot spend inference credits.
+
+```hcl
+provider "openrouter" {
+  api_key = var.openrouter_management_key
+}
+
+resource "openrouter_workspace" "production" {
+  name = "Production"
+  slug = "production"
+}
+
+resource "openrouter_api_key" "backend" {
+  name         = "backend-service"
+  limit        = 100 # monthly credit limit in USD
+  limit_reset  = "monthly"
+  workspace_id = openrouter_workspace.production.id
+}
+
+resource "openrouter_guardrail" "cost_cap" {
+  name           = "cost-cap"
+  limit_usd      = 50
+  reset_interval = "monthly"
+  enforce_zdr    = true
+}
+```
 
 <!-- Start Authentication [security] -->
 ## Authentication
