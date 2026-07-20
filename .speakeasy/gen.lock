@@ -5,14 +5,14 @@ management:
   docVersion: 1.0.0
   speakeasyVersion: 1.790.2
   generationVersion: 2.918.3
-  releaseVersion: 0.0.17
-  configChecksum: 1c4cbe1cd8ed304b0cb25363b084cca8
+  releaseVersion: 0.0.18
+  configChecksum: 19b4caa0062f9fe6fab2625df6a678f2
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 8fc3a692-0b97-441f-bc8e-77e96ca680e4
-  pristine_commit_hash: 3c5add1c1e72edb002def8882fd0aed189e548c0
-  pristine_tree_hash: b51daf5dd66ed1b9e1179307a93a92775c8b1e9b
+  generation_id: 2387e072-6323-4e1a-a490-be76cdd7ca2f
+  pristine_commit_hash: 77f1faa178abef5fa101f585045d39856d2fb5d6
+  pristine_tree_hash: 9edec71b2f44b9f6dd405bfaaf24618416bd49d5
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:ab6dda5fb9e795831db3cb9a987634960a4a28b1
-    pristine_git_object: 50657a6f73a4a478d653fe121236907b00c65f53
+    last_write_checksum: sha1:e14059ff1bd458eb9e954afa27f8379f10264986
+    pristine_git_object: 5ae0aad6fb5c2f4d45560b1c298c409fe4339040
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3299,8 +3299,8 @@ trackedFiles:
     pristine_git_object: f2a0d19d6d3f4620d490d64d21e980f573691348
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:194c5fa9ab56bdf22fbec9c90a1187c9be039d83
-    pristine_git_object: 855d34ba66855bb5a56d76b4cd9a187ad0dc4fb6
+    last_write_checksum: sha1:e9783ee0935cf0b7258b725df775cad9ddd3be56
+    pristine_git_object: e1119f953d12684c17ed68eb8c82d739c987d1a2
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4913,11 +4913,3 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.Endpoints.listZdr()`:  `response.status[403]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Endpoints.listForModel()`:  `response.status[403]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Models.getModel()`:  `response.status[403]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Models.list()`:  `response.status[403]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Models.count()`:  `response.status[403]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Models.listForUser()`:  `response.status[403]` **Added** (Breaking ⚠️)
