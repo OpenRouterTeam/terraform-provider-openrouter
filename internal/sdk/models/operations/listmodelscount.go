@@ -31,6 +31,8 @@ type ListModelsCountResponse struct {
 	ModelsCountResponse *shared.ModelsCountResponse
 	// Bad Request - Invalid request parameters or malformed input
 	BadRequestResponse *shared.BadRequestResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 }
@@ -79,6 +81,13 @@ func (l *ListModelsCountResponse) GetBadRequestResponse() *shared.BadRequestResp
 		return nil
 	}
 	return l.BadRequestResponse
+}
+
+func (l *ListModelsCountResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListModelsCountResponse) GetInternalServerResponse() *shared.InternalServerResponse {

@@ -62,6 +62,8 @@ type ListModelsUserResponse struct {
 	ModelsListResponse *shared.ModelsListResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -114,6 +116,13 @@ func (l *ListModelsUserResponse) GetUnauthorizedResponse() *shared.UnauthorizedR
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListModelsUserResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListModelsUserResponse) GetNotFoundResponse() *shared.NotFoundResponse {
