@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 18ddb8ab979ef9b33d5b1dcc4d9e1513
+  docChecksum: ead38daab582af42b0edc8d50078ad3e
   docVersion: 1.0.0
   speakeasyVersion: 1.790.2
   generationVersion: 2.918.3
-  releaseVersion: 0.0.16
-  configChecksum: 91854a65054ad49beedccbd5f78a99b9
+  releaseVersion: 0.0.17
+  configChecksum: 1c4cbe1cd8ed304b0cb25363b084cca8
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: c96d7bc3-99ad-4493-9453-aafa7633ee72
-  pristine_commit_hash: 3cfd0ddcd1c18a3ad85a8e3738f80f5f12c552e2
-  pristine_tree_hash: f25610aaa2b93999dc9731cca649d8bb1371536f
+  generation_id: 8fc3a692-0b97-441f-bc8e-77e96ca680e4
+  pristine_commit_hash: 3c5add1c1e72edb002def8882fd0aed189e548c0
+  pristine_tree_hash: b51daf5dd66ed1b9e1179307a93a92775c8b1e9b
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:3a920464b846a892f99c6d76b0e4ca253164b051
-    pristine_git_object: a3a9cdffd0f6078676c5c930351d88bcb882a5e8
+    last_write_checksum: sha1:ab6dda5fb9e795831db3cb9a987634960a4a28b1
+    pristine_git_object: 50657a6f73a4a478d653fe121236907b00c65f53
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1055,8 +1055,8 @@ trackedFiles:
     pristine_git_object: 2d71d5fc2fb8a43b967fd2b20cc2bf032d6d7a68
   internal/sdk/endpoints.go:
     id: cd3622951e47
-    last_write_checksum: sha1:7fdbb9dac285870522873cc586fa36c7b6e0d2fa
-    pristine_git_object: c25524173ccaf2a6375d553a320b025fda76bd11
+    last_write_checksum: sha1:aaa3bb096f9a65692dfe05a35fd85afb5305db9c
+    pristine_git_object: f9b2ccaca2fc369265058ac066dfeedc044ceb05
   internal/sdk/files.go:
     id: 37ef87cd5db4
     last_write_checksum: sha1:785c9d6ff6dc2a6099bbe0ef2fc76e9f7b63aabd
@@ -1135,8 +1135,8 @@ trackedFiles:
     pristine_git_object: a614e37673d3ea81eabc6139236edfb22a15dc55
   internal/sdk/models.go:
     id: 7b13b8162cf6
-    last_write_checksum: sha1:4edaefbd4f795c261c6543c456e2ed0d0476ad18
-    pristine_git_object: 73ba4880d7b0c3bb12f857bf9c78ed07cee73498
+    last_write_checksum: sha1:ce01a0279837d297fedd9eca37ab6d4bc470efcc
+    pristine_git_object: 49d8f3527724e5cf708a0b14178d08f8ca941fb3
   internal/sdk/models/errors/apierror.go:
     id: bf281d768352
     last_write_checksum: sha1:f8493be1606361ffba9bf77d77ede209acc0f562
@@ -1303,12 +1303,12 @@ trackedFiles:
     pristine_git_object: 79806214a27f988b9d438cb42a0832010e6fd2de
   internal/sdk/models/operations/getmodel.go:
     id: 128a66915793
-    last_write_checksum: sha1:77e5e4e4ff96dd112ea10e23252b429ba5b7fbd1
-    pristine_git_object: b7385a6839218a5def6597f21b201ac9311452cb
+    last_write_checksum: sha1:38edaed7c99ace145a0f7b2733ab391789b0ccd3
+    pristine_git_object: fd5ad9fb4fe99ab6a7a003a45c6be47236dc225a
   internal/sdk/models/operations/getmodels.go:
     id: 5d263af1d2ba
-    last_write_checksum: sha1:136b1c8b0ff2eca84e63a7ca934f6b9377ea3c06
-    pristine_git_object: 4dd55215ca39af60a7c90efcc786b9f5acb246e9
+    last_write_checksum: sha1:1d52dfd3f5073eb0f031e8fe0e4d7fcbb789a8da
+    pristine_git_object: c3272c379fdfd03402320ddac18111ca0bdcd5fa
   internal/sdk/models/operations/getobservabilitydestination.go:
     id: ce1fb86a3e17
     last_write_checksum: sha1:bf93204c8f3f65adb0d1de280e103832a00a7a0d
@@ -1355,12 +1355,12 @@ trackedFiles:
     pristine_git_object: fbf994b76ced46c6f9f08d15ad1f2b5819aec43a
   internal/sdk/models/operations/listendpoints.go:
     id: ecc735aa4bd6
-    last_write_checksum: sha1:c6f12d023412d789e9c57d52f4f65e2c727ea919
-    pristine_git_object: 24c3f0cef92a5d7067ee8cc2b3396f01d55d536d
+    last_write_checksum: sha1:eed558c1eeb1a5c5279cb37980c686466e847b13
+    pristine_git_object: 53ed744e5792c5ab0063ba63117fdc2a5d4901e4
   internal/sdk/models/operations/listendpointszdr.go:
     id: e85f1c6859b1
-    last_write_checksum: sha1:d58bb79f7032bc2f814383b1218716b01c42aaec
-    pristine_git_object: 0ed014f78d1f4f3be8f603416116e8b9ac64fd5f
+    last_write_checksum: sha1:3ca4ca2bc4fae89b325d509fb62590577869a9c6
+    pristine_git_object: 2602952e772c1d6667294e7f5bef3a2e77a3070a
   internal/sdk/models/operations/listfiles.go:
     id: a0a08686de63
     last_write_checksum: sha1:d3bbc699ff16616a15c4f5f19cbe2e66e24152de
@@ -1399,12 +1399,12 @@ trackedFiles:
     pristine_git_object: 6efa4b679d073907a6d80e88f1210d919b678658
   internal/sdk/models/operations/listmodelscount.go:
     id: 8a0a5fe06a16
-    last_write_checksum: sha1:030125265b907181e8fad2e0288789db86e9c115
-    pristine_git_object: 4ecd20fd5ea3a3a92ca3eb0334bbebc627e27666
+    last_write_checksum: sha1:132702880de04f7ce4210ec057a2c2a97a4f2952
+    pristine_git_object: 07bd6048ac596452a588380e8dbf559a48740fe2
   internal/sdk/models/operations/listmodelsuser.go:
     id: bcfd5bae44d6
-    last_write_checksum: sha1:e810caaaf099527a9d2db488a44998f1e3cee43b
-    pristine_git_object: f5c67172cd25044e0c888f924ec7d893e901ffdc
+    last_write_checksum: sha1:98dd15be8f4720b44fef826934fcea6087a446d8
+    pristine_git_object: 3b2ad967bb53509a9f5ce90bb69bfa087eb90e08
   internal/sdk/models/operations/listobservabilitydestinations.go:
     id: 8789cf32a73e
     last_write_checksum: sha1:d3a687578b60d366ed6b6a8ad90fc7fbf4cd568e
@@ -3299,8 +3299,8 @@ trackedFiles:
     pristine_git_object: f2a0d19d6d3f4620d490d64d21e980f573691348
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:aa118b2fd3d1b46e4ab242bcd770d13e09ae9ad8
-    pristine_git_object: 264d948f112893eff93d371757860494503dbad2
+    last_write_checksum: sha1:194c5fa9ab56bdf22fbec9c90a1187c9be039d83
+    pristine_git_object: 855d34ba66855bb5a56d76b4cd9a187ad0dc4fb6
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -3811,6 +3811,8 @@ examples:
           application/json: {"data": [{"context_length": 8192, "latency_last_30m": {"p50": 0.25, "p75": 0.35, "p90": 0.48, "p99": 0.85}, "max_completion_tokens": 4096, "max_prompt_tokens": 8192, "model_id": "openai/gpt-4", "model_name": "GPT-4", "name": "OpenAI: GPT-4", "pricing": {"completion": "0.00006", "image": "0", "prompt": "0.00003", "request": "0"}, "provider_name": "OpenAI", "quantization": "fp16", "status": 0, "supported_parameters": ["temperature", "top_p", "max_tokens"], "supports_implicit_caching": true, "tag": "openai", "throughput_last_30m": {"p50": 45.2, "p75": 38.5, "p90": 28.3, "p99": 15.1}, "uptime_last_1d": 99.8, "uptime_last_30m": 99.5, "uptime_last_5m": 100}]}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listEndpoints:
     speakeasy-default-list-endpoints:
       parameters:
@@ -3824,6 +3826,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listFiles:
     speakeasy-default-list-files:
       parameters:
@@ -4319,6 +4323,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   getModels:
     speakeasy-default-get-models:
       parameters:
@@ -4362,6 +4368,8 @@ examples:
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listModelsCount:
     speakeasy-default-list-models-count:
       parameters:
@@ -4374,6 +4382,8 @@ examples:
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listModelsUser:
     speakeasy-default-list-models-user:
       parameters:
@@ -4389,6 +4399,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listObservabilityDestinations:
     speakeasy-default-list-observability-destinations:
       parameters:
@@ -4901,4 +4913,11 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.prompt` **Changed**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Endpoints.listZdr()`:  `response.status[403]` **Added** (Breaking ⚠️)
+  * `OpenRouter.Endpoints.listForModel()`:  `response.status[403]` **Added** (Breaking ⚠️)
+  * `OpenRouter.Models.getModel()`:  `response.status[403]` **Added** (Breaking ⚠️)
+  * `OpenRouter.Models.list()`:  `response.status[403]` **Added** (Breaking ⚠️)
+  * `OpenRouter.Models.count()`:  `response.status[403]` **Added** (Breaking ⚠️)
+  * `OpenRouter.Models.listForUser()`:  `response.status[403]` **Added** (Breaking ⚠️)

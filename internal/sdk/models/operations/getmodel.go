@@ -38,6 +38,8 @@ type GetModelResponse struct {
 	RawResponse *http.Response
 	// Returns the model details
 	ModelResponse *shared.ModelResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -81,6 +83,13 @@ func (g *GetModelResponse) GetModelResponse() *shared.ModelResponse {
 		return nil
 	}
 	return g.ModelResponse
+}
+
+func (g *GetModelResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetModelResponse) GetNotFoundResponse() *shared.NotFoundResponse {

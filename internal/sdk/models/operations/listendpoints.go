@@ -51,6 +51,8 @@ type ListEndpointsResponse struct {
 	RawResponse *http.Response
 	// Returns a list of endpoints
 	Object *ListEndpointsResponseBody
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -94,6 +96,13 @@ func (l *ListEndpointsResponse) GetObject() *ListEndpointsResponseBody {
 		return nil
 	}
 	return l.Object
+}
+
+func (l *ListEndpointsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListEndpointsResponse) GetNotFoundResponse() *shared.NotFoundResponse {

@@ -505,6 +505,8 @@ type GetModelsResponse struct {
 	Res *string
 	// Bad Request - Invalid request parameters or malformed input
 	BadRequestResponse *shared.BadRequestResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 
@@ -562,6 +564,13 @@ func (g *GetModelsResponse) GetBadRequestResponse() *shared.BadRequestResponse {
 		return nil
 	}
 	return g.BadRequestResponse
+}
+
+func (g *GetModelsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetModelsResponse) GetInternalServerResponse() *shared.InternalServerResponse {
