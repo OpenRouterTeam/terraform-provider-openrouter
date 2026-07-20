@@ -12,8 +12,43 @@ permissions:
     paths:
       - .speakeasy/gen.lock
   workflow_dispatch: {}
+
+concurrency:
+  group: speakeasy-publish
+  cancel-in-progress: false
+
 jobs:
+  # Release gate: the full live acceptance suite must pass against the real
+  # API before anything is published. Uses the same environment secret and
+  # safety model as acceptance.yaml (dedicated $0-credit test org, tf-acc-*
+  # namespacing + sweeper, serialized with nightly runs via the shared
+  # tf-acceptance concurrency group).
+  acceptance-gate:
+    runs-on: ubuntu-latest
+    environment: acceptance-testing
+    timeout-minutes: 45
+    concurrency:
+      group: tf-acceptance
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+      - name: Build provider
+        run: go build ./...
+      - name: Run acceptance tests
+        env:
+          TF_ACC: "1"
+          OPENROUTER_MANAGEMENT_KEY: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
+        run: go test ./internal/acceptance/... -v -timeout 30m
+
   publish:
+    needs: acceptance-gate
     uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-publish.yaml@v15
     with:
       target: open-router
