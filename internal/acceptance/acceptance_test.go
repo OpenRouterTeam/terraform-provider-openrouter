@@ -136,6 +136,11 @@ resource "openrouter_api_key" "test" {
 
 // TestAccGuardrail_Lifecycle exercises create -> import -> update on
 // openrouter_guardrail.
+//
+// reset_interval is always paired with limit_usd: the API enforces this via
+// a server-side rule that the OpenAPI spec does not declare (Linear
+// ENT-1743). If ENT-1743 lands as a spec constraint, generated validation
+// will enforce it client-side too.
 func TestAccGuardrail_Lifecycle(t *testing.T) {
 	name := testName("guardrail")
 

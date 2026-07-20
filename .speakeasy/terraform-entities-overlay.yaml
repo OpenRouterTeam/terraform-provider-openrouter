@@ -188,6 +188,9 @@ actions:
   - target: $["paths"]["/workspaces/{id}/members"]["get"]
     update:
       x-speakeasy-entity-operation: WorkspaceMembers#read
+  # WorkspaceBudget managed resource is deferred: no singular GET exists for
+  # refresh/import (Linear ENT-1741, provider tracking DEV-486). The list
+  # endpoint also 404s for budget-less workspaces (Linear ENT-1742).
   - target: $["paths"]["/workspaces/{id}/budgets"]["get"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudgets#read
