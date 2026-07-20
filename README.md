@@ -1,5 +1,8 @@
 ![hero illustration](./assets/banner.png)
 
+> [!WARNING]
+> 🚧 **Under construction** — this provider is pre-release and not yet published to the Terraform Registry. Resource schemas may change without notice until `v0.1.0`. Follow the releases on this repository for the first published version.
+
 # OpenRouter Terraform Provider
 
 The [OpenRouter Terraform Provider](https://registry.terraform.io/providers/OpenRouterTeam/openrouter/latest) lets you manage OpenRouter as infrastructure-as-code: API keys, guardrails, workspaces, BYOK provider credentials, and observability destinations — with full lifecycle support, drift detection, and import.
