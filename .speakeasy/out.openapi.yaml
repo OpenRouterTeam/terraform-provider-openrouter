@@ -4359,6 +4359,7 @@ components:
         - 'recraft'
         - 'reka'
         - 'relace'
+        - 'runway'
         - 'sail-research'
         - 'sakana'
         - 'sambanova'
@@ -13140,6 +13141,7 @@ components:
                 - 'WandB'
                 - 'Quiver'
                 - 'Krea'
+                - 'Runway'
                 - 'Xiaomi'
                 - 'xAI'
                 - 'Z.AI'
@@ -18827,6 +18829,7 @@ components:
         - 'WandB'
         - 'Quiver'
         - 'Krea'
+        - 'Runway'
         - 'Xiaomi'
         - 'xAI'
         - 'Z.AI'
@@ -19137,6 +19140,9 @@ components:
           additionalProperties: {}
           type: 'object'
         replicate:
+          additionalProperties: {}
+          type: 'object'
+        runway:
           additionalProperties: {}
           type: 'object'
         sail-research:
@@ -19525,6 +19531,7 @@ components:
             - 'WandB'
             - 'Quiver'
             - 'Krea'
+            - 'Runway'
             - 'Xiaomi'
             - 'xAI'
             - 'Z.AI'
@@ -25549,6 +25556,7 @@ paths:
               - 'recraft'
               - 'reka'
               - 'relace'
+              - 'runway'
               - 'sail-research'
               - 'sakana'
               - 'sambanova'

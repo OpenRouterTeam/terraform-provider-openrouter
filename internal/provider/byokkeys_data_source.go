@@ -109,7 +109,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			},
 			"provider_slug": schema.StringAttribute{
 				Optional:    true,
-				Description: `Optional provider slug to filter by (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-nova", "ambient", "anthropic", "arcee-ai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "cloudflare", "cohere", "crusoe", "darkbloom", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "mancer", "mara", "meta", "minimax", "mistral", "modelrun", "modular", "moonshotai", "morph", "ncompass", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "quiver", "recraft", "reka", "relace", "sail-research", "sakana", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "together", "upstage", "venice", "wafer", "wandb", "xai", "xiaomi", "z-ai"]`,
+				Description: `Optional provider slug to filter by (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-nova", "ambient", "anthropic", "arcee-ai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "cloudflare", "cohere", "crusoe", "darkbloom", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "mancer", "mara", "meta", "minimax", "mistral", "modelrun", "modular", "moonshotai", "morph", "ncompass", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "quiver", "recraft", "reka", "relace", "runway", "sail-research", "sakana", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "together", "upstage", "venice", "wafer", "wandb", "xai", "xiaomi", "z-ai"]`,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"ai21",
@@ -187,6 +187,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 						"recraft",
 						"reka",
 						"relace",
+						"runway",
 						"sail-research",
 						"sakana",
 						"sambanova",

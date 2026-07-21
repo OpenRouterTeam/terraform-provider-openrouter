@@ -103,6 +103,7 @@ const (
 	ProviderNameWandB           ProviderName = "WandB"
 	ProviderNameQuiver          ProviderName = "Quiver"
 	ProviderNameKrea            ProviderName = "Krea"
+	ProviderNameRunway          ProviderName = "Runway"
 	ProviderNameXiaomi          ProviderName = "Xiaomi"
 	ProviderNameXAi             ProviderName = "xAI"
 	ProviderNameZAi             ProviderName = "Z.AI"
@@ -303,6 +304,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "Quiver":
 		fallthrough
 	case "Krea":
+		fallthrough
+	case "Runway":
 		fallthrough
 	case "Xiaomi":
 		fallthrough
