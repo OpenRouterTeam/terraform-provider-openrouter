@@ -89,6 +89,7 @@ const (
 	ProviderRecraft         Provider = "recraft"
 	ProviderReka            Provider = "reka"
 	ProviderRelace          Provider = "relace"
+	ProviderRunway          Provider = "runway"
 	ProviderSailResearch    Provider = "sail-research"
 	ProviderSakana          Provider = "sakana"
 	ProviderSambanova       Provider = "sambanova"
@@ -268,6 +269,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "reka":
 		fallthrough
 	case "relace":
+		fallthrough
+	case "runway":
 		fallthrough
 	case "sail-research":
 		fallthrough

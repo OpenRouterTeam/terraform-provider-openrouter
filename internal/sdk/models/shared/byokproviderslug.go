@@ -86,6 +86,7 @@ const (
 	BYOKProviderSlugRecraft         BYOKProviderSlug = "recraft"
 	BYOKProviderSlugReka            BYOKProviderSlug = "reka"
 	BYOKProviderSlugRelace          BYOKProviderSlug = "relace"
+	BYOKProviderSlugRunway          BYOKProviderSlug = "runway"
 	BYOKProviderSlugSailResearch    BYOKProviderSlug = "sail-research"
 	BYOKProviderSlugSakana          BYOKProviderSlug = "sakana"
 	BYOKProviderSlugSambanova       BYOKProviderSlug = "sambanova"
@@ -265,6 +266,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "reka":
 		fallthrough
 	case "relace":
+		fallthrough
+	case "runway":
 		fallthrough
 	case "sail-research":
 		fallthrough
