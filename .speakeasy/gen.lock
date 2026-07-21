@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 287692961a9c1213931f83b6ae7f2413
+  docChecksum: a07dccb9612dec701147f2cc3aaae160
   docVersion: 1.0.0
   speakeasyVersion: 1.790.3
   generationVersion: 2.918.4
-  releaseVersion: 0.0.19
-  configChecksum: 0f44cc80732fb429c98247a47d015c32
+  releaseVersion: 0.0.20
+  configChecksum: cd8aa148d7f3c45f412384ab1bcc5806
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 509cc42f-a609-4bb4-b818-3e39f06880c1
-  pristine_commit_hash: 862ab8f5e475043f7d7236ca62d1635036897844
-  pristine_tree_hash: 3df9ffc6f0f9fb3447c9ee2aeb1d6428d9e50c63
+  generation_id: 66ef81d8-abaf-48d3-8cad-ae3595b901d9
+  pristine_commit_hash: 82d3a0a1327f5ba1e0792d8c6163f0950f9c10a6
+  pristine_tree_hash: de27f4b636a4847cbd7145a21098c63a04145c35
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:388f31317c460195513c5fba68d496cd10ac5001
-    pristine_git_object: fc1ccaf5fc205f4da7283ad7d51432b9814d6bec
+    last_write_checksum: sha1:b0b2a42688a2e8bfcec4458e0441e168dcf833b7
+    pristine_git_object: 130f8a68534e147f445b06d0bed9340c250583b9
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2203,8 +2203,8 @@ trackedFiles:
     pristine_git_object: b428a23ac64398bfabda2fdc073853dd845d14f0
   internal/sdk/models/shared/fusionservertoolconfig.go:
     id: 0157cf0e274e
-    last_write_checksum: sha1:b8bc1f8a45aee9b7240a934d17ba1b2db7ed74ec
-    pristine_git_object: 599fe28d5609d93070a5bff76973ee3ece29ccb4
+    last_write_checksum: sha1:fd2f0fc19d68c2f87b0fe28c33c815ccc7f66f4c
+    pristine_git_object: 1177d4f3e6cd7a787e6c84b6be1e6271888aaf27
   internal/sdk/models/shared/fusionservertoolopenrouter.go:
     id: b83b8ca89a3f
     last_write_checksum: sha1:315dcfb76fa1174c121431d90a1dc9daca4455d7
@@ -3299,8 +3299,8 @@ trackedFiles:
     pristine_git_object: f2a0d19d6d3f4620d490d64d21e980f573691348
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:c86896bbbecb650eeff3c5af2f2f4a2839768053
-    pristine_git_object: 01c015342d28c5e942d90c96a4d16a44160f1ba1
+    last_write_checksum: sha1:b23c9110d69759e23b318fe77b701c28723275b1
+    pristine_git_object: 4614906eb5fed280f4901de0dad16cfa8b3c2665
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4913,4 +4913,3 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(OutputBashServerToolItem)` **Changed**\n"
