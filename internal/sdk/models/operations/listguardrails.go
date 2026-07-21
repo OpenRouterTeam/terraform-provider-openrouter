@@ -58,6 +58,8 @@ type ListGuardrailsResponse struct {
 	RawResponse *http.Response
 	// List of guardrails
 	ListGuardrailsResponse *shared.ListGuardrailsResponse
+	// Bad Request - Invalid request parameters or malformed input
+	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Internal Server Error - Unexpected server error
@@ -103,6 +105,13 @@ func (l *ListGuardrailsResponse) GetListGuardrailsResponse() *shared.ListGuardra
 		return nil
 	}
 	return l.ListGuardrailsResponse
+}
+
+func (l *ListGuardrailsResponse) GetBadRequestResponse() *shared.BadRequestResponse {
+	if l == nil {
+		return nil
+	}
+	return l.BadRequestResponse
 }
 
 func (l *ListGuardrailsResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
