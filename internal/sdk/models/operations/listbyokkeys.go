@@ -372,6 +372,8 @@ type ListBYOKKeysResponse struct {
 	RawResponse *http.Response
 	// List of BYOK credentials
 	ListBYOKKeysResponse *shared.ListBYOKKeysResponse
+	// Bad Request - Invalid request parameters or malformed input
+	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Internal Server Error - Unexpected server error
@@ -417,6 +419,13 @@ func (l *ListBYOKKeysResponse) GetListBYOKKeysResponse() *shared.ListBYOKKeysRes
 		return nil
 	}
 	return l.ListBYOKKeysResponse
+}
+
+func (l *ListBYOKKeysResponse) GetBadRequestResponse() *shared.BadRequestResponse {
+	if l == nil {
+		return nil
+	}
+	return l.BadRequestResponse
 }
 
 func (l *ListBYOKKeysResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {

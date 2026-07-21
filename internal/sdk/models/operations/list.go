@@ -264,6 +264,8 @@ type ListResponse struct {
 	RawResponse *http.Response
 	// List of API keys
 	Object *ListResponseBody
+	// Bad Request - Invalid request parameters or malformed input
+	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Too Many Requests - Rate limit exceeded
@@ -309,6 +311,13 @@ func (l *ListResponse) GetObject() *ListResponseBody {
 		return nil
 	}
 	return l.Object
+}
+
+func (l *ListResponse) GetBadRequestResponse() *shared.BadRequestResponse {
+	if l == nil {
+		return nil
+	}
+	return l.BadRequestResponse
 }
 
 func (l *ListResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
