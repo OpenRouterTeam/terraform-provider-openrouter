@@ -27401,6 +27401,7 @@ paths:
       summary: 'List files'
       tags:
         - 'Files'
+      x-hidden: true
       x-speakeasy-name-override: 'list'
       x-speakeasy-pagination:
         inputs:
@@ -27516,6 +27517,7 @@ paths:
       summary: 'Upload a file'
       tags:
         - 'Files'
+      x-hidden: true
       x-speakeasy-name-override: 'upload'
   /files/{file_id}:
     delete:
@@ -27590,6 +27592,7 @@ paths:
       summary: 'Delete a file'
       tags:
         - 'Files'
+      x-hidden: true
       x-speakeasy-name-override: 'delete'
     get:
       description: 'Retrieves metadata for a single file owned by the requesting workspace.'
@@ -27668,6 +27671,7 @@ paths:
       summary: 'Get file metadata'
       tags:
         - 'Files'
+      x-hidden: true
       x-speakeasy-name-override: 'getMetadata'
   /files/{file_id}/content:
     get:
@@ -27751,6 +27755,7 @@ paths:
       summary: 'Download file content'
       tags:
         - 'Files'
+      x-hidden: true
       x-speakeasy-name-override: 'downloadContent'
   /generation:
     get:
