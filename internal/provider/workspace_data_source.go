@@ -32,6 +32,7 @@ type WorkspaceDataSource struct {
 type WorkspaceDataSourceModel struct {
 	CreatedAt                       types.String  `tfsdk:"created_at"`
 	CreatedBy                       types.String  `tfsdk:"created_by"`
+	DefaultGuardrailID              types.String  `tfsdk:"default_guardrail_id"`
 	DefaultImageModel               types.String  `tfsdk:"default_image_model"`
 	DefaultProviderSort             types.String  `tfsdk:"default_provider_sort"`
 	DefaultTextModel                types.String  `tfsdk:"default_text_model"`
@@ -65,6 +66,10 @@ func (r *WorkspaceDataSource) Schema(ctx context.Context, req datasource.SchemaR
 			"created_by": schema.StringAttribute{
 				Computed:    true,
 				Description: `User ID of the workspace creator`,
+			},
+			"default_guardrail_id": schema.StringAttribute{
+				Computed:    true,
+				Description: `Deterministic ID of the workspace's implicitly-created default guardrail`,
 			},
 			"default_image_model": schema.StringAttribute{
 				Computed:    true,

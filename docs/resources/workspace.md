@@ -54,6 +54,7 @@ resource "openrouter_workspace" "my_workspace" {
 
 - `created_at` (String) ISO 8601 timestamp of when the workspace was created
 - `created_by` (String) User ID of the workspace creator
+- `default_guardrail_id` (String) Deterministic ID of the workspace's implicitly-created default guardrail
 - `id` (String) The workspace ID (UUID) or slug
 - `updated_at` (String) ISO 8601 timestamp of when the workspace was last updated
 

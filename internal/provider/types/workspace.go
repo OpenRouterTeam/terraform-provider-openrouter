@@ -9,6 +9,7 @@ import (
 type Workspace struct {
 	CreatedAt                       types.String  `tfsdk:"created_at"`
 	CreatedBy                       types.String  `tfsdk:"created_by"`
+	DefaultGuardrailID              types.String  `tfsdk:"default_guardrail_id"`
 	DefaultImageModel               types.String  `tfsdk:"default_image_model"`
 	DefaultProviderSort             types.String  `tfsdk:"default_provider_sort"`
 	DefaultTextModel                types.String  `tfsdk:"default_text_model"`

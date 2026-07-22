@@ -24,6 +24,7 @@ func (r *WorkspacesDataSourceModel) RefreshFromSharedListWorkspacesResponse(ctx 
 
 			data.CreatedAt = types.StringValue(dataItem.CreatedAt)
 			data.CreatedBy = types.StringPointerValue(dataItem.CreatedBy)
+			data.DefaultGuardrailID = types.StringValue(dataItem.DefaultGuardrailID)
 			data.DefaultImageModel = types.StringPointerValue(dataItem.DefaultImageModel)
 			data.DefaultProviderSort = types.StringPointerValue(dataItem.DefaultProviderSort)
 			data.DefaultTextModel = types.StringPointerValue(dataItem.DefaultTextModel)

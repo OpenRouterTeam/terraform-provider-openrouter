@@ -30,6 +30,7 @@ func (r *WorkspaceResourceModel) RefreshFromSharedCreateWorkspaceResponseData(ct
 
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.CreatedBy = types.StringPointerValue(resp.CreatedBy)
+	r.DefaultGuardrailID = types.StringValue(resp.DefaultGuardrailID)
 	r.DefaultImageModel = types.StringPointerValue(resp.DefaultImageModel)
 	r.DefaultProviderSort = types.StringPointerValue(resp.DefaultProviderSort)
 	r.DefaultTextModel = types.StringPointerValue(resp.DefaultTextModel)
@@ -74,6 +75,7 @@ func (r *WorkspaceResourceModel) RefreshFromSharedGetWorkspaceResponseData(ctx c
 
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.CreatedBy = types.StringPointerValue(resp.CreatedBy)
+	r.DefaultGuardrailID = types.StringValue(resp.DefaultGuardrailID)
 	r.DefaultImageModel = types.StringPointerValue(resp.DefaultImageModel)
 	r.DefaultProviderSort = types.StringPointerValue(resp.DefaultProviderSort)
 	r.DefaultTextModel = types.StringPointerValue(resp.DefaultTextModel)
@@ -118,6 +120,7 @@ func (r *WorkspaceResourceModel) RefreshFromSharedUpdateWorkspaceResponseData(ct
 
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.CreatedBy = types.StringPointerValue(resp.CreatedBy)
+	r.DefaultGuardrailID = types.StringValue(resp.DefaultGuardrailID)
 	r.DefaultImageModel = types.StringPointerValue(resp.DefaultImageModel)
 	r.DefaultProviderSort = types.StringPointerValue(resp.DefaultProviderSort)
 	r.DefaultTextModel = types.StringPointerValue(resp.DefaultTextModel)
