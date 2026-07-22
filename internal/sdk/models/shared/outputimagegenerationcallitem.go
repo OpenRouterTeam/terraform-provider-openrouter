@@ -36,6 +36,8 @@ type OutputImageGenerationCallItem struct {
 	Result *string                           `default:"null" json:"result"`
 	Status ImageGenerationStatus             `json:"status"`
 	Type   OutputImageGenerationCallItemType `json:"type"`
+	// The prompt (possibly rewritten) that the image was generated from.
+	Prompt *string `json:"prompt,omitzero"`
 }
 
 func (o OutputImageGenerationCallItem) MarshalJSON() ([]byte, error) {
@@ -75,4 +77,11 @@ func (o *OutputImageGenerationCallItem) GetType() OutputImageGenerationCallItemT
 		return OutputImageGenerationCallItemType("")
 	}
 	return o.Type
+}
+
+func (o *OutputImageGenerationCallItem) GetPrompt() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Prompt
 }

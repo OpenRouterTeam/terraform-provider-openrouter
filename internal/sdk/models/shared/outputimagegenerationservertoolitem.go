@@ -36,6 +36,8 @@ type OutputImageGenerationServerToolItem struct {
 	ID       *string `json:"id,omitzero"`
 	ImageB64 *string `json:"imageB64,omitzero"`
 	ImageURL *string `json:"imageUrl,omitzero"`
+	// The prompt (possibly rewritten) that the image was generated from.
+	Prompt *string `json:"prompt,omitzero"`
 	// The generated image as a base64-encoded string or URL, matching OpenAI image_generation_call format
 	Result        *string                                 `json:"result,omitzero"`
 	RevisedPrompt *string                                 `json:"revisedPrompt,omitzero"`
@@ -73,6 +75,13 @@ func (o *OutputImageGenerationServerToolItem) GetImageURL() *string {
 		return nil
 	}
 	return o.ImageURL
+}
+
+func (o *OutputImageGenerationServerToolItem) GetPrompt() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Prompt
 }
 
 func (o *OutputImageGenerationServerToolItem) GetResult() *string {
