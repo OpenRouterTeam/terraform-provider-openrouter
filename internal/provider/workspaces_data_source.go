@@ -56,6 +56,10 @@ func (r *WorkspacesDataSource) Schema(ctx context.Context, req datasource.Schema
 							Computed:    true,
 							Description: `User ID of the workspace creator`,
 						},
+						"default_guardrail_id": schema.StringAttribute{
+							Computed:    true,
+							Description: `Deterministic ID of the workspace's implicitly-created default guardrail`,
+						},
 						"default_image_model": schema.StringAttribute{
 							Computed:    true,
 							Description: `Default image model for this workspace`,

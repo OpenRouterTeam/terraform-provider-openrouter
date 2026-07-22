@@ -8,6 +8,8 @@ type UpdateWorkspaceResponseData struct {
 	CreatedAt string `json:"created_at"`
 	// User ID of the workspace creator
 	CreatedBy *string `json:"created_by"`
+	// Deterministic ID of the workspace's implicitly-created default guardrail
+	DefaultGuardrailID string `json:"default_guardrail_id"`
 	// Default image model for this workspace
 	DefaultImageModel *string `json:"default_image_model"`
 	// Default provider sort preference (price, throughput, latency, exacto)
@@ -48,6 +50,13 @@ func (u *UpdateWorkspaceResponseData) GetCreatedBy() *string {
 		return nil
 	}
 	return u.CreatedBy
+}
+
+func (u *UpdateWorkspaceResponseData) GetDefaultGuardrailID() string {
+	if u == nil {
+		return ""
+	}
+	return u.DefaultGuardrailID
 }
 
 func (u *UpdateWorkspaceResponseData) GetDefaultImageModel() *string {
