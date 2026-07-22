@@ -33,7 +33,7 @@ concurrency:
 
 jobs:
   auto-merge:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.USE_GITHUB_RUNNERS == 'true' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2404' }}
     steps:
       - name: Generate GitHub App token
         id: app-token

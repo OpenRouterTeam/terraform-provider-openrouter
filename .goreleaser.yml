@@ -1,3 +1,4 @@
+version: 2
 before:
   hooks:
     - go mod tidy
@@ -13,15 +14,25 @@ builds:
     ldflags:
       - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'
     goos:
+      - freebsd
       - windows
       - linux
       - darwin
     goarch:
       - amd64
+      - '386'
+      - arm
       - arm64
+    ignore:
+      - goos: darwin
+        goarch: '386'
+      - goos: darwin
+        goarch: arm
+      - goos: windows
+        goarch: arm
     binary: '{{ .ProjectName }}_v{{ .Version }}'
 archives:
-  - format: zip
+  - formats: [zip]
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
 checksum:
   extra_files:
@@ -48,4 +59,4 @@ release:
   # If you want to manually examine the release before its live, uncomment this line:
   # draft: true
 changelog:
-  skip: true
+  disable: true
