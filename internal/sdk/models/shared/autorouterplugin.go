@@ -15,6 +15,8 @@ type AutoRouterPlugin struct {
 	Enabled *bool `json:"enabled,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	id string `const:"auto-router" json:"id"`
+	// When true, reuses the model from the most recent assistant message's `model` attribute for subsequent turns. Defaults to false.
+	PinModel *bool `json:"pin_model,omitzero"`
 }
 
 func (a AutoRouterPlugin) MarshalJSON() ([]byte, error) {
@@ -51,4 +53,11 @@ func (a *AutoRouterPlugin) GetEnabled() *bool {
 
 func (a *AutoRouterPlugin) GetID() string {
 	return "auto-router"
+}
+
+func (a *AutoRouterPlugin) GetPinModel() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.PinModel
 }

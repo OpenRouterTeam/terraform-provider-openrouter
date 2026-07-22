@@ -106,6 +106,8 @@ type ChatAssistantMessage struct {
 	Content *ChatAssistantMessageContent `json:"content,omitzero"`
 	// Generated images from image generation models
 	Images []ChatAssistantImages `json:"images,omitzero"`
+	// Model that generated this assistant message
+	Model *string `json:"model,omitzero"`
 	// Optional name for the assistant
 	Name *string `json:"name,omitzero"`
 	// Reasoning output
@@ -150,6 +152,13 @@ func (c *ChatAssistantMessage) GetImages() []ChatAssistantImages {
 		return nil
 	}
 	return c.Images
+}
+
+func (c *ChatAssistantMessage) GetModel() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Model
 }
 
 func (c *ChatAssistantMessage) GetName() *string {
