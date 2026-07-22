@@ -5304,7 +5304,7 @@ components:
         trace:
           $ref: '#/components/schemas/TraceConfig'
         user:
-          description: 'Unique user identifier'
+          description: 'Per-end-user identifier for abuse isolation. Use a stable ID, hash, or pseudonym. When a provider requires a user identity, OpenRouter folds it into the hashed identity sent upstream and never forwards it raw. If omitted, requests use an account-level identity, so provider policy blocks can affect the whole account.'
           example: 'user-123'
           type: 'string'
       required:
@@ -17063,7 +17063,10 @@ components:
     OutputImageGenerationCallItem:
       allOf:
         - $ref: '#/components/schemas/OutputItemImageGenerationCall'
-        - properties: {}
+        - properties:
+            prompt:
+              description: 'The prompt (possibly rewritten) that the image was generated from.'
+              type: 'string'
           type: 'object'
       example:
         id: 'img-abc123'
@@ -17084,6 +17087,9 @@ components:
         imageB64:
           type: 'string'
         imageUrl:
+          type: 'string'
+        prompt:
+          description: 'The prompt (possibly rewritten) that the image was generated from.'
           type: 'string'
         result:
           description: 'The generated image as a base64-encoded string or URL, matching OpenAI image_generation_call format'
@@ -20619,6 +20625,8 @@ components:
         route:
           $ref: '#/components/schemas/DeprecatedRoute'
         safety_identifier:
+          description: 'Recommended per-end-user identifier for abuse isolation. Use a stable ID, hash, or pseudonym. When a provider requires a user identity, OpenRouter folds it into the hashed identity sent upstream and never forwards it raw. If omitted, requests use an account-level identity, so provider policy blocks can affect the whole account.'
+          example: 'user-123'
           type:
             - 'string'
             - 'null'
