@@ -93,6 +93,7 @@ const (
 	ProviderRunway          Provider = "runway"
 	ProviderSailResearch    Provider = "sail-research"
 	ProviderSakana          Provider = "sakana"
+	ProviderSakanaAi        Provider = "sakana-ai"
 	ProviderSambanova       Provider = "sambanova"
 	ProviderSeed            Provider = "seed"
 	ProviderSiliconflow     Provider = "siliconflow"
@@ -107,6 +108,7 @@ const (
 	ProviderVenice          Provider = "venice"
 	ProviderWafer           Provider = "wafer"
 	ProviderWandb           Provider = "wandb"
+	ProviderWandbLegacy     Provider = "wandb-legacy"
 	ProviderXai             Provider = "xai"
 	ProviderXiaomi          Provider = "xiaomi"
 	ProviderZAi             Provider = "z-ai"
@@ -279,6 +281,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "sakana":
 		fallthrough
+	case "sakana-ai":
+		fallthrough
 	case "sambanova":
 		fallthrough
 	case "seed":
@@ -306,6 +310,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "wafer":
 		fallthrough
 	case "wandb":
+		fallthrough
+	case "wandb-legacy":
 		fallthrough
 	case "xai":
 		fallthrough

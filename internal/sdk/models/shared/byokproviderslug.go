@@ -90,6 +90,7 @@ const (
 	BYOKProviderSlugRunway          BYOKProviderSlug = "runway"
 	BYOKProviderSlugSailResearch    BYOKProviderSlug = "sail-research"
 	BYOKProviderSlugSakana          BYOKProviderSlug = "sakana"
+	BYOKProviderSlugSakanaAi        BYOKProviderSlug = "sakana-ai"
 	BYOKProviderSlugSambanova       BYOKProviderSlug = "sambanova"
 	BYOKProviderSlugSeed            BYOKProviderSlug = "seed"
 	BYOKProviderSlugSiliconflow     BYOKProviderSlug = "siliconflow"
@@ -104,6 +105,7 @@ const (
 	BYOKProviderSlugVenice          BYOKProviderSlug = "venice"
 	BYOKProviderSlugWafer           BYOKProviderSlug = "wafer"
 	BYOKProviderSlugWandb           BYOKProviderSlug = "wandb"
+	BYOKProviderSlugWandbLegacy     BYOKProviderSlug = "wandb-legacy"
 	BYOKProviderSlugXai             BYOKProviderSlug = "xai"
 	BYOKProviderSlugXiaomi          BYOKProviderSlug = "xiaomi"
 	BYOKProviderSlugZAi             BYOKProviderSlug = "z-ai"
@@ -276,6 +278,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "sakana":
 		fallthrough
+	case "sakana-ai":
+		fallthrough
 	case "sambanova":
 		fallthrough
 	case "seed":
@@ -303,6 +307,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "wafer":
 		fallthrough
 	case "wandb":
+		fallthrough
+	case "wandb-legacy":
 		fallthrough
 	case "xai":
 		fallthrough

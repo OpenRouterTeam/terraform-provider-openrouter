@@ -162,6 +162,7 @@ type VideoGenerationRequestOptions struct {
 	Runway              map[string]any `json:"runway,omitzero"`
 	SailResearch        map[string]any `json:"sail-research,omitzero"`
 	Sakana              map[string]any `json:"sakana,omitzero"`
+	SakanaAi            map[string]any `json:"sakana-ai,omitzero"`
 	Sambanova           map[string]any `json:"sambanova,omitzero"`
 	SambanovaCloaked    map[string]any `json:"sambanova-cloaked,omitzero"`
 	Seed                map[string]any `json:"seed,omitzero"`
@@ -182,6 +183,7 @@ type VideoGenerationRequestOptions struct {
 	Venice              map[string]any `json:"venice,omitzero"`
 	Wafer               map[string]any `json:"wafer,omitzero"`
 	Wandb               map[string]any `json:"wandb,omitzero"`
+	WandbLegacy         map[string]any `json:"wandb-legacy,omitzero"`
 	Xai                 map[string]any `json:"xai,omitzero"`
 	Xiaomi              map[string]any `json:"xiaomi,omitzero"`
 	ZAi                 map[string]any `json:"z-ai,omitzero"`
@@ -926,6 +928,13 @@ func (v *VideoGenerationRequestOptions) GetSakana() map[string]any {
 	return v.Sakana
 }
 
+func (v *VideoGenerationRequestOptions) GetSakanaAi() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.SakanaAi
+}
+
 func (v *VideoGenerationRequestOptions) GetSambanova() map[string]any {
 	if v == nil {
 		return nil
@@ -1064,6 +1073,13 @@ func (v *VideoGenerationRequestOptions) GetWandb() map[string]any {
 		return nil
 	}
 	return v.Wandb
+}
+
+func (v *VideoGenerationRequestOptions) GetWandbLegacy() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.WandbLegacy
 }
 
 func (v *VideoGenerationRequestOptions) GetXai() map[string]any {
