@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 964db8a18c6dac9fc6e6d3b676e214ed
+  docChecksum: 18fc9b71ec232b9dab249f67e1582525
   docVersion: 1.0.0
-  speakeasyVersion: 1.790.3
-  generationVersion: 2.918.4
-  releaseVersion: 0.1.4
-  configChecksum: eecd52752bdeeeaf68251b6dc1027ae5
+  speakeasyVersion: 1.791.0
+  generationVersion: 2.924.0
+  releaseVersion: 0.1.5
+  configChecksum: d8bd0896e9eab4a8aad0f86a8ddf2217
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: dbbaa10a-9fa3-4137-a85c-a530dbb531cf
-  pristine_commit_hash: ade853a9500a69316d38bc122150d47f93efad8a
-  pristine_tree_hash: 2925ee99f81eaad11827a9cf2e414324330c1df0
+  generation_id: 5ad13349-218c-4693-98de-f449affb6206
+  pristine_commit_hash: 771bfec8f1b44e5417cf75c0f902beb16e0a3c96
+  pristine_tree_hash: 1976da2fa40b47218719759cbe18a5fbec5591e6
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:87c8788c474d9257ab266d818dff368e973e2e5c
-    pristine_git_object: 7eb547b454a57a7c46d828a8865cb5e0014e891e
+    last_write_checksum: sha1:3b2181b76286f6d14bd1741b7ccb9818b78bd08e
+    pristine_git_object: 519545969baff1064ef408cd390364fdeadebfd0
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2475,20 +2475,28 @@ trackedFiles:
     pristine_git_object: c963b183cbd8ee55ad210df4926f64a3b5d63690
   internal/sdk/models/shared/messagesmessageparam.go:
     id: 31faa887cd9d
-    last_write_checksum: sha1:39d269cef0bafd8656cc170cefd6b166ad7d362a
-    pristine_git_object: 9d48c9157acf8540fb82725b36b02eda8ede2575
+    last_write_checksum: sha1:19df4c7957678206e277fc86699def2164bf86d8
+    pristine_git_object: dc4638ed802cbdfb0ede45807ccf1a7f7b7959ee
   internal/sdk/models/shared/messagesoutputconfig.go:
     id: 72e2774ee805
     last_write_checksum: sha1:87a1b6c9cb43b2e45d2a7393a7e8be52afa1472b
     pristine_git_object: ac42a5300e994aa8a6b43b782e5d8a56fdfb53f7
   internal/sdk/models/shared/messagesrequest.go:
     id: 364162322d0e
-    last_write_checksum: sha1:9dab1cfd7ee259fbb76dedb42c4e1ab45e2449de
-    pristine_git_object: b86280e758abfeffb16021777078d3641c4f527a
+    last_write_checksum: sha1:98cd72ef1737ccd26bb1886e6c29b000f8167e8c
+    pristine_git_object: b0a6a0671022830b1e322c8ebe6dc74a5f27b8b4
   internal/sdk/models/shared/messagessearchmodelsservertool.go:
     id: 39a47da803ce
     last_write_checksum: sha1:775d2a97f12f0a052a3d140634bb974a63850f5c
     pristine_git_object: 160f5414c83f26533799aae714f56ca6c93d1a98
+  internal/sdk/models/shared/messagestooladditionblock.go:
+    id: 3004afbc1970
+    last_write_checksum: sha1:eda32ab74f5245dd42a9b7a7bf062dcf5f3211d0
+    pristine_git_object: 31f5e243e5ae6f5a43197a4d4bd9eace3c6bfd6a
+  internal/sdk/models/shared/messagestoolremovalblock.go:
+    id: 537b49b29eb5
+    last_write_checksum: sha1:9a6074ed82ffc904f1b2c19111c65fc751aaaf02
+    pristine_git_object: b4d42152bf27a945014644834127581627847e9b
   internal/sdk/models/shared/model.go:
     id: 75f4e61fb820
     last_write_checksum: sha1:fa263934f71b6d390647a7240dbd6be59189ce36
@@ -3307,8 +3315,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:22f85f9d1a66cf784603936879cc49a14fc0b9d2
-    pristine_git_object: b1d49b3bedae32e4b858117ab6a1813d284324ff
+    last_write_checksum: sha1:6ce6c5c52433a43288984870181747a584db48bc
+    pristine_git_object: 1b759bc542b74adcce0a48eaf138c5084a0bee1b
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4929,4 +4937,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.tools[].union(web_search)` **Changed**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.tools[].union(OpenRouterWebSearchServerTool).parameters.max_uses` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(AdditionalToolsItem).tools[]` **Changed**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body` **Changed**\n"
