@@ -4,66 +4,211 @@ package shared
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type MessagesToolAdditionBlockTypeToolReference string
-
-const (
-	MessagesToolAdditionBlockTypeToolReferenceToolReference MessagesToolAdditionBlockTypeToolReference = "tool_reference"
-)
-
-func (e MessagesToolAdditionBlockTypeToolReference) ToPointer() *MessagesToolAdditionBlockTypeToolReference {
-	return &e
-}
-func (e *MessagesToolAdditionBlockTypeToolReference) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "tool_reference":
-		*e = MessagesToolAdditionBlockTypeToolReference(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for MessagesToolAdditionBlockTypeToolReference: %v", v)
-	}
+type MessagesToolAdditionBlockToolMcpToolsetReference struct {
+	ServerName string `json:"server_name"`
+	//lint:ignore U1000 accessed via reflection for JSON marshaling
+	type_ string `const:"mcp_toolset_reference" json:"type"`
 }
 
-type MessagesToolAdditionBlockTool struct {
-	Name string                                     `json:"name"`
-	Type MessagesToolAdditionBlockTypeToolReference `json:"type"`
-}
-
-func (m MessagesToolAdditionBlockTool) MarshalJSON() ([]byte, error) {
+func (m MessagesToolAdditionBlockToolMcpToolsetReference) MarshalJSON() ([]byte, error) {
 	return utils.MarshalJSON(m, "", false)
 }
 
-func (m *MessagesToolAdditionBlockTool) UnmarshalJSON(data []byte) error {
+func (m *MessagesToolAdditionBlockToolMcpToolsetReference) UnmarshalJSON(data []byte) error {
 	if err := utils.UnmarshalJSON(data, &m, "", false, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m *MessagesToolAdditionBlockTool) GetName() string {
+func (m *MessagesToolAdditionBlockToolMcpToolsetReference) GetServerName() string {
+	if m == nil {
+		return ""
+	}
+	return m.ServerName
+}
+
+func (m *MessagesToolAdditionBlockToolMcpToolsetReference) GetType() string {
+	return "mcp_toolset_reference"
+}
+
+type MessagesToolAdditionBlockToolMcpToolReference struct {
+	Name       string `json:"name"`
+	ServerName string `json:"server_name"`
+	//lint:ignore U1000 accessed via reflection for JSON marshaling
+	type_ string `const:"mcp_tool_reference" json:"type"`
+}
+
+func (m MessagesToolAdditionBlockToolMcpToolReference) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(m, "", false)
+}
+
+func (m *MessagesToolAdditionBlockToolMcpToolReference) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &m, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *MessagesToolAdditionBlockToolMcpToolReference) GetName() string {
 	if m == nil {
 		return ""
 	}
 	return m.Name
 }
 
-func (m *MessagesToolAdditionBlockTool) GetType() MessagesToolAdditionBlockTypeToolReference {
+func (m *MessagesToolAdditionBlockToolMcpToolReference) GetServerName() string {
 	if m == nil {
-		return MessagesToolAdditionBlockTypeToolReference("")
+		return ""
 	}
-	return m.Type
+	return m.ServerName
+}
+
+func (m *MessagesToolAdditionBlockToolMcpToolReference) GetType() string {
+	return "mcp_tool_reference"
+}
+
+type MessagesToolAdditionBlockToolToolReference struct {
+	Name string `json:"name"`
+	//lint:ignore U1000 accessed via reflection for JSON marshaling
+	type_ string `const:"tool_reference" json:"type"`
+}
+
+func (m MessagesToolAdditionBlockToolToolReference) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(m, "", false)
+}
+
+func (m *MessagesToolAdditionBlockToolToolReference) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &m, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *MessagesToolAdditionBlockToolToolReference) GetName() string {
+	if m == nil {
+		return ""
+	}
+	return m.Name
+}
+
+func (m *MessagesToolAdditionBlockToolToolReference) GetType() string {
+	return "tool_reference"
+}
+
+type MessagesToolAdditionBlockToolUnionType string
+
+const (
+	MessagesToolAdditionBlockToolUnionTypeToolReference       MessagesToolAdditionBlockToolUnionType = "tool_reference"
+	MessagesToolAdditionBlockToolUnionTypeMcpToolReference    MessagesToolAdditionBlockToolUnionType = "mcp_tool_reference"
+	MessagesToolAdditionBlockToolUnionTypeMcpToolsetReference MessagesToolAdditionBlockToolUnionType = "mcp_toolset_reference"
+)
+
+type MessagesToolAdditionBlockToolUnion struct {
+	MessagesToolAdditionBlockToolToolReference       *MessagesToolAdditionBlockToolToolReference       `queryParam:"inline" union:"member"`
+	MessagesToolAdditionBlockToolMcpToolReference    *MessagesToolAdditionBlockToolMcpToolReference    `queryParam:"inline" union:"member"`
+	MessagesToolAdditionBlockToolMcpToolsetReference *MessagesToolAdditionBlockToolMcpToolsetReference `queryParam:"inline" union:"member"`
+
+	Type MessagesToolAdditionBlockToolUnionType
+}
+
+func CreateMessagesToolAdditionBlockToolUnionToolReference(toolReference MessagesToolAdditionBlockToolToolReference) MessagesToolAdditionBlockToolUnion {
+	typ := MessagesToolAdditionBlockToolUnionTypeToolReference
+
+	return MessagesToolAdditionBlockToolUnion{
+		MessagesToolAdditionBlockToolToolReference: &toolReference,
+		Type: typ,
+	}
+}
+
+func CreateMessagesToolAdditionBlockToolUnionMcpToolReference(mcpToolReference MessagesToolAdditionBlockToolMcpToolReference) MessagesToolAdditionBlockToolUnion {
+	typ := MessagesToolAdditionBlockToolUnionTypeMcpToolReference
+
+	return MessagesToolAdditionBlockToolUnion{
+		MessagesToolAdditionBlockToolMcpToolReference: &mcpToolReference,
+		Type: typ,
+	}
+}
+
+func CreateMessagesToolAdditionBlockToolUnionMcpToolsetReference(mcpToolsetReference MessagesToolAdditionBlockToolMcpToolsetReference) MessagesToolAdditionBlockToolUnion {
+	typ := MessagesToolAdditionBlockToolUnionTypeMcpToolsetReference
+
+	return MessagesToolAdditionBlockToolUnion{
+		MessagesToolAdditionBlockToolMcpToolsetReference: &mcpToolsetReference,
+		Type: typ,
+	}
+}
+
+func (u *MessagesToolAdditionBlockToolUnion) UnmarshalJSON(data []byte) error {
+
+	type discriminator struct {
+		Type string `json:"type"`
+	}
+
+	dis := new(discriminator)
+	if err := json.Unmarshal(data, &dis); err != nil {
+		return fmt.Errorf("could not unmarshal discriminator: %w", err)
+	}
+
+	switch dis.Type {
+	case "tool_reference":
+		messagesToolAdditionBlockToolToolReference := new(MessagesToolAdditionBlockToolToolReference)
+		if err := utils.UnmarshalJSON(data, &messagesToolAdditionBlockToolToolReference, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == tool_reference) type MessagesToolAdditionBlockToolToolReference within MessagesToolAdditionBlockToolUnion: %w", string(data), err)
+		}
+
+		u.MessagesToolAdditionBlockToolToolReference = messagesToolAdditionBlockToolToolReference
+		u.Type = MessagesToolAdditionBlockToolUnionTypeToolReference
+		return nil
+	case "mcp_tool_reference":
+		messagesToolAdditionBlockToolMcpToolReference := new(MessagesToolAdditionBlockToolMcpToolReference)
+		if err := utils.UnmarshalJSON(data, &messagesToolAdditionBlockToolMcpToolReference, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == mcp_tool_reference) type MessagesToolAdditionBlockToolMcpToolReference within MessagesToolAdditionBlockToolUnion: %w", string(data), err)
+		}
+
+		u.MessagesToolAdditionBlockToolMcpToolReference = messagesToolAdditionBlockToolMcpToolReference
+		u.Type = MessagesToolAdditionBlockToolUnionTypeMcpToolReference
+		return nil
+	case "mcp_toolset_reference":
+		messagesToolAdditionBlockToolMcpToolsetReference := new(MessagesToolAdditionBlockToolMcpToolsetReference)
+		if err := utils.UnmarshalJSON(data, &messagesToolAdditionBlockToolMcpToolsetReference, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == mcp_toolset_reference) type MessagesToolAdditionBlockToolMcpToolsetReference within MessagesToolAdditionBlockToolUnion: %w", string(data), err)
+		}
+
+		u.MessagesToolAdditionBlockToolMcpToolsetReference = messagesToolAdditionBlockToolMcpToolsetReference
+		u.Type = MessagesToolAdditionBlockToolUnionTypeMcpToolsetReference
+		return nil
+	}
+
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for MessagesToolAdditionBlockToolUnion", string(data))
+}
+
+func (u MessagesToolAdditionBlockToolUnion) MarshalJSON() ([]byte, error) {
+	if u.MessagesToolAdditionBlockToolToolReference != nil {
+		return utils.MarshalJSON(u.MessagesToolAdditionBlockToolToolReference, "", true)
+	}
+
+	if u.MessagesToolAdditionBlockToolMcpToolReference != nil {
+		return utils.MarshalJSON(u.MessagesToolAdditionBlockToolMcpToolReference, "", true)
+	}
+
+	if u.MessagesToolAdditionBlockToolMcpToolsetReference != nil {
+		return utils.MarshalJSON(u.MessagesToolAdditionBlockToolMcpToolsetReference, "", true)
+	}
+
+	return nil, errors.New("could not marshal union type MessagesToolAdditionBlockToolUnion: all fields are null")
 }
 
 // MessagesToolAdditionBlock - Loads a previously deferred tool (declared in `tools` with `defer_loading: true`) mid-conversation without invalidating the prompt cache. Only valid in `role: "system"` messages. Not supported on Claude Sonnet 5 or models older than Claude Opus 4.8.
 type MessagesToolAdditionBlock struct {
-	Tool MessagesToolAdditionBlockTool `json:"tool"`
+	// Enable automatic prompt caching. When set at the top level, the system automatically applies cache breakpoints to the last cacheable block in the request. When set on an individual content block, it marks an explicit cache breakpoint; block-level markers also work on OpenAI models that support explicit prompt caching — OpenRouter converts them to the provider's native format.
+	CacheControl *AnthropicCacheControlDirective    `json:"cache_control,omitzero"`
+	Tool         MessagesToolAdditionBlockToolUnion `json:"tool"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"tool_addition" json:"type"`
 }
@@ -79,11 +224,30 @@ func (m *MessagesToolAdditionBlock) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m *MessagesToolAdditionBlock) GetTool() MessagesToolAdditionBlockTool {
+func (m *MessagesToolAdditionBlock) GetCacheControl() *AnthropicCacheControlDirective {
 	if m == nil {
-		return MessagesToolAdditionBlockTool{}
+		return nil
+	}
+	return m.CacheControl
+}
+
+func (m *MessagesToolAdditionBlock) GetTool() MessagesToolAdditionBlockToolUnion {
+	if m == nil {
+		return MessagesToolAdditionBlockToolUnion{}
 	}
 	return m.Tool
+}
+
+func (m *MessagesToolAdditionBlock) GetToolToolReference() *MessagesToolAdditionBlockToolToolReference {
+	return m.GetTool().MessagesToolAdditionBlockToolToolReference
+}
+
+func (m *MessagesToolAdditionBlock) GetToolMcpToolReference() *MessagesToolAdditionBlockToolMcpToolReference {
+	return m.GetTool().MessagesToolAdditionBlockToolMcpToolReference
+}
+
+func (m *MessagesToolAdditionBlock) GetToolMcpToolsetReference() *MessagesToolAdditionBlockToolMcpToolsetReference {
+	return m.GetTool().MessagesToolAdditionBlockToolMcpToolsetReference
 }
 
 func (m *MessagesToolAdditionBlock) GetType() string {
