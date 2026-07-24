@@ -52,10 +52,11 @@ resource "openrouter_guardrail" "my_guardrail" {
   ignored_providers = [
     "azure",
   ]
-  limit_usd      = 50
-  name           = "My New Guardrail"
-  reset_interval = "monthly"
-  workspace_id   = "0df9e665-d932-5740-b2c7-b52af166bc11"
+  include_byok_in_budgets = false
+  limit_usd               = 50
+  name                    = "My New Guardrail"
+  reset_interval          = "monthly"
+  workspace_id            = "0df9e665-d932-5740-b2c7-b52af166bc11"
 }
 ```
 
@@ -81,6 +82,7 @@ resource "openrouter_guardrail" "my_guardrail" {
 - `enforce_zdr_xai` (Boolean) Whether to enforce zero data retention for xAI models. Falls back to enforce_zdr when not provided.
 - `ignored_models` (List of String) Array of model identifiers to exclude from routing (slug or canonical_slug accepted)
 - `ignored_providers` (List of String) List of provider IDs to exclude from routing
+- `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false.
 - `limit_usd` (Number) Spending limit in USD
 - `reset_interval` (String) Interval at which the limit resets (daily, weekly, monthly). must be one of ["daily", "weekly", "monthly"]
 - `workspace_id` (String) The workspace to create the guardrail in. Defaults to the default workspace if not provided. Requires replacement if changed.

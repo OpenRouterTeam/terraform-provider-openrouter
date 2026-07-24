@@ -105,6 +105,7 @@ func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponseData(ctx
 	} else {
 		r.IgnoredProviders = nil
 	}
+	r.IncludeByokInBudgets = types.BoolValue(resp.IncludeByokInBudgets)
 	r.LimitUsd = types.Float64PointerValue(resp.LimitUsd)
 	r.Name = types.StringValue(resp.Name)
 	if resp.ResetInterval != nil {

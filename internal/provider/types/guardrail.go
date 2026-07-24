@@ -22,6 +22,7 @@ type Guardrail struct {
 	ID                    types.String                `tfsdk:"id"`
 	IgnoredModels         []types.String              `tfsdk:"ignored_models"`
 	IgnoredProviders      []types.String              `tfsdk:"ignored_providers"`
+	IncludeByokInBudgets  types.Bool                  `tfsdk:"include_byok_in_budgets"`
 	LimitUsd              types.Float64               `tfsdk:"limit_usd"`
 	Name                  types.String                `tfsdk:"name"`
 	ResetInterval         types.String                `tfsdk:"reset_interval"`

@@ -105,6 +105,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 	} else {
 		r.IgnoredProviders = nil
 	}
+	r.IncludeByokInBudgets = types.BoolValue(resp.IncludeByokInBudgets)
 	r.LimitUsd = types.Float64PointerValue(resp.LimitUsd)
 	r.Name = types.StringValue(resp.Name)
 	if resp.ResetInterval != nil {
@@ -212,6 +213,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 	} else {
 		r.IgnoredProviders = nil
 	}
+	r.IncludeByokInBudgets = types.BoolValue(resp.IncludeByokInBudgets)
 	r.LimitUsd = types.Float64PointerValue(resp.LimitUsd)
 	r.Name = types.StringValue(resp.Name)
 	if resp.ResetInterval != nil {
@@ -319,6 +321,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 	} else {
 		r.IgnoredProviders = nil
 	}
+	r.IncludeByokInBudgets = types.BoolValue(resp.IncludeByokInBudgets)
 	r.LimitUsd = types.Float64PointerValue(resp.LimitUsd)
 	r.Name = types.StringValue(resp.Name)
 	if resp.ResetInterval != nil {
@@ -499,6 +502,12 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 			ignoredProviders = append(ignoredProviders, r.IgnoredProviders[ignoredProvidersIndex].ValueString())
 		}
 	}
+	includeByokInBudgets := new(bool)
+	if !r.IncludeByokInBudgets.IsUnknown() && !r.IncludeByokInBudgets.IsNull() {
+		*includeByokInBudgets = r.IncludeByokInBudgets.ValueBool()
+	} else {
+		includeByokInBudgets = nil
+	}
 	limitUsd := new(float64)
 	if !r.LimitUsd.IsUnknown() && !r.LimitUsd.IsNull() {
 		*limitUsd = r.LimitUsd.ValueFloat64()
@@ -534,6 +543,7 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 		EnforceZdrXai:         enforceZdrXai,
 		IgnoredModels:         ignoredModels,
 		IgnoredProviders:      ignoredProviders,
+		IncludeByokInBudgets:  includeByokInBudgets,
 		LimitUsd:              limitUsd,
 		Name:                  name,
 		ResetInterval:         resetInterval,
@@ -663,6 +673,12 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 			ignoredProviders = append(ignoredProviders, r.IgnoredProviders[ignoredProvidersIndex].ValueString())
 		}
 	}
+	includeByokInBudgets := new(bool)
+	if !r.IncludeByokInBudgets.IsUnknown() && !r.IncludeByokInBudgets.IsNull() {
+		*includeByokInBudgets = r.IncludeByokInBudgets.ValueBool()
+	} else {
+		includeByokInBudgets = nil
+	}
 	limitUsd := new(float64)
 	if !r.LimitUsd.IsUnknown() && !r.LimitUsd.IsNull() {
 		*limitUsd = r.LimitUsd.ValueFloat64()
@@ -695,6 +711,7 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 		EnforceZdrXai:         enforceZdrXai,
 		IgnoredModels:         ignoredModels,
 		IgnoredProviders:      ignoredProviders,
+		IncludeByokInBudgets:  includeByokInBudgets,
 		LimitUsd:              limitUsd,
 		Name:                  name,
 		ResetInterval:         resetInterval,

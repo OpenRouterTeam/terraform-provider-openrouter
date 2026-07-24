@@ -44,6 +44,7 @@ type GuardrailDataSourceModel struct {
 	ID                    types.String                        `tfsdk:"id"`
 	IgnoredModels         []types.String                      `tfsdk:"ignored_models"`
 	IgnoredProviders      []types.String                      `tfsdk:"ignored_providers"`
+	IncludeByokInBudgets  types.Bool                          `tfsdk:"include_byok_in_budgets"`
 	LimitUsd              types.Float64                       `tfsdk:"limit_usd"`
 	Name                  types.String                        `tfsdk:"name"`
 	ResetInterval         types.String                        `tfsdk:"reset_interval"`
@@ -162,6 +163,10 @@ func (r *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaR
 				Computed:    true,
 				ElementType: types.StringType,
 				Description: `List of provider IDs to exclude from routing`,
+			},
+			"include_byok_in_budgets": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend.`,
 			},
 			"limit_usd": schema.Float64Attribute{
 				Computed:    true,

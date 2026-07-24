@@ -40,6 +40,8 @@ type UpdateGuardrailResponseData struct {
 	IgnoredModels []string `json:"ignored_models,omitzero"`
 	// List of provider IDs to exclude from routing
 	IgnoredProviders []string `json:"ignored_providers,omitzero"`
+	// Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend.
+	IncludeByokInBudgets bool `json:"include_byok_in_budgets"`
 	// Spending limit in USD
 	LimitUsd *float64 `json:"limit_usd,omitzero"`
 	// Name of the guardrail
@@ -166,6 +168,13 @@ func (u *UpdateGuardrailResponseData) GetIgnoredProviders() []string {
 		return nil
 	}
 	return u.IgnoredProviders
+}
+
+func (u *UpdateGuardrailResponseData) GetIncludeByokInBudgets() bool {
+	if u == nil {
+		return false
+	}
+	return u.IncludeByokInBudgets
 }
 
 func (u *UpdateGuardrailResponseData) GetLimitUsd() *float64 {
