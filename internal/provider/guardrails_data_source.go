@@ -150,6 +150,10 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 							ElementType: types.StringType,
 							Description: `List of provider IDs to exclude from routing`,
 						},
+						"include_byok_in_budgets": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend.`,
+						},
 						"limit_usd": schema.Float64Attribute{
 							Computed:    true,
 							Description: `Spending limit in USD`,

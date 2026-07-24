@@ -53,6 +53,7 @@ type GuardrailResourceModel struct {
 	ID                    types.String                        `tfsdk:"id"`
 	IgnoredModels         []types.String                      `tfsdk:"ignored_models"`
 	IgnoredProviders      []types.String                      `tfsdk:"ignored_providers"`
+	IncludeByokInBudgets  types.Bool                          `tfsdk:"include_byok_in_budgets"`
 	LimitUsd              types.Float64                       `tfsdk:"limit_usd"`
 	Name                  types.String                        `tfsdk:"name"`
 	ResetInterval         types.String                        `tfsdk:"reset_interval"`
@@ -255,6 +256,11 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 				Validators: []validator.List{
 					listvalidator.SizeAtLeast(1),
 				},
+			},
+			"include_byok_in_budgets": schema.BoolAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: `Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false.`,
 			},
 			"limit_usd": schema.Float64Attribute{
 				Computed:    true,

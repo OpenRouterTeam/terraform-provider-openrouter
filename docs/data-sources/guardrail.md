@@ -41,6 +41,7 @@ data "openrouter_guardrail" "my_guardrail" {
 - `enforce_zdr_xai` (Boolean) Whether to enforce zero data retention for xAI models. Falls back to enforce_zdr when not provided.
 - `ignored_models` (List of String) Array of model canonical_slugs to exclude from routing
 - `ignored_providers` (List of String) List of provider IDs to exclude from routing
+- `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend.
 - `limit_usd` (Number) Spending limit in USD
 - `name` (String) Name of the guardrail
 - `reset_interval` (String) Interval at which the limit resets (daily, weekly, monthly)

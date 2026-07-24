@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 158600b54afe9687b625ebca6bedb9a2
+  docChecksum: 33a7b14d5e24da91f5a447167ee1fc4f
   docVersion: 1.0.0
   speakeasyVersion: 1.790.3
   generationVersion: 2.918.4
-  releaseVersion: 0.1.2
-  configChecksum: 6357c961f6178935ba7468b7990a3a9f
+  releaseVersion: 0.1.3
+  configChecksum: c00be9b96774aedc0e96fa17c99a84ac
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 14360b68-608a-4ac2-b412-b7cc6c85e25e
-  pristine_commit_hash: 0b27db2489743265afb29650986ed1532575235c
-  pristine_tree_hash: bbecf6dfbc9fe697d10e1a380d60df2efe86bec2
+  generation_id: 70dcd874-7372-46ba-8915-bd735d735edc
+  pristine_commit_hash: 125abcb5939884e0ef1ad4201ad0886b02b891d6
+  pristine_tree_hash: c3f80666ef3565c7a54e9e6a9fd34c2186b3a8bb
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:714c67b93f42317f474d825beba968d471bc0b18
-    pristine_git_object: 3c67952b3661cddc375e1e6dc3f1642319ff6351
+    last_write_checksum: sha1:a0f5dc741bb3310a754397c393f049bfc8117665
+    pristine_git_object: c6fbdc61f4bb567b4d419c5f106daf52e5ccf0c0
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -159,8 +159,8 @@ trackedFiles:
     pristine_git_object: 8b7036b4eca6d8b4ebccfacf7756730b592a0ab9
   examples/resources/openrouter_guardrail/resource.tf:
     id: 1b7c0e3e1578
-    last_write_checksum: sha1:8e63a8f9313f476dc997b5a13a8003d855c98553
-    pristine_git_object: b65aba5cfd6070d0202d638e99a2cea7be32d3f2
+    last_write_checksum: sha1:858b005f11ed73206fa9e8c838f0c05973190b61
+    pristine_git_object: e8e65ee99d0c39219359b6fec63cdb73ef88f7e8
   examples/resources/openrouter_observability_destination/import-by-string-id.tf:
     id: da3740ed9a60
     last_write_checksum: sha1:5b84e006d00f0b8eafe55449dc6d062455334626
@@ -387,20 +387,20 @@ trackedFiles:
     pristine_git_object: ec788678f3f30e8f795edbc4835e872fcb079dd2
   internal/provider/guardrail_data_source.go:
     id: fca98749d409
-    last_write_checksum: sha1:f1355c7f2a889fe2ca6d16097224265dc701d95d
-    pristine_git_object: a0ec5a459988d3c3a74df608939d5a547a5369c9
+    last_write_checksum: sha1:80d474599015bb80d84e174752c8b2bd1145536e
+    pristine_git_object: a1824b1e37a2b5ea3c06c50ef1bf13467272132e
   internal/provider/guardrail_data_source_sdk.go:
     id: 5925b37760dd
-    last_write_checksum: sha1:e284cecf26ea993505fa95a7b6500550a9c272d3
-    pristine_git_object: 69e358fdf3a05ee6de8b06318b1a14e546401167
+    last_write_checksum: sha1:bf4ce95d1056e9268fc7e35cd3e3f6603e6363dc
+    pristine_git_object: c0150ee463b467618d0c1825c2133e0a84382def
   internal/provider/guardrail_resource.go:
     id: 2c8f3b209709
-    last_write_checksum: sha1:3d3cbb37d56742c084a591e4e356e8a5eec6d183
-    pristine_git_object: 6092805978cc1a454cf25d3c2c1e9c3033a13d46
+    last_write_checksum: sha1:0114f9daeb763b99971b99f16aa3b6d0db94ff8d
+    pristine_git_object: 4bc85cbaf86fc6be083ea9327c019c73f6347552
   internal/provider/guardrail_resource_sdk.go:
     id: f2bb0750b16f
-    last_write_checksum: sha1:4689c9d82a11bc026d715e817d043caf12417973
-    pristine_git_object: a490e04d0e3029691c6b17c16fe5c781c896fbde
+    last_write_checksum: sha1:1cca8892c4ab9a13f48b20544d2e64752ba794dd
+    pristine_git_object: c799998bea7b824725f7077fabab5181b3af38d6
   internal/provider/guardrailkeyassignments_data_source.go:
     id: 29ca93623ede
     last_write_checksum: sha1:ea5d56cbe2a5f87f56d595df907ccb719f466f82
@@ -419,12 +419,12 @@ trackedFiles:
     pristine_git_object: bff6003a357cb475aca318f2c1bb83545ff94c79
   internal/provider/guardrails_data_source.go:
     id: 1123294765cb
-    last_write_checksum: sha1:6340634a8829e4851768516ae950f54ee465892d
-    pristine_git_object: 8e5068de8088e8047369f9448e251fc33eb68f44
+    last_write_checksum: sha1:9c661c3b1a8d590db1c152ddce2ee4c4c1deba62
+    pristine_git_object: c16129da62c981ca85c7e657479e90c4564f1a05
   internal/provider/guardrails_data_source_sdk.go:
     id: ef5138e73326
-    last_write_checksum: sha1:01640d6ec7ff6130c6d97be9c97d0a714783849f
-    pristine_git_object: f329e59729cd1e660be97e2bd4c1386fed49f83e
+    last_write_checksum: sha1:c53a0e06e9d0893b1908fadf8c5953290ddd5237
+    pristine_git_object: 8af351f88cb2255746a79919e5ecdc5255971ff5
   internal/provider/model_data_source.go:
     id: 4683defe10c4
     last_write_checksum: sha1:3f57367f0b2dabe5a6a83a18b1183dc218c43697
@@ -727,8 +727,8 @@ trackedFiles:
     pristine_git_object: 57cdc942160102e72f1a6bfb7f79d5c073359348
   internal/provider/types/guardrail.go:
     id: 0f9586451ece
-    last_write_checksum: sha1:955d5f21aefe05ae23f4c1f5e24eaf92e3ce95af
-    pristine_git_object: 179e8647d183c1ceb5d8a8771876aa69809dd0c7
+    last_write_checksum: sha1:156544c1fa0b8cff260ca843c5c0d08a6fe36246
+    pristine_git_object: 50c807d38a8626d9e123e65abf53212f39575fa6
   internal/provider/types/key_assignment.go:
     id: d776a2ebb741
     last_write_checksum: sha1:96afd1232533126228569c1131e8f27f20eddbe2
@@ -2035,12 +2035,12 @@ trackedFiles:
     pristine_git_object: 64d53a6a753c41862956630654e7f9b57a4a123c
   internal/sdk/models/shared/createguardrailrequest.go:
     id: 2e2b73e39da3
-    last_write_checksum: sha1:88ba08d517ac727ce8ff2f38f25f30b87ced6772
-    pristine_git_object: c5159baf2f63676fb0e625b750a39dc1bc4b0d37
+    last_write_checksum: sha1:e3965905de76042f61779fd297eb795f854c4852
+    pristine_git_object: 831a91e535b80a2c720fe2a6e1c6f4a2bb31ef83
   internal/sdk/models/shared/createguardrailresponse.go:
     id: 3497a5870804
-    last_write_checksum: sha1:e8099e099709591a07e5100b02d1725421da270b
-    pristine_git_object: e935c9c771ce8ceabbbab5e42e7dc6b0b23772db
+    last_write_checksum: sha1:879b8bb77936a370eb6a1334f96ef9064be704e6
+    pristine_git_object: c09cbd9efa2574052183d533c54e9cfbee9e200e
   internal/sdk/models/shared/createobservabilitydestinationrequest.go:
     id: c08ea56c3f84
     last_write_checksum: sha1:b6b637fa0e4ac3ce9714237d70a75f96606e8e63
@@ -2239,8 +2239,8 @@ trackedFiles:
     pristine_git_object: 51e1e36c1223321bec1be194c4d9ddd22018be58
   internal/sdk/models/shared/getguardrailresponse.go:
     id: 7b5980eb9eb8
-    last_write_checksum: sha1:a1388c689f1da63898f1d7cefe531d6135cb297d
-    pristine_git_object: 3c012d487539f55bc52ba2858afb01a6c2dfd4b5
+    last_write_checksum: sha1:9c2354e033cae7b748fb2fd8b2178c3c154ffa04
+    pristine_git_object: b32b69e28310a0002cf69467a70e93af633267de
   internal/sdk/models/shared/getobservabilitydestinationresponse.go:
     id: 12b75211028e
     last_write_checksum: sha1:9f885e9c3496ef44678e18b8f261554faaeca4d0
@@ -2259,8 +2259,8 @@ trackedFiles:
     pristine_git_object: 7f4d6f8aa3455d6e605ac2eb20e56e10a980e0fe
   internal/sdk/models/shared/guardrail.go:
     id: c670d7f3d067
-    last_write_checksum: sha1:82ae5c65f6433255c5d73a2c5c499ed431adabe2
-    pristine_git_object: 49fa006a07b73ff1a675f2deef7f4b9b9692f6b8
+    last_write_checksum: sha1:7b55c1fd177994947917836c563a671ead06dad0
+    pristine_git_object: db1634f426534396330b968e93c98ee978ae4851
   internal/sdk/models/shared/guardrailinterval.go:
     id: ba35f0c18dbd
     last_write_checksum: sha1:cb9954bad404099255f7b3ab87c4464f4827c308
@@ -3159,12 +3159,12 @@ trackedFiles:
     pristine_git_object: 0c362a993fb4d4a85de23bbe0d79d3ff36a02a10
   internal/sdk/models/shared/updateguardrailrequest.go:
     id: 3148e778e2ae
-    last_write_checksum: sha1:c510d0a8a4813c1a53af7da3be3020a92180ec2f
-    pristine_git_object: 81bddc5855c44abd3d61ddcab822023600ea687f
+    last_write_checksum: sha1:8044190cdc48bdb854e6d830c347189816527dfa
+    pristine_git_object: ee385e25f7d9ccd8e96a47b2591a9180aa73f3c8
   internal/sdk/models/shared/updateguardrailresponse.go:
     id: e5b91fcdf775
-    last_write_checksum: sha1:0d592733aae3aae2f87a5ec05eadb6f76b86cc79
-    pristine_git_object: 0eff19b6b1d61453c1b3bdbd05b36b716b7a9697
+    last_write_checksum: sha1:48343222dc638e49cd9a6d69f04ea5465b7a248c
+    pristine_git_object: e7fbad4cc08f6496eccfc34adad33df18341b8b4
   internal/sdk/models/shared/updateobservabilitydestinationrequest.go:
     id: 19459c07c9be
     last_write_checksum: sha1:b13acc18eb3c1c27820314f2ac0adc507ae3f857
@@ -3307,8 +3307,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:c204f7371bc9d906c4965e602a8c5d6edd8527d7
-    pristine_git_object: ac8f0bdc26efe9a680cdb21e3130e6d0492f1d71
+    last_write_checksum: sha1:4d83b91d3fb7219ee97d309894137ed4aba82f98
+    pristine_git_object: 68e4a1a8d721eba575d21e41093874a2f5dde014
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4008,7 +4008,7 @@ examples:
           workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
       responses:
         "200":
-          application/json: {"data": [{"allowed_models": null, "allowed_providers": ["openai", "anthropic", "google"], "content_filter_builtins": [{"action": "redact", "label": "[EMAIL]", "slug": "email"}], "content_filters": null, "created_at": "2025-08-24T10:30:00Z", "description": "Guardrail for production environment", "enforce_zdr": null, "enforce_zdr_anthropic": true, "enforce_zdr_google": false, "enforce_zdr_openai": true, "enforce_zdr_other": false, "enforce_zdr_xai": false, "id": "550e8400-e29b-41d4-a716-446655440000", "ignored_models": null, "ignored_providers": null, "limit_usd": 100, "name": "Production Guardrail", "reset_interval": "monthly", "updated_at": "2025-08-24T15:45:00Z", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}], "total_count": 1}
+          application/json: {"data": [{"allowed_models": null, "allowed_providers": ["openai", "anthropic", "google"], "content_filter_builtins": [{"action": "redact", "label": "[EMAIL]", "slug": "email"}], "content_filters": null, "created_at": "2025-08-24T10:30:00Z", "description": "Guardrail for production environment", "enforce_zdr": null, "enforce_zdr_anthropic": true, "enforce_zdr_google": false, "enforce_zdr_openai": true, "enforce_zdr_other": false, "enforce_zdr_xai": false, "id": "550e8400-e29b-41d4-a716-446655440000", "ignored_models": null, "ignored_providers": null, "include_byok_in_budgets": false, "limit_usd": 100, "name": "Production Guardrail", "reset_interval": "monthly", "updated_at": "2025-08-24T15:45:00Z", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}], "total_count": 1}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
@@ -4021,7 +4021,7 @@ examples:
         application/json: {"allowed_models": null, "allowed_providers": ["openai", "anthropic", "deepseek"], "content_filter_builtins": [{"action": "block", "slug": "regex-prompt-injection"}], "content_filters": null, "description": "A guardrail for limiting API usage", "enforce_zdr_anthropic": true, "enforce_zdr_google": false, "enforce_zdr_openai": true, "enforce_zdr_other": false, "enforce_zdr_xai": false, "ignored_models": null, "ignored_providers": null, "limit_usd": 50, "name": "My New Guardrail", "reset_interval": "monthly"}
       responses:
         "201":
-          application/json: {"data": {"allowed_models": null, "allowed_providers": ["openai", "anthropic", "google"], "content_filter_builtins": [{"action": "redact", "label": "[EMAIL]", "slug": "email"}], "content_filters": null, "created_at": "2025-08-24T10:30:00Z", "description": "A guardrail for limiting API usage", "enforce_zdr": null, "enforce_zdr_anthropic": true, "enforce_zdr_google": false, "enforce_zdr_openai": true, "enforce_zdr_other": false, "enforce_zdr_xai": false, "id": "550e8400-e29b-41d4-a716-446655440000", "ignored_models": null, "ignored_providers": null, "limit_usd": 50, "name": "My New Guardrail", "reset_interval": "monthly", "updated_at": null, "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}}
+          application/json: {"data": {"allowed_models": null, "allowed_providers": ["openai", "anthropic", "google"], "content_filter_builtins": [{"action": "redact", "label": "[EMAIL]", "slug": "email"}], "content_filters": null, "created_at": "2025-08-24T10:30:00Z", "description": "A guardrail for limiting API usage", "enforce_zdr": null, "enforce_zdr_anthropic": true, "enforce_zdr_google": false, "enforce_zdr_openai": true, "enforce_zdr_other": false, "enforce_zdr_xai": false, "id": "550e8400-e29b-41d4-a716-446655440000", "ignored_models": null, "ignored_providers": null, "include_byok_in_budgets": false, "limit_usd": 50, "name": "My New Guardrail", "reset_interval": "monthly", "updated_at": null, "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -4051,7 +4051,7 @@ examples:
           id: "550e8400-e29b-41d4-a716-446655440000"
       responses:
         "200":
-          application/json: {"data": {"allowed_models": null, "allowed_providers": ["openai", "anthropic", "google"], "content_filter_builtins": [{"action": "redact", "label": "[EMAIL]", "slug": "email"}], "content_filters": null, "created_at": "2025-08-24T10:30:00Z", "description": "Guardrail for production environment", "enforce_zdr": null, "enforce_zdr_anthropic": true, "enforce_zdr_google": false, "enforce_zdr_openai": true, "enforce_zdr_other": false, "enforce_zdr_xai": false, "id": "550e8400-e29b-41d4-a716-446655440000", "ignored_models": null, "ignored_providers": null, "limit_usd": 100, "name": "Production Guardrail", "reset_interval": "monthly", "updated_at": "2025-08-24T15:45:00Z", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}}
+          application/json: {"data": {"allowed_models": null, "allowed_providers": ["openai", "anthropic", "google"], "content_filter_builtins": [{"action": "redact", "label": "[EMAIL]", "slug": "email"}], "content_filters": null, "created_at": "2025-08-24T10:30:00Z", "description": "Guardrail for production environment", "enforce_zdr": null, "enforce_zdr_anthropic": true, "enforce_zdr_google": false, "enforce_zdr_openai": true, "enforce_zdr_other": false, "enforce_zdr_xai": false, "id": "550e8400-e29b-41d4-a716-446655440000", "ignored_models": null, "ignored_providers": null, "include_byok_in_budgets": false, "limit_usd": 100, "name": "Production Guardrail", "reset_interval": "monthly", "updated_at": "2025-08-24T15:45:00Z", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "404":
@@ -4067,7 +4067,7 @@ examples:
         application/json: {"description": "Updated description", "limit_usd": 75, "name": "Updated Guardrail Name", "reset_interval": "weekly"}
       responses:
         "200":
-          application/json: {"data": {"allowed_models": null, "allowed_providers": ["openai"], "content_filter_builtins": [{"action": "redact", "label": "[EMAIL]", "slug": "email"}], "content_filters": null, "created_at": "2025-08-24T10:30:00Z", "description": "Updated description", "enforce_zdr": null, "enforce_zdr_anthropic": true, "enforce_zdr_google": true, "enforce_zdr_openai": true, "enforce_zdr_other": true, "enforce_zdr_xai": true, "id": "550e8400-e29b-41d4-a716-446655440000", "ignored_models": null, "ignored_providers": null, "limit_usd": 75, "name": "Updated Guardrail Name", "reset_interval": "weekly", "updated_at": "2025-08-24T16:00:00Z", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}}
+          application/json: {"data": {"allowed_models": null, "allowed_providers": ["openai"], "content_filter_builtins": [{"action": "redact", "label": "[EMAIL]", "slug": "email"}], "content_filters": null, "created_at": "2025-08-24T10:30:00Z", "description": "Updated description", "enforce_zdr": null, "enforce_zdr_anthropic": true, "enforce_zdr_google": true, "enforce_zdr_openai": true, "enforce_zdr_other": true, "enforce_zdr_xai": true, "id": "550e8400-e29b-41d4-a716-446655440000", "ignored_models": null, "ignored_providers": null, "include_byok_in_budgets": true, "limit_usd": 75, "name": "Updated Guardrail Name", "reset_interval": "weekly", "updated_at": "2025-08-24T16:00:00Z", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -4929,7 +4929,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.stt.createTranscription()`:  `response` **Changed**
-  * `OpenRouter.stt.createTranscription_multipart()`:  `response` **Changed**
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Guardrails.list()`:  `response.data[].include_byok_in_budgets` **Added**\n* `OpenRouter.Guardrails.create()`: \n  *  `request.include_byok_in_budgets` **Added**\n  *  `response.data.include_byok_in_budgets` **Added**\n* `OpenRouter.Guardrails.getGuardrail()`:  `response.data.include_byok_in_budgets` **Added**\n* `OpenRouter.Guardrails.update()`: \n  *  `request.body.include_byok_in_budgets` **Added**\n  *  `response.data.include_byok_in_budgets` **Added**\n"

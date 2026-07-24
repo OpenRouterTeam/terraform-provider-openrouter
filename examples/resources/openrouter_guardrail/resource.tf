@@ -37,8 +37,9 @@ resource "openrouter_guardrail" "my_guardrail" {
   ignored_providers = [
     "azure",
   ]
-  limit_usd      = 50
-  name           = "My New Guardrail"
-  reset_interval = "monthly"
-  workspace_id   = "0df9e665-d932-5740-b2c7-b52af166bc11"
+  include_byok_in_budgets = false
+  limit_usd               = 50
+  name                    = "My New Guardrail"
+  reset_interval          = "monthly"
+  workspace_id            = "0df9e665-d932-5740-b2c7-b52af166bc11"
 }

@@ -110,6 +110,7 @@ func (r *GuardrailsDataSourceModel) RefreshFromSharedListGuardrailsResponse(ctx 
 			} else {
 				data.IgnoredProviders = nil
 			}
+			data.IncludeByokInBudgets = types.BoolValue(dataItem.IncludeByokInBudgets)
 			data.LimitUsd = types.Float64PointerValue(dataItem.LimitUsd)
 			data.Name = types.StringValue(dataItem.Name)
 			if dataItem.ResetInterval != nil {
