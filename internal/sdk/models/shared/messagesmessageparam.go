@@ -774,6 +774,8 @@ const (
 	MessagesMessageParamContentUnion4TypeSearchResult        MessagesMessageParamContentUnion4Type = "search_result"
 	MessagesMessageParamContentUnion4TypeCompaction          MessagesMessageParamContentUnion4Type = "compaction"
 	MessagesMessageParamContentUnion4TypeAdvisorToolResult   MessagesMessageParamContentUnion4Type = "advisor_tool_result"
+	MessagesMessageParamContentUnion4TypeToolAddition        MessagesMessageParamContentUnion4Type = "tool_addition"
+	MessagesMessageParamContentUnion4TypeToolRemoval         MessagesMessageParamContentUnion4Type = "tool_removal"
 )
 
 type MessagesMessageParamContentUnion4 struct {
@@ -789,6 +791,8 @@ type MessagesMessageParamContentUnion4 struct {
 	AnthropicSearchResultBlockParam *AnthropicSearchResultBlockParam `queryParam:"inline" union:"member"`
 	ContentCompaction               *ContentCompaction               `queryParam:"inline" union:"member"`
 	MessagesAdvisorToolResultBlock  *MessagesAdvisorToolResultBlock  `queryParam:"inline" union:"member"`
+	MessagesToolAdditionBlock       *MessagesToolAdditionBlock       `queryParam:"inline" union:"member"`
+	MessagesToolRemovalBlock        *MessagesToolRemovalBlock        `queryParam:"inline" union:"member"`
 
 	Type MessagesMessageParamContentUnion4Type
 }
@@ -898,6 +902,24 @@ func CreateMessagesMessageParamContentUnion4AdvisorToolResult(advisorToolResult 
 	return MessagesMessageParamContentUnion4{
 		MessagesAdvisorToolResultBlock: &advisorToolResult,
 		Type:                           typ,
+	}
+}
+
+func CreateMessagesMessageParamContentUnion4ToolAddition(toolAddition MessagesToolAdditionBlock) MessagesMessageParamContentUnion4 {
+	typ := MessagesMessageParamContentUnion4TypeToolAddition
+
+	return MessagesMessageParamContentUnion4{
+		MessagesToolAdditionBlock: &toolAddition,
+		Type:                      typ,
+	}
+}
+
+func CreateMessagesMessageParamContentUnion4ToolRemoval(toolRemoval MessagesToolRemovalBlock) MessagesMessageParamContentUnion4 {
+	typ := MessagesMessageParamContentUnion4TypeToolRemoval
+
+	return MessagesMessageParamContentUnion4{
+		MessagesToolRemovalBlock: &toolRemoval,
+		Type:                     typ,
 	}
 }
 
@@ -1021,6 +1043,24 @@ func (u *MessagesMessageParamContentUnion4) UnmarshalJSON(data []byte) error {
 		u.MessagesAdvisorToolResultBlock = messagesAdvisorToolResultBlock
 		u.Type = MessagesMessageParamContentUnion4TypeAdvisorToolResult
 		return nil
+	case "tool_addition":
+		messagesToolAdditionBlock := new(MessagesToolAdditionBlock)
+		if err := utils.UnmarshalJSON(data, &messagesToolAdditionBlock, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == tool_addition) type MessagesToolAdditionBlock within MessagesMessageParamContentUnion4: %w", string(data), err)
+		}
+
+		u.MessagesToolAdditionBlock = messagesToolAdditionBlock
+		u.Type = MessagesMessageParamContentUnion4TypeToolAddition
+		return nil
+	case "tool_removal":
+		messagesToolRemovalBlock := new(MessagesToolRemovalBlock)
+		if err := utils.UnmarshalJSON(data, &messagesToolRemovalBlock, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == tool_removal) type MessagesToolRemovalBlock within MessagesMessageParamContentUnion4: %w", string(data), err)
+		}
+
+		u.MessagesToolRemovalBlock = messagesToolRemovalBlock
+		u.Type = MessagesMessageParamContentUnion4TypeToolRemoval
+		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for MessagesMessageParamContentUnion4", string(data))
@@ -1073,6 +1113,14 @@ func (u MessagesMessageParamContentUnion4) MarshalJSON() ([]byte, error) {
 
 	if u.MessagesAdvisorToolResultBlock != nil {
 		return utils.MarshalJSON(u.MessagesAdvisorToolResultBlock, "", true)
+	}
+
+	if u.MessagesToolAdditionBlock != nil {
+		return utils.MarshalJSON(u.MessagesToolAdditionBlock, "", true)
+	}
+
+	if u.MessagesToolRemovalBlock != nil {
+		return utils.MarshalJSON(u.MessagesToolRemovalBlock, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type MessagesMessageParamContentUnion4: all fields are null")
