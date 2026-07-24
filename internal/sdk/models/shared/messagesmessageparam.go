@@ -11,9 +11,8 @@ import (
 
 type ContentCompaction struct {
 	// Enable automatic prompt caching. When set at the top level, the system automatically applies cache breakpoints to the last cacheable block in the request. When set on an individual content block, it marks an explicit cache breakpoint; block-level markers also work on OpenAI models that support explicit prompt caching — OpenRouter converts them to the provider's native format.
-	CacheControl     *AnthropicCacheControlDirective `json:"cache_control,omitzero"`
-	Content          *string                         `json:"content"`
-	EncryptedContent *string                         `json:"encrypted_content,omitzero"`
+	CacheControl *AnthropicCacheControlDirective `json:"cache_control,omitzero"`
+	Content      *string                         `json:"content"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"compaction" json:"type"`
 }
@@ -41,13 +40,6 @@ func (c *ContentCompaction) GetContent() *string {
 		return nil
 	}
 	return c.Content
-}
-
-func (c *ContentCompaction) GetEncryptedContent() *string {
-	if c == nil {
-		return nil
-	}
-	return c.EncryptedContent
 }
 
 func (c *ContentCompaction) GetType() string {
