@@ -66,6 +66,7 @@ const (
 	BYOKProviderSlugMeta            BYOKProviderSlug = "meta"
 	BYOKProviderSlugMinimax         BYOKProviderSlug = "minimax"
 	BYOKProviderSlugMistral         BYOKProviderSlug = "mistral"
+	BYOKProviderSlugModal           BYOKProviderSlug = "modal"
 	BYOKProviderSlugModelrun        BYOKProviderSlug = "modelrun"
 	BYOKProviderSlugModular         BYOKProviderSlug = "modular"
 	BYOKProviderSlugMoonshotai      BYOKProviderSlug = "moonshotai"
@@ -229,6 +230,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "minimax":
 		fallthrough
 	case "mistral":
+		fallthrough
+	case "modal":
 		fallthrough
 	case "modelrun":
 		fallthrough
