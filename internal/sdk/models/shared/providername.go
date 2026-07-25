@@ -10,6 +10,7 @@ import (
 type ProviderName string
 
 const (
+	ProviderNameModal               ProviderName = "Modal"
 	ProviderNameAkashMl             ProviderName = "AkashML"
 	ProviderNameAi21                ProviderName = "AI21"
 	ProviderNameAionLabs            ProviderName = "AionLabs"
@@ -122,6 +123,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
+	case "Modal":
+		fallthrough
 	case "AkashML":
 		fallthrough
 	case "AI21":

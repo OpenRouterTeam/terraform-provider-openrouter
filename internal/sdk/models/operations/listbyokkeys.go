@@ -69,6 +69,7 @@ const (
 	ProviderMeta            Provider = "meta"
 	ProviderMinimax         Provider = "minimax"
 	ProviderMistral         Provider = "mistral"
+	ProviderModal           Provider = "modal"
 	ProviderModelrun        Provider = "modelrun"
 	ProviderModular         Provider = "modular"
 	ProviderMoonshotai      Provider = "moonshotai"
@@ -232,6 +233,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "minimax":
 		fallthrough
 	case "mistral":
+		fallthrough
+	case "modal":
 		fallthrough
 	case "modelrun":
 		fallthrough
