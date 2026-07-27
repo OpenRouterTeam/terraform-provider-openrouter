@@ -32,8 +32,7 @@ func newByok(rootSDK *OpenRouter, sdkConfig config.SDKConfiguration, hooks *hook
 	}
 }
 
-// List BYOK provider credentials
-// List the bring-your-own-key (BYOK) provider credentials for the authenticated entity's default workspace. Use the `workspace_id` query parameter to scope the result to a different workspace, or the `provider` query parameter to filter by upstream provider. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// List all models and their prop
 func (s *Byok) List(ctx context.Context, request operations.ListBYOKKeysRequest, opts ...operations.Option) (*operations.ListBYOKKeysResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{

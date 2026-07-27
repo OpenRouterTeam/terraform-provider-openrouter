@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 61ffec8995f40cc2d96427584ee32488
+  docChecksum: 22b32c90edbb87bdd29b00dda4c67db3
   docVersion: 1.0.0
   speakeasyVersion: 1.791.0
   generationVersion: 2.924.0
-  releaseVersion: 0.1.11
-  configChecksum: 8cff8c56675543273775ad1fab3f2090
+  releaseVersion: 0.1.12
+  configChecksum: e7eda1675f55aa2d4b2c368879d7ae13
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 9292f2a3-4387-401a-b5fc-938fb814e7a9
-  pristine_commit_hash: cec76b671cd9df4a9f8a01e53156f5fbfea8edda
-  pristine_tree_hash: 07ad58e554e3480108876552e185b8bd076cb96e
+  generation_id: 551478fd-964a-4215-8051-b01c727c201e
+  pristine_commit_hash: b110f29fcc57e710c91698e587a0e045ef526f49
+  pristine_tree_hash: 7f565e5481b86476b45a60a515ce00c721c8e86c
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:0b4a8485b0fdc526bc8ac2914b97e47a6e3d0ab6
-    pristine_git_object: e64ecc579637d10c79faf493df8ef3d766f81d1d
+    last_write_checksum: sha1:d814d3b039b8493b5ceb1a412da03821fc5bf77d
+    pristine_git_object: f95d3a2427f6df2217db77957fd87a6d5956a0aa
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1031,8 +1031,8 @@ trackedFiles:
     pristine_git_object: 634abcc9d416673f1a79ab7e860a23469ab1860c
   internal/sdk/byok.go:
     id: dd266434e44c
-    last_write_checksum: sha1:9b15672f2b0d927378b1532865746d587504565c
-    pristine_git_object: 37ab058250e0b2a97fb9935b6dae3fcdf05a7f73
+    last_write_checksum: sha1:051e745c457ed46725d38dfc5e25c3b37fd3a088
+    pristine_git_object: 0fb0c223bfe7ae462df4dde0d3b86d4f64521bb7
   internal/sdk/classifications.go:
     id: 3e000fc98302
     last_write_checksum: sha1:55ca108d5f316ab59294f56f1b677ee5071bf6b7
@@ -1135,8 +1135,8 @@ trackedFiles:
     pristine_git_object: a614e37673d3ea81eabc6139236edfb22a15dc55
   internal/sdk/models.go:
     id: 7b13b8162cf6
-    last_write_checksum: sha1:ce01a0279837d297fedd9eca37ab6d4bc470efcc
-    pristine_git_object: 49d8f3527724e5cf708a0b14178d08f8ca941fb3
+    last_write_checksum: sha1:33f0533e4e0abfa030844277d7a692d59144cd5b
+    pristine_git_object: ba330691fe94ed1899892aa2b712f3c953c4ae39
   internal/sdk/models/errors/apierror.go:
     id: bf281d768352
     last_write_checksum: sha1:f8493be1606361ffba9bf77d77ede209acc0f562
@@ -2851,8 +2851,8 @@ trackedFiles:
     pristine_git_object: c6c9f2fb1961d23e50e875504875fe72f16dd2f7
   internal/sdk/models/shared/quantization.go:
     id: 07c1a75a3f74
-    last_write_checksum: sha1:0d3395202f1785dceb5dc9c02a738c1498f69dc7
-    pristine_git_object: 9f7088b57012cd22d0a701faa92ced10ebaef5fd
+    last_write_checksum: sha1:b8e6fe3f808ad1688d22aee06b187ff89d9f3d13
+    pristine_git_object: 4a458d2e3ba56a2b96d03b4db9fad2534d35786d
   internal/sdk/models/shared/rangecapability.go:
     id: 78afb7ebc5c4
     last_write_checksum: sha1:12b4ac48dc348caa20c6f44816d1bb3efc94245e
@@ -3315,8 +3315,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:87df3e3565a74ae4ff5dc6b79f99a9c30eabf89b
-    pristine_git_object: 3724ec95d952b9540b5feca0a9c1065d973a7e00
+    last_write_checksum: sha1:bd395e98827d06519f3a000ea3cb66d7802e4c8c
+    pristine_git_object: 04254c27c39d1d919db282338a55c127f1cdb053
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4937,4 +4937,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(modal)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(modal)` **Added**\n  *  `response.data.provider_slug.enum(modal)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(modal)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(modal)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Modal)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Modal)` **Added** (Breaking ⚠️)\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Modal)` **Added**\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Modal)` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Modal)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Modal)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Modal)` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].quantization` **Changed** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].quantization` **Changed** (Breaking ⚠️)\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.quantizations[]` **Changed**\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.quantizations[]` **Changed**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.quantizations[]` **Changed**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.quantizations[]` **Changed**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.quantizations[]` **Changed**\n"

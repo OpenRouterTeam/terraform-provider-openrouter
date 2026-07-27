@@ -13,8 +13,11 @@ const (
 	QuantizationInt4    Quantization = "int4"
 	QuantizationInt8    Quantization = "int8"
 	QuantizationFp4     Quantization = "fp4"
+	QuantizationMxfp4   Quantization = "mxfp4"
+	QuantizationNvfp4   Quantization = "nvfp4"
 	QuantizationFp6     Quantization = "fp6"
 	QuantizationFp8     Quantization = "fp8"
+	QuantizationMxfp8   Quantization = "mxfp8"
 	QuantizationFp16    Quantization = "fp16"
 	QuantizationBf16    Quantization = "bf16"
 	QuantizationFp32    Quantization = "fp32"
@@ -36,9 +39,15 @@ func (e *Quantization) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "fp4":
 		fallthrough
+	case "mxfp4":
+		fallthrough
+	case "nvfp4":
+		fallthrough
 	case "fp6":
 		fallthrough
 	case "fp8":
+		fallthrough
+	case "mxfp8":
 		fallthrough
 	case "fp16":
 		fallthrough

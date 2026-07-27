@@ -295,7 +295,7 @@ func (s *Models) GetModel(ctx context.Context, request operations.GetModelReques
 
 }
 
-// List all models and their properties
+// List all models and their prop
 func (s *Models) List(ctx context.Context, request operations.GetModelsRequest, opts ...operations.Option) (*operations.GetModelsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
