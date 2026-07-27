@@ -10,13 +10,14 @@ import (
 type ReasoningFormat string
 
 const (
-	ReasoningFormatUnknown                ReasoningFormat = "unknown"
-	ReasoningFormatOpenaiResponsesV1      ReasoningFormat = "openai-responses-v1"
-	ReasoningFormatAzureOpenaiResponsesV1 ReasoningFormat = "azure-openai-responses-v1"
-	ReasoningFormatXaiResponsesV1         ReasoningFormat = "xai-responses-v1"
-	ReasoningFormatMetaResponsesV1        ReasoningFormat = "meta-responses-v1"
-	ReasoningFormatAnthropicClaudeV1      ReasoningFormat = "anthropic-claude-v1"
-	ReasoningFormatGoogleGeminiV1         ReasoningFormat = "google-gemini-v1"
+	ReasoningFormatUnknown                  ReasoningFormat = "unknown"
+	ReasoningFormatOpenaiResponsesV1        ReasoningFormat = "openai-responses-v1"
+	ReasoningFormatAzureOpenaiResponsesV1   ReasoningFormat = "azure-openai-responses-v1"
+	ReasoningFormatBedrockOpenaiResponsesV1 ReasoningFormat = "bedrock-openai-responses-v1"
+	ReasoningFormatXaiResponsesV1           ReasoningFormat = "xai-responses-v1"
+	ReasoningFormatMetaResponsesV1          ReasoningFormat = "meta-responses-v1"
+	ReasoningFormatAnthropicClaudeV1        ReasoningFormat = "anthropic-claude-v1"
+	ReasoningFormatGoogleGeminiV1           ReasoningFormat = "google-gemini-v1"
 )
 
 func (e ReasoningFormat) ToPointer() *ReasoningFormat {
@@ -33,6 +34,8 @@ func (e *ReasoningFormat) UnmarshalJSON(data []byte) error {
 	case "openai-responses-v1":
 		fallthrough
 	case "azure-openai-responses-v1":
+		fallthrough
+	case "bedrock-openai-responses-v1":
 		fallthrough
 	case "xai-responses-v1":
 		fallthrough
