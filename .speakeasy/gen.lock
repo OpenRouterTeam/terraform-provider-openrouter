@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 91be5b495a2f8571befbc5276b38b97e
+  docChecksum: a7b5685ed0864cc4dde3f9f69d9b3666
   docVersion: 1.0.0
   speakeasyVersion: 1.791.0
   generationVersion: 2.924.0
-  releaseVersion: 0.1.16
-  configChecksum: 7520b06413ba90bb1451bda8291d4cbe
+  releaseVersion: 0.1.17
+  configChecksum: bbb02296fcab521ff6b03b91ec4da1e2
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: f0063be6-ad8b-4aa5-a445-3395d97be858
-  pristine_commit_hash: 31877a160e9d83755e6b2c95c831ab1d3986ff3a
-  pristine_tree_hash: 8efee7b2204c0e6b880c68aad8697fd50a7402ef
+  generation_id: 5ffb0edc-2bdf-425e-aabb-e9b84abc8f0c
+  pristine_commit_hash: 7a89a590bc2ffe78e14d1e8ea17171cbb5fedded
+  pristine_tree_hash: cfecf4ffa9618aa8214588fb4b7fa75b2f00c4f1
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:97a43a37c8244585e1d5e7e33b73186fe913e0ea
-    pristine_git_object: 4cec009105d6a5ca804c5427b45910e082a49900
+    last_write_checksum: sha1:854c5cc0d2ece69a1290e4c0c107d22289ec4e90
+    pristine_git_object: 007c488eb6b5fc077b54d6e1612828d026c80e52
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3315,8 +3315,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:7aed4c01db7ea2ee34f9a1f5bbb43052d656a1d1
-    pristine_git_object: 6f70c44655cf3b0ebba4e386e32bb378145fca76
+    last_write_checksum: sha1:446d2edf1ec701f470b39336738428f19c3b4873
+    pristine_git_object: e84826079350bbab69426ba0830cfeb791a53a0f
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -3855,7 +3855,7 @@ examples:
           workspace_id: "a103d8b6-42f0-4e50-9a3c-bf41e2c3c1a7"
       responses:
         "200":
-          application/json: {"cursor": null, "data": [{"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}], "first_id": "file_011CNha8iCJcU1wXNR6q4V8w", "has_more": false, "last_id": "file_011CNha8iCJcU1wXNR6q4V8w"}
+          application/json: {"cursor": null, "data": [{"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}], "first_id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "has_more": false, "last_id": "or_file_011CNha8iCJcU1wXNR6q4V8w"}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -3873,7 +3873,7 @@ examples:
         multipart/form-data: {"file": "x-file: example.file"}
       responses:
         "200":
-          application/json: {"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
+          application/json: {"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -3895,7 +3895,7 @@ examples:
           workspace_id: "a103d8b6-42f0-4e50-9a3c-bf41e2c3c1a7"
       responses:
         "200":
-          application/json: {"id": "file_011CNha8iCJcU1wXNR6q4V8w", "type": "file_deleted"}
+          application/json: {"id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "type": "file_deleted"}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "404":
@@ -3913,7 +3913,7 @@ examples:
           workspace_id: "a103d8b6-42f0-4e50-9a3c-bf41e2c3c1a7"
       responses:
         "200":
-          application/json: {"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
+          application/json: {"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "404":
@@ -4937,4 +4937,3 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(AdditionalToolsItem).tools[].union(Legacy_WebSearchServerTool).filters.blocked_domains` **Added**\n"
