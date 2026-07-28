@@ -8,6 +8,7 @@ import (
 
 type WebSearchDomainFilter struct {
 	AllowedDomains  []string `json:"allowed_domains,omitzero"`
+	BlockedDomains  []string `json:"blocked_domains,omitzero"`
 	ExcludedDomains []string `json:"excluded_domains,omitzero"`
 }
 
@@ -27,6 +28,13 @@ func (w *WebSearchDomainFilter) GetAllowedDomains() []string {
 		return nil
 	}
 	return w.AllowedDomains
+}
+
+func (w *WebSearchDomainFilter) GetBlockedDomains() []string {
+	if w == nil {
+		return nil
+	}
+	return w.BlockedDomains
 }
 
 func (w *WebSearchDomainFilter) GetExcludedDomains() []string {
