@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: a7b5685ed0864cc4dde3f9f69d9b3666
+  docChecksum: 4be7467d777f8c5c4534d66afb8e026d
   docVersion: 1.0.0
   speakeasyVersion: 1.791.0
   generationVersion: 2.924.0
-  releaseVersion: 0.1.17
-  configChecksum: bbb02296fcab521ff6b03b91ec4da1e2
+  releaseVersion: 0.1.18
+  configChecksum: 35f91d015a7f45080ef714f87d1d06f8
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 5ffb0edc-2bdf-425e-aabb-e9b84abc8f0c
-  pristine_commit_hash: 7a89a590bc2ffe78e14d1e8ea17171cbb5fedded
-  pristine_tree_hash: cfecf4ffa9618aa8214588fb4b7fa75b2f00c4f1
+  generation_id: 83b96603-ab6f-433a-9c7a-74d09e82fed8
+  pristine_commit_hash: 612189e9d4d88861cf93806d2be63bcd3a053d36
+  pristine_tree_hash: 89832e47b21f04bcc5e06b10946051918e2c8450
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:854c5cc0d2ece69a1290e4c0c107d22289ec4e90
-    pristine_git_object: 007c488eb6b5fc077b54d6e1612828d026c80e52
+    last_write_checksum: sha1:5d922fa317f3b865a6a5501acc5cb70ccf3e1c8c
+    pristine_git_object: 859b88b76b46114944804f48011a1b1546d6c162
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2231,8 +2231,8 @@ trackedFiles:
     pristine_git_object: cd3229c4c73a97b3352f633d0b6d598ceb212075
   internal/sdk/models/shared/generationresponse.go:
     id: 6450b4f51a48
-    last_write_checksum: sha1:ce93ad7bfa6ebdae716c61918eb36eb5f2635d73
-    pristine_git_object: 43bb80fbe49d60e166d5913b325b71591ce29309
+    last_write_checksum: sha1:e33edaf456ce680d9a8b5ada952c198a3bac40b2
+    pristine_git_object: 8be3269538fc0f127f41caa75a04c2743769e3ed
   internal/sdk/models/shared/getbyokkeyresponse.go:
     id: 4f2a5d8663e9
     last_write_checksum: sha1:3dfe9f5e4984a38f076aac34ee43481691c66225
@@ -3315,8 +3315,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:446d2edf1ec701f470b39336738428f19c3b4873
-    pristine_git_object: e84826079350bbab69426ba0830cfeb791a53a0f
+    last_write_checksum: sha1:909e3cf3df5749bdfb8fbb69ab64b7b3c220ae54
+    pristine_git_object: 0501cd9200a164c7dcfc3c360285c654447a8ed5
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4937,3 +4937,6 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Generations.get()`:  `response.data.data_region.enum(us)` **Added** (Breaking ⚠️)
