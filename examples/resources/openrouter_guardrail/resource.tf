@@ -24,13 +24,16 @@ resource "openrouter_guardrail" "my_guardrail" {
       pattern = "\\b(sk-[a-zA-Z0-9]{48})\\b"
     }
   ]
-  description           = "A guardrail for limiting API usage"
-  enforce_zdr           = false
-  enforce_zdr_anthropic = false
-  enforce_zdr_google    = false
-  enforce_zdr_openai    = false
-  enforce_zdr_other     = false
-  enforce_zdr_xai       = false
+  description                   = "A guardrail for limiting API usage"
+  enable_free_model_publication = false
+  enable_free_model_training    = true
+  enable_paid_model_training    = true
+  enforce_zdr                   = false
+  enforce_zdr_anthropic         = false
+  enforce_zdr_google            = false
+  enforce_zdr_openai            = false
+  enforce_zdr_other             = false
+  enforce_zdr_xai               = false
   ignored_models = [
     "openai/gpt-4o-mini",
   ]

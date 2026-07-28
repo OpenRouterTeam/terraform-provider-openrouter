@@ -29,27 +29,30 @@ type GuardrailDataSource struct {
 
 // GuardrailDataSourceModel describes the data model.
 type GuardrailDataSourceModel struct {
-	AllowedModels         []types.String                      `tfsdk:"allowed_models"`
-	AllowedProviders      []types.String                      `tfsdk:"allowed_providers"`
-	ContentFilterBuiltins []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
-	ContentFilters        []tfTypes.ContentFilterEntry        `tfsdk:"content_filters"`
-	CreatedAt             types.String                        `tfsdk:"created_at"`
-	Description           types.String                        `tfsdk:"description"`
-	EnforceZdr            types.Bool                          `tfsdk:"enforce_zdr"`
-	EnforceZdrAnthropic   types.Bool                          `tfsdk:"enforce_zdr_anthropic"`
-	EnforceZdrGoogle      types.Bool                          `tfsdk:"enforce_zdr_google"`
-	EnforceZdrOpenai      types.Bool                          `tfsdk:"enforce_zdr_openai"`
-	EnforceZdrOther       types.Bool                          `tfsdk:"enforce_zdr_other"`
-	EnforceZdrXai         types.Bool                          `tfsdk:"enforce_zdr_xai"`
-	ID                    types.String                        `tfsdk:"id"`
-	IgnoredModels         []types.String                      `tfsdk:"ignored_models"`
-	IgnoredProviders      []types.String                      `tfsdk:"ignored_providers"`
-	IncludeByokInBudgets  types.Bool                          `tfsdk:"include_byok_in_budgets"`
-	LimitUsd              types.Float64                       `tfsdk:"limit_usd"`
-	Name                  types.String                        `tfsdk:"name"`
-	ResetInterval         types.String                        `tfsdk:"reset_interval"`
-	UpdatedAt             types.String                        `tfsdk:"updated_at"`
-	WorkspaceID           types.String                        `tfsdk:"workspace_id"`
+	AllowedModels              []types.String                      `tfsdk:"allowed_models"`
+	AllowedProviders           []types.String                      `tfsdk:"allowed_providers"`
+	ContentFilterBuiltins      []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
+	ContentFilters             []tfTypes.ContentFilterEntry        `tfsdk:"content_filters"`
+	CreatedAt                  types.String                        `tfsdk:"created_at"`
+	Description                types.String                        `tfsdk:"description"`
+	EnableFreeModelPublication types.Bool                          `tfsdk:"enable_free_model_publication"`
+	EnableFreeModelTraining    types.Bool                          `tfsdk:"enable_free_model_training"`
+	EnablePaidModelTraining    types.Bool                          `tfsdk:"enable_paid_model_training"`
+	EnforceZdr                 types.Bool                          `tfsdk:"enforce_zdr"`
+	EnforceZdrAnthropic        types.Bool                          `tfsdk:"enforce_zdr_anthropic"`
+	EnforceZdrGoogle           types.Bool                          `tfsdk:"enforce_zdr_google"`
+	EnforceZdrOpenai           types.Bool                          `tfsdk:"enforce_zdr_openai"`
+	EnforceZdrOther            types.Bool                          `tfsdk:"enforce_zdr_other"`
+	EnforceZdrXai              types.Bool                          `tfsdk:"enforce_zdr_xai"`
+	ID                         types.String                        `tfsdk:"id"`
+	IgnoredModels              []types.String                      `tfsdk:"ignored_models"`
+	IgnoredProviders           []types.String                      `tfsdk:"ignored_providers"`
+	IncludeByokInBudgets       types.Bool                          `tfsdk:"include_byok_in_budgets"`
+	LimitUsd                   types.Float64                       `tfsdk:"limit_usd"`
+	Name                       types.String                        `tfsdk:"name"`
+	ResetInterval              types.String                        `tfsdk:"reset_interval"`
+	UpdatedAt                  types.String                        `tfsdk:"updated_at"`
+	WorkspaceID                types.String                        `tfsdk:"workspace_id"`
 }
 
 // Metadata returns the data source type name.
@@ -124,6 +127,18 @@ func (r *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaR
 			"description": schema.StringAttribute{
 				Computed:    true,
 				Description: `Description of the guardrail`,
+			},
+			"enable_free_model_publication": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether this guardrail allows free endpoints that publish prompts.`,
+			},
+			"enable_free_model_training": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether this guardrail allows free endpoints that train on request data.`,
+			},
+			"enable_paid_model_training": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether this guardrail allows paid endpoints that train on request data.`,
 			},
 			"enforce_zdr": schema.BoolAttribute{
 				Computed:           true,

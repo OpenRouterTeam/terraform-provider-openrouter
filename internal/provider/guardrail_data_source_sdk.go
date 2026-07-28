@@ -82,6 +82,9 @@ func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponseData(ctx
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.Description = types.StringPointerValue(resp.Description)
+	r.EnableFreeModelPublication = types.BoolPointerValue(resp.EnableFreeModelPublication)
+	r.EnableFreeModelTraining = types.BoolPointerValue(resp.EnableFreeModelTraining)
+	r.EnablePaidModelTraining = types.BoolPointerValue(resp.EnablePaidModelTraining)
 	r.EnforceZdr = types.BoolPointerValue(resp.EnforceZdr)
 	r.EnforceZdrAnthropic = types.BoolPointerValue(resp.EnforceZdrAnthropic)
 	r.EnforceZdrGoogle = types.BoolPointerValue(resp.EnforceZdrGoogle)

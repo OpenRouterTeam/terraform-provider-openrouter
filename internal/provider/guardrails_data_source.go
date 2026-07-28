@@ -111,6 +111,18 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 							Computed:    true,
 							Description: `Description of the guardrail`,
 						},
+						"enable_free_model_publication": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether this guardrail allows free endpoints that publish prompts.`,
+						},
+						"enable_free_model_training": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether this guardrail allows free endpoints that train on request data.`,
+						},
+						"enable_paid_model_training": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether this guardrail allows paid endpoints that train on request data.`,
+						},
 						"enforce_zdr": schema.BoolAttribute{
 							Computed:           true,
 							DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
