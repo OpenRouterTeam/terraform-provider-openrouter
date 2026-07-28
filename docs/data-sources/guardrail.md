@@ -33,6 +33,9 @@ data "openrouter_guardrail" "my_guardrail" {
 - `content_filters` (Attributes List) Custom regex content filters applied to request messages (see [below for nested schema](#nestedatt--content_filters))
 - `created_at` (String) ISO 8601 timestamp of when the guardrail was created
 - `description` (String) Description of the guardrail
+- `enable_free_model_publication` (Boolean) Whether this guardrail allows free endpoints that publish prompts.
+- `enable_free_model_training` (Boolean) Whether this guardrail allows free endpoints that train on request data.
+- `enable_paid_model_training` (Boolean) Whether this guardrail allows paid endpoints that train on request data.
 - `enforce_zdr` (Boolean, Deprecated) Deprecated. Use enforce_zdr_anthropic, enforce_zdr_openai, enforce_zdr_google, enforce_zdr_xai, and enforce_zdr_other instead. When provided, its value is copied into any of those per-provider fields that are not explicitly specified on the request.
 - `enforce_zdr_anthropic` (Boolean) Whether to enforce zero data retention for Anthropic models. Falls back to enforce_zdr when not provided.
 - `enforce_zdr_google` (Boolean) Whether to enforce zero data retention for Google models. Falls back to enforce_zdr when not provided.

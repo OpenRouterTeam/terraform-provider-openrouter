@@ -17,6 +17,12 @@ type CreateGuardrailRequest struct {
 	ContentFilters []ContentFilterEntry `json:"content_filters,omitzero"`
 	// Description of the guardrail
 	Description *string `json:"description,omitzero"`
+	// Whether this guardrail allows free endpoints that publish prompts.
+	EnableFreeModelPublication *bool `json:"enable_free_model_publication,omitzero"`
+	// Whether this guardrail allows free endpoints that train on request data.
+	EnableFreeModelTraining *bool `json:"enable_free_model_training,omitzero"`
+	// Whether this guardrail allows paid endpoints that train on request data.
+	EnablePaidModelTraining *bool `json:"enable_paid_model_training,omitzero"`
 	// Deprecated. Use enforce_zdr_anthropic, enforce_zdr_openai, enforce_zdr_google, enforce_zdr_xai, and enforce_zdr_other instead. When provided, its value is copied into any of those per-provider fields that are not explicitly specified on the request.
 	//
 	// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
@@ -91,6 +97,27 @@ func (c *CreateGuardrailRequest) GetDescription() *string {
 		return nil
 	}
 	return c.Description
+}
+
+func (c *CreateGuardrailRequest) GetEnableFreeModelPublication() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.EnableFreeModelPublication
+}
+
+func (c *CreateGuardrailRequest) GetEnableFreeModelTraining() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.EnableFreeModelTraining
+}
+
+func (c *CreateGuardrailRequest) GetEnablePaidModelTraining() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.EnablePaidModelTraining
 }
 
 func (c *CreateGuardrailRequest) GetEnforceZdr() *bool {

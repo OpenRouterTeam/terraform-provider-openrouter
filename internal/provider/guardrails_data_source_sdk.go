@@ -83,6 +83,9 @@ func (r *GuardrailsDataSourceModel) RefreshFromSharedListGuardrailsResponse(ctx 
 			}
 			data.CreatedAt = types.StringValue(dataItem.CreatedAt)
 			data.Description = types.StringPointerValue(dataItem.Description)
+			data.EnableFreeModelPublication = types.BoolPointerValue(dataItem.EnableFreeModelPublication)
+			data.EnableFreeModelTraining = types.BoolPointerValue(dataItem.EnableFreeModelTraining)
+			data.EnablePaidModelTraining = types.BoolPointerValue(dataItem.EnablePaidModelTraining)
 			data.EnforceZdr = types.BoolPointerValue(dataItem.EnforceZdr)
 			data.EnforceZdrAnthropic = types.BoolPointerValue(dataItem.EnforceZdrAnthropic)
 			data.EnforceZdrGoogle = types.BoolPointerValue(dataItem.EnforceZdrGoogle)

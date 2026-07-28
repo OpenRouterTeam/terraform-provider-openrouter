@@ -82,6 +82,9 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.Description = types.StringPointerValue(resp.Description)
+	r.EnableFreeModelPublication = types.BoolPointerValue(resp.EnableFreeModelPublication)
+	r.EnableFreeModelTraining = types.BoolPointerValue(resp.EnableFreeModelTraining)
+	r.EnablePaidModelTraining = types.BoolPointerValue(resp.EnablePaidModelTraining)
 	r.EnforceZdr = types.BoolPointerValue(resp.EnforceZdr)
 	r.EnforceZdrAnthropic = types.BoolPointerValue(resp.EnforceZdrAnthropic)
 	r.EnforceZdrGoogle = types.BoolPointerValue(resp.EnforceZdrGoogle)
@@ -190,6 +193,9 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.Description = types.StringPointerValue(resp.Description)
+	r.EnableFreeModelPublication = types.BoolPointerValue(resp.EnableFreeModelPublication)
+	r.EnableFreeModelTraining = types.BoolPointerValue(resp.EnableFreeModelTraining)
+	r.EnablePaidModelTraining = types.BoolPointerValue(resp.EnablePaidModelTraining)
 	r.EnforceZdr = types.BoolPointerValue(resp.EnforceZdr)
 	r.EnforceZdrAnthropic = types.BoolPointerValue(resp.EnforceZdrAnthropic)
 	r.EnforceZdrGoogle = types.BoolPointerValue(resp.EnforceZdrGoogle)
@@ -298,6 +304,9 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.Description = types.StringPointerValue(resp.Description)
+	r.EnableFreeModelPublication = types.BoolPointerValue(resp.EnableFreeModelPublication)
+	r.EnableFreeModelTraining = types.BoolPointerValue(resp.EnableFreeModelTraining)
+	r.EnablePaidModelTraining = types.BoolPointerValue(resp.EnablePaidModelTraining)
 	r.EnforceZdr = types.BoolPointerValue(resp.EnforceZdr)
 	r.EnforceZdrAnthropic = types.BoolPointerValue(resp.EnforceZdrAnthropic)
 	r.EnforceZdrGoogle = types.BoolPointerValue(resp.EnforceZdrGoogle)
@@ -452,6 +461,24 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 	} else {
 		description = nil
 	}
+	enableFreeModelPublication := new(bool)
+	if !r.EnableFreeModelPublication.IsUnknown() && !r.EnableFreeModelPublication.IsNull() {
+		*enableFreeModelPublication = r.EnableFreeModelPublication.ValueBool()
+	} else {
+		enableFreeModelPublication = nil
+	}
+	enableFreeModelTraining := new(bool)
+	if !r.EnableFreeModelTraining.IsUnknown() && !r.EnableFreeModelTraining.IsNull() {
+		*enableFreeModelTraining = r.EnableFreeModelTraining.ValueBool()
+	} else {
+		enableFreeModelTraining = nil
+	}
+	enablePaidModelTraining := new(bool)
+	if !r.EnablePaidModelTraining.IsUnknown() && !r.EnablePaidModelTraining.IsNull() {
+		*enablePaidModelTraining = r.EnablePaidModelTraining.ValueBool()
+	} else {
+		enablePaidModelTraining = nil
+	}
 	enforceZdr := new(bool)
 	if !r.EnforceZdr.IsUnknown() && !r.EnforceZdr.IsNull() {
 		*enforceZdr = r.EnforceZdr.ValueBool()
@@ -530,24 +557,27 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 		workspaceID = nil
 	}
 	out := shared.CreateGuardrailRequest{
-		AllowedModels:         allowedModels,
-		AllowedProviders:      allowedProviders,
-		ContentFilterBuiltins: contentFilterBuiltins,
-		ContentFilters:        contentFilters,
-		Description:           description,
-		EnforceZdr:            enforceZdr,
-		EnforceZdrAnthropic:   enforceZdrAnthropic,
-		EnforceZdrGoogle:      enforceZdrGoogle,
-		EnforceZdrOpenai:      enforceZdrOpenai,
-		EnforceZdrOther:       enforceZdrOther,
-		EnforceZdrXai:         enforceZdrXai,
-		IgnoredModels:         ignoredModels,
-		IgnoredProviders:      ignoredProviders,
-		IncludeByokInBudgets:  includeByokInBudgets,
-		LimitUsd:              limitUsd,
-		Name:                  name,
-		ResetInterval:         resetInterval,
-		WorkspaceID:           workspaceID,
+		AllowedModels:              allowedModels,
+		AllowedProviders:           allowedProviders,
+		ContentFilterBuiltins:      contentFilterBuiltins,
+		ContentFilters:             contentFilters,
+		Description:                description,
+		EnableFreeModelPublication: enableFreeModelPublication,
+		EnableFreeModelTraining:    enableFreeModelTraining,
+		EnablePaidModelTraining:    enablePaidModelTraining,
+		EnforceZdr:                 enforceZdr,
+		EnforceZdrAnthropic:        enforceZdrAnthropic,
+		EnforceZdrGoogle:           enforceZdrGoogle,
+		EnforceZdrOpenai:           enforceZdrOpenai,
+		EnforceZdrOther:            enforceZdrOther,
+		EnforceZdrXai:              enforceZdrXai,
+		IgnoredModels:              ignoredModels,
+		IgnoredProviders:           ignoredProviders,
+		IncludeByokInBudgets:       includeByokInBudgets,
+		LimitUsd:                   limitUsd,
+		Name:                       name,
+		ResetInterval:              resetInterval,
+		WorkspaceID:                workspaceID,
 	}
 
 	return &out, diags
@@ -622,6 +652,24 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 		*description = r.Description.ValueString()
 	} else {
 		description = nil
+	}
+	enableFreeModelPublication := new(bool)
+	if !r.EnableFreeModelPublication.IsUnknown() && !r.EnableFreeModelPublication.IsNull() {
+		*enableFreeModelPublication = r.EnableFreeModelPublication.ValueBool()
+	} else {
+		enableFreeModelPublication = nil
+	}
+	enableFreeModelTraining := new(bool)
+	if !r.EnableFreeModelTraining.IsUnknown() && !r.EnableFreeModelTraining.IsNull() {
+		*enableFreeModelTraining = r.EnableFreeModelTraining.ValueBool()
+	} else {
+		enableFreeModelTraining = nil
+	}
+	enablePaidModelTraining := new(bool)
+	if !r.EnablePaidModelTraining.IsUnknown() && !r.EnablePaidModelTraining.IsNull() {
+		*enablePaidModelTraining = r.EnablePaidModelTraining.ValueBool()
+	} else {
+		enablePaidModelTraining = nil
 	}
 	enforceZdr := new(bool)
 	if !r.EnforceZdr.IsUnknown() && !r.EnforceZdr.IsNull() {
@@ -698,23 +746,26 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 		resetInterval = nil
 	}
 	out := shared.UpdateGuardrailRequest{
-		AllowedModels:         allowedModels,
-		AllowedProviders:      allowedProviders,
-		ContentFilterBuiltins: contentFilterBuiltins,
-		ContentFilters:        contentFilters,
-		Description:           description,
-		EnforceZdr:            enforceZdr,
-		EnforceZdrAnthropic:   enforceZdrAnthropic,
-		EnforceZdrGoogle:      enforceZdrGoogle,
-		EnforceZdrOpenai:      enforceZdrOpenai,
-		EnforceZdrOther:       enforceZdrOther,
-		EnforceZdrXai:         enforceZdrXai,
-		IgnoredModels:         ignoredModels,
-		IgnoredProviders:      ignoredProviders,
-		IncludeByokInBudgets:  includeByokInBudgets,
-		LimitUsd:              limitUsd,
-		Name:                  name,
-		ResetInterval:         resetInterval,
+		AllowedModels:              allowedModels,
+		AllowedProviders:           allowedProviders,
+		ContentFilterBuiltins:      contentFilterBuiltins,
+		ContentFilters:             contentFilters,
+		Description:                description,
+		EnableFreeModelPublication: enableFreeModelPublication,
+		EnableFreeModelTraining:    enableFreeModelTraining,
+		EnablePaidModelTraining:    enablePaidModelTraining,
+		EnforceZdr:                 enforceZdr,
+		EnforceZdrAnthropic:        enforceZdrAnthropic,
+		EnforceZdrGoogle:           enforceZdrGoogle,
+		EnforceZdrOpenai:           enforceZdrOpenai,
+		EnforceZdrOther:            enforceZdrOther,
+		EnforceZdrXai:              enforceZdrXai,
+		IgnoredModels:              ignoredModels,
+		IgnoredProviders:           ignoredProviders,
+		IncludeByokInBudgets:       includeByokInBudgets,
+		LimitUsd:                   limitUsd,
+		Name:                       name,
+		ResetInterval:              resetInterval,
 	}
 
 	return &out, diags
