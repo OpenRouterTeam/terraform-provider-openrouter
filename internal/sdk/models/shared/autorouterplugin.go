@@ -3,14 +3,56 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
+
+// AutoRouterPluginCostTier - Shorthand for cost_quality_tradeoff. Higher tiers spend more on better models: low = 9, medium = 7, high = 5, xhigh = 3, and max = 1. Numeric cost_quality_tradeoff takes precedence when both are provided.
+type AutoRouterPluginCostTier string
+
+const (
+	AutoRouterPluginCostTierLow    AutoRouterPluginCostTier = "low"
+	AutoRouterPluginCostTierMedium AutoRouterPluginCostTier = "medium"
+	AutoRouterPluginCostTierHigh   AutoRouterPluginCostTier = "high"
+	AutoRouterPluginCostTierXhigh  AutoRouterPluginCostTier = "xhigh"
+	AutoRouterPluginCostTierMax    AutoRouterPluginCostTier = "max"
+)
+
+func (e AutoRouterPluginCostTier) ToPointer() *AutoRouterPluginCostTier {
+	return &e
+}
+func (e *AutoRouterPluginCostTier) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "low":
+		fallthrough
+	case "medium":
+		fallthrough
+	case "high":
+		fallthrough
+	case "xhigh":
+		fallthrough
+	case "max":
+		*e = AutoRouterPluginCostTier(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for AutoRouterPluginCostTier: %v", v)
+	}
+}
 
 type AutoRouterPlugin struct {
 	// List of model patterns to filter which models the auto-router can route between. Supports wildcards (e.g., "anthropic/*" matches all Anthropic models). When not specified, uses the default supported models list.
 	AllowedModels []string `json:"allowed_models,omitzero"`
-	// Controls cost vs. quality routing tradeoff (0–10). 0 = pure quality (best model regardless of cost), 10 = maximize for cost (cheapest model wins). Intermediate values blend quality and cost signals continuously. Defaults to 7.
+	// Deprecated: Use cost_tier instead. Controls cost vs. quality routing tradeoff (0–10). 0 = pure quality (best model regardless of cost), 10 = maximize for cost (cheapest model wins). Intermediate values blend quality and cost signals continuously. Defaults to 7. Numeric cost_quality_tradeoff remains supported and takes precedence over cost_tier when both are provided.
+	//
+	// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
 	CostQualityTradeoff *int64 `json:"cost_quality_tradeoff,omitzero"`
+	// Shorthand for cost_quality_tradeoff. Higher tiers spend more on better models: low = 9, medium = 7, high = 5, xhigh = 3, and max = 1. Numeric cost_quality_tradeoff takes precedence when both are provided.
+	CostTier *AutoRouterPluginCostTier `json:"cost_tier,omitzero"`
 	// Set to false to disable the auto-router plugin for this request. Defaults to true.
 	Enabled *bool `json:"enabled,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -42,6 +84,13 @@ func (a *AutoRouterPlugin) GetCostQualityTradeoff() *int64 {
 		return nil
 	}
 	return a.CostQualityTradeoff
+}
+
+func (a *AutoRouterPlugin) GetCostTier() *AutoRouterPluginCostTier {
+	if a == nil {
+		return nil
+	}
+	return a.CostTier
 }
 
 func (a *AutoRouterPlugin) GetEnabled() *bool {
