@@ -145,17 +145,26 @@ const (
 	SupportedSizeOneThousandOneHundredAndTwentyx480     SupportedSize = "1120x480"
 	SupportedSizeOneThousandTwoHundredAndEightyx720     SupportedSize = "1280x720"
 	SupportedSizeOneThousandFourHundredAndFortyx1080    SupportedSize = "1440x1080"
+	SupportedSizeOneThousandFourHundredAndFortyx1440    SupportedSize = "1440x1440"
+	SupportedSizeOneThousandFourHundredAndFortyx1920    SupportedSize = "1440x1920"
+	SupportedSizeOneThousandFourHundredAndFortyx2160    SupportedSize = "1440x2160"
+	SupportedSizeOneThousandFourHundredAndFortyx2560    SupportedSize = "1440x2560"
+	SupportedSizeOneThousandFourHundredAndFortyx3360    SupportedSize = "1440x3360"
 	SupportedSizeOneThousandSixHundredAndTwentyx1080    SupportedSize = "1620x1080"
 	SupportedSizeOneThousandSixHundredAndEightyx720     SupportedSize = "1680x720"
 	SupportedSizeOneThousandNineHundredAndTwentyx1080   SupportedSize = "1920x1080"
+	SupportedSizeOneThousandNineHundredAndTwentyx1440   SupportedSize = "1920x1440"
+	SupportedSizeTwoThousandOneHundredAndSixtyx1440     SupportedSize = "2160x1440"
 	SupportedSizeTwoThousandOneHundredAndSixtyx2160     SupportedSize = "2160x2160"
 	SupportedSizeTwoThousandOneHundredAndSixtyx2880     SupportedSize = "2160x2880"
 	SupportedSizeTwoThousandOneHundredAndSixtyx3240     SupportedSize = "2160x3240"
 	SupportedSizeTwoThousandOneHundredAndSixtyx3840     SupportedSize = "2160x3840"
 	SupportedSizeTwoThousandOneHundredAndSixtyx5040     SupportedSize = "2160x5040"
 	SupportedSizeTwoThousandFiveHundredAndTwentyx1080   SupportedSize = "2520x1080"
+	SupportedSizeTwoThousandFiveHundredAndSixtyx1440    SupportedSize = "2560x1440"
 	SupportedSizeTwoThousandEightHundredAndEightyx2160  SupportedSize = "2880x2160"
 	SupportedSizeThreeThousandTwoHundredAndFortyx2160   SupportedSize = "3240x2160"
+	SupportedSizeThreeThousandThreeHundredAndSixtyx1440 SupportedSize = "3360x1440"
 	SupportedSizeThreeThousandEightHundredAndFortyx2160 SupportedSize = "3840x2160"
 	SupportedSizeFiveThousandAndFortyx2160              SupportedSize = "5040x2160"
 )
@@ -215,11 +224,25 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "1440x1080":
 		fallthrough
+	case "1440x1440":
+		fallthrough
+	case "1440x1920":
+		fallthrough
+	case "1440x2160":
+		fallthrough
+	case "1440x2560":
+		fallthrough
+	case "1440x3360":
+		fallthrough
 	case "1620x1080":
 		fallthrough
 	case "1680x720":
 		fallthrough
 	case "1920x1080":
+		fallthrough
+	case "1920x1440":
+		fallthrough
+	case "2160x1440":
 		fallthrough
 	case "2160x2160":
 		fallthrough
@@ -233,9 +256,13 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "2520x1080":
 		fallthrough
+	case "2560x1440":
+		fallthrough
 	case "2880x2160":
 		fallthrough
 	case "3240x2160":
+		fallthrough
+	case "3360x1440":
 		fallthrough
 	case "3840x2160":
 		fallthrough
