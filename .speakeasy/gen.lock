@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 425b57732c1cbe44621915d14c4e93a6
+  docChecksum: f087f345340d798d67571ca4d8b737cb
   docVersion: 1.0.0
   speakeasyVersion: 1.791.0
   generationVersion: 2.924.0
-  releaseVersion: 0.1.21
-  configChecksum: 7cd7f5bc7e5472ebb9b649afa0736415
+  releaseVersion: 0.1.22
+  configChecksum: af0bfe92fac5f08b1dace77d0f2c8e46
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 07153a74-9e39-4841-8054-2904c3476443
-  pristine_commit_hash: 368ea8e4d329b508efffcc5316e0e625c1df5119
-  pristine_tree_hash: c8ef50d92ec54eb51f662691017af812d3b31895
+  generation_id: ee197cf4-779b-40b6-960b-b58474b2aa78
+  pristine_commit_hash: fea575af366bdda1ff81ea2dd0d3cc92e9987832
+  pristine_tree_hash: 35311dd04c69464624bc39d85a1f298b7985115d
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:4794060a17a1cc9bc1b83eebf40b88ea6e71d304
-    pristine_git_object: 1a9826c3441d67431c2b5ac2dfa5b062aee6bada
+    last_write_checksum: sha1:77f8cc3c100255d735d3eab26c830ae62a21f8eb
+    pristine_git_object: b2c72a4cc63643b4110495ce90fe358e52c1c6cf
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1059,8 +1059,8 @@ trackedFiles:
     pristine_git_object: f9b2ccaca2fc369265058ac066dfeedc044ceb05
   internal/sdk/files.go:
     id: 37ef87cd5db4
-    last_write_checksum: sha1:785c9d6ff6dc2a6099bbe0ef2fc76e9f7b63aabd
-    pristine_git_object: 983bf8dc01ef052505c6b4fc83b43ae98a61741d
+    last_write_checksum: sha1:c0090b08b3f50eddfd8995255db991e19d8dbdfa
+    pristine_git_object: d5c8deaad296f144b9f34bd6149b4785959500bd
   internal/sdk/generations.go:
     id: 3af0bc3ca334
     last_write_checksum: sha1:17eea75852d852ae037bbe7a7f63a88721af5480
@@ -1231,8 +1231,8 @@ trackedFiles:
     pristine_git_object: 57d070cebe9b6059ab6df11aa63b9b449e751436
   internal/sdk/models/operations/deletefile.go:
     id: 04e0a9cdb3ab
-    last_write_checksum: sha1:590af725493c0f47a4c503ce9adcc939ccbb0cee
-    pristine_git_object: 1d4bdb478938b16f24561ef05983b4399c165c4a
+    last_write_checksum: sha1:185a0256bfb47ee866683c1168cea65a6727eae6
+    pristine_git_object: a9a506589344919644ed04147bab9175f876f7e4
   internal/sdk/models/operations/deleteguardrail.go:
     id: 1c1fe9640317
     last_write_checksum: sha1:44d4eb537f6d302faedab9d9058fc363bd27e3aa
@@ -1255,8 +1255,8 @@ trackedFiles:
     pristine_git_object: 7d2e31bb8ed9a73696b2ac3a6d1fcb99ae8c820a
   internal/sdk/models/operations/downloadfilecontent.go:
     id: 13addbce6315
-    last_write_checksum: sha1:e465070cd4effc438106e81751c03ebe22601deb
-    pristine_git_object: 1914083d098bd470b46dba1765bdd3ae31227f51
+    last_write_checksum: sha1:3816f0d04b52f4e762ac9598598b2e9f61307314
+    pristine_git_object: 6230922f3674bc424e7634ae6d0a8c4db793d72c
   internal/sdk/models/operations/exchangeauthcodeforapikey.go:
     id: 51819836ede7
     last_write_checksum: sha1:1762edec04bb3663b8a4e0047cfc04f0833de84a
@@ -1287,8 +1287,8 @@ trackedFiles:
     pristine_git_object: c4a511b1a89d9e4976efcc8e96a81231d3f57f52
   internal/sdk/models/operations/getfilemetadata.go:
     id: 641963d1ac41
-    last_write_checksum: sha1:ad41e6385e3578a2cf797a29b42440a0a5fe8b9a
-    pristine_git_object: cd3d8ee7c52a0f24a2ea256aea940cf187ba6c08
+    last_write_checksum: sha1:2a76542b58a7350aaa05ebb5bd774da6b567a25b
+    pristine_git_object: 4888c5e56b78475d1356f90297fe0d8131abc71d
   internal/sdk/models/operations/getgeneration.go:
     id: 780899aa267c
     last_write_checksum: sha1:0ca928084d3302df0fd5fce15406314e8bce0aa8
@@ -1363,8 +1363,8 @@ trackedFiles:
     pristine_git_object: 2602952e772c1d6667294e7f5bef3a2e77a3070a
   internal/sdk/models/operations/listfiles.go:
     id: a0a08686de63
-    last_write_checksum: sha1:d3bbc699ff16616a15c4f5f19cbe2e66e24152de
-    pristine_git_object: 8ece06a65d7b7211b4db1cb99d96c8a45a45dbbd
+    last_write_checksum: sha1:86337dc53b8a1bc28cf717b9b960fe9ad2922436
+    pristine_git_object: dc9300ea503a6ecbdf736e6ad6194d859ff02ced
   internal/sdk/models/operations/listgenerationcontent.go:
     id: d0424d221314
     last_write_checksum: sha1:478ad53ce12051c7295027d585b3d753309b45ec
@@ -1479,8 +1479,8 @@ trackedFiles:
     pristine_git_object: a543b663c9a72aa0148cc0ce310f269a53601827
   internal/sdk/models/operations/uploadfile.go:
     id: 28014f45529f
-    last_write_checksum: sha1:c216dedb82ad6b4b1f0cbaf75321dbd3f86f2a89
-    pristine_git_object: 5d4cf6246e2845730ec3cadfdf67ea7415e93925
+    last_write_checksum: sha1:955cf1a9e7db4435b7f0c6cc19ec0d6c282ad8df
+    pristine_git_object: a0c8bcf0a2727f10a1521da32cc91b45dc988f59
   internal/sdk/models/operations/upsertworkspacebudget.go:
     id: 68b410528b30
     last_write_checksum: sha1:84a5327f03239ca85f16c9cf472af3581c4e539e
@@ -1565,10 +1565,22 @@ trackedFiles:
     id: 0db3241e5c4b
     last_write_checksum: sha1:58c3ac134d0d903e67aa4a3c694ccc9d850932ee
     pristine_git_object: 667dba98944c4171a602fa07d4549c0e66f450a4
+  internal/sdk/models/shared/anthropicfile.go:
+    id: 7a5922ba0fe6
+    last_write_checksum: sha1:02c25d90d19bc3c848c1634eba3902fa77e0fff7
+    pristine_git_object: 84ffa998b9d519b0f8084d2d09f6bc634af809b6
+  internal/sdk/models/shared/anthropicfiledeleted.go:
+    id: 36d8ee244f32
+    last_write_checksum: sha1:8591abd356d5786d4410875519f0500c64e44539
+    pristine_git_object: daa136717486860855ab562ecc061d04e981866c
   internal/sdk/models/shared/anthropicfiledocumentsource.go:
     id: d2f353cbfef4
     last_write_checksum: sha1:8478f0875cef0b773b525617975d3047c0b18af4
     pristine_git_object: dae63c65b3586da65240585b061d30a3da3ed13c
+  internal/sdk/models/shared/anthropicfilelist.go:
+    id: c1f3ad457c53
+    last_write_checksum: sha1:ca0bb0f2142de9b5465340185ad0f5b0fc9e33bf
+    pristine_git_object: fe2bedb6aef7ffdacec05ba9fd57d6ece9efa89a
   internal/sdk/models/shared/anthropicimageblockparam.go:
     id: 36c022ab5aa4
     last_write_checksum: sha1:7ff039f378a25028a97e75b468e7c026a9450ee3
@@ -2135,16 +2147,12 @@ trackedFiles:
     pristine_git_object: 0297d4c4484e644f260cbdd8dff9eaac42bc4573
   internal/sdk/models/shared/filedeleteresponse.go:
     id: 2a9268fdf8ab
-    last_write_checksum: sha1:fb1d441dad0cec3dbe83aaeeb04753474358cc15
-    pristine_git_object: fcc1663e195b10dbd84dab3041719cdea0be6501
+    last_write_checksum: sha1:46a8cdc519473e0ea0d2771f90e19173ca936e2b
+    pristine_git_object: 3610d78b0c51a069d2b968226e941f983c12333e
   internal/sdk/models/shared/filelistresponse.go:
     id: 2add4f850ae8
-    last_write_checksum: sha1:0cb507df81f04b2e82b741d6481f33cfff42db6e
-    pristine_git_object: 1a48b52bbfbb112295398886dfece1d8b5db8265
-  internal/sdk/models/shared/filemetadata.go:
-    id: c96091417c7e
-    last_write_checksum: sha1:6a564f79a174ea55d654e06eab39cec6ef02d129
-    pristine_git_object: 01395e0833d0947f0c64645f2794a4daa1eddaed
+    last_write_checksum: sha1:8eb2d1c774e0fc8f4b3f971026cc3e48f2e8c320
+    pristine_git_object: 709ff9a9581042e81105ce54a469eb2e8b9c22a3
   internal/sdk/models/shared/fileparserplugin.go:
     id: 267786b8fb6a
     last_write_checksum: sha1:da81b0cfed44164f0acbd5f1f801c1294b9535a9
@@ -2153,6 +2161,14 @@ trackedFiles:
     id: 28b34a4278aa
     last_write_checksum: sha1:9f5f75c2ce263cb21d356ecbed6dece512dd082f
     pristine_git_object: 835271d5161f9320b1883e1c256759f94a0292df
+  internal/sdk/models/shared/fileprovider.go:
+    id: 17497323aa1c
+    last_write_checksum: sha1:06f867ef845b81e23c69d99fd2bc609fc0007c8c
+    pristine_git_object: cfdb48e43b51b323b9c277073963a376688a11da
+  internal/sdk/models/shared/fileresponse.go:
+    id: 06ce32c08859
+    last_write_checksum: sha1:c3caf0961d99b3ea059f777aba72b149825211ff
+    pristine_git_object: 1e06dc608972d6d8709910a09210b2c139465fbe
   internal/sdk/models/shared/filesearchservertool.go:
     id: 1658133e6c0f
     last_write_checksum: sha1:89ef01a3eb4338cde4a0754f4270c5b4cc2a8e5a
@@ -2573,6 +2589,18 @@ trackedFiles:
     id: 5858c20c730e
     last_write_checksum: sha1:b157455bb5bce1643718b6b14fa51d074ee98a34
     pristine_git_object: 14d78d69e18d96362cef58c81c437faf467f1a95
+  internal/sdk/models/shared/openaifile.go:
+    id: 0486d22a913d
+    last_write_checksum: sha1:49f21c1c56f1fca7e7018606747115dca76d3c10
+    pristine_git_object: e5133c8259d23212389eaf0fd3c804791f1b57fb
+  internal/sdk/models/shared/openaifiledeleted.go:
+    id: ef3284888851
+    last_write_checksum: sha1:a225b761f24deff5e147e8fb4f3101a3d18f6b23
+    pristine_git_object: 01f2c17120d0190a890a5cd5010990045ef544b0
+  internal/sdk/models/shared/openaifilelist.go:
+    id: 3470f3ca3b68
+    last_write_checksum: sha1:ee905df3bdeef1b4d514412bf2bea57be66e3e50
+    pristine_git_object: f33de9f5dd5cb26560b6582109f67c7b78607b26
   internal/sdk/models/shared/openairesponsesannotation.go:
     id: a7479ac799b0
     last_write_checksum: sha1:323982cf71a899026b4d8e84f89908b7066c6cb1
@@ -2589,6 +2617,18 @@ trackedFiles:
     id: 510dc4bb06c3
     last_write_checksum: sha1:91b7a60795d78cda7cc82e48c9fbd0a186644232
     pristine_git_object: f506bc51d1c2f363d16aaea8a8b5a0e144e03228
+  internal/sdk/models/shared/openrouterfile.go:
+    id: 776877f6bad1
+    last_write_checksum: sha1:a86009c31f32542fc5f3192978a1fe27094e0fae
+    pristine_git_object: a4eaabe8073e1a78e4c1c867a7ee3ad5599c4710
+  internal/sdk/models/shared/openrouterfiledeleted.go:
+    id: 34fec81f8cdf
+    last_write_checksum: sha1:6e006e03ae4e5bbecb752bdc7cfc1552c482c68b
+    pristine_git_object: 2d84173cd55da3e852f1c033c108fae92f0ed606
+  internal/sdk/models/shared/openrouterfilelist.go:
+    id: c3f64a0bfda5
+    last_write_checksum: sha1:5e93562282f9bd2957c0284c4d750bd569a72cf9
+    pristine_git_object: c0ed826a95238c77eb5997e88bb86ba95cc46b32
   internal/sdk/models/shared/openrouterwebsearchservertool.go:
     id: 881886004f9e
     last_write_checksum: sha1:71f8aac82a01012c7f3e02543c16d8012bdd4858
@@ -3319,8 +3359,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:ca3f1f2c14288e0921a18071496ee992c136c60a
-    pristine_git_object: 722faefcac957ebd4613d1c7c85814d52dcc1fce
+    last_write_checksum: sha1:938d60f97a2eb6b817be724d021687c5f68c970a
+    pristine_git_object: a0bc8947d21765151e00ffdfd0c077b07848a6c3
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -3857,9 +3897,14 @@ examples:
           limit: 100
           cursor: "eyJjdXJzb3IiOiJmaWxlXzAxMUNOaGE4aUNKY1Uxd1hOUjZxNFY4dyJ9"
           workspace_id: "a103d8b6-42f0-4e50-9a3c-bf41e2c3c1a7"
+          provider: "openai"
+          after: "or_file_011CNha8iCJcU1wXNR6q4V8w"
+          after_id: "or_file_011CNha8iCJcU1wXNR6q4V8w"
+          before_id: "or_file_011CNha8iCJcU1wXNR6q4V8w"
+          order: "asc"
       responses:
         "200":
-          application/json: {"cursor": null, "data": [{"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}], "first_id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "has_more": false, "last_id": "or_file_011CNha8iCJcU1wXNR6q4V8w"}
+          application/json: {"_shape": "openrouter", "cursor": null, "data": [], "first_id": null, "has_more": false, "last_id": null}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -3868,16 +3913,23 @@ examples:
           application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
   uploadFile:
     speakeasy-default-upload-file:
       parameters:
         query:
           workspace_id: "a103d8b6-42f0-4e50-9a3c-bf41e2c3c1a7"
+          provider: "openai"
       requestBody:
         multipart/form-data: {"file": "x-file: example.file"}
       responses:
         "200":
-          application/json: {"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
+          application/json: {"_shape": "openrouter", "created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -3890,6 +3942,10 @@ examples:
           application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
   deleteFile:
     speakeasy-default-delete-file:
       parameters:
@@ -3897,9 +3953,10 @@ examples:
           file_id: "file_011CNha8iCJcU1wXNR6q4V8w"
         query:
           workspace_id: "a103d8b6-42f0-4e50-9a3c-bf41e2c3c1a7"
+          provider: "openai"
       responses:
         "200":
-          application/json: {"id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "type": "file_deleted"}
+          application/json: {"_shape": "openrouter", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "type": "file_deleted"}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "404":
@@ -3908,6 +3965,12 @@ examples:
           application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
   getFileMetadata:
     speakeasy-default-get-file-metadata:
       parameters:
@@ -3915,9 +3978,10 @@ examples:
           file_id: "file_011CNha8iCJcU1wXNR6q4V8w"
         query:
           workspace_id: "a103d8b6-42f0-4e50-9a3c-bf41e2c3c1a7"
+          provider: "openai"
       responses:
         "200":
-          application/json: {"created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
+          application/json: {"_shape": "openrouter", "created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "404":
@@ -3926,6 +3990,12 @@ examples:
           application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
   downloadFileContent:
     speakeasy-default-download-file-content:
       parameters:
@@ -3933,6 +4003,7 @@ examples:
           file_id: "file_011CNha8iCJcU1wXNR6q4V8w"
         query:
           workspace_id: "a103d8b6-42f0-4e50-9a3c-bf41e2c3c1a7"
+          provider: "openai"
       responses:
         "200":
           application/octet-stream: "0x6CC6aC2bdE"
@@ -3946,6 +4017,12 @@ examples:
           application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
   getGeneration:
     speakeasy-default-get-generation:
       parameters:
@@ -4941,4 +5018,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Benchmarks.list()`: \n  *  `request.source` **Changed**\n  *  `response` **Changed** (Breaking ⚠️)\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Files.list()`: \n  *  `request` **Changed**\n  *  `response` **Changed** (Breaking ⚠️)\n* `OpenRouter.Files.upload()`: \n  *  `request.provider` **Added**\n  *  `response` **Changed** (Breaking ⚠️)\n* `OpenRouter.Files.delete()`: \n  *  `request.provider` **Added**\n  *  `response` **Changed** (Breaking ⚠️)\n* `OpenRouter.Files.getMetadata()`: \n  *  `request.provider` **Added**\n  *  `response` **Changed** (Breaking ⚠️)\n* `OpenRouter.Files.downloadContent()`: \n  *  `request.provider` **Added**\n  *  `response` **Changed** (Breaking ⚠️)\n"

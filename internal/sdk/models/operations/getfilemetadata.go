@@ -12,6 +12,8 @@ type GetFileMetadataRequest struct {
 	FileID string `pathParam:"style=simple,explode=false,name=file_id"`
 	// Workspace to scope the request to. Defaults to the caller’s default workspace.
 	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
+	// Store or read this file on the named provider using your own API key for it. Omit to use OpenRouter storage.
+	Provider *shared.FileProvider `queryParam:"style=form,explode=true,name=provider"`
 }
 
 func (g *GetFileMetadataRequest) GetFileID() string {
@@ -28,6 +30,13 @@ func (g *GetFileMetadataRequest) GetWorkspaceID() *string {
 	return g.WorkspaceID
 }
 
+func (g *GetFileMetadataRequest) GetProvider() *shared.FileProvider {
+	if g == nil {
+		return nil
+	}
+	return g.Provider
+}
+
 type GetFileMetadataResponse struct {
 	// HTTP response content type for this operation
 	ContentType string
@@ -36,15 +45,21 @@ type GetFileMetadataResponse struct {
 	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 	// The file metadata.
-	FileMetadata *shared.FileMetadata
+	FileResponse *shared.FileResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Bad Gateway - Provider/upstream API failure
+	BadGatewayResponse *shared.BadGatewayResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (g GetFileMetadataResponse) MarshalJSON() ([]byte, error) {
@@ -79,11 +94,32 @@ func (g *GetFileMetadataResponse) GetRawResponse() *http.Response {
 	return g.RawResponse
 }
 
-func (g *GetFileMetadataResponse) GetFileMetadata() *shared.FileMetadata {
+func (g *GetFileMetadataResponse) GetFileResponse() *shared.FileResponse {
 	if g == nil {
 		return nil
 	}
-	return g.FileMetadata
+	return g.FileResponse
+}
+
+func (g *GetFileMetadataResponse) GetFileResponseAnthropic() *shared.AnthropicFile {
+	if v := g.GetFileResponse(); v != nil {
+		return v.AnthropicFile
+	}
+	return nil
+}
+
+func (g *GetFileMetadataResponse) GetFileResponseOpenai() *shared.OpenAIFile {
+	if v := g.GetFileResponse(); v != nil {
+		return v.OpenAIFile
+	}
+	return nil
+}
+
+func (g *GetFileMetadataResponse) GetFileResponseOpenrouter() *shared.OpenRouterFile {
+	if v := g.GetFileResponse(); v != nil {
+		return v.OpenRouterFile
+	}
+	return nil
 }
 
 func (g *GetFileMetadataResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
@@ -91,6 +127,13 @@ func (g *GetFileMetadataResponse) GetUnauthorizedResponse() *shared.Unauthorized
 		return nil
 	}
 	return g.UnauthorizedResponse
+}
+
+func (g *GetFileMetadataResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetFileMetadataResponse) GetNotFoundResponse() *shared.NotFoundResponse {
@@ -112,4 +155,18 @@ func (g *GetFileMetadataResponse) GetInternalServerResponse() *shared.InternalSe
 		return nil
 	}
 	return g.InternalServerResponse
+}
+
+func (g *GetFileMetadataResponse) GetBadGatewayResponse() *shared.BadGatewayResponse {
+	if g == nil {
+		return nil
+	}
+	return g.BadGatewayResponse
+}
+
+func (g *GetFileMetadataResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ServiceUnavailableResponse
 }

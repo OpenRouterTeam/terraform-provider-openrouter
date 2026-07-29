@@ -12,6 +12,8 @@ type DownloadFileContentRequest struct {
 	FileID string `pathParam:"style=simple,explode=false,name=file_id"`
 	// Workspace to scope the request to. Defaults to the caller’s default workspace.
 	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
+	// Store or read this file on the named provider using your own API key for it. Omit to use OpenRouter storage.
+	Provider *shared.FileProvider `queryParam:"style=form,explode=true,name=provider"`
 }
 
 func (d *DownloadFileContentRequest) GetFileID() string {
@@ -28,6 +30,13 @@ func (d *DownloadFileContentRequest) GetWorkspaceID() *string {
 	return d.WorkspaceID
 }
 
+func (d *DownloadFileContentRequest) GetProvider() *shared.FileProvider {
+	if d == nil {
+		return nil
+	}
+	return d.Provider
+}
+
 type DownloadFileContentResponse struct {
 	// HTTP response content type for this operation
 	ContentType string
@@ -41,12 +50,18 @@ type DownloadFileContentResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Bad Gateway - Provider/upstream API failure
+	BadGatewayResponse *shared.BadGatewayResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (d DownloadFileContentResponse) MarshalJSON() ([]byte, error) {
@@ -102,6 +117,13 @@ func (d *DownloadFileContentResponse) GetUnauthorizedResponse() *shared.Unauthor
 	return d.UnauthorizedResponse
 }
 
+func (d *DownloadFileContentResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if d == nil {
+		return nil
+	}
+	return d.ForbiddenResponse
+}
+
 func (d *DownloadFileContentResponse) GetNotFoundResponse() *shared.NotFoundResponse {
 	if d == nil {
 		return nil
@@ -121,4 +143,18 @@ func (d *DownloadFileContentResponse) GetInternalServerResponse() *shared.Intern
 		return nil
 	}
 	return d.InternalServerResponse
+}
+
+func (d *DownloadFileContentResponse) GetBadGatewayResponse() *shared.BadGatewayResponse {
+	if d == nil {
+		return nil
+	}
+	return d.BadGatewayResponse
+}
+
+func (d *DownloadFileContentResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if d == nil {
+		return nil
+	}
+	return d.ServiceUnavailableResponse
 }
