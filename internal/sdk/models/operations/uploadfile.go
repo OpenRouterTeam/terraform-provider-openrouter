@@ -40,8 +40,10 @@ func (u *UploadFileRequestBody) GetFile() UploadFileFile {
 
 type UploadFileRequest struct {
 	// Workspace to scope the request to. Defaults to the caller’s default workspace.
-	WorkspaceID *string               `queryParam:"style=form,explode=true,name=workspace_id"`
-	Body        UploadFileRequestBody `request:"mediaType=multipart/form-data"`
+	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
+	// Store or read this file on the named provider using your own API key for it. Omit to use OpenRouter storage.
+	Provider *shared.FileProvider  `queryParam:"style=form,explode=true,name=provider"`
+	Body     UploadFileRequestBody `request:"mediaType=multipart/form-data"`
 }
 
 func (u *UploadFileRequest) GetWorkspaceID() *string {
@@ -49,6 +51,13 @@ func (u *UploadFileRequest) GetWorkspaceID() *string {
 		return nil
 	}
 	return u.WorkspaceID
+}
+
+func (u *UploadFileRequest) GetProvider() *shared.FileProvider {
+	if u == nil {
+		return nil
+	}
+	return u.Provider
 }
 
 func (u *UploadFileRequest) GetBody() UploadFileRequestBody {
@@ -66,7 +75,7 @@ type UploadFileResponse struct {
 	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 	// The uploaded file metadata.
-	FileMetadata *shared.FileMetadata
+	FileResponse *shared.FileResponse
 	// Bad Request - Invalid request parameters or malformed input
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
@@ -79,6 +88,10 @@ type UploadFileResponse struct {
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Bad Gateway - Provider/upstream API failure
+	BadGatewayResponse *shared.BadGatewayResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (u UploadFileResponse) MarshalJSON() ([]byte, error) {
@@ -113,11 +126,32 @@ func (u *UploadFileResponse) GetRawResponse() *http.Response {
 	return u.RawResponse
 }
 
-func (u *UploadFileResponse) GetFileMetadata() *shared.FileMetadata {
+func (u *UploadFileResponse) GetFileResponse() *shared.FileResponse {
 	if u == nil {
 		return nil
 	}
-	return u.FileMetadata
+	return u.FileResponse
+}
+
+func (u *UploadFileResponse) GetFileResponseAnthropic() *shared.AnthropicFile {
+	if v := u.GetFileResponse(); v != nil {
+		return v.AnthropicFile
+	}
+	return nil
+}
+
+func (u *UploadFileResponse) GetFileResponseOpenai() *shared.OpenAIFile {
+	if v := u.GetFileResponse(); v != nil {
+		return v.OpenAIFile
+	}
+	return nil
+}
+
+func (u *UploadFileResponse) GetFileResponseOpenrouter() *shared.OpenRouterFile {
+	if v := u.GetFileResponse(); v != nil {
+		return v.OpenRouterFile
+	}
+	return nil
 }
 
 func (u *UploadFileResponse) GetBadRequestResponse() *shared.BadRequestResponse {
@@ -160,4 +194,18 @@ func (u *UploadFileResponse) GetInternalServerResponse() *shared.InternalServerR
 		return nil
 	}
 	return u.InternalServerResponse
+}
+
+func (u *UploadFileResponse) GetBadGatewayResponse() *shared.BadGatewayResponse {
+	if u == nil {
+		return nil
+	}
+	return u.BadGatewayResponse
+}
+
+func (u *UploadFileResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ServiceUnavailableResponse
 }
