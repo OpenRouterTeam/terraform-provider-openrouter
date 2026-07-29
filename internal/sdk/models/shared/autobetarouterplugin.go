@@ -55,6 +55,8 @@ type AutoBetaRouterPlugin struct {
 	CostTier *AutoBetaRouterPluginCostTier `json:"cost_tier,omitzero"`
 	// Set to false to disable the auto-beta-router plugin for this request. Defaults to true.
 	Enabled *bool `json:"enabled,omitzero"`
+	// List of model patterns to exclude from auto-beta-router selection. Supports wildcards (e.g., "meta-llama/*" excludes all Llama models). Applied after allowed_models, so an excluded pattern always wins over an allowed one.
+	ExcludedModels []string `json:"excluded_models,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	id string `const:"auto-beta-router" json:"id"`
 }
@@ -96,6 +98,13 @@ func (a *AutoBetaRouterPlugin) GetEnabled() *bool {
 		return nil
 	}
 	return a.Enabled
+}
+
+func (a *AutoBetaRouterPlugin) GetExcludedModels() []string {
+	if a == nil {
+		return nil
+	}
+	return a.ExcludedModels
 }
 
 func (a *AutoBetaRouterPlugin) GetID() string {
