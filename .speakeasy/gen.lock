@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 47bb6e6580fe65fdecbd41efcad499a9
+  docChecksum: 7c809d10e67fb65c6f4c7956826c264a
   docVersion: 1.0.0
   speakeasyVersion: 1.791.0
   generationVersion: 2.924.0
-  releaseVersion: 0.1.24
-  configChecksum: 117b5751c7185c4c3f8de56886be2c93
+  releaseVersion: 0.1.25
+  configChecksum: e9d33d854b8723cc3d327ecfe52e57cb
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 03540f5e-4e16-48e4-968b-832f5062f33e
-  pristine_commit_hash: 1999c8bec79f25e30346f954adc9034535815f0c
-  pristine_tree_hash: 1e08ef8e1fe177b1ff7e24feaedde3caf947b612
+  generation_id: 0664bc7c-8691-4a81-9c8a-08cb78d78e43
+  pristine_commit_hash: d3db525b48aefbc2f183f00b9164d5cc3c70d48c
+  pristine_tree_hash: e7fabea05b123bf32c0d288bc1bbec7acac2c96d
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:9d839b8ec8bc18f39bb968ab814d539798738a45
-    pristine_git_object: 2eb5a8612a0338fa76380caf5c6a292121291cb9
+    last_write_checksum: sha1:b84fa585fbb80928bfef151c0b833b202ab5c0a2
+    pristine_git_object: bad35581eee1be48068083553aac72b9802a7f86
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3267,8 +3267,8 @@ trackedFiles:
     pristine_git_object: 9a887785dd90c8474fae219539c84b5b5ec66f77
   internal/sdk/models/shared/videomodel.go:
     id: 4a6266e95ed6
-    last_write_checksum: sha1:a0366cc15b6f6af8936807346e4a8ce5e17e2b44
-    pristine_git_object: bddc11834ca8ca95c3ef3305363e6467c32fd7f6
+    last_write_checksum: sha1:bfa63bf92304e6f5490c8bf5370f198d68c368b1
+    pristine_git_object: cab9720d5c75607faae000ae6bcb92e227f830df
   internal/sdk/models/shared/videomodelslistresponse.go:
     id: 11e35b4e3b57
     last_write_checksum: sha1:8470e47d11d9796f2249d938556f925a288f24af
@@ -3367,8 +3367,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:4b69f253c7ac476719d4111a1df8947562eabbd0
-    pristine_git_object: fbe8173a32a871a1e4f8ebfefbcfcd627dd1daa7
+    last_write_checksum: sha1:3691a3db3d0a95c06ee8a41b20dcabc07185d352
+    pristine_git_object: 9d5a39ab35226b36fb3de8757c48823bd3ab4a5c
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5026,4 +5026,6 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.plugins[]` **Changed**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.plugins[]` **Changed**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.plugins[]` **Changed**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.videos.listModels()`:  `response.data[].supported_sizes[]` **Changed** (Breaking ⚠️)
