@@ -14,11 +14,13 @@ type UnifiedBenchmarksResponseDataType string
 const (
 	UnifiedBenchmarksResponseDataTypeArtificialAnalysis UnifiedBenchmarksResponseDataType = "artificial-analysis"
 	UnifiedBenchmarksResponseDataTypeDesignArena        UnifiedBenchmarksResponseDataType = "design-arena"
+	UnifiedBenchmarksResponseDataTypeOpenrouter         UnifiedBenchmarksResponseDataType = "openrouter"
 )
 
 type UnifiedBenchmarksResponseData struct {
 	UnifiedBenchmarksAAItem *UnifiedBenchmarksAAItem `queryParam:"inline" union:"member"`
 	UnifiedBenchmarksDAItem *UnifiedBenchmarksDAItem `queryParam:"inline" union:"member"`
+	UnifiedBenchmarksORItem *UnifiedBenchmarksORItem `queryParam:"inline" union:"member"`
 
 	Type UnifiedBenchmarksResponseDataType
 }
@@ -37,6 +39,15 @@ func CreateUnifiedBenchmarksResponseDataDesignArena(designArena UnifiedBenchmark
 
 	return UnifiedBenchmarksResponseData{
 		UnifiedBenchmarksDAItem: &designArena,
+		Type:                    typ,
+	}
+}
+
+func CreateUnifiedBenchmarksResponseDataOpenrouter(openrouter UnifiedBenchmarksORItem) UnifiedBenchmarksResponseData {
+	typ := UnifiedBenchmarksResponseDataTypeOpenrouter
+
+	return UnifiedBenchmarksResponseData{
+		UnifiedBenchmarksORItem: &openrouter,
 		Type:                    typ,
 	}
 }
@@ -71,6 +82,15 @@ func (u *UnifiedBenchmarksResponseData) UnmarshalJSON(data []byte) error {
 		u.UnifiedBenchmarksDAItem = unifiedBenchmarksDAItem
 		u.Type = UnifiedBenchmarksResponseDataTypeDesignArena
 		return nil
+	case "openrouter":
+		unifiedBenchmarksORItem := new(UnifiedBenchmarksORItem)
+		if err := utils.UnmarshalJSON(data, &unifiedBenchmarksORItem, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Source == openrouter) type UnifiedBenchmarksORItem within UnifiedBenchmarksResponseData: %w", string(data), err)
+		}
+
+		u.UnifiedBenchmarksORItem = unifiedBenchmarksORItem
+		u.Type = UnifiedBenchmarksResponseDataTypeOpenrouter
+		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for UnifiedBenchmarksResponseData", string(data))
@@ -83,6 +103,10 @@ func (u UnifiedBenchmarksResponseData) MarshalJSON() ([]byte, error) {
 
 	if u.UnifiedBenchmarksDAItem != nil {
 		return utils.MarshalJSON(u.UnifiedBenchmarksDAItem, "", true)
+	}
+
+	if u.UnifiedBenchmarksORItem != nil {
+		return utils.MarshalJSON(u.UnifiedBenchmarksORItem, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type UnifiedBenchmarksResponseData: all fields are null")
