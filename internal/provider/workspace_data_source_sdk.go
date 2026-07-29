@@ -36,6 +36,7 @@ func (r *WorkspaceDataSourceModel) RefreshFromSharedGetWorkspaceResponseData(ctx
 	r.DefaultTextModel = types.StringPointerValue(resp.DefaultTextModel)
 	r.Description = types.StringPointerValue(resp.Description)
 	r.ID = types.StringValue(resp.ID)
+	r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
 	if resp.IoLoggingAPIKeyIds != nil {
 		r.IoLoggingAPIKeyIds = make([]types.Int64, 0, len(resp.IoLoggingAPIKeyIds))
 		for _, v := range resp.IoLoggingAPIKeyIds {

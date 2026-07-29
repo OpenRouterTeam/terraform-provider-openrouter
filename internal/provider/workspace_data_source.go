@@ -38,6 +38,7 @@ type WorkspaceDataSourceModel struct {
 	DefaultTextModel                types.String  `tfsdk:"default_text_model"`
 	Description                     types.String  `tfsdk:"description"`
 	ID                              types.String  `tfsdk:"id"`
+	IncludeByokInBudgets            types.Bool    `tfsdk:"include_byok_in_budgets"`
 	IoLoggingAPIKeyIds              []types.Int64 `tfsdk:"io_logging_api_key_ids"`
 	IoLoggingSamplingRate           types.Float64 `tfsdk:"io_logging_sampling_rate"`
 	IsDataDiscountLoggingEnabled    types.Bool    `tfsdk:"is_data_discount_logging_enabled"`
@@ -93,6 +94,10 @@ func (r *WorkspaceDataSource) Schema(ctx context.Context, req datasource.SchemaR
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
 				},
+			},
+			"include_byok_in_budgets": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Set it via the workspace budget endpoints.`,
 			},
 			"io_logging_api_key_ids": schema.ListAttribute{
 				Computed:    true,

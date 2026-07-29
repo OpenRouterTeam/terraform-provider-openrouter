@@ -52,6 +52,20 @@ func (r *ModelDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 			"data": schema.SingleNestedAttribute{
 				Computed: true,
 				Attributes: map[string]schema.Attribute{
+					"alias_target": schema.SingleNestedAttribute{
+						Computed: true,
+						Attributes: map[string]schema.Attribute{
+							"name": schema.StringAttribute{
+								Computed:    true,
+								Description: `Human-readable name of the concrete model targeted by this alias`,
+							},
+							"slug": schema.StringAttribute{
+								Computed:    true,
+								Description: `Routable model ID of the concrete target, matching that model row's id`,
+							},
+						},
+						Description: `Concrete model targeted by this tilde-latest alias, when applicable`,
+					},
 					"architecture": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{

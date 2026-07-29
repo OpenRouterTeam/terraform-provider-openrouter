@@ -31,8 +31,9 @@ type WorkspaceBudgetsDataSource struct {
 
 // WorkspaceBudgetsDataSourceModel describes the data model.
 type WorkspaceBudgetsDataSourceModel struct {
-	Data []tfTypes.WorkspaceBudget `tfsdk:"data"`
-	ID   types.String              `tfsdk:"id"`
+	Data                 []tfTypes.WorkspaceBudget `tfsdk:"data"`
+	ID                   types.String              `tfsdk:"id"`
+	IncludeByokInBudgets types.Bool                `tfsdk:"include_byok_in_budgets"`
 }
 
 // Metadata returns the data source type name.
@@ -84,6 +85,10 @@ func (r *WorkspaceBudgetsDataSource) Schema(ctx context.Context, req datasource.
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
 				},
+			},
+			"include_byok_in_budgets": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether BYOK (bring-your-own-key) spend is included when enforcing the workspace's budgets. This is a workspace-wide setting that applies to all budget intervals (daily, weekly, monthly, and lifetime).`,
 			},
 		},
 	}

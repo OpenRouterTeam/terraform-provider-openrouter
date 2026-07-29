@@ -30,6 +30,7 @@ func (r *WorkspacesDataSourceModel) RefreshFromSharedListWorkspacesResponse(ctx 
 			data.DefaultTextModel = types.StringPointerValue(dataItem.DefaultTextModel)
 			data.Description = types.StringPointerValue(dataItem.Description)
 			data.ID = types.StringValue(dataItem.ID)
+			data.IncludeByokInBudgets = types.BoolPointerValue(dataItem.IncludeByokInBudgets)
 			if dataItem.IoLoggingAPIKeyIds != nil {
 				if data.IoLoggingAPIKeyIds == nil {
 					data.IoLoggingAPIKeyIds = make([]types.Int64, 0, len(dataItem.IoLoggingAPIKeyIds))

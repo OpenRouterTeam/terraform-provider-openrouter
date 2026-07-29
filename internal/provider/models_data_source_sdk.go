@@ -22,6 +22,13 @@ func (r *ModelsDataSourceModel) RefreshFromSharedModelsListResponse(ctx context.
 		for _, dataItem := range resp.Data {
 			var data tfTypes.Model
 
+			if dataItem.AliasTarget == nil {
+				data.AliasTarget = nil
+			} else {
+				data.AliasTarget = &tfTypes.ModelAliasTarget{}
+				data.AliasTarget.Name = types.StringValue(dataItem.AliasTarget.Name)
+				data.AliasTarget.Slug = types.StringValue(dataItem.AliasTarget.Slug)
+			}
 			data.Architecture = &tfTypes.ModelArchitecture{}
 			if data.Architecture.InputModalities == nil {
 				data.Architecture.InputModalities = make([]types.String, 0, len(dataItem.Architecture.InputModalities))
