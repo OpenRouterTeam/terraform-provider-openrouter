@@ -16,6 +16,7 @@ type Source string
 const (
 	SourceArtificialAnalysis Source = "artificial-analysis"
 	SourceDesignArena        Source = "design-arena"
+	SourceOpenrouter         Source = "openrouter"
 )
 
 func (e Source) ToPointer() *Source {
@@ -30,6 +31,8 @@ func (e *Source) UnmarshalJSON(data []byte) error {
 	case "artificial-analysis":
 		fallthrough
 	case "design-arena":
+		fallthrough
+	case "openrouter":
 		*e = Source(v)
 		return nil
 	default:

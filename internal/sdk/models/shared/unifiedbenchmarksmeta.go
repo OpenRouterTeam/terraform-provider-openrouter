@@ -13,6 +13,7 @@ type SourceEnum string
 const (
 	SourceEnumArtificialAnalysis SourceEnum = "artificial-analysis"
 	SourceEnumDesignArena        SourceEnum = "design-arena"
+	SourceEnumOpenrouter         SourceEnum = "openrouter"
 )
 
 func (e SourceEnum) ToPointer() *SourceEnum {
@@ -27,6 +28,8 @@ func (e *SourceEnum) UnmarshalJSON(data []byte) error {
 	case "artificial-analysis":
 		fallthrough
 	case "design-arena":
+		fallthrough
+	case "openrouter":
 		*e = SourceEnum(v)
 		return nil
 	default:
