@@ -36,6 +36,7 @@ data "openrouter_model" "my_model" {
 
 Read-Only:
 
+- `alias_target` (Attributes) Concrete model targeted by this tilde-latest alias, when applicable (see [below for nested schema](#nestedatt--data--alias_target))
 - `architecture` (Attributes) Model architecture information (see [below for nested schema](#nestedatt--data--architecture))
 - `benchmarks` (Attributes) Third-party benchmark rankings for this model. Omitted when no benchmark data is available. (see [below for nested schema](#nestedatt--data--benchmarks))
 - `canonical_slug` (String) Canonical slug for the model
@@ -55,6 +56,15 @@ Read-Only:
 - `supported_parameters` (List of String) List of supported parameters for this model
 - `supported_voices` (List of String) List of supported voice identifiers for TTS models. Null for non-TTS models.
 - `top_provider` (Attributes) Information about the top provider for this model (see [below for nested schema](#nestedatt--data--top_provider))
+
+<a id="nestedatt--data--alias_target"></a>
+### Nested Schema for `data.alias_target`
+
+Read-Only:
+
+- `name` (String) Human-readable name of the concrete model targeted by this alias
+- `slug` (String) Routable model ID of the concrete target, matching that model row's id
+
 
 <a id="nestedatt--data--architecture"></a>
 ### Nested Schema for `data.architecture`

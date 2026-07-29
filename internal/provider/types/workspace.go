@@ -15,6 +15,7 @@ type Workspace struct {
 	DefaultTextModel                types.String  `tfsdk:"default_text_model"`
 	Description                     types.String  `tfsdk:"description"`
 	ID                              types.String  `tfsdk:"id"`
+	IncludeByokInBudgets            types.Bool    `tfsdk:"include_byok_in_budgets"`
 	IoLoggingAPIKeyIds              []types.Int64 `tfsdk:"io_logging_api_key_ids"`
 	IoLoggingSamplingRate           types.Float64 `tfsdk:"io_logging_sampling_rate"`
 	IsDataDiscountLoggingEnabled    types.Bool    `tfsdk:"is_data_discount_logging_enabled"`

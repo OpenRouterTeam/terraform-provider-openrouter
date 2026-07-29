@@ -80,6 +80,10 @@ func (r *WorkspacesDataSource) Schema(ctx context.Context, req datasource.Schema
 							Computed:    true,
 							Description: `Unique identifier for the workspace`,
 						},
+						"include_byok_in_budgets": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Set it via the workspace budget endpoints.`,
+						},
 						"io_logging_api_key_ids": schema.ListAttribute{
 							Computed:    true,
 							ElementType: types.Int64Type,

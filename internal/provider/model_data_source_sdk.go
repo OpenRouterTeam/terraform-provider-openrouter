@@ -16,6 +16,13 @@ func (r *ModelDataSourceModel) RefreshFromSharedModelResponse(ctx context.Contex
 
 	if resp != nil {
 		r.Data = &tfTypes.Model{}
+		if resp.Data.AliasTarget == nil {
+			r.Data.AliasTarget = nil
+		} else {
+			r.Data.AliasTarget = &tfTypes.ModelAliasTarget{}
+			r.Data.AliasTarget.Name = types.StringValue(resp.Data.AliasTarget.Name)
+			r.Data.AliasTarget.Slug = types.StringValue(resp.Data.AliasTarget.Slug)
+		}
 		r.Data.Architecture = &tfTypes.ModelArchitecture{}
 		r.Data.Architecture.InputModalities = make([]types.String, 0, len(resp.Data.Architecture.InputModalities))
 		for _, v := range resp.Data.Architecture.InputModalities {

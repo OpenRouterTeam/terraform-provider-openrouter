@@ -7,6 +7,7 @@ import (
 )
 
 type Model struct {
+	AliasTarget         *ModelAliasTarget  `tfsdk:"alias_target"`
 	Architecture        *ModelArchitecture `tfsdk:"architecture"`
 	Benchmarks          *ModelBenchmarks   `tfsdk:"benchmarks"`
 	CanonicalSlug       types.String       `tfsdk:"canonical_slug"`

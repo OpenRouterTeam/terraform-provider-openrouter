@@ -34,6 +34,7 @@ data "openrouter_workspace" "my_workspace" {
 - `default_provider_sort` (String) Default provider sort preference (price, throughput, latency, exacto)
 - `default_text_model` (String) Default text model for this workspace
 - `description` (String) Description of the workspace
+- `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Set it via the workspace budget endpoints.
 - `io_logging_api_key_ids` (List of Number) Optional array of API key IDs to filter I/O logging. Null means all keys are logged.
 - `io_logging_sampling_rate` (Number) Sampling rate for I/O logging (0.0001-1). 1 means 100% of requests are logged.
 - `is_data_discount_logging_enabled` (Boolean) Whether data discount logging is enabled for this workspace

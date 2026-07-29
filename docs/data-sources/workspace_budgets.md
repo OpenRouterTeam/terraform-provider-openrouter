@@ -28,6 +28,7 @@ data "openrouter_workspace_budgets" "my_workspacebudgets" {
 ### Read-Only
 
 - `data` (Attributes List) List of budgets configured for the workspace (see [below for nested schema](#nestedatt--data))
+- `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) spend is included when enforcing the workspace's budgets. This is a workspace-wide setting that applies to all budget intervals (daily, weekly, monthly, and lifetime).
 
 <a id="nestedatt--data"></a>
 ### Nested Schema for `data`

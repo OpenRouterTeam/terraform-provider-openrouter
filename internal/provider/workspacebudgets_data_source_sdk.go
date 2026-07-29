@@ -33,6 +33,7 @@ func (r *WorkspaceBudgetsDataSourceModel) RefreshFromSharedListWorkspaceBudgetsR
 
 			r.Data = append(r.Data, data)
 		}
+		r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
 	}
 
 	return diags
