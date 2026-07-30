@@ -1146,12 +1146,13 @@ func (v *VideoGenerationRequestProvider) GetOptions() *VideoGenerationRequestOpt
 type VideoGenerationRequestResolution string
 
 const (
-	VideoGenerationRequestResolutionFourHundredAndEightyp  VideoGenerationRequestResolution = "480p"
-	VideoGenerationRequestResolutionSevenHundredAndTwentyp VideoGenerationRequestResolution = "720p"
-	VideoGenerationRequestResolutionOneThousandAndEightyp  VideoGenerationRequestResolution = "1080p"
-	VideoGenerationRequestResolutionOneK                   VideoGenerationRequestResolution = "1K"
-	VideoGenerationRequestResolutionTwoK                   VideoGenerationRequestResolution = "2K"
-	VideoGenerationRequestResolutionFourK                  VideoGenerationRequestResolution = "4K"
+	VideoGenerationRequestResolutionFourHundredAndEightyp      VideoGenerationRequestResolution = "480p"
+	VideoGenerationRequestResolutionSevenHundredAndTwentyp     VideoGenerationRequestResolution = "720p"
+	VideoGenerationRequestResolutionSevenHundredAndSixtyEightp VideoGenerationRequestResolution = "768p"
+	VideoGenerationRequestResolutionOneThousandAndEightyp      VideoGenerationRequestResolution = "1080p"
+	VideoGenerationRequestResolutionOneK                       VideoGenerationRequestResolution = "1K"
+	VideoGenerationRequestResolutionTwoK                       VideoGenerationRequestResolution = "2K"
+	VideoGenerationRequestResolutionFourK                      VideoGenerationRequestResolution = "4K"
 )
 
 func (e VideoGenerationRequestResolution) ToPointer() *VideoGenerationRequestResolution {
@@ -1166,6 +1167,8 @@ func (e *VideoGenerationRequestResolution) UnmarshalJSON(data []byte) error {
 	case "480p":
 		fallthrough
 	case "720p":
+		fallthrough
+	case "768p":
 		fallthrough
 	case "1080p":
 		fallthrough
