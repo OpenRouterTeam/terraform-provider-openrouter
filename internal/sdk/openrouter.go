@@ -97,7 +97,9 @@ type OpenRouter struct {
 	// Provider information endpoints
 	Providers *Providers
 	// Rerank endpoints
-	Rerank          *Rerank
+	Rerank *Rerank
+	// SCIM endpoints
+	Scim            *Scim
 	VideoGeneration *VideoGeneration
 	Videos          *Videos
 	// Workspaces endpoints
@@ -178,9 +180,9 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.1.27",
+		SDKVersion: "0.1.28",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:  "speakeasy-sdk/terraform 0.1.27 2.924.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			UserAgent:  "speakeasy-sdk/terraform 0.1.28 2.924.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
 			ServerList: ServerList,
 		},
 		hooks: hooks.New(),
@@ -224,6 +226,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Presets = newPresets(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Providers = newProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Rerank = newRerank(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.Scim = newScim(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.VideoGeneration = newVideoGeneration(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Videos = newVideos(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Workspaces = newWorkspaces(sdk, sdk.sdkConfiguration, sdk.hooks)
