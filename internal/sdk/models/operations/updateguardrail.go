@@ -37,7 +37,7 @@ type UpdateGuardrailResponse struct {
 	RawResponse *http.Response
 	// Guardrail updated successfully
 	UpdateGuardrailResponse *shared.UpdateGuardrailResponse
-	// Bad Request - Invalid request parameters or malformed input
+	// Invalid request, or an attempt to change a workspace default guardrail's name (which is derived from its workspace and not editable).
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse

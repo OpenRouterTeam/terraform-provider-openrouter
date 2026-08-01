@@ -31,7 +31,7 @@ type GetGuardrailResponse struct {
 	GetGuardrailResponse *shared.GetGuardrailResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
-	// Not Found - Resource does not exist
+	// Guardrail not found, or the workspace default guardrail has not been configured yet.
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse

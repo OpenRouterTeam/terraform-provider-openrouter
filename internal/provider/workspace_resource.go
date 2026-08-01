@@ -69,7 +69,7 @@ func (r *WorkspaceResource) Schema(ctx context.Context, req resource.SchemaReque
 			},
 			"default_guardrail_id": schema.StringAttribute{
 				Computed:    true,
-				Description: `Deterministic ID of the workspace's implicitly-created default guardrail`,
+				Description: `Deterministic ID derived from the workspace ID. The default guardrail is materialized when its configuration is first written.`,
 			},
 			"default_image_model": schema.StringAttribute{
 				Computed:    true,

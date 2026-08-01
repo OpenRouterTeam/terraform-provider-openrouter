@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 31eabd1b2b59845ab8d6d5be298e6f24
+  docChecksum: bb7c1e25c4173045615ee9bd166eeec3
   docVersion: 1.0.0
   speakeasyVersion: 1.791.0
   generationVersion: 2.924.0
-  releaseVersion: 0.1.31
-  configChecksum: 6e36d7593190b20726cbb1cd90033409
+  releaseVersion: 0.1.32
+  configChecksum: 08b5e450fd930e15e09c2e193e927648
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: ff71c4d4-8c4b-45f6-9304-4efddaf91369
-  pristine_commit_hash: 7f7cc372ebf1862f2cc501016ae32470fe418514
-  pristine_tree_hash: f1c35fafc6f22c4075810b19bdcc676d4913199c
+  generation_id: 5cf77ad6-5bf3-4244-b1ec-ce5740d615a0
+  pristine_commit_hash: e876d1f3d54bb03eb2107a2fd27a3b2ac43bc3f6
+  pristine_tree_hash: 881401f78577f8221bbee26fee47cbe28ec4658e
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -123,8 +123,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:3c646ff2502a4bea765787591ab09d7a100d6825
-    pristine_git_object: 6bbe2c4d29dade97bc1128caa2ec90945444024b
+    last_write_checksum: sha1:4e761a362dfd8b4affdc94a89f39dfefc95d74f5
+    pristine_git_object: fa851d92704868eb00213a61773c71eb545418c7
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -979,16 +979,16 @@ trackedFiles:
     pristine_git_object: 39fc90d7bb00721478349481a33c5aae749c2696
   internal/provider/workspace_data_source.go:
     id: 0215b9e1a8ce
-    last_write_checksum: sha1:4e33f0e1f8f86e5db9330c76de18e4213894c467
-    pristine_git_object: 4b8a424819c7f5eef5d8eb6160f97a90324df4e8
+    last_write_checksum: sha1:4f9475694286271cbc1bfa5eb7ad58c91fd3a040
+    pristine_git_object: cad880da3bbcf43b3fa81d916cee62ed961990ef
   internal/provider/workspace_data_source_sdk.go:
     id: fb6e7a09af34
     last_write_checksum: sha1:78f57803018ae1007ccc9ee9b326e3ebd343f8c4
     pristine_git_object: 995f2b5c9fd6adebfcc6882f423d0e87397405a8
   internal/provider/workspace_resource.go:
     id: 4255ab3c913f
-    last_write_checksum: sha1:2c33e99a7509bc773b2f6d3ee6a36bef79809cb6
-    pristine_git_object: c92ef0d66adbf72d42165e5ed1ea9846d0ab4b7f
+    last_write_checksum: sha1:7f993876f199fc68d9b7c9bc34746de7ab54c8f1
+    pristine_git_object: 3c523cf5a3701cae8598693ef0e81cd65416efe8
   internal/provider/workspace_resource_sdk.go:
     id: 6b7b5772bf74
     last_write_checksum: sha1:e9974d542e582b3b7b63e472217c37db7bd4c646
@@ -1011,8 +1011,8 @@ trackedFiles:
     pristine_git_object: ab8001d67645bbd4a2666c46aa0b4a9a31fc6672
   internal/provider/workspaces_data_source.go:
     id: bd46e9e30c0d
-    last_write_checksum: sha1:d219ee77440b49102aa2aec7150eefb4ae751dd0
-    pristine_git_object: 0dd7c2dcb3f12dd3266738cc06673818cca676d5
+    last_write_checksum: sha1:a034abf2717893fffb00761f7ea3165348d57607
+    pristine_git_object: 44b671f1b7597febb27720b79744c813d9c5763d
   internal/provider/workspaces_data_source_sdk.go:
     id: 2791418d72c4
     last_write_checksum: sha1:2a9a9a38f2cf087716d81a8b617330665736b364
@@ -1071,8 +1071,8 @@ trackedFiles:
     pristine_git_object: 3f0e5af3bb6602e77c000d4e4403eb971626662a
   internal/sdk/guardrails.go:
     id: 7acba59507ef
-    last_write_checksum: sha1:452535cc284abe05de567eaa883697d0a51a40fb
-    pristine_git_object: 9085717e3838013e5bf8e2e7a42ee38511a01f3c
+    last_write_checksum: sha1:8d0cbbbeb37114eeecb0317ef0d697e04ac15e8d
+    pristine_git_object: ae297585e6cb2d43f282507376178193482fde23
   internal/sdk/images.go:
     id: 110b363483e3
     last_write_checksum: sha1:7888c66ffdcac216527eac651af06ff8fdd18096
@@ -1307,8 +1307,8 @@ trackedFiles:
     pristine_git_object: 19e8391473fd89dccb88541c73b16e6b1091f71d
   internal/sdk/models/operations/getguardrail.go:
     id: 9875e3d32ba8
-    last_write_checksum: sha1:5e4615ad0a6cba789bc8cc9c029089442796ddcf
-    pristine_git_object: f71775ab824762d8a57a89ab8946f1922c66494c
+    last_write_checksum: sha1:0a79a567de05c5ae4a21572d0e24032ae61e47cf
+    pristine_git_object: befb58ccedace8707bfbbbfa2e41e9babb250c01
   internal/sdk/models/operations/getkey.go:
     id: 6cc585c52264
     last_write_checksum: sha1:de016403d8e465f58472b04939c3faef0b25840c
@@ -1487,8 +1487,8 @@ trackedFiles:
     pristine_git_object: eb38deb1c7424e09ea97ae18fb704950214c4ea8
   internal/sdk/models/operations/updateguardrail.go:
     id: 8c146d4d139d
-    last_write_checksum: sha1:b7a70d5420d6fb9ff2ec1f2a13175f9709bb8c7d
-    pristine_git_object: 71ca79670722b05d805feea67a765fe741f4f4b7
+    last_write_checksum: sha1:daff38ba45175904ad1078ae5f45046a8c2e53be
+    pristine_git_object: 13f2ea41961a52466428aea9a885354763402812
   internal/sdk/models/operations/updatekeys.go:
     id: 84d161c59f3b
     last_write_checksum: sha1:3d5c7e957a8774c66f812a0180d0754e0e825fa6
@@ -2107,8 +2107,8 @@ trackedFiles:
     pristine_git_object: 562ebddd237a825979bde24705a388027235e7f2
   internal/sdk/models/shared/createworkspaceresponse.go:
     id: aee357718cbf
-    last_write_checksum: sha1:687e19670d6aa9f056e5c38054d2e2f0dbc64fc8
-    pristine_git_object: 4fce6e308e787c81d7d82fa57f176b3f17f4c8b4
+    last_write_checksum: sha1:9c6f597fd136bddf968214d12732b30ab3187c55
+    pristine_git_object: ca9dafef203f6a30973a33a8d67df29fcbae46d4
   internal/sdk/models/shared/customtool.go:
     id: 716e54b1a5b5
     last_write_checksum: sha1:c9ca4a2700ce0926665e3bdc4bcaa038e113132e
@@ -2315,8 +2315,8 @@ trackedFiles:
     pristine_git_object: cf88aece7d770bafa915bd47da1994f77dba9e87
   internal/sdk/models/shared/getworkspaceresponse.go:
     id: 954c597bc3ff
-    last_write_checksum: sha1:72871696d96481ec129fc7437a8f40d0c0e8cb06
-    pristine_git_object: 115abda3f0706f564aa75eafb5e89a12fcbf1a68
+    last_write_checksum: sha1:5e529024029ceee2d616f69c488afe54261ccb44
+    pristine_git_object: 428d32554d62c09212a682c8a8973d292d55b709
   internal/sdk/models/shared/guardrail.go:
     id: c670d7f3d067
     last_write_checksum: sha1:1c34130f836edd8948af9fcc685567e7befaa8a3
@@ -3303,8 +3303,8 @@ trackedFiles:
     pristine_git_object: 0fd5948278aed1bbfe507917e64f10429a89bdc9
   internal/sdk/models/shared/updateworkspaceresponse.go:
     id: 402d0a200451
-    last_write_checksum: sha1:e94e04d568b63c602303d96473e56d6a3021ad6e
-    pristine_git_object: afd0f2c3588b8c2893bd9d680409ce8ef9766c81
+    last_write_checksum: sha1:d9a95ed29a6a602394651d1abbb11a636fccd4fc
+    pristine_git_object: 4a6747aa44ad61e0a62ea65af06cf549d93734dd
   internal/sdk/models/shared/upsertworkspacebudgetrequest.go:
     id: f54c21919979
     last_write_checksum: sha1:22a68b38c9951315763d7de796fa892f7a33b0c9
@@ -3403,8 +3403,8 @@ trackedFiles:
     pristine_git_object: 450dde2117cf40e6b3cedccbb5e3f146f3449319
   internal/sdk/models/shared/workspace.go:
     id: e51ad67224b2
-    last_write_checksum: sha1:f883f1a87b0f7bab03a46029b8a29c6e93470506
-    pristine_git_object: 218aa79cecf604e52bf044a8353d944ed0a3ed7f
+    last_write_checksum: sha1:6e61d2969144c174ae4fed0e787393c2805f4280
+    pristine_git_object: 620be7c084ddf11dbb574eecf00cd4625c21e38a
   internal/sdk/models/shared/workspacebudget.go:
     id: 5f2178cfe6ff
     last_write_checksum: sha1:21ce929ddf57bd012f149789788f55f2524743f0
@@ -3431,8 +3431,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:3d251da82fa725ad9c2d552c75394f1d22c377cd
-    pristine_git_object: 270bb2b3dc95c992d437341afb7038907cbe4fa1
+    last_write_checksum: sha1:4fb7a0d8b2afe93d4a509be7b5ef295dbd76b99a
+    pristine_git_object: 524da4b45e11cd267119c0f737aaaabc9292962e
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5191,4 +5191,3 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(class (7)).type` **Changed**\n"

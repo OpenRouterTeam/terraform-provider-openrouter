@@ -29,7 +29,7 @@ data "openrouter_workspace" "my_workspace" {
 
 - `created_at` (String) ISO 8601 timestamp of when the workspace was created
 - `created_by` (String) User ID of the workspace creator
-- `default_guardrail_id` (String) Deterministic ID of the workspace's implicitly-created default guardrail
+- `default_guardrail_id` (String) Deterministic ID derived from the workspace ID. The default guardrail is materialized when its configuration is first written.
 - `default_image_model` (String) Default image model for this workspace
 - `default_provider_sort` (String) Default provider sort preference (price, throughput, latency, exacto)
 - `default_text_model` (String) Default text model for this workspace

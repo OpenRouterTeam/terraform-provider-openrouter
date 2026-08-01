@@ -54,7 +54,7 @@ resource "openrouter_workspace" "my_workspace" {
 
 - `created_at` (String) ISO 8601 timestamp of when the workspace was created
 - `created_by` (String) User ID of the workspace creator
-- `default_guardrail_id` (String) Deterministic ID of the workspace's implicitly-created default guardrail
+- `default_guardrail_id` (String) Deterministic ID derived from the workspace ID. The default guardrail is materialized when its configuration is first written.
 - `id` (String) The workspace ID (UUID) or slug
 - `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Set it via the workspace budget endpoints.
 - `updated_at` (String) ISO 8601 timestamp of when the workspace was last updated
