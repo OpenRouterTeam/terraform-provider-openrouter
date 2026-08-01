@@ -1162,7 +1162,7 @@ func (s *Guardrails) GetGuardrail(ctx context.Context, request operations.GetGua
 }
 
 // Update a guardrail
-// Update an existing guardrail. Collection fields use replace semantics: send the full desired set on every update. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Update an existing guardrail, or materialize an unconfigured workspace default guardrail. Collection fields use replace semantics: send the full desired set on every update. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) Update(ctx context.Context, request operations.UpdateGuardrailRequest, opts ...operations.Option) (*operations.UpdateGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
