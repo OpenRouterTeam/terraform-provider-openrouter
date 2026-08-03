@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: bb7c1e25c4173045615ee9bd166eeec3
+  docChecksum: 1829cd3de98863c71934209856a77cbd
   docVersion: 1.0.0
-  speakeasyVersion: 1.791.0
-  generationVersion: 2.924.0
-  releaseVersion: 0.1.32
-  configChecksum: 08b5e450fd930e15e09c2e193e927648
+  speakeasyVersion: 1.791.1
+  generationVersion: 2.926.2
+  releaseVersion: 0.2.0
+  configChecksum: 1c2d334915f801123dd689c1761f2660
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 5cf77ad6-5bf3-4244-b1ec-ce5740d615a0
-  pristine_commit_hash: e876d1f3d54bb03eb2107a2fd27a3b2ac43bc3f6
-  pristine_tree_hash: 881401f78577f8221bbee26fee47cbe28ec4658e
+  generation_id: 41e024ef-778e-43e8-9a51-72c7df22c15d
+  pristine_commit_hash: 122d1fdebbda5455eced14bd10ab0a11b17ca271
+  pristine_tree_hash: 9df5cbd4aa2dd1486b6417f26435970a69b8e6b2
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -20,6 +20,7 @@ features:
     constsAndDefaults: 0.3.2
     core: 3.47.10
     deprecations: 2.82.0
+    flattening: 2.81.2
     formatBinary: 0.2.0
     globalSecurity: 2.82.3
     globalServerURLs: 2.83.2
@@ -31,7 +32,7 @@ features:
     pagination: 2.83.6
     retries: 2.81.5
     serverIDs: 2.81.1
-    unions: 2.82.15
+    unions: 2.82.16
 trackedFiles:
   .gitattributes:
     id: 24139dae6567
@@ -123,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:4e761a362dfd8b4affdc94a89f39dfefc95d74f5
-    pristine_git_object: fa851d92704868eb00213a61773c71eb545418c7
+    last_write_checksum: sha1:759946bf2614c755e47a26427c5a322f60ef5703
+    pristine_git_object: 6f1a4f31dc8708d1e8ca8dba2bb18ffa9c3d4312
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1023,8 +1024,8 @@ trackedFiles:
     pristine_git_object: e6a994416d0f527912d2d272e2583458f4fc9bcb
   internal/sdk/analytics.go:
     id: a1bd379d6569
-    last_write_checksum: sha1:da2bb565bd371f6417dfe180c4a219e588595eb6
-    pristine_git_object: 9274b3e603830f84d4da47065fde9aedc34318a1
+    last_write_checksum: sha1:40624f0d0d339f8240d3a2cce60a90d529fb59e0
+    pristine_git_object: 11b1b571f69925726e7d965f72f7ecf42c0f078d
   internal/sdk/apikeys.go:
     id: a40d4b208cc3
     last_write_checksum: sha1:7cd253320fc671ee04cbe371d054f7f4b6e4e130
@@ -1347,8 +1348,8 @@ trackedFiles:
     pristine_git_object: 162c8744069bd6cfb7c1ec0b7bab0fead613b031
   internal/sdk/models/operations/getuseractivity.go:
     id: 8a8e9bb5aa84
-    last_write_checksum: sha1:186329e8600bbac2f37c599d8a5ec54d59810c80
-    pristine_git_object: 9bbd7170ed5a939250e6ad4f679451dd6bb41645
+    last_write_checksum: sha1:7274a13218d2ceca0d480c84d924753625bdd1c1
+    pristine_git_object: 568a56cc4593dd53a324719925a7a81e81842208
   internal/sdk/models/operations/getvideos.go:
     id: b75d642f4146
     last_write_checksum: sha1:0d2382a334f2c28a479dc49fafff5e28d53b1200
@@ -1475,8 +1476,8 @@ trackedFiles:
     pristine_git_object: f715919ce2517db4fc8eba7c18fa6ef9ad50bcc4
   internal/sdk/models/operations/queryanalytics.go:
     id: 8220db2e9ee1
-    last_write_checksum: sha1:529e23b89a6b57c77f884a0f7988c27006356a16
-    pristine_git_object: 05634702f6605fc883f7e5242b89a8d4a7c7ee0b
+    last_write_checksum: sha1:f12523effeda197f0aeb145016403d197969fce1
+    pristine_git_object: 66e2ce5ed4381ed17e41e8662c26ec76fc567a3a
   internal/sdk/models/operations/submitgenerationfeedback.go:
     id: c967413fefe5
     last_write_checksum: sha1:cd4132b10fc9b69cd6f3fa313209905e7d77d46a
@@ -1519,8 +1520,8 @@ trackedFiles:
     pristine_git_object: b21ae543c871c6d8a8b27fafcbfa969c2768b262
   internal/sdk/models/shared/activityitem.go:
     id: 354a3d6c137e
-    last_write_checksum: sha1:ca3c4979c6f7f3acf2662d7c4513879edf05990c
-    pristine_git_object: fa25da25a2259ea094993852dc626e4165158dfd
+    last_write_checksum: sha1:57cea785089f88fe34c4e072a0ef12ba3171d823
+    pristine_git_object: a3f1784cb930c2adfdf61a3b5f7ec4fb7589ce02
   internal/sdk/models/shared/activityresponse.go:
     id: 0da5f41e0268
     last_write_checksum: sha1:bf4369217b87b362625e7594dc02f3f6ab1f94fe
@@ -2287,8 +2288,8 @@ trackedFiles:
     pristine_git_object: cd3229c4c73a97b3352f633d0b6d598ceb212075
   internal/sdk/models/shared/generationresponse.go:
     id: 6450b4f51a48
-    last_write_checksum: sha1:e33edaf456ce680d9a8b5ada952c198a3bac40b2
-    pristine_git_object: 8be3269538fc0f127f41caa75a04c2743769e3ed
+    last_write_checksum: sha1:feeb112b243115bfa49fe88676c939773041097f
+    pristine_git_object: 616f39b07304632699e024a273688d80d815ce81
   internal/sdk/models/shared/getbyokkeyresponse.go:
     id: 4f2a5d8663e9
     last_write_checksum: sha1:3dfe9f5e4984a38f076aac34ee43481691c66225
@@ -3431,8 +3432,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:4fb7a0d8b2afe93d4a509be7b5ef295dbd76b99a
-    pristine_git_object: 524da4b45e11cd267119c0f737aaaabc9292962e
+    last_write_checksum: sha1:18c97332f9d90efea2e7482e39d387f911f53a93
+    pristine_git_object: 51800e119189d46146c64a25b48722800510e8ee
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -3581,6 +3582,8 @@ examples:
           date: "2025-08-24"
           api_key_hash: "abc123def456..."
           user_id: "user_abc123"
+          group_by: "workspace"
+          workspace_id: "550e8400-e29b-41d4-a716-446655440000"
       responses:
         "200":
           application/json: {"data": [{"byok_usage_inference": 0.012, "completion_tokens": 125, "date": "2025-08-24", "endpoint_id": "550e8400-e29b-41d4-a716-446655440000", "model": "openai/gpt-4.1", "model_permaslug": "openai/gpt-4.1-2025-04-14", "prompt_tokens": 50, "provider_name": "OpenAI", "reasoning_tokens": 25, "requests": 5, "usage": 0.015}]}
@@ -4106,7 +4109,7 @@ examples:
           id: "gen-1234567890"
       responses:
         "200":
-          application/json: {"data": {"api_type": "completions", "app_id": 12345, "cache_discount": null, "cancelled": false, "created_at": "2024-07-15T23:33:19.433273+00:00", "data_region": "global", "external_user": "user-123", "finish_reason": "stop", "generation_time": 1200, "http_referer": "https://openrouter.ai/", "id": "gen-3bhGkxlo4XFrqiabUM7NDtwDzWwG", "is_byok": false, "latency": 1250, "model": "sao10k/l3-stheno-8b", "moderation_latency": 50, "native_finish_reason": "stop", "native_tokens_cached": 3, "native_tokens_completion": 25, "native_tokens_completion_images": 0, "native_tokens_prompt": 10, "native_tokens_reasoning": 5, "num_fetches": 0, "num_input_audio_prompt": 0, "num_media_completion": 0, "num_media_prompt": 1, "num_search_results": 5, "origin": "https://openrouter.ai/", "preset_id": "a9e8d400-592a-494f-908c-375efa66cafd", "provider_name": "Infermatic", "provider_responses": null, "request_id": "req-1727282430-aBcDeFgHiJkLmNoPqRsT", "router": "openrouter/auto", "service_tier": "priority", "session_id": null, "streamed": true, "tokens_completion": 25, "tokens_prompt": 10, "total_cost": 0.0015, "upstream_id": "chatcmpl-791bcf62-080e-4568-87d0-94c72e3b4946", "upstream_inference_cost": 0.0012, "usage": 0.0015, "user_agent": "Mozilla/5.0", "web_search_engine": "exa"}}
+          application/json: {"data": {"api_type": "completions", "app_id": 12345, "cache_discount": null, "cancelled": false, "created_at": "2024-07-15T23:33:19.433273+00:00", "data_region": "global", "external_user": "user-123", "finish_reason": "stop", "generation_time": 1200, "http_referer": "https://openrouter.ai/", "id": "gen-3bhGkxlo4XFrqiabUM7NDtwDzWwG", "is_byok": false, "latency": 1250, "model": "sao10k/l3-stheno-8b", "moderation_latency": 50, "native_finish_reason": "stop", "native_tokens_cached": 3, "native_tokens_completion": 25, "native_tokens_completion_images": 0, "native_tokens_prompt": 10, "native_tokens_reasoning": 5, "num_fetches": 0, "num_input_audio_prompt": 0, "num_media_completion": 0, "num_media_prompt": 1, "num_search_results": 5, "origin": "https://openrouter.ai/", "preset_id": "a9e8d400-592a-494f-908c-375efa66cafd", "provider_name": "Infermatic", "provider_responses": null, "request_id": "req-1727282430-aBcDeFgHiJkLmNoPqRsT", "router": "openrouter/auto", "service_tier": "priority", "session_id": null, "streamed": true, "tokens_completion": 25, "tokens_prompt": 10, "total_cost": 0.0015, "upstream_id": "chatcmpl-791bcf62-080e-4568-87d0-94c72e3b4946", "upstream_inference_cost": 0.0012, "usage": 0.0015, "user_agent": "Mozilla/5.0", "web_search_engine": "exa", "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "402":
@@ -5191,3 +5194,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Analytics.getUserActivity()`: \n  *  `request` **Changed** (Breaking ⚠️)\n  *  `response.data[].workspace_id` **Added**\n* `OpenRouter.Generations.get()`:  `response.data.workspace_id` **Added**\n"
