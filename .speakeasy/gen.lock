@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: c7d4ba7fa178d26dfdfa122a431dc8cf
+  docChecksum: 83ae4fe17bc9ea53193df1105989e1c7
   docVersion: 1.0.0
   speakeasyVersion: 1.791.1
   generationVersion: 2.926.2
-  releaseVersion: 0.2.1
-  configChecksum: dc8afccbcc83cdfe3ac362de07c35b40
+  releaseVersion: 0.2.2
+  configChecksum: e602fd3ab375c7c08aa590b6b554cb35
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: f4886761-e822-4d2f-9cb6-a2bd41e87edd
-  pristine_commit_hash: 18b64e0c780c9eace75be0ff4d5027753b1a248f
-  pristine_tree_hash: d87aadf3c04c9c2a2130ccd8e036c5f025a73032
+  generation_id: 7bfef354-8374-4f36-8696-63f42e4cf0d5
+  pristine_commit_hash: c905a998008c0d20626559a6ff16484a9ffab6b2
+  pristine_tree_hash: 99e842a79e26c5ace938892e88e93d5ed0ae859e
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:84bac19509eb0db8033ccbca5d4877fd634c3a09
-    pristine_git_object: 9cae4c18000151b94df7e97226353129f19641ab
+    last_write_checksum: sha1:45cb61b776752edb76e3c423a6b2d37b734b720f
+    pristine_git_object: 98f0c142ef4c50aeae270398a501f574b503b209
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1264,8 +1264,8 @@ trackedFiles:
     pristine_git_object: f913116467dce1d13317784072b170a14ef67b77
   internal/sdk/models/operations/deleteworkspacebudget.go:
     id: ea9d87457232
-    last_write_checksum: sha1:b414051d8335a551ffe6920d802006846e575f9d
-    pristine_git_object: 7d2e31bb8ed9a73696b2ac3a6d1fcb99ae8c820a
+    last_write_checksum: sha1:3d5fcdfe1fae91c95815a013d8f0f23c663341f3
+    pristine_git_object: e6437f17624fb0b67f4e2bb948931c40d66c12fc
   internal/sdk/models/operations/downloadfilecontent.go:
     id: 13addbce6315
     last_write_checksum: sha1:3816f0d04b52f4e762ac9598598b2e9f61307314
@@ -1358,6 +1358,10 @@ trackedFiles:
     id: 265dc9ac3ec6
     last_write_checksum: sha1:95e052cdccc2e6fba6eaf1cb3d96630a6723637b
     pristine_git_object: 0dc8176eecdf77d142be3a4e4a25ce1abdaf24b2
+  internal/sdk/models/operations/getworkspacebudget.go:
+    id: "379085110652"
+    last_write_checksum: sha1:362f3cba6c78d095097f4bd92de96f2fe4d4785c
+    pristine_git_object: 9bfa81861b9834c36d89dbb488c8ff6ac6d1020f
   internal/sdk/models/operations/list.go:
     id: ee2c967ce632
     last_write_checksum: sha1:0f9253ea34a6b6c4fd5870cde0eec34ad019c6ac
@@ -2314,6 +2318,10 @@ trackedFiles:
     id: b1d06956a3d9
     last_write_checksum: sha1:b859a7b91cfb12850cabcf329da0cbc92cab028c
     pristine_git_object: cf88aece7d770bafa915bd47da1994f77dba9e87
+  internal/sdk/models/shared/getworkspacebudgetresponse.go:
+    id: "016379285622"
+    last_write_checksum: sha1:7979882896e17849141c4727c74c776367ac794c
+    pristine_git_object: 4d96f498744ab3b33fa2ae0fc8613dd14ff01b4c
   internal/sdk/models/shared/getworkspaceresponse.go:
     id: 954c597bc3ff
     last_write_checksum: sha1:5e529024029ceee2d616f69c488afe54261ccb44
@@ -3448,8 +3456,8 @@ trackedFiles:
     pristine_git_object: ab43c47eec73b96bdfd1e3f63f0c58368f1cd55f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:f0c2937424906eeaca107e3339b3609c20047156
-    pristine_git_object: 5176fb7260c86f464715826b2d4d5e2cb070b63b
+    last_write_checksum: sha1:4856e9f5acef168a37bdec8476b665d1434560ae
+    pristine_git_object: 18092a03b19d7cd71b713c0d254fadeaf07dad05
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -3516,8 +3524,8 @@ trackedFiles:
     pristine_git_object: 566033a500ab1c6ae034997eabbfbab711760b9c
   internal/sdk/workspaces.go:
     id: 436a1d832809
-    last_write_checksum: sha1:8a196d8a013f4264fbb4ade49f433d37816521d9
-    pristine_git_object: 4f521f12ba6c074b84a0c65c0fe9891071732898
+    last_write_checksum: sha1:ef1c47f28a335cf398f7860ce2a2045bf5ee6b41
+    pristine_git_object: eb7464b7994629085008c014761cb1cded95bf21
   internal/validators/DateValidator.go:
     id: 4fdfa187ab97
     last_write_checksum: sha1:ecf8b9b2c0039cdbb0b4cc081aaeb8452a100eb3
@@ -5034,6 +5042,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
   upsertWorkspaceBudget:
     speakeasy-default-upsert-workspace-budget:
       parameters:
@@ -5209,5 +5219,25 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getWorkspaceBudget:
+    speakeasy-default-get-workspace-budget:
+      parameters:
+        path:
+          id: "production"
+          interval: "monthly"
+      responses:
+        "200":
+          application/json: {"data": {"created_at": "2025-08-24T10:30:00Z", "id": "770e8400-e29b-41d4-a716-446655440000", "limit_usd": 100, "reset_interval": "monthly", "updated_at": "2025-08-24T15:45:00Z", "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}, "include_byok_in_budgets": true}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.input_references` **Added**\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].supports_voice_cloning` **Added**\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].supports_voice_cloning` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Workspaces.deleteBudget()`:  `response.status[400]` **Added** (Breaking ⚠️)
+  * `OpenRouter.Workspaces.getBudget()`: **Added**

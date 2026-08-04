@@ -38,6 +38,8 @@ type DeleteWorkspaceBudgetResponse struct {
 	RawResponse *http.Response
 	// Budget deleted successfully
 	DeleteWorkspaceBudgetResponse *shared.DeleteWorkspaceBudgetResponse
+	// Bad Request - Invalid request parameters or malformed input
+	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Not Found - Resource does not exist
@@ -83,6 +85,13 @@ func (d *DeleteWorkspaceBudgetResponse) GetDeleteWorkspaceBudgetResponse() *shar
 		return nil
 	}
 	return d.DeleteWorkspaceBudgetResponse
+}
+
+func (d *DeleteWorkspaceBudgetResponse) GetBadRequestResponse() *shared.BadRequestResponse {
+	if d == nil {
+		return nil
+	}
+	return d.BadRequestResponse
 }
 
 func (d *DeleteWorkspaceBudgetResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
