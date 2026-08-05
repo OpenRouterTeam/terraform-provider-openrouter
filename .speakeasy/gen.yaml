@@ -31,11 +31,11 @@ generation:
     generateNewTests: true
     skipResponseBodyAssertions: false
 terraform:
-  version: 0.2.4
+  version: 0.2.5
   additionalActions: []
   additionalDataSources: []
   additionalDependencies:
-    github.com/hashicorp/terraform-plugin-testing: v1.15.0
+    github.com/hashicorp/terraform-plugin-testing: v1.16.0
   additionalEphemeralResources: []
   additionalFunctions: []
   additionalListResources: []
