@@ -444,7 +444,7 @@ func (s *Files) List(ctx context.Context, request operations.ListFilesRequest, o
 }
 
 // Upload a file
-// Uploads a file to be referenced in future API calls. The file is stored under the workspace of the authenticating API key. Maximum file size: 100 MB.
+// Uploads a file to be referenced in future API calls. The file is stored under the workspace of the authenticating API key. Maximum file size: 100 MB; empty files are rejected. The file type is determined from the file contents — not the filename or the declared content type — and must be a PDF, a PNG/JPEG/GIF/WebP image, a DOCX/XLSX/PPTX document, an MP3/WAV/FLAC/OGG audio file, or UTF-8 text. Text is reported by its structure as `application/json`, `application/x-ndjson`, `text/csv`, `text/markdown`, or `text/plain`.
 func (s *Files) Upload(ctx context.Context, request operations.UploadFileRequest, opts ...operations.Option) (*operations.UploadFileResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
