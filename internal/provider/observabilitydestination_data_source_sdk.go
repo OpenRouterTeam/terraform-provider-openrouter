@@ -39,6 +39,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Arize.APIKeyHashes = nil
 		}
+		r.Arize.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Arize.BroadcastGenerationCost
+		r.Arize.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Arize.BroadcastGenerationIdentity
+		r.Arize.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Arize.BroadcastGenerationRequestContext
 		r.Arize.Config = &tfTypes.GetObservabilityDestinationResponseConfigArize{}
 		r.Arize.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.APIKey)
 		r.Arize.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.BaseURL)
@@ -115,6 +121,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Braintrust.APIKeyHashes = nil
 		}
+		r.Braintrust.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Braintrust.BroadcastGenerationCost
+		r.Braintrust.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Braintrust.BroadcastGenerationIdentity
+		r.Braintrust.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Braintrust.BroadcastGenerationRequestContext
 		r.Braintrust.Config = &tfTypes.GetObservabilityDestinationResponseConfigBraintrust{}
 		r.Braintrust.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Config.APIKey)
 		r.Braintrust.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Config.BaseURL)
@@ -190,6 +202,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Clickhouse.APIKeyHashes = nil
 		}
+		r.Clickhouse.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Clickhouse.BroadcastGenerationCost
+		r.Clickhouse.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Clickhouse.BroadcastGenerationIdentity
+		r.Clickhouse.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Clickhouse.BroadcastGenerationRequestContext
 		r.Clickhouse.Config = &tfTypes.GetObservabilityDestinationResponseConfigClickhouse{}
 		r.Clickhouse.Config.Database = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Database)
 		if len(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers) > 0 {
@@ -267,6 +285,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Datadog.APIKeyHashes = nil
 		}
+		r.Datadog.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Datadog.BroadcastGenerationCost
+		r.Datadog.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Datadog.BroadcastGenerationIdentity
+		r.Datadog.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Datadog.BroadcastGenerationRequestContext
 		r.Datadog.Config = &tfTypes.GetObservabilityDestinationResponseConfigDatadog{}
 		r.Datadog.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Config.APIKey)
 		if len(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers) > 0 {
@@ -342,6 +366,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Grafana.APIKeyHashes = nil
 		}
+		r.Grafana.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Grafana.BroadcastGenerationCost
+		r.Grafana.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Grafana.BroadcastGenerationIdentity
+		r.Grafana.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Grafana.BroadcastGenerationRequestContext
 		r.Grafana.Config = &tfTypes.GetObservabilityDestinationResponseConfigGrafana{}
 		r.Grafana.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Config.APIKey)
 		r.Grafana.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Config.BaseURL)
@@ -417,6 +447,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Langfuse.APIKeyHashes = nil
 		}
+		r.Langfuse.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Langfuse.BroadcastGenerationCost
+		r.Langfuse.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Langfuse.BroadcastGenerationIdentity
+		r.Langfuse.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Langfuse.BroadcastGenerationRequestContext
 		r.Langfuse.Config = &tfTypes.GetObservabilityDestinationResponseConfigLangfuse{}
 		r.Langfuse.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Config.BaseURL)
 		if len(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers) > 0 {
@@ -492,6 +528,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Langsmith.APIKeyHashes = nil
 		}
+		r.Langsmith.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Langsmith.BroadcastGenerationCost
+		r.Langsmith.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Langsmith.BroadcastGenerationIdentity
+		r.Langsmith.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Langsmith.BroadcastGenerationRequestContext
 		r.Langsmith.Config = &tfTypes.GetObservabilityDestinationResponseConfigLangsmith{}
 		r.Langsmith.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.APIKey)
 		r.Langsmith.Config.Endpoint = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Endpoint)
@@ -568,6 +610,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Newrelic.APIKeyHashes = nil
 		}
+		r.Newrelic.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Newrelic.BroadcastGenerationCost
+		r.Newrelic.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Newrelic.BroadcastGenerationIdentity
+		r.Newrelic.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Newrelic.BroadcastGenerationRequestContext
 		r.Newrelic.Config = &tfTypes.GetObservabilityDestinationResponseConfigNewrelic{}
 		if len(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers) > 0 {
 			r.Newrelic.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers))
@@ -646,6 +694,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Opik.APIKeyHashes = nil
 		}
+		r.Opik.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Opik.BroadcastGenerationCost
+		r.Opik.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Opik.BroadcastGenerationIdentity
+		r.Opik.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Opik.BroadcastGenerationRequestContext
 		r.Opik.Config = &tfTypes.GetObservabilityDestinationResponseConfigOpik{}
 		r.Opik.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Config.APIKey)
 		if len(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers) > 0 {
@@ -721,6 +775,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.OtelCollector.APIKeyHashes = nil
 		}
+		r.OtelCollector.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.OtelCollector.BroadcastGenerationCost
+		r.OtelCollector.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.OtelCollector.BroadcastGenerationIdentity
+		r.OtelCollector.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.OtelCollector.BroadcastGenerationRequestContext
 		r.OtelCollector.Config = &tfTypes.GetObservabilityDestinationResponseConfigOtelCollector{}
 		r.OtelCollector.Config.Endpoint = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Endpoint)
 		if len(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers) > 0 {
@@ -794,6 +854,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Posthog.APIKeyHashes = nil
 		}
+		r.Posthog.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Posthog.BroadcastGenerationCost
+		r.Posthog.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Posthog.BroadcastGenerationIdentity
+		r.Posthog.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Posthog.BroadcastGenerationRequestContext
 		r.Posthog.Config = &tfTypes.GetObservabilityDestinationResponseConfigPosthog{}
 		r.Posthog.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Config.APIKey)
 		r.Posthog.Config.Endpoint = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Config.Endpoint)
@@ -868,6 +934,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Ramp.APIKeyHashes = nil
 		}
+		r.Ramp.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Ramp.BroadcastGenerationCost
+		r.Ramp.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Ramp.BroadcastGenerationIdentity
+		r.Ramp.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Ramp.BroadcastGenerationRequestContext
 		r.Ramp.Config = &tfTypes.GetObservabilityDestinationResponseConfigRamp{}
 		r.Ramp.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.Config.APIKey)
 		r.Ramp.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.Config.BaseURL)
@@ -942,6 +1014,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.S3.APIKeyHashes = nil
 		}
+		r.S3.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.S3.BroadcastGenerationCost
+		r.S3.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.S3.BroadcastGenerationIdentity
+		r.S3.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.S3.BroadcastGenerationRequestContext
 		r.S3.Config = &tfTypes.GetObservabilityDestinationResponseConfigS3{}
 		r.S3.Config.AccessKeyID = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.AccessKeyID)
 		r.S3.Config.BucketName = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.BucketName)
@@ -1022,6 +1100,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Sentry.APIKeyHashes = nil
 		}
+		r.Sentry.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Sentry.BroadcastGenerationCost
+		r.Sentry.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Sentry.BroadcastGenerationIdentity
+		r.Sentry.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Sentry.BroadcastGenerationRequestContext
 		r.Sentry.Config = &tfTypes.GetObservabilityDestinationResponseConfigSentry{}
 		r.Sentry.Config.Dsn = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Config.Dsn)
 		if len(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers) > 0 {
@@ -1096,6 +1180,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Snowflake.APIKeyHashes = nil
 		}
+		r.Snowflake.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Snowflake.BroadcastGenerationCost
+		r.Snowflake.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Snowflake.BroadcastGenerationIdentity
+		r.Snowflake.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Snowflake.BroadcastGenerationRequestContext
 		r.Snowflake.Config = &tfTypes.GetObservabilityDestinationResponseConfigSnowflake{}
 		r.Snowflake.Config.Account = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Account)
 		r.Snowflake.Config.Database = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Database)
@@ -1174,6 +1264,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Weave.APIKeyHashes = nil
 		}
+		r.Weave.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Weave.BroadcastGenerationCost
+		r.Weave.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Weave.BroadcastGenerationIdentity
+		r.Weave.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Weave.BroadcastGenerationRequestContext
 		r.Weave.Config = &tfTypes.GetObservabilityDestinationResponseConfigWeave{}
 		r.Weave.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.APIKey)
 		r.Weave.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.BaseURL)
@@ -1250,6 +1346,12 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		} else {
 			r.Webhook.APIKeyHashes = nil
 		}
+		r.Webhook.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationCost)
+		r.BroadcastGenerationCost = r.Webhook.BroadcastGenerationCost
+		r.Webhook.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationIdentity)
+		r.BroadcastGenerationIdentity = r.Webhook.BroadcastGenerationIdentity
+		r.Webhook.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationRequestContext)
+		r.BroadcastGenerationRequestContext = r.Webhook.BroadcastGenerationRequestContext
 		r.Webhook.Config = &tfTypes.GetObservabilityDestinationResponseConfigWebhook{}
 		if len(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers) > 0 {
 			r.Webhook.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers))

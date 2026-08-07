@@ -122,7 +122,7 @@ func (r *GuardrailsDataSourceModel) RefreshFromSharedListGuardrailsResponse(ctx 
 				data.ResetInterval = types.StringNull()
 			}
 			data.UpdatedAt = types.StringPointerValue(dataItem.UpdatedAt)
-			data.WorkspaceID = types.StringValue(dataItem.WorkspaceID)
+			data.WorkspaceID = types.StringPointerValue(dataItem.WorkspaceID)
 
 			r.Data = append(r.Data, data)
 		}

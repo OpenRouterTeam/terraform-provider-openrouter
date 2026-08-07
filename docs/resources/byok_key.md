@@ -44,7 +44,7 @@ resource "openrouter_byok_key" "my_byokkey" {
 - `disabled` (Boolean) Whether this credential should be created in a disabled state.
 - `is_fallback` (Boolean) Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried.
 - `name` (String) Optional human-readable name for the credential.
-- `workspace_id` (String) Optional workspace ID. Defaults to the authenticated entity's default workspace. Requires replacement if changed.
+- `workspace_id` (String) Optional workspace ID to scope the credential to. When omitted, the credential is created in the account's default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly. Requires replacement if changed.
 
 ### Read-Only
 

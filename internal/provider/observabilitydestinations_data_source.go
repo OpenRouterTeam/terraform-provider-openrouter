@@ -57,6 +57,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -167,6 +179,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -271,6 +295,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									Computed:    true,
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
 								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
@@ -384,6 +420,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -492,6 +540,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -596,6 +656,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									Computed:    true,
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
 								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
@@ -702,6 +774,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									Computed:    true,
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
 								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
@@ -813,6 +897,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -914,6 +1010,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									Computed:    true,
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
 								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
@@ -1020,6 +1128,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -1117,6 +1237,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									Computed:    true,
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
 								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
@@ -1220,6 +1352,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -1322,6 +1466,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									Computed:    true,
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
 								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
@@ -1447,6 +1603,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -1548,6 +1716,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									Computed:    true,
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
 								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
@@ -1663,6 +1843,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
+								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
@@ -1770,6 +1962,18 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 									Computed:    true,
 									ElementType: types.StringType,
 									Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+								},
+								"broadcast_generation_cost": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include cost and billing generation metadata.`,
+								},
+								"broadcast_generation_identity": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include identity generation metadata.`,
+								},
+								"broadcast_generation_request_context": schema.BoolAttribute{
+									Computed:    true,
+									Description: `When true, include request-context generation metadata.`,
 								},
 								"config": schema.SingleNestedAttribute{
 									Computed: true,

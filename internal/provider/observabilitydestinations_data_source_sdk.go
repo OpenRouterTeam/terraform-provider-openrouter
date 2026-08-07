@@ -34,6 +34,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Arize.APIKeyHashes = nil
 				}
+				data.Arize.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.BroadcastGenerationCost)
+				data.Arize.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.BroadcastGenerationIdentity)
+				data.Arize.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.BroadcastGenerationRequestContext)
 				data.Arize.Config = &tfTypes.ObservabilityDestinationConfigArize{}
 				data.Arize.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.APIKey)
 				data.Arize.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.BaseURL)
@@ -108,6 +111,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Braintrust.APIKeyHashes = nil
 				}
+				data.Braintrust.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.BroadcastGenerationCost)
+				data.Braintrust.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.BroadcastGenerationIdentity)
+				data.Braintrust.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.BroadcastGenerationRequestContext)
 				data.Braintrust.Config = &tfTypes.ObservabilityDestinationConfigBraintrust{}
 				data.Braintrust.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Config.APIKey)
 				data.Braintrust.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Config.BaseURL)
@@ -181,6 +187,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Clickhouse.APIKeyHashes = nil
 				}
+				data.Clickhouse.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.BroadcastGenerationCost)
+				data.Clickhouse.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.BroadcastGenerationIdentity)
+				data.Clickhouse.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.BroadcastGenerationRequestContext)
 				data.Clickhouse.Config = &tfTypes.ObservabilityDestinationConfigClickhouse{}
 				data.Clickhouse.Config.Database = types.StringValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Database)
 				if len(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Headers) > 0 {
@@ -256,6 +265,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Datadog.APIKeyHashes = nil
 				}
+				data.Datadog.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.BroadcastGenerationCost)
+				data.Datadog.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.BroadcastGenerationIdentity)
+				data.Datadog.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.BroadcastGenerationRequestContext)
 				data.Datadog.Config = &tfTypes.ObservabilityDestinationConfigDatadog{}
 				data.Datadog.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Config.APIKey)
 				if len(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Config.Headers) > 0 {
@@ -329,6 +341,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Grafana.APIKeyHashes = nil
 				}
+				data.Grafana.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.BroadcastGenerationCost)
+				data.Grafana.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.BroadcastGenerationIdentity)
+				data.Grafana.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.BroadcastGenerationRequestContext)
 				data.Grafana.Config = &tfTypes.ObservabilityDestinationConfigGrafana{}
 				data.Grafana.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Config.APIKey)
 				data.Grafana.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Config.BaseURL)
@@ -402,6 +417,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Langfuse.APIKeyHashes = nil
 				}
+				data.Langfuse.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.BroadcastGenerationCost)
+				data.Langfuse.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.BroadcastGenerationIdentity)
+				data.Langfuse.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.BroadcastGenerationRequestContext)
 				data.Langfuse.Config = &tfTypes.ObservabilityDestinationConfigLangfuse{}
 				data.Langfuse.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Config.BaseURL)
 				if len(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Config.Headers) > 0 {
@@ -475,6 +493,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Langsmith.APIKeyHashes = nil
 				}
+				data.Langsmith.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.BroadcastGenerationCost)
+				data.Langsmith.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.BroadcastGenerationIdentity)
+				data.Langsmith.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.BroadcastGenerationRequestContext)
 				data.Langsmith.Config = &tfTypes.ObservabilityDestinationConfigLangsmith{}
 				data.Langsmith.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.APIKey)
 				data.Langsmith.Config.Endpoint = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.Endpoint)
@@ -549,6 +570,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Newrelic.APIKeyHashes = nil
 				}
+				data.Newrelic.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.BroadcastGenerationCost)
+				data.Newrelic.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.BroadcastGenerationIdentity)
+				data.Newrelic.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.BroadcastGenerationRequestContext)
 				data.Newrelic.Config = &tfTypes.ObservabilityDestinationConfigNewrelic{}
 				if len(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Config.Headers) > 0 {
 					data.Newrelic.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Config.Headers))
@@ -625,6 +649,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Opik.APIKeyHashes = nil
 				}
+				data.Opik.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.BroadcastGenerationCost)
+				data.Opik.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.BroadcastGenerationIdentity)
+				data.Opik.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.BroadcastGenerationRequestContext)
 				data.Opik.Config = &tfTypes.ObservabilityDestinationConfigOpik{}
 				data.Opik.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.Config.APIKey)
 				if len(dataItem.ObservabilityDestinationObservabilityOpikDestination.Config.Headers) > 0 {
@@ -698,6 +725,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.OtelCollector.APIKeyHashes = nil
 				}
+				data.OtelCollector.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.BroadcastGenerationCost)
+				data.OtelCollector.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.BroadcastGenerationIdentity)
+				data.OtelCollector.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.BroadcastGenerationRequestContext)
 				data.OtelCollector.Config = &tfTypes.ObservabilityDestinationConfigOtelCollector{}
 				data.OtelCollector.Config.Endpoint = types.StringValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Config.Endpoint)
 				if len(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Config.Headers) > 0 {
@@ -769,6 +799,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Posthog.APIKeyHashes = nil
 				}
+				data.Posthog.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.BroadcastGenerationCost)
+				data.Posthog.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.BroadcastGenerationIdentity)
+				data.Posthog.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.BroadcastGenerationRequestContext)
 				data.Posthog.Config = &tfTypes.ObservabilityDestinationConfigPosthog{}
 				data.Posthog.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Config.APIKey)
 				data.Posthog.Config.Endpoint = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Config.Endpoint)
@@ -841,6 +874,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Ramp.APIKeyHashes = nil
 				}
+				data.Ramp.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityRampDestination.BroadcastGenerationCost)
+				data.Ramp.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityRampDestination.BroadcastGenerationIdentity)
+				data.Ramp.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityRampDestination.BroadcastGenerationRequestContext)
 				data.Ramp.Config = &tfTypes.ObservabilityDestinationConfigRamp{}
 				data.Ramp.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityRampDestination.Config.APIKey)
 				data.Ramp.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityRampDestination.Config.BaseURL)
@@ -913,6 +949,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.S3.APIKeyHashes = nil
 				}
+				data.S3.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.BroadcastGenerationCost)
+				data.S3.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.BroadcastGenerationIdentity)
+				data.S3.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.BroadcastGenerationRequestContext)
 				data.S3.Config = &tfTypes.ObservabilityDestinationConfigS3{}
 				data.S3.Config.AccessKeyID = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.AccessKeyID)
 				data.S3.Config.BucketName = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.BucketName)
@@ -991,6 +1030,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Sentry.APIKeyHashes = nil
 				}
+				data.Sentry.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.BroadcastGenerationCost)
+				data.Sentry.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.BroadcastGenerationIdentity)
+				data.Sentry.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.BroadcastGenerationRequestContext)
 				data.Sentry.Config = &tfTypes.ObservabilityDestinationConfigSentry{}
 				data.Sentry.Config.Dsn = types.StringValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.Config.Dsn)
 				if len(dataItem.ObservabilityDestinationObservabilitySentryDestination.Config.Headers) > 0 {
@@ -1063,6 +1105,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Snowflake.APIKeyHashes = nil
 				}
+				data.Snowflake.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.BroadcastGenerationCost)
+				data.Snowflake.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.BroadcastGenerationIdentity)
+				data.Snowflake.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.BroadcastGenerationRequestContext)
 				data.Snowflake.Config = &tfTypes.ObservabilityDestinationConfigSnowflake{}
 				data.Snowflake.Config.Account = types.StringValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Account)
 				data.Snowflake.Config.Database = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Database)
@@ -1139,6 +1184,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Weave.APIKeyHashes = nil
 				}
+				data.Weave.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.BroadcastGenerationCost)
+				data.Weave.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.BroadcastGenerationIdentity)
+				data.Weave.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.BroadcastGenerationRequestContext)
 				data.Weave.Config = &tfTypes.ObservabilityDestinationConfigWeave{}
 				data.Weave.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.APIKey)
 				data.Weave.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.BaseURL)
@@ -1213,6 +1261,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				} else {
 					data.Webhook.APIKeyHashes = nil
 				}
+				data.Webhook.BroadcastGenerationCost = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.BroadcastGenerationCost)
+				data.Webhook.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.BroadcastGenerationIdentity)
+				data.Webhook.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.BroadcastGenerationRequestContext)
 				data.Webhook.Config = &tfTypes.ObservabilityDestinationConfigWebhook{}
 				if len(dataItem.ObservabilityDestinationObservabilityWebhookDestination.Config.Headers) > 0 {
 					data.Webhook.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityWebhookDestination.Config.Headers))

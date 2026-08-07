@@ -117,7 +117,7 @@ func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponseData(ctx
 		r.ResetInterval = types.StringNull()
 	}
 	r.UpdatedAt = types.StringPointerValue(resp.UpdatedAt)
-	r.WorkspaceID = types.StringValue(resp.WorkspaceID)
+	r.WorkspaceID = types.StringPointerValue(resp.WorkspaceID)
 
 	return diags
 }

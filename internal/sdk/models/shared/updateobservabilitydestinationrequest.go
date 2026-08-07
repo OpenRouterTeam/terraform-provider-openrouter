@@ -9,6 +9,12 @@ import (
 type UpdateObservabilityDestinationRequest struct {
 	// Optional allowlist of OpenRouter API key hashes. `null` clears the filter (all keys). Omitting leaves the current value. Must contain at least one hash if provided.
 	APIKeyHashes []string `json:"api_key_hashes,omitzero"`
+	// Whether to include cost and billing generation metadata.
+	BroadcastGenerationCost *bool `json:"broadcast_generation_cost,omitzero"`
+	// Whether to include identity generation metadata.
+	BroadcastGenerationIdentity *bool `json:"broadcast_generation_identity,omitzero"`
+	// Whether to include request-context generation metadata.
+	BroadcastGenerationRequestContext *bool `json:"broadcast_generation_request_context,omitzero"`
 	// Provider-specific configuration fields to update. Masked values are ignored; unset fields keep their current value.
 	Config map[string]any `json:"config,omitzero"`
 	// Whether the destination is enabled.
@@ -38,6 +44,27 @@ func (u *UpdateObservabilityDestinationRequest) GetAPIKeyHashes() []string {
 		return nil
 	}
 	return u.APIKeyHashes
+}
+
+func (u *UpdateObservabilityDestinationRequest) GetBroadcastGenerationCost() *bool {
+	if u == nil {
+		return nil
+	}
+	return u.BroadcastGenerationCost
+}
+
+func (u *UpdateObservabilityDestinationRequest) GetBroadcastGenerationIdentity() *bool {
+	if u == nil {
+		return nil
+	}
+	return u.BroadcastGenerationIdentity
+}
+
+func (u *UpdateObservabilityDestinationRequest) GetBroadcastGenerationRequestContext() *bool {
+	if u == nil {
+		return nil
+	}
+	return u.BroadcastGenerationRequestContext
 }
 
 func (u *UpdateObservabilityDestinationRequest) GetConfig() map[string]any {

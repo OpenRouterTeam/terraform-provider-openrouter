@@ -41,6 +41,8 @@ type UpdateObservabilityDestinationResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Privacy settings are locked
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Conflict - Resource conflict or concurrent modification
@@ -100,6 +102,13 @@ func (u *UpdateObservabilityDestinationResponse) GetUnauthorizedResponse() *shar
 		return nil
 	}
 	return u.UnauthorizedResponse
+}
+
+func (u *UpdateObservabilityDestinationResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ForbiddenResponse
 }
 
 func (u *UpdateObservabilityDestinationResponse) GetNotFoundResponse() *shared.NotFoundResponse {

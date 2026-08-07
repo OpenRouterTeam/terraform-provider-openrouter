@@ -75,8 +75,14 @@ func (c *CreateObservabilityDestinationResponseConfigWebhook) GetURL() string {
 
 type CreateObservabilityDestinationResponseObservabilityWebhookDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                            `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigWebhook `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigWebhook `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -115,6 +121,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityWebhookDestination) 
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityWebhookDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityWebhookDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityWebhookDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityWebhookDestination) GetConfig() CreateObservabilityDestinationResponseConfigWebhook {
@@ -248,8 +275,14 @@ func (c *CreateObservabilityDestinationResponseConfigWeave) GetProject() string 
 
 type CreateObservabilityDestinationResponseObservabilityWeaveDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                          `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigWeave `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                              `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigWeave `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -288,6 +321,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityWeaveDestination) Ge
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityWeaveDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityWeaveDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityWeaveDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityWeaveDestination) GetConfig() CreateObservabilityDestinationResponseConfigWeave {
@@ -437,8 +491,14 @@ func (c *CreateObservabilityDestinationResponseConfigSnowflake) GetWarehouse() *
 
 type CreateObservabilityDestinationResponseObservabilitySnowflakeDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                              `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigSnowflake `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                  `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigSnowflake `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -477,6 +537,27 @@ func (c *CreateObservabilityDestinationResponseObservabilitySnowflakeDestination
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilitySnowflakeDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilitySnowflakeDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilitySnowflakeDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilitySnowflakeDestination) GetConfig() CreateObservabilityDestinationResponseConfigSnowflake {
@@ -594,8 +675,14 @@ func (c *CreateObservabilityDestinationResponseConfigSentry) GetOtlpEndpoint() s
 
 type CreateObservabilityDestinationResponseObservabilitySentryDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                           `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigSentry `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                               `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigSentry `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -634,6 +721,27 @@ func (c *CreateObservabilityDestinationResponseObservabilitySentryDestination) G
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilitySentryDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilitySentryDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilitySentryDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilitySentryDestination) GetConfig() CreateObservabilityDestinationResponseConfigSentry {
@@ -804,8 +912,14 @@ func (c *CreateObservabilityDestinationResponseConfigS3) GetSessionToken() *stri
 
 type CreateObservabilityDestinationResponseObservabilityS3Destination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                       `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigS3 `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                           `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigS3 `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -844,6 +958,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityS3Destination) GetAP
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityS3Destination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityS3Destination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityS3Destination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityS3Destination) GetConfig() CreateObservabilityDestinationResponseConfigS3 {
@@ -965,8 +1100,14 @@ func (c *CreateObservabilityDestinationResponseConfigRamp) GetHeaders() map[stri
 
 type CreateObservabilityDestinationResponseObservabilityRampDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                         `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigRamp `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                             `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigRamp `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -1005,6 +1146,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityRampDestination) Get
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityRampDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityRampDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityRampDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityRampDestination) GetConfig() CreateObservabilityDestinationResponseConfigRamp {
@@ -1122,8 +1284,14 @@ func (c *CreateObservabilityDestinationResponseConfigPosthog) GetHeaders() map[s
 
 type CreateObservabilityDestinationResponseObservabilityPosthogDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                            `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigPosthog `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigPosthog `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -1162,6 +1330,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityPosthogDestination) 
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityPosthogDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityPosthogDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityPosthogDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityPosthogDestination) GetConfig() CreateObservabilityDestinationResponseConfigPosthog {
@@ -1271,8 +1460,14 @@ func (c *CreateObservabilityDestinationResponseConfigOtelCollector) GetHeaders()
 
 type CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                                  `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigOtelCollector `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                      `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigOtelCollector `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -1311,6 +1506,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityOtelCollectorDestina
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination) GetConfig() CreateObservabilityDestinationResponseConfigOtelCollector {
@@ -1436,8 +1652,14 @@ func (c *CreateObservabilityDestinationResponseConfigOpik) GetWorkspace() string
 
 type CreateObservabilityDestinationResponseObservabilityOpikDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                         `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigOpik `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                             `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigOpik `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -1476,6 +1698,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityOpikDestination) Get
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityOpikDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityOpikDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityOpikDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityOpikDestination) GetConfig() CreateObservabilityDestinationResponseConfigOpik {
@@ -1619,8 +1862,14 @@ func (c *CreateObservabilityDestinationResponseConfigNewrelic) GetRegion() *Crea
 
 type CreateObservabilityDestinationResponseObservabilityNewrelicDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                             `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigNewrelic `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                 `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigNewrelic `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -1659,6 +1908,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityNewrelicDestination)
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityNewrelicDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityNewrelicDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityNewrelicDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityNewrelicDestination) GetConfig() CreateObservabilityDestinationResponseConfigNewrelic {
@@ -1794,8 +2064,14 @@ func (c *CreateObservabilityDestinationResponseConfigLangsmith) GetWorkspaceID()
 
 type CreateObservabilityDestinationResponseObservabilityLangsmithDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                              `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigLangsmith `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                  `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigLangsmith `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -1834,6 +2110,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityLangsmithDestination
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityLangsmithDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityLangsmithDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityLangsmithDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityLangsmithDestination) GetConfig() CreateObservabilityDestinationResponseConfigLangsmith {
@@ -1959,8 +2256,14 @@ func (c *CreateObservabilityDestinationResponseConfigLangfuse) GetSecretKey() st
 
 type CreateObservabilityDestinationResponseObservabilityLangfuseDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                             `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigLangfuse `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                 `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigLangfuse `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -1999,6 +2302,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityLangfuseDestination)
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityLangfuseDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityLangfuseDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityLangfuseDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityLangfuseDestination) GetConfig() CreateObservabilityDestinationResponseConfigLangfuse {
@@ -2124,8 +2448,14 @@ func (c *CreateObservabilityDestinationResponseConfigGrafana) GetInstanceID() st
 
 type CreateObservabilityDestinationResponseObservabilityGrafanaDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                            `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigGrafana `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigGrafana `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -2164,6 +2494,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityGrafanaDestination) 
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityGrafanaDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityGrafanaDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityGrafanaDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityGrafanaDestination) GetConfig() CreateObservabilityDestinationResponseConfigGrafana {
@@ -2292,8 +2643,14 @@ func (c *CreateObservabilityDestinationResponseConfigDatadog) GetURL() *string {
 
 type CreateObservabilityDestinationResponseObservabilityDatadogDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                            `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigDatadog `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigDatadog `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -2332,6 +2689,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityDatadogDestination) 
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityDatadogDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityDatadogDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityDatadogDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityDatadogDestination) GetConfig() CreateObservabilityDestinationResponseConfigDatadog {
@@ -2474,8 +2852,14 @@ func (c *CreateObservabilityDestinationResponseConfigClickhouse) GetUsername() s
 
 type CreateObservabilityDestinationResponseObservabilityClickhouseDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                               `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigClickhouse `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                   `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigClickhouse `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -2514,6 +2898,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityClickhouseDestinatio
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityClickhouseDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityClickhouseDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityClickhouseDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityClickhouseDestination) GetConfig() CreateObservabilityDestinationResponseConfigClickhouse {
@@ -2639,8 +3044,14 @@ func (c *CreateObservabilityDestinationResponseConfigBraintrust) GetProjectID() 
 
 type CreateObservabilityDestinationResponseObservabilityBraintrustDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                               `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigBraintrust `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                                   `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigBraintrust `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -2679,6 +3090,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityBraintrustDestinatio
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityBraintrustDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityBraintrustDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityBraintrustDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityBraintrustDestination) GetConfig() CreateObservabilityDestinationResponseConfigBraintrust {
@@ -2813,8 +3245,14 @@ func (c *CreateObservabilityDestinationResponseConfigArize) GetSpaceKey() string
 
 type CreateObservabilityDestinationResponseObservabilityArizeDestination struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
-	APIKeyHashes []string                                          `json:"api_key_hashes"`
-	Config       CreateObservabilityDestinationResponseConfigArize `json:"config"`
+	APIKeyHashes []string `json:"api_key_hashes"`
+	// When true, include cost and billing generation metadata.
+	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// When true, include identity generation metadata.
+	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
+	// When true, include request-context generation metadata.
+	BroadcastGenerationRequestContext bool                                              `json:"broadcast_generation_request_context"`
+	Config                            CreateObservabilityDestinationResponseConfigArize `json:"config"`
 	// ISO timestamp of when the destination was created.
 	CreatedAt string `json:"created_at"`
 	// Whether this destination is currently enabled.
@@ -2853,6 +3291,27 @@ func (c *CreateObservabilityDestinationResponseObservabilityArizeDestination) Ge
 		return nil
 	}
 	return c.APIKeyHashes
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityArizeDestination) GetBroadcastGenerationCost() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationCost
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityArizeDestination) GetBroadcastGenerationIdentity() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationIdentity
+}
+
+func (c *CreateObservabilityDestinationResponseObservabilityArizeDestination) GetBroadcastGenerationRequestContext() bool {
+	if c == nil {
+		return false
+	}
+	return c.BroadcastGenerationRequestContext
 }
 
 func (c *CreateObservabilityDestinationResponseObservabilityArizeDestination) GetConfig() CreateObservabilityDestinationResponseConfigArize {

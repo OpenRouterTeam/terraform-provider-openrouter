@@ -25,7 +25,7 @@ data "openrouter_byok_keys" "my_byokkeys" {
 ### Optional
 
 - `provider_slug` (String) Optional provider slug to filter by (e.g. `openai`, `anthropic`, `amazon-bedrock`). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-nova", "ambient", "anthropic", "arcee-ai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "cloudflare", "cohere", "coreweave", "crusoe", "darkbloom", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "ncompass", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "quiver", "recraft", "reka", "relace", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "upstage", "venice", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]
-- `workspace_id` (String) Optional workspace ID to filter by. Defaults to the authenticated entity's default workspace.
+- `workspace_id` (String) Optional workspace ID to filter by. When omitted, resolves to the account’s default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly.
 
 ### Read-Only
 
@@ -48,4 +48,4 @@ Read-Only:
 - `name` (String) Optional human-readable name for the credential.
 - `provider_slug` (String) The upstream provider this credential authenticates against, as a lowercase slug (e.g. `openai`, `anthropic`, `amazon-bedrock`).
 - `sort_order` (Number) Position within the provider — credentials are tried in ascending sort order.
-- `workspace_id` (String) ID of the workspace this credential belongs to.
+- `workspace_id` (String) The workspace this credential is scoped to, or `null` when it is global — usable across every workspace in the account. A `null` value does not mean the default workspace.

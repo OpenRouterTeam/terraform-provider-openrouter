@@ -60,7 +60,7 @@ func (r *ByokKeyDataSourceModel) RefreshFromSharedGetBYOKKeyResponseData(ctx con
 	r.Name = types.StringPointerValue(resp.Name)
 	r.ProviderSlug = types.StringValue(string(resp.ProviderSlug))
 	r.SortOrder = types.Int64Value(resp.SortOrder)
-	r.WorkspaceID = types.StringValue(resp.WorkspaceID)
+	r.WorkspaceID = types.StringPointerValue(resp.WorkspaceID)
 
 	return diags
 }

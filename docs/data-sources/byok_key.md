@@ -37,4 +37,4 @@ data "openrouter_byok_key" "my_byokkey" {
 - `name` (String) Optional human-readable name for the credential.
 - `provider_slug` (String) The upstream provider this credential authenticates against, as a lowercase slug (e.g. `openai`, `anthropic`, `amazon-bedrock`).
 - `sort_order` (Number) Position within the provider — credentials are tried in ascending sort order.
-- `workspace_id` (String) ID of the workspace this credential belongs to.
+- `workspace_id` (String) The workspace this credential is scoped to, or `null` when it is global — usable across every workspace in the account. A `null` value does not mean the default workspace.

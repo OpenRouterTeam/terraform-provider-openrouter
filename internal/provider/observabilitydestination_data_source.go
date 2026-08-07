@@ -29,31 +29,34 @@ type ObservabilityDestinationDataSource struct {
 
 // ObservabilityDestinationDataSourceModel describes the data model.
 type ObservabilityDestinationDataSourceModel struct {
-	Arize         *tfTypes.GetObservabilityDestinationResponseObservabilityArizeDestination         `queryParam:"inline" tfsdk:"arize"`
-	Braintrust    *tfTypes.GetObservabilityDestinationResponseObservabilityBraintrustDestination    `queryParam:"inline" tfsdk:"braintrust"`
-	Clickhouse    *tfTypes.GetObservabilityDestinationResponseObservabilityClickhouseDestination    `queryParam:"inline" tfsdk:"clickhouse"`
-	CreatedAt     types.String                                                                      `tfsdk:"created_at"`
-	Datadog       *tfTypes.GetObservabilityDestinationResponseObservabilityDatadogDestination       `queryParam:"inline" tfsdk:"datadog"`
-	Enabled       types.Bool                                                                        `tfsdk:"enabled"`
-	Grafana       *tfTypes.GetObservabilityDestinationResponseObservabilityGrafanaDestination       `queryParam:"inline" tfsdk:"grafana"`
-	ID            types.String                                                                      `tfsdk:"id"`
-	Langfuse      *tfTypes.GetObservabilityDestinationResponseObservabilityLangfuseDestination      `queryParam:"inline" tfsdk:"langfuse"`
-	Langsmith     *tfTypes.GetObservabilityDestinationResponseObservabilityLangsmithDestination     `queryParam:"inline" tfsdk:"langsmith"`
-	Name          types.String                                                                      `tfsdk:"name"`
-	Newrelic      *tfTypes.GetObservabilityDestinationResponseObservabilityNewrelicDestination      `queryParam:"inline" tfsdk:"newrelic"`
-	Opik          *tfTypes.GetObservabilityDestinationResponseObservabilityOpikDestination          `queryParam:"inline" tfsdk:"opik"`
-	OtelCollector *tfTypes.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination `queryParam:"inline" tfsdk:"otel_collector"`
-	Posthog       *tfTypes.GetObservabilityDestinationResponseObservabilityPosthogDestination       `queryParam:"inline" tfsdk:"posthog"`
-	PrivacyMode   types.Bool                                                                        `tfsdk:"privacy_mode"`
-	Ramp          *tfTypes.GetObservabilityDestinationResponseObservabilityRampDestination          `queryParam:"inline" tfsdk:"ramp"`
-	S3            *tfTypes.GetObservabilityDestinationResponseObservabilityS3Destination            `queryParam:"inline" tfsdk:"s3"`
-	SamplingRate  types.Float64                                                                     `tfsdk:"sampling_rate"`
-	Sentry        *tfTypes.GetObservabilityDestinationResponseObservabilitySentryDestination        `queryParam:"inline" tfsdk:"sentry"`
-	Snowflake     *tfTypes.GetObservabilityDestinationResponseObservabilitySnowflakeDestination     `queryParam:"inline" tfsdk:"snowflake"`
-	UpdatedAt     types.String                                                                      `tfsdk:"updated_at"`
-	Weave         *tfTypes.GetObservabilityDestinationResponseObservabilityWeaveDestination         `queryParam:"inline" tfsdk:"weave"`
-	Webhook       *tfTypes.GetObservabilityDestinationResponseObservabilityWebhookDestination       `queryParam:"inline" tfsdk:"webhook"`
-	WorkspaceID   types.String                                                                      `tfsdk:"workspace_id"`
+	Arize                             *tfTypes.GetObservabilityDestinationResponseObservabilityArizeDestination         `queryParam:"inline" tfsdk:"arize"`
+	Braintrust                        *tfTypes.GetObservabilityDestinationResponseObservabilityBraintrustDestination    `queryParam:"inline" tfsdk:"braintrust"`
+	BroadcastGenerationCost           types.Bool                                                                        `tfsdk:"broadcast_generation_cost"`
+	BroadcastGenerationIdentity       types.Bool                                                                        `tfsdk:"broadcast_generation_identity"`
+	BroadcastGenerationRequestContext types.Bool                                                                        `tfsdk:"broadcast_generation_request_context"`
+	Clickhouse                        *tfTypes.GetObservabilityDestinationResponseObservabilityClickhouseDestination    `queryParam:"inline" tfsdk:"clickhouse"`
+	CreatedAt                         types.String                                                                      `tfsdk:"created_at"`
+	Datadog                           *tfTypes.GetObservabilityDestinationResponseObservabilityDatadogDestination       `queryParam:"inline" tfsdk:"datadog"`
+	Enabled                           types.Bool                                                                        `tfsdk:"enabled"`
+	Grafana                           *tfTypes.GetObservabilityDestinationResponseObservabilityGrafanaDestination       `queryParam:"inline" tfsdk:"grafana"`
+	ID                                types.String                                                                      `tfsdk:"id"`
+	Langfuse                          *tfTypes.GetObservabilityDestinationResponseObservabilityLangfuseDestination      `queryParam:"inline" tfsdk:"langfuse"`
+	Langsmith                         *tfTypes.GetObservabilityDestinationResponseObservabilityLangsmithDestination     `queryParam:"inline" tfsdk:"langsmith"`
+	Name                              types.String                                                                      `tfsdk:"name"`
+	Newrelic                          *tfTypes.GetObservabilityDestinationResponseObservabilityNewrelicDestination      `queryParam:"inline" tfsdk:"newrelic"`
+	Opik                              *tfTypes.GetObservabilityDestinationResponseObservabilityOpikDestination          `queryParam:"inline" tfsdk:"opik"`
+	OtelCollector                     *tfTypes.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination `queryParam:"inline" tfsdk:"otel_collector"`
+	Posthog                           *tfTypes.GetObservabilityDestinationResponseObservabilityPosthogDestination       `queryParam:"inline" tfsdk:"posthog"`
+	PrivacyMode                       types.Bool                                                                        `tfsdk:"privacy_mode"`
+	Ramp                              *tfTypes.GetObservabilityDestinationResponseObservabilityRampDestination          `queryParam:"inline" tfsdk:"ramp"`
+	S3                                *tfTypes.GetObservabilityDestinationResponseObservabilityS3Destination            `queryParam:"inline" tfsdk:"s3"`
+	SamplingRate                      types.Float64                                                                     `tfsdk:"sampling_rate"`
+	Sentry                            *tfTypes.GetObservabilityDestinationResponseObservabilitySentryDestination        `queryParam:"inline" tfsdk:"sentry"`
+	Snowflake                         *tfTypes.GetObservabilityDestinationResponseObservabilitySnowflakeDestination     `queryParam:"inline" tfsdk:"snowflake"`
+	UpdatedAt                         types.String                                                                      `tfsdk:"updated_at"`
+	Weave                             *tfTypes.GetObservabilityDestinationResponseObservabilityWeaveDestination         `queryParam:"inline" tfsdk:"weave"`
+	Webhook                           *tfTypes.GetObservabilityDestinationResponseObservabilityWebhookDestination       `queryParam:"inline" tfsdk:"webhook"`
+	WorkspaceID                       types.String                                                                      `tfsdk:"workspace_id"`
 }
 
 // Metadata returns the data source type name.
@@ -74,6 +77,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -185,6 +200,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -282,6 +309,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 					},
 				},
 			},
+			"broadcast_generation_cost": schema.BoolAttribute{
+				Computed:    true,
+				Description: `When true, include cost and billing generation metadata.`,
+			},
+			"broadcast_generation_identity": schema.BoolAttribute{
+				Computed:    true,
+				Description: `When true, include identity generation metadata.`,
+			},
+			"broadcast_generation_request_context": schema.BoolAttribute{
+				Computed:    true,
+				Description: `When true, include request-context generation metadata.`,
+			},
 			"clickhouse": schema.SingleNestedAttribute{
 				Computed: true,
 				Attributes: map[string]schema.Attribute{
@@ -289,6 +328,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -406,6 +457,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -518,6 +581,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -627,6 +702,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -732,6 +819,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -847,6 +946,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -948,6 +1059,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1054,6 +1177,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -1151,6 +1286,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1258,6 +1405,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -1360,6 +1519,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1489,6 +1660,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -1590,6 +1773,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1709,6 +1904,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -1816,6 +2023,18 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,

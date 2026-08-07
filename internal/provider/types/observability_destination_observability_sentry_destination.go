@@ -7,15 +7,18 @@ import (
 )
 
 type ObservabilityDestinationObservabilitySentryDestination struct {
-	APIKeyHashes []types.String                        `tfsdk:"api_key_hashes"`
-	Config       *ObservabilityDestinationConfigSentry `tfsdk:"config"`
-	CreatedAt    types.String                          `tfsdk:"created_at"`
-	Enabled      types.Bool                            `tfsdk:"enabled"`
-	FilterRules  *ObservabilityFilterRulesConfig       `tfsdk:"filter_rules"`
-	ID           types.String                          `tfsdk:"id"`
-	Name         types.String                          `tfsdk:"name"`
-	PrivacyMode  types.Bool                            `tfsdk:"privacy_mode"`
-	SamplingRate types.Float64                         `tfsdk:"sampling_rate"`
-	UpdatedAt    types.String                          `tfsdk:"updated_at"`
-	WorkspaceID  types.String                          `tfsdk:"workspace_id"`
+	APIKeyHashes                      []types.String                        `tfsdk:"api_key_hashes"`
+	BroadcastGenerationCost           types.Bool                            `tfsdk:"broadcast_generation_cost"`
+	BroadcastGenerationIdentity       types.Bool                            `tfsdk:"broadcast_generation_identity"`
+	BroadcastGenerationRequestContext types.Bool                            `tfsdk:"broadcast_generation_request_context"`
+	Config                            *ObservabilityDestinationConfigSentry `tfsdk:"config"`
+	CreatedAt                         types.String                          `tfsdk:"created_at"`
+	Enabled                           types.Bool                            `tfsdk:"enabled"`
+	FilterRules                       *ObservabilityFilterRulesConfig       `tfsdk:"filter_rules"`
+	ID                                types.String                          `tfsdk:"id"`
+	Name                              types.String                          `tfsdk:"name"`
+	PrivacyMode                       types.Bool                            `tfsdk:"privacy_mode"`
+	SamplingRate                      types.Float64                         `tfsdk:"sampling_rate"`
+	UpdatedAt                         types.String                          `tfsdk:"updated_at"`
+	WorkspaceID                       types.String                          `tfsdk:"workspace_id"`
 }
