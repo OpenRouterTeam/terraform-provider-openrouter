@@ -101,7 +101,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 						},
 						"workspace_id": schema.StringAttribute{
 							Computed:    true,
-							Description: `ID of the workspace this credential belongs to.`,
+							Description: `The workspace this credential is scoped to, or ` + "`" + `null` + "`" + ` when it is global — usable across every workspace in the account. A ` + "`" + `null` + "`" + ` value does not mean the default workspace.`,
 						},
 					},
 				},
@@ -221,7 +221,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			},
 			"workspace_id": schema.StringAttribute{
 				Optional:    true,
-				Description: `Optional workspace ID to filter by. Defaults to the authenticated entity's default workspace.`,
+				Description: `Optional workspace ID to filter by. When omitted, resolves to the account’s default workspace; if that default has been deleted, the request returns a 400 and you must pass ` + "`" + `workspace_id` + "`" + ` explicitly.`,
 			},
 		},
 	}

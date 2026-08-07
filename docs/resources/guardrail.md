@@ -91,7 +91,7 @@ resource "openrouter_guardrail" "my_guardrail" {
 - `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false.
 - `limit_usd` (Number) Spending limit in USD
 - `reset_interval` (String) Interval at which the limit resets (daily, weekly, monthly). must be one of ["daily", "weekly", "monthly"]
-- `workspace_id` (String) The workspace to create the guardrail in. Defaults to the default workspace if not provided. Requires replacement if changed.
+- `workspace_id` (String) The workspace to create the guardrail in. When omitted, the guardrail is created in the default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly. Requires replacement if changed.
 
 ### Read-Only
 

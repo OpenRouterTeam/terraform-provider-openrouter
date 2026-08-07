@@ -55,8 +55,8 @@ type Guardrail struct {
 	ResetInterval *GuardrailInterval `json:"reset_interval,omitzero"`
 	// ISO 8601 timestamp of when the guardrail was last updated
 	UpdatedAt *string `json:"updated_at,omitzero"`
-	// The workspace ID this guardrail belongs to.
-	WorkspaceID string `json:"workspace_id"`
+	// The workspace this guardrail is scoped to, or `null` for an unscoped legacy guardrail predating workspaces. A `null` value does not mean the default workspace, and does not apply the guardrail across every workspace.
+	WorkspaceID *string `json:"workspace_id"`
 }
 
 func (g Guardrail) MarshalJSON() ([]byte, error) {
@@ -231,9 +231,9 @@ func (g *Guardrail) GetUpdatedAt() *string {
 	return g.UpdatedAt
 }
 
-func (g *Guardrail) GetWorkspaceID() string {
+func (g *Guardrail) GetWorkspaceID() *string {
 	if g == nil {
-		return ""
+		return nil
 	}
 	return g.WorkspaceID
 }

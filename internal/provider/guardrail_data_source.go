@@ -201,7 +201,7 @@ func (r *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaR
 			},
 			"workspace_id": schema.StringAttribute{
 				Computed:    true,
-				Description: `The workspace ID this guardrail belongs to.`,
+				Description: `The workspace this guardrail is scoped to, or ` + "`" + `null` + "`" + ` for an unscoped legacy guardrail predating workspaces. A ` + "`" + `null` + "`" + ` value does not mean the default workspace, and does not apply the guardrail across every workspace.`,
 			},
 		},
 	}

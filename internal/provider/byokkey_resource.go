@@ -242,7 +242,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 					stringplanmodifier.RequiresReplaceIfConfigured(),
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
-				Description: `Optional workspace ID. Defaults to the authenticated entity's default workspace. Requires replacement if changed.`,
+				Description: `Optional workspace ID to scope the credential to. When omitted, the credential is created in the account's default workspace; if that default has been deleted, the request returns a 400 and you must pass ` + "`" + `workspace_id` + "`" + ` explicitly. Requires replacement if changed.`,
 			},
 		},
 	}

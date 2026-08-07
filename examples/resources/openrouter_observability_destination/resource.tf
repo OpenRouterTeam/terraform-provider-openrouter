@@ -2,6 +2,9 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
   api_key_hashes = [
     "..."
   ]
+  broadcast_generation_cost            = false
+  broadcast_generation_identity        = false
+  broadcast_generation_request_context = false
   config = {
     key = jsonencode("value")
   }

@@ -60,7 +60,7 @@ func (r *ByokKeysDataSourceModel) RefreshFromSharedListBYOKKeysResponse(ctx cont
 			data.Name = types.StringPointerValue(dataItem.Name)
 			data.ProviderSlug = types.StringValue(string(dataItem.ProviderSlug))
 			data.SortOrder = types.Int64Value(dataItem.SortOrder)
-			data.WorkspaceID = types.StringValue(dataItem.WorkspaceID)
+			data.WorkspaceID = types.StringPointerValue(dataItem.WorkspaceID)
 
 			r.Data = append(r.Data, data)
 		}

@@ -102,7 +102,7 @@ func (r *ByokKeyDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			},
 			"workspace_id": schema.StringAttribute{
 				Computed:    true,
-				Description: `ID of the workspace this credential belongs to.`,
+				Description: `The workspace this credential is scoped to, or ` + "`" + `null` + "`" + ` when it is global — usable across every workspace in the account. A ` + "`" + `null` + "`" + ` value does not mean the default workspace.`,
 			},
 		},
 	}

@@ -45,35 +45,38 @@ type ObservabilityDestinationResource struct {
 
 // ObservabilityDestinationResourceModel describes the resource data model.
 type ObservabilityDestinationResourceModel struct {
-	APIKeyHashes  []types.String                                                                    `tfsdk:"api_key_hashes"`
-	Arize         *tfTypes.GetObservabilityDestinationResponseObservabilityArizeDestination         `queryParam:"inline" tfsdk:"arize"`
-	Braintrust    *tfTypes.GetObservabilityDestinationResponseObservabilityBraintrustDestination    `queryParam:"inline" tfsdk:"braintrust"`
-	Clickhouse    *tfTypes.GetObservabilityDestinationResponseObservabilityClickhouseDestination    `queryParam:"inline" tfsdk:"clickhouse"`
-	Config        map[string]jsontypes.Normalized                                                   `tfsdk:"config"`
-	CreatedAt     types.String                                                                      `tfsdk:"created_at"`
-	Datadog       *tfTypes.GetObservabilityDestinationResponseObservabilityDatadogDestination       `queryParam:"inline" tfsdk:"datadog"`
-	Enabled       types.Bool                                                                        `tfsdk:"enabled"`
-	FilterRules   *tfTypes.ObservabilityFilterRulesConfigNullable                                   `tfsdk:"filter_rules"`
-	Grafana       *tfTypes.GetObservabilityDestinationResponseObservabilityGrafanaDestination       `queryParam:"inline" tfsdk:"grafana"`
-	ID            types.String                                                                      `tfsdk:"id"`
-	Langfuse      *tfTypes.GetObservabilityDestinationResponseObservabilityLangfuseDestination      `queryParam:"inline" tfsdk:"langfuse"`
-	Langsmith     *tfTypes.GetObservabilityDestinationResponseObservabilityLangsmithDestination     `queryParam:"inline" tfsdk:"langsmith"`
-	Name          types.String                                                                      `tfsdk:"name"`
-	Newrelic      *tfTypes.GetObservabilityDestinationResponseObservabilityNewrelicDestination      `queryParam:"inline" tfsdk:"newrelic"`
-	Opik          *tfTypes.GetObservabilityDestinationResponseObservabilityOpikDestination          `queryParam:"inline" tfsdk:"opik"`
-	OtelCollector *tfTypes.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination `queryParam:"inline" tfsdk:"otel_collector"`
-	Posthog       *tfTypes.GetObservabilityDestinationResponseObservabilityPosthogDestination       `queryParam:"inline" tfsdk:"posthog"`
-	PrivacyMode   types.Bool                                                                        `tfsdk:"privacy_mode"`
-	Ramp          *tfTypes.GetObservabilityDestinationResponseObservabilityRampDestination          `queryParam:"inline" tfsdk:"ramp"`
-	S3            *tfTypes.GetObservabilityDestinationResponseObservabilityS3Destination            `queryParam:"inline" tfsdk:"s3"`
-	SamplingRate  types.Float64                                                                     `tfsdk:"sampling_rate"`
-	Sentry        *tfTypes.GetObservabilityDestinationResponseObservabilitySentryDestination        `queryParam:"inline" tfsdk:"sentry"`
-	Snowflake     *tfTypes.GetObservabilityDestinationResponseObservabilitySnowflakeDestination     `queryParam:"inline" tfsdk:"snowflake"`
-	Type          types.String                                                                      `tfsdk:"type"`
-	UpdatedAt     types.String                                                                      `tfsdk:"updated_at"`
-	Weave         *tfTypes.GetObservabilityDestinationResponseObservabilityWeaveDestination         `queryParam:"inline" tfsdk:"weave"`
-	Webhook       *tfTypes.GetObservabilityDestinationResponseObservabilityWebhookDestination       `queryParam:"inline" tfsdk:"webhook"`
-	WorkspaceID   types.String                                                                      `tfsdk:"workspace_id"`
+	APIKeyHashes                      []types.String                                                                    `tfsdk:"api_key_hashes"`
+	Arize                             *tfTypes.GetObservabilityDestinationResponseObservabilityArizeDestination         `queryParam:"inline" tfsdk:"arize"`
+	Braintrust                        *tfTypes.GetObservabilityDestinationResponseObservabilityBraintrustDestination    `queryParam:"inline" tfsdk:"braintrust"`
+	BroadcastGenerationCost           types.Bool                                                                        `tfsdk:"broadcast_generation_cost"`
+	BroadcastGenerationIdentity       types.Bool                                                                        `tfsdk:"broadcast_generation_identity"`
+	BroadcastGenerationRequestContext types.Bool                                                                        `tfsdk:"broadcast_generation_request_context"`
+	Clickhouse                        *tfTypes.GetObservabilityDestinationResponseObservabilityClickhouseDestination    `queryParam:"inline" tfsdk:"clickhouse"`
+	Config                            map[string]jsontypes.Normalized                                                   `tfsdk:"config"`
+	CreatedAt                         types.String                                                                      `tfsdk:"created_at"`
+	Datadog                           *tfTypes.GetObservabilityDestinationResponseObservabilityDatadogDestination       `queryParam:"inline" tfsdk:"datadog"`
+	Enabled                           types.Bool                                                                        `tfsdk:"enabled"`
+	FilterRules                       *tfTypes.ObservabilityFilterRulesConfigNullable                                   `tfsdk:"filter_rules"`
+	Grafana                           *tfTypes.GetObservabilityDestinationResponseObservabilityGrafanaDestination       `queryParam:"inline" tfsdk:"grafana"`
+	ID                                types.String                                                                      `tfsdk:"id"`
+	Langfuse                          *tfTypes.GetObservabilityDestinationResponseObservabilityLangfuseDestination      `queryParam:"inline" tfsdk:"langfuse"`
+	Langsmith                         *tfTypes.GetObservabilityDestinationResponseObservabilityLangsmithDestination     `queryParam:"inline" tfsdk:"langsmith"`
+	Name                              types.String                                                                      `tfsdk:"name"`
+	Newrelic                          *tfTypes.GetObservabilityDestinationResponseObservabilityNewrelicDestination      `queryParam:"inline" tfsdk:"newrelic"`
+	Opik                              *tfTypes.GetObservabilityDestinationResponseObservabilityOpikDestination          `queryParam:"inline" tfsdk:"opik"`
+	OtelCollector                     *tfTypes.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination `queryParam:"inline" tfsdk:"otel_collector"`
+	Posthog                           *tfTypes.GetObservabilityDestinationResponseObservabilityPosthogDestination       `queryParam:"inline" tfsdk:"posthog"`
+	PrivacyMode                       types.Bool                                                                        `tfsdk:"privacy_mode"`
+	Ramp                              *tfTypes.GetObservabilityDestinationResponseObservabilityRampDestination          `queryParam:"inline" tfsdk:"ramp"`
+	S3                                *tfTypes.GetObservabilityDestinationResponseObservabilityS3Destination            `queryParam:"inline" tfsdk:"s3"`
+	SamplingRate                      types.Float64                                                                     `tfsdk:"sampling_rate"`
+	Sentry                            *tfTypes.GetObservabilityDestinationResponseObservabilitySentryDestination        `queryParam:"inline" tfsdk:"sentry"`
+	Snowflake                         *tfTypes.GetObservabilityDestinationResponseObservabilitySnowflakeDestination     `queryParam:"inline" tfsdk:"snowflake"`
+	Type                              types.String                                                                      `tfsdk:"type"`
+	UpdatedAt                         types.String                                                                      `tfsdk:"updated_at"`
+	Weave                             *tfTypes.GetObservabilityDestinationResponseObservabilityWeaveDestination         `queryParam:"inline" tfsdk:"weave"`
+	Webhook                           *tfTypes.GetObservabilityDestinationResponseObservabilityWebhookDestination       `queryParam:"inline" tfsdk:"webhook"`
+	WorkspaceID                       types.String                                                                      `tfsdk:"workspace_id"`
 }
 
 func (r *ObservabilityDestinationResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -99,6 +102,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -216,6 +231,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -319,6 +346,30 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					},
 				},
 			},
+			"broadcast_generation_cost": schema.BoolAttribute{
+				Computed: true,
+				Optional: true,
+				PlanModifiers: []planmodifier.Bool{
+					speakeasy_boolplanmodifier.UseHoistedValue([]speakeasy_planmodifierutils.HoistedSource{speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("arize"), FieldPath: path.Root("arize").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("braintrust"), FieldPath: path.Root("braintrust").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("clickhouse"), FieldPath: path.Root("clickhouse").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("datadog"), FieldPath: path.Root("datadog").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("grafana"), FieldPath: path.Root("grafana").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("langfuse"), FieldPath: path.Root("langfuse").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("langsmith"), FieldPath: path.Root("langsmith").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("newrelic"), FieldPath: path.Root("newrelic").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("opik"), FieldPath: path.Root("opik").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("otel_collector"), FieldPath: path.Root("otel_collector").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("posthog"), FieldPath: path.Root("posthog").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("ramp"), FieldPath: path.Root("ramp").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("s3"), FieldPath: path.Root("s3").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("sentry"), FieldPath: path.Root("sentry").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("snowflake"), FieldPath: path.Root("snowflake").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("weave"), FieldPath: path.Root("weave").AtName("broadcast_generation_cost")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("webhook"), FieldPath: path.Root("webhook").AtName("broadcast_generation_cost")}}),
+				},
+				Description: `When true, include cost and billing generation metadata.`,
+			},
+			"broadcast_generation_identity": schema.BoolAttribute{
+				Computed: true,
+				Optional: true,
+				PlanModifiers: []planmodifier.Bool{
+					speakeasy_boolplanmodifier.UseHoistedValue([]speakeasy_planmodifierutils.HoistedSource{speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("arize"), FieldPath: path.Root("arize").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("braintrust"), FieldPath: path.Root("braintrust").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("clickhouse"), FieldPath: path.Root("clickhouse").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("datadog"), FieldPath: path.Root("datadog").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("grafana"), FieldPath: path.Root("grafana").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("langfuse"), FieldPath: path.Root("langfuse").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("langsmith"), FieldPath: path.Root("langsmith").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("newrelic"), FieldPath: path.Root("newrelic").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("opik"), FieldPath: path.Root("opik").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("otel_collector"), FieldPath: path.Root("otel_collector").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("posthog"), FieldPath: path.Root("posthog").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("ramp"), FieldPath: path.Root("ramp").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("s3"), FieldPath: path.Root("s3").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("sentry"), FieldPath: path.Root("sentry").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("snowflake"), FieldPath: path.Root("snowflake").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("weave"), FieldPath: path.Root("weave").AtName("broadcast_generation_identity")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("webhook"), FieldPath: path.Root("webhook").AtName("broadcast_generation_identity")}}),
+				},
+				Description: `When true, include identity generation metadata.`,
+			},
+			"broadcast_generation_request_context": schema.BoolAttribute{
+				Computed: true,
+				Optional: true,
+				PlanModifiers: []planmodifier.Bool{
+					speakeasy_boolplanmodifier.UseHoistedValue([]speakeasy_planmodifierutils.HoistedSource{speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("arize"), FieldPath: path.Root("arize").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("braintrust"), FieldPath: path.Root("braintrust").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("clickhouse"), FieldPath: path.Root("clickhouse").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("datadog"), FieldPath: path.Root("datadog").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("grafana"), FieldPath: path.Root("grafana").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("langfuse"), FieldPath: path.Root("langfuse").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("langsmith"), FieldPath: path.Root("langsmith").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("newrelic"), FieldPath: path.Root("newrelic").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("opik"), FieldPath: path.Root("opik").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("otel_collector"), FieldPath: path.Root("otel_collector").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("posthog"), FieldPath: path.Root("posthog").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("ramp"), FieldPath: path.Root("ramp").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("s3"), FieldPath: path.Root("s3").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("sentry"), FieldPath: path.Root("sentry").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("snowflake"), FieldPath: path.Root("snowflake").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("weave"), FieldPath: path.Root("weave").AtName("broadcast_generation_request_context")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("webhook"), FieldPath: path.Root("webhook").AtName("broadcast_generation_request_context")}}),
+				},
+				Description: `When true, include request-context generation metadata.`,
+			},
 			"clickhouse": schema.SingleNestedAttribute{
 				Computed: true,
 				Attributes: map[string]schema.Attribute{
@@ -326,6 +377,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -460,6 +523,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -682,6 +757,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -800,6 +887,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -911,6 +1010,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1033,6 +1144,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -1140,6 +1263,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1250,6 +1385,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -1351,6 +1498,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1468,6 +1627,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -1576,6 +1747,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1716,6 +1899,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -1821,6 +2016,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
@@ -1984,6 +2191,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
 					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
+					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
@@ -2097,6 +2316,18 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						ElementType: types.StringType,
 						Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) whose traffic is forwarded to this destination. ` + "`" + `null` + "`" + ` means all keys.`,
+					},
+					"broadcast_generation_cost": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_identity": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include identity generation metadata.`,
+					},
+					"broadcast_generation_request_context": schema.BoolAttribute{
+						Computed:    true,
+						Description: `When true, include request-context generation metadata.`,
 					},
 					"config": schema.SingleNestedAttribute{
 						Computed: true,

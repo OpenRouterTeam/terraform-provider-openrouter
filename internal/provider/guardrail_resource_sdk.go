@@ -117,7 +117,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 		r.ResetInterval = types.StringNull()
 	}
 	r.UpdatedAt = types.StringPointerValue(resp.UpdatedAt)
-	r.WorkspaceID = types.StringValue(resp.WorkspaceID)
+	r.WorkspaceID = types.StringPointerValue(resp.WorkspaceID)
 
 	return diags
 }
@@ -228,7 +228,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 		r.ResetInterval = types.StringNull()
 	}
 	r.UpdatedAt = types.StringPointerValue(resp.UpdatedAt)
-	r.WorkspaceID = types.StringValue(resp.WorkspaceID)
+	r.WorkspaceID = types.StringPointerValue(resp.WorkspaceID)
 
 	return diags
 }
@@ -339,7 +339,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 		r.ResetInterval = types.StringNull()
 	}
 	r.UpdatedAt = types.StringPointerValue(resp.UpdatedAt)
-	r.WorkspaceID = types.StringValue(resp.WorkspaceID)
+	r.WorkspaceID = types.StringPointerValue(resp.WorkspaceID)
 
 	return diags
 }

@@ -60,7 +60,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedCreateBYOKKeyResponseData(ctx co
 	r.Name = types.StringPointerValue(resp.Name)
 	r.ProviderSlug = types.StringValue(string(resp.ProviderSlug))
 	r.SortOrder = types.Int64Value(resp.SortOrder)
-	r.WorkspaceID = types.StringValue(resp.WorkspaceID)
+	r.WorkspaceID = types.StringPointerValue(resp.WorkspaceID)
 
 	return diags
 }
@@ -115,7 +115,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedGetBYOKKeyResponseData(ctx conte
 	r.Name = types.StringPointerValue(resp.Name)
 	r.ProviderSlug = types.StringValue(string(resp.ProviderSlug))
 	r.SortOrder = types.Int64Value(resp.SortOrder)
-	r.WorkspaceID = types.StringValue(resp.WorkspaceID)
+	r.WorkspaceID = types.StringPointerValue(resp.WorkspaceID)
 
 	return diags
 }
@@ -170,7 +170,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedUpdateBYOKKeyResponseData(ctx co
 	r.Name = types.StringPointerValue(resp.Name)
 	r.ProviderSlug = types.StringValue(string(resp.ProviderSlug))
 	r.SortOrder = types.Int64Value(resp.SortOrder)
-	r.WorkspaceID = types.StringValue(resp.WorkspaceID)
+	r.WorkspaceID = types.StringPointerValue(resp.WorkspaceID)
 
 	return diags
 }

@@ -59,6 +59,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--arize--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -126,6 +129,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--braintrust--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -192,6 +198,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--clickhouse--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -260,6 +269,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--datadog--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -326,6 +338,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--grafana--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -392,6 +407,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--langfuse--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -458,6 +476,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--langsmith--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -525,6 +546,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--newrelic--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -590,6 +614,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--opik--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -656,6 +683,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--otel_collector--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -720,6 +750,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--posthog--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -785,6 +818,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--ramp--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -850,6 +886,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--s3--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -921,6 +960,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--sentry--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -986,6 +1028,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--snowflake--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -1055,6 +1100,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--weave--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
@@ -1122,6 +1170,9 @@ Read-Only:
 Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
+- `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
+- `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--data--webhook--config))
 - `created_at` (String) ISO timestamp of when the destination was created.
 - `enabled` (Boolean) Whether this destination is currently enabled.
