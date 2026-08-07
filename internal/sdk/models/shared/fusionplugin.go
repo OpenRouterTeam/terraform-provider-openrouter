@@ -475,7 +475,7 @@ type FusionPlugin struct {
 	Enabled *bool `json:"enabled,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	id string `const:"fusion" json:"id"`
-	// Maximum number of tool-calling steps each panelist (analysis model) and the analyst model may take during their agentic web-research loop. Models with web_search/web_fetch enabled iterate until they produce a text response or hit this ceiling. Defaults to 8. Capped at 16.
+	// Maximum number of tool-calling steps each panelist (analysis model) and the analyst model may take during their agentic web-research loop. Models with web_search/web_fetch enabled iterate until they produce a text response or hit this ceiling. Defaults to 4. Capped at 16.
 	MaxToolCalls *int64 `json:"max_tool_calls,omitzero"`
 	// Slug of the model that performs both the analyst step (with web_search + web_fetch) and the final synthesis. When omitted, defaults to the first model in the Quality preset.
 	Model *string `json:"model,omitzero"`

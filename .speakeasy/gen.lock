@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 5a07251d83e6362f6d438a44dfcb636a
+  docChecksum: fb7685319c9ec8303275534fbe1c3a0e
   docVersion: 1.0.0
   speakeasyVersion: 1.791.4
   generationVersion: 2.926.8
-  releaseVersion: 0.2.7
-  configChecksum: 4be3a76710d56c6776ea4eec0428523e
+  releaseVersion: 0.2.8
+  configChecksum: 7f44cb7a0a0da806b21a1183ef3e1689
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 1472623c-351e-48b0-93ef-24ec522d055b
-  pristine_commit_hash: 50b701f67491d44a3a83400b07c326a17c509b5c
-  pristine_tree_hash: 0f1458930451870acfdfe25e22e4982d035185fa
+  generation_id: 8c74b624-dc08-4833-9bd9-254696ea5f6d
+  pristine_commit_hash: 90d315fcb4539a0736acd2ce3eaf503f1027d29c
+  pristine_tree_hash: f1524128693caf458a9940d74cf5af8d07b905ae
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:965bb3bb52658744d1226724c0d6ff10e6d6a881
-    pristine_git_object: b853837ba986b581e8b0aa9039d081ceb4bdaa8f
+    last_write_checksum: sha1:ce881e1f3f582a87adf25adff1934cddff0a8165
+    pristine_git_object: 4fea30561abb322e5add1b186788b9445ebddfa7
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2268,12 +2268,12 @@ trackedFiles:
     pristine_git_object: a2f034b1a265ebd0c7bef4e27690ad28f1817b22
   internal/sdk/models/shared/fusionplugin.go:
     id: d742aca25864
-    last_write_checksum: sha1:1483961b15886db2e75f42c6d8abb272d031370d
-    pristine_git_object: 5598a2e25fe99d61e6049243bf8829363aad7ce9
+    last_write_checksum: sha1:2d968dd19acc7cbfb49868bb0a2edd3cd6c49bdc
+    pristine_git_object: 2c4e0bb68916d02d67c0c962d6464d848be307ca
   internal/sdk/models/shared/fusionservertoolconfig.go:
     id: 0157cf0e274e
-    last_write_checksum: sha1:d55e20427b5f5719ea927bc1e080f258e9afa6e6
-    pristine_git_object: 947fdf25933f866092c588f9cd77657e4f075ed5
+    last_write_checksum: sha1:af2f0721794876f74374ac1a6e8376d94b0972b4
+    pristine_git_object: 9dbc9b428f03272e2365fab686d15f4d02b9cb5b
   internal/sdk/models/shared/fusionservertoolopenrouter.go:
     id: b83b8ca89a3f
     last_write_checksum: sha1:8a0a0919f5a238cbb8a7f9a8c2d53e9a25b22518
@@ -3464,8 +3464,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:83b49200898bba89f2666df27d7e43414d993784
-    pristine_git_object: 3d7ce04aeb5d8d3cd8c34fbf4a0b2f6b789cd2ae
+    last_write_checksum: sha1:e9be6303be7be71a1c43f3458984806852a02198
+    pristine_git_object: 7b85e692086a66533a128594a51cdfcc67fb5529
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5247,4 +5247,3 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.byok.list()`:  `response.data[].workspace_id` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.create()`:  `response.data.workspace_id` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.workspace_id` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.workspace_id` **Changed** (Breaking ⚠️)\n* `OpenRouter.Guardrails.list()`:  `response.data[].workspace_id` **Changed** (Breaking ⚠️)\n* `OpenRouter.Guardrails.create()`:  `response.data.workspace_id` **Changed** (Breaking ⚠️)\n* `OpenRouter.Guardrails.getGuardrail()`:  `response.data.workspace_id` **Changed** (Breaking ⚠️)\n* `OpenRouter.Guardrails.update()`:  `response.data.workspace_id` **Changed** (Breaking ⚠️)\n* `OpenRouter.Observability.updateDestination()`: \n  *  `request.body` **Changed**\n  *  `response` **Changed** (Breaking ⚠️)\n* `OpenRouter.Observability.listDestinations()`:  `response.data[]` **Changed**\n* `OpenRouter.Observability.createDestination()`: \n  *  `request` **Changed**\n  *  `response.data` **Changed**\n* `OpenRouter.Observability.getDestination()`:  `response.data` **Changed**\n"
