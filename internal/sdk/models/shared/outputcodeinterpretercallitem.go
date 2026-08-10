@@ -9,95 +9,50 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type OutputLogs struct {
-	Logs string `json:"logs"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"logs" json:"type"`
-}
-
-func (o OutputLogs) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(o, "", false)
-}
-
-func (o *OutputLogs) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &o, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *OutputLogs) GetLogs() string {
-	if o == nil {
-		return ""
-	}
-	return o.Logs
-}
-
-func (o *OutputLogs) GetType() string {
-	return "logs"
-}
-
-type OutputImage struct {
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"image" json:"type"`
-	URL   string `json:"url"`
-}
-
-func (o OutputImage) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(o, "", false)
-}
-
-func (o *OutputImage) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &o, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *OutputImage) GetType() string {
-	return "image"
-}
-
-func (o *OutputImage) GetURL() string {
-	if o == nil {
-		return ""
-	}
-	return o.URL
-}
-
-type OutputCodeInterpreterCallItemOutputUnionType string
+type OutputCodeInterpreterCallItemOutputType string
 
 const (
-	OutputCodeInterpreterCallItemOutputUnionTypeImage OutputCodeInterpreterCallItemOutputUnionType = "image"
-	OutputCodeInterpreterCallItemOutputUnionTypeLogs  OutputCodeInterpreterCallItemOutputUnionType = "logs"
+	OutputCodeInterpreterCallItemOutputTypeFile  OutputCodeInterpreterCallItemOutputType = "file"
+	OutputCodeInterpreterCallItemOutputTypeImage OutputCodeInterpreterCallItemOutputType = "image"
+	OutputCodeInterpreterCallItemOutputTypeLogs  OutputCodeInterpreterCallItemOutputType = "logs"
 )
 
-type OutputCodeInterpreterCallItemOutputUnion struct {
-	OutputImage *OutputImage `queryParam:"inline" union:"member"`
-	OutputLogs  *OutputLogs  `queryParam:"inline" union:"member"`
+type OutputCodeInterpreterCallItemOutput struct {
+	CodeInterpreterLogsOutput  *CodeInterpreterLogsOutput  `queryParam:"inline" union:"member"`
+	CodeInterpreterImageOutput *CodeInterpreterImageOutput `queryParam:"inline" union:"member"`
+	CodeInterpreterFileOutput  *CodeInterpreterFileOutput  `queryParam:"inline" union:"member"`
 
-	Type OutputCodeInterpreterCallItemOutputUnionType
+	Type OutputCodeInterpreterCallItemOutputType
 }
 
-func CreateOutputCodeInterpreterCallItemOutputUnionImage(image OutputImage) OutputCodeInterpreterCallItemOutputUnion {
-	typ := OutputCodeInterpreterCallItemOutputUnionTypeImage
+func CreateOutputCodeInterpreterCallItemOutputFile(file CodeInterpreterFileOutput) OutputCodeInterpreterCallItemOutput {
+	typ := OutputCodeInterpreterCallItemOutputTypeFile
 
-	return OutputCodeInterpreterCallItemOutputUnion{
-		OutputImage: &image,
-		Type:        typ,
+	return OutputCodeInterpreterCallItemOutput{
+		CodeInterpreterFileOutput: &file,
+		Type:                      typ,
 	}
 }
 
-func CreateOutputCodeInterpreterCallItemOutputUnionLogs(logs OutputLogs) OutputCodeInterpreterCallItemOutputUnion {
-	typ := OutputCodeInterpreterCallItemOutputUnionTypeLogs
+func CreateOutputCodeInterpreterCallItemOutputImage(image CodeInterpreterImageOutput) OutputCodeInterpreterCallItemOutput {
+	typ := OutputCodeInterpreterCallItemOutputTypeImage
 
-	return OutputCodeInterpreterCallItemOutputUnion{
-		OutputLogs: &logs,
-		Type:       typ,
+	return OutputCodeInterpreterCallItemOutput{
+		CodeInterpreterImageOutput: &image,
+		Type:                       typ,
 	}
 }
 
-func (u *OutputCodeInterpreterCallItemOutputUnion) UnmarshalJSON(data []byte) error {
+func CreateOutputCodeInterpreterCallItemOutputLogs(logs CodeInterpreterLogsOutput) OutputCodeInterpreterCallItemOutput {
+	typ := OutputCodeInterpreterCallItemOutputTypeLogs
+
+	return OutputCodeInterpreterCallItemOutput{
+		CodeInterpreterLogsOutput: &logs,
+		Type:                      typ,
+	}
+}
+
+func (u *OutputCodeInterpreterCallItemOutput) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -109,72 +64,121 @@ func (u *OutputCodeInterpreterCallItemOutputUnion) UnmarshalJSON(data []byte) er
 	}
 
 	switch dis.Type {
-	case "image":
-		outputImage := new(OutputImage)
-		if err := utils.UnmarshalJSON(data, &outputImage, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == image) type OutputImage within OutputCodeInterpreterCallItemOutputUnion: %w", string(data), err)
+	case "file":
+		codeInterpreterFileOutput := new(CodeInterpreterFileOutput)
+		if err := utils.UnmarshalJSON(data, &codeInterpreterFileOutput, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == file) type CodeInterpreterFileOutput within OutputCodeInterpreterCallItemOutput: %w", string(data), err)
 		}
 
-		u.OutputImage = outputImage
-		u.Type = OutputCodeInterpreterCallItemOutputUnionTypeImage
+		u.CodeInterpreterFileOutput = codeInterpreterFileOutput
+		u.Type = OutputCodeInterpreterCallItemOutputTypeFile
+		return nil
+	case "image":
+		codeInterpreterImageOutput := new(CodeInterpreterImageOutput)
+		if err := utils.UnmarshalJSON(data, &codeInterpreterImageOutput, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == image) type CodeInterpreterImageOutput within OutputCodeInterpreterCallItemOutput: %w", string(data), err)
+		}
+
+		u.CodeInterpreterImageOutput = codeInterpreterImageOutput
+		u.Type = OutputCodeInterpreterCallItemOutputTypeImage
 		return nil
 	case "logs":
-		outputLogs := new(OutputLogs)
-		if err := utils.UnmarshalJSON(data, &outputLogs, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == logs) type OutputLogs within OutputCodeInterpreterCallItemOutputUnion: %w", string(data), err)
+		codeInterpreterLogsOutput := new(CodeInterpreterLogsOutput)
+		if err := utils.UnmarshalJSON(data, &codeInterpreterLogsOutput, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == logs) type CodeInterpreterLogsOutput within OutputCodeInterpreterCallItemOutput: %w", string(data), err)
 		}
 
-		u.OutputLogs = outputLogs
-		u.Type = OutputCodeInterpreterCallItemOutputUnionTypeLogs
+		u.CodeInterpreterLogsOutput = codeInterpreterLogsOutput
+		u.Type = OutputCodeInterpreterCallItemOutputTypeLogs
 		return nil
 	}
 
-	return fmt.Errorf("could not unmarshal `%s` into any supported union types for OutputCodeInterpreterCallItemOutputUnion", string(data))
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for OutputCodeInterpreterCallItemOutput", string(data))
 }
 
-func (u OutputCodeInterpreterCallItemOutputUnion) MarshalJSON() ([]byte, error) {
-	if u.OutputImage != nil {
-		return utils.MarshalJSON(u.OutputImage, "", true)
+func (u OutputCodeInterpreterCallItemOutput) MarshalJSON() ([]byte, error) {
+	if u.CodeInterpreterLogsOutput != nil {
+		return utils.MarshalJSON(u.CodeInterpreterLogsOutput, "", true)
 	}
 
-	if u.OutputLogs != nil {
-		return utils.MarshalJSON(u.OutputLogs, "", true)
+	if u.CodeInterpreterImageOutput != nil {
+		return utils.MarshalJSON(u.CodeInterpreterImageOutput, "", true)
 	}
 
-	return nil, errors.New("could not marshal union type OutputCodeInterpreterCallItemOutputUnion: all fields are null")
+	if u.CodeInterpreterFileOutput != nil {
+		return utils.MarshalJSON(u.CodeInterpreterFileOutput, "", true)
+	}
+
+	return nil, errors.New("could not marshal union type OutputCodeInterpreterCallItemOutput: all fields are null")
 }
 
-type TypeCodeInterpreterCall string
+type OutputCodeInterpreterCallItemStatus string
 
 const (
-	TypeCodeInterpreterCallCodeInterpreterCall TypeCodeInterpreterCall = "code_interpreter_call"
+	OutputCodeInterpreterCallItemStatusInProgress   OutputCodeInterpreterCallItemStatus = "in_progress"
+	OutputCodeInterpreterCallItemStatusCompleted    OutputCodeInterpreterCallItemStatus = "completed"
+	OutputCodeInterpreterCallItemStatusIncomplete   OutputCodeInterpreterCallItemStatus = "incomplete"
+	OutputCodeInterpreterCallItemStatusInterpreting OutputCodeInterpreterCallItemStatus = "interpreting"
+	OutputCodeInterpreterCallItemStatusFailed       OutputCodeInterpreterCallItemStatus = "failed"
 )
 
-func (e TypeCodeInterpreterCall) ToPointer() *TypeCodeInterpreterCall {
+func (e OutputCodeInterpreterCallItemStatus) ToPointer() *OutputCodeInterpreterCallItemStatus {
 	return &e
 }
-func (e *TypeCodeInterpreterCall) UnmarshalJSON(data []byte) error {
+func (e *OutputCodeInterpreterCallItemStatus) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "in_progress":
+		fallthrough
+	case "completed":
+		fallthrough
+	case "incomplete":
+		fallthrough
+	case "interpreting":
+		fallthrough
+	case "failed":
+		*e = OutputCodeInterpreterCallItemStatus(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for OutputCodeInterpreterCallItemStatus: %v", v)
+	}
+}
+
+type OutputCodeInterpreterCallItemType string
+
+const (
+	OutputCodeInterpreterCallItemTypeCodeInterpreterCall OutputCodeInterpreterCallItemType = "code_interpreter_call"
+)
+
+func (e OutputCodeInterpreterCallItemType) ToPointer() *OutputCodeInterpreterCallItemType {
+	return &e
+}
+func (e *OutputCodeInterpreterCallItemType) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
 	switch v {
 	case "code_interpreter_call":
-		*e = TypeCodeInterpreterCall(v)
+		*e = OutputCodeInterpreterCallItemType(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for TypeCodeInterpreterCall: %v", v)
+		return fmt.Errorf("invalid value for OutputCodeInterpreterCallItemType: %v", v)
 	}
 }
 
 // OutputCodeInterpreterCallItem - A code interpreter execution call with outputs
 type OutputCodeInterpreterCallItem struct {
-	Code        *string                                    `json:"code"`
-	ContainerID string                                     `json:"container_id"`
-	ID          string                                     `json:"id"`
-	Outputs     []OutputCodeInterpreterCallItemOutputUnion `json:"outputs"`
-	Status      ToolCallStatus                             `json:"status"`
-	Type        TypeCodeInterpreterCall                    `json:"type"`
+	Code                 *string                               `json:"code,omitzero"`
+	ContainerID          *string                               `json:"container_id,omitzero"`
+	ID                   string                                `json:"id"`
+	Outputs              []OutputCodeInterpreterCallItemOutput `json:"outputs,omitzero"`
+	Status               OutputCodeInterpreterCallItemStatus   `json:"status"`
+	Type                 OutputCodeInterpreterCallItemType     `json:"type"`
+	AdditionalProperties map[string]any                        `additionalProperties:"true" json:"-"`
 }
 
 func (o OutputCodeInterpreterCallItem) MarshalJSON() ([]byte, error) {
@@ -195,9 +199,9 @@ func (o *OutputCodeInterpreterCallItem) GetCode() *string {
 	return o.Code
 }
 
-func (o *OutputCodeInterpreterCallItem) GetContainerID() string {
+func (o *OutputCodeInterpreterCallItem) GetContainerID() *string {
 	if o == nil {
-		return ""
+		return nil
 	}
 	return o.ContainerID
 }
@@ -209,23 +213,30 @@ func (o *OutputCodeInterpreterCallItem) GetID() string {
 	return o.ID
 }
 
-func (o *OutputCodeInterpreterCallItem) GetOutputs() []OutputCodeInterpreterCallItemOutputUnion {
+func (o *OutputCodeInterpreterCallItem) GetOutputs() []OutputCodeInterpreterCallItemOutput {
 	if o == nil {
 		return nil
 	}
 	return o.Outputs
 }
 
-func (o *OutputCodeInterpreterCallItem) GetStatus() ToolCallStatus {
+func (o *OutputCodeInterpreterCallItem) GetStatus() OutputCodeInterpreterCallItemStatus {
 	if o == nil {
-		return ToolCallStatus("")
+		return OutputCodeInterpreterCallItemStatus("")
 	}
 	return o.Status
 }
 
-func (o *OutputCodeInterpreterCallItem) GetType() TypeCodeInterpreterCall {
+func (o *OutputCodeInterpreterCallItem) GetType() OutputCodeInterpreterCallItemType {
 	if o == nil {
-		return TypeCodeInterpreterCall("")
+		return OutputCodeInterpreterCallItemType("")
 	}
 	return o.Type
+}
+
+func (o *OutputCodeInterpreterCallItem) GetAdditionalProperties() map[string]any {
+	if o == nil {
+		return nil
+	}
+	return o.AdditionalProperties
 }
