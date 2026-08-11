@@ -402,7 +402,7 @@ func (s *Generations) Get(ctx context.Context, request operations.GetGenerationR
 
 }
 
-// ListContent - Get stored prompt and completion content for a generation
+// ListContent - Get stored prompt, completion, and error content for a generation
 func (s *Generations) ListContent(ctx context.Context, request operations.ListGenerationContentRequest, opts ...operations.Option) (*operations.ListGenerationContentResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{

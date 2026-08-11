@@ -27,7 +27,7 @@ type ListGenerationContentResponse struct {
 	StatusCode int
 	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
-	// Returns the stored prompt and completion content
+	// Returns the stored prompt and completion content, plus the failure error when the generation failed
 	GenerationContentResponse *shared.GenerationContentResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
