@@ -2908,7 +2908,7 @@ components:
             total_requests: 2109
             total_tokens: '9876543'
         meta:
-          as_of: '2026-05-12T02:00:00Z'
+          as_of: '2026-05-12T02:00:00.000Z'
           end_date: '2026-05-11'
           start_date: '2026-04-12'
           version: 'v1'
@@ -4466,6 +4466,7 @@ components:
         - 'coreweave'
         - 'crusoe'
         - 'darkbloom'
+        - 'databricks'
         - 'decart'
         - 'deepgram'
         - 'deepinfra'
@@ -9081,8 +9082,9 @@ components:
         - 'title'
       type: 'object'
     GenerationContentData:
-      description: 'Stored prompt and completion content'
+      description: 'Stored prompt and completion content, plus the failure error when one was stored'
       example:
+        error: null
         input:
           messages:
             - content: 'What is the meaning of life?'
@@ -9091,6 +9093,8 @@ components:
           completion: 'The meaning of life is a philosophical question...'
           reasoning: null
       properties:
+        error:
+          $ref: '#/components/schemas/GenerationContentError'
         input:
           anyOf:
             - properties:
@@ -9133,11 +9137,98 @@ components:
       required:
         - 'input'
         - 'output'
+        - 'error'
+      type: 'object'
+    GenerationContentError:
+      description: 'The stored failure for this generation, or null when it succeeded'
+      example:
+        message: 'Timed out waiting for the provider'
+        previous_errors:
+          - code: 429
+            message: 'Provider returned error'
+            provider_name: 'Google'
+            raw: '{"error":{"code":429,"message":"Resource exhausted"}}'
+        provider_name: 'Vertex'
+        raw: '{"error":{"code":504,"message":"Deadline exceeded"}}'
+        status: 504
+      properties:
+        message:
+          description: 'Error message returned to the client'
+          example: 'Timed out waiting for the provider'
+          type:
+            - 'string'
+            - 'null'
+        previous_errors:
+          description: 'Every upstream attempt that failed before the returned error, in attempt order'
+          items:
+            $ref: '#/components/schemas/GenerationContentErrorAttempt'
+          type: 'array'
+        provider_name:
+          description: 'Provider whose error was returned to the client, when known'
+          example: 'Vertex'
+          type:
+            - 'string'
+            - 'null'
+        raw:
+          description: 'Raw error body behind the returned error, when stored'
+          example: '{"error":{"code":504,"message":"Deadline exceeded"}}'
+          type:
+            - 'string'
+            - 'null'
+        status:
+          description: 'HTTP status returned to the client'
+          example: 504
+          type:
+            - 'integer'
+            - 'null'
+      required:
+        - 'status'
+        - 'message'
+        - 'provider_name'
+        - 'raw'
+        - 'previous_errors'
+      type:
+        - 'object'
+        - 'null'
+    GenerationContentErrorAttempt:
+      description: 'A single failed upstream attempt recorded for the generation'
+      example:
+        code: 429
+        message: 'Provider returned error'
+        provider_name: 'Google'
+        raw: '{"error":{"code":429,"message":"Resource exhausted"}}'
+      properties:
+        code:
+          description: 'HTTP status returned by this attempt'
+          example: 429
+          type: 'integer'
+        message:
+          description: 'Error message returned by this attempt'
+          example: 'Provider returned error'
+          type: 'string'
+        provider_name:
+          description: 'Provider that served this attempt, when known'
+          example: 'Google'
+          type:
+            - 'string'
+            - 'null'
+        raw:
+          description: 'Raw error body returned by the provider, when stored'
+          example: '{"error":{"code":429,"message":"Resource exhausted"}}'
+          type:
+            - 'string'
+            - 'null'
+      required:
+        - 'code'
+        - 'message'
+        - 'provider_name'
+        - 'raw'
       type: 'object'
     GenerationContentResponse:
       description: 'Stored prompt and completion content for a generation'
       example:
         data:
+          error: null
           input:
             messages:
               - content: 'What is the meaning of life?'
@@ -13572,6 +13663,7 @@ components:
                 - 'Crucible'
                 - 'Crusoe'
                 - 'Darkbloom'
+                - 'Databricks'
                 - 'Decart'
                 - 'Deepgram'
                 - 'DeepInfra'
@@ -20196,6 +20288,7 @@ components:
         - 'Crucible'
         - 'Crusoe'
         - 'Darkbloom'
+        - 'Databricks'
         - 'Decart'
         - 'Deepgram'
         - 'DeepInfra'
@@ -20373,6 +20466,9 @@ components:
           additionalProperties: {}
           type: 'object'
         darkbloom:
+          additionalProperties: {}
+          type: 'object'
+        databricks:
           additionalProperties: {}
           type: 'object'
         decart:
@@ -20920,6 +21016,7 @@ components:
             - 'Crucible'
             - 'Crusoe'
             - 'Darkbloom'
+            - 'Databricks'
             - 'Decart'
             - 'Deepgram'
             - 'DeepInfra'
@@ -21350,14 +21447,14 @@ components:
       type: 'object'
     RankingsDailyMeta:
       example:
-        as_of: '2026-05-12T02:00:00Z'
+        as_of: '2026-05-12T02:00:00.000Z'
         end_date: '2026-05-11'
         start_date: '2026-04-12'
         version: 'v1'
       properties:
         as_of:
           description: 'ISO-8601 timestamp of when the response was generated. Reflects data-freshness because the underlying materialized view continuously ingests upstream events.'
-          example: '2026-05-12T02:00:00Z'
+          example: '2026-05-12T02:00:00.000Z'
           type: 'string'
         end_date:
           description: 'Resolved end of the date window (UTC, inclusive).'
@@ -21388,7 +21485,7 @@ components:
             model_permaslug: 'anthropic/claude-3.5-sonnet-20241022'
             total_tokens: '9876543'
         meta:
-          as_of: '2026-05-12T02:00:00Z'
+          as_of: '2026-05-12T02:00:00.000Z'
           end_date: '2026-05-11'
           start_date: '2026-04-12'
           version: 'v1'
@@ -27557,6 +27654,7 @@ paths:
               - 'coreweave'
               - 'crusoe'
               - 'darkbloom'
+              - 'databricks'
               - 'decart'
               - 'deepgram'
               - 'deepinfra'
@@ -30170,16 +30268,26 @@ paths:
             application/json:
               example:
                 data:
+                  error:
+                    message: 'Timed out waiting for the provider'
+                    previous_errors:
+                      - code: 429
+                        message: 'Provider returned error'
+                        provider_name: 'Google'
+                        raw: '{"error":{"code":429,"message":"Resource exhausted"}}'
+                    provider_name: 'Vertex'
+                    raw: '{"error":{"code":504,"message":"Deadline exceeded"}}'
+                    status: 504
                   input:
                     messages:
                       - content: 'What is the meaning of life?'
                         role: 'user'
                   output:
-                    completion: 'The meaning of life is a philosophical question...'
+                    completion: null
                     reasoning: null
               schema:
                 $ref: '#/components/schemas/GenerationContentResponse'
-          description: 'Returns the stored prompt and completion content'
+          description: 'Returns the stored prompt and completion content, plus the failure error when the generation failed'
         '401':
           content:
             application/json:
@@ -30260,7 +30368,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProviderOverloadedResponse'
           description: 'Provider Overloaded - Provider is temporarily overloaded'
-      summary: 'Get stored prompt and completion content for a generation'
+      summary: 'Get stored prompt, completion, and error content for a generation'
       tags:
         - 'Generations'
       x-speakeasy-name-override: listContent

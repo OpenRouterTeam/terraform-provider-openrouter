@@ -66,6 +66,7 @@ const (
 	ProviderResponseProviderNameCrucible            ProviderResponseProviderName = "Crucible"
 	ProviderResponseProviderNameCrusoe              ProviderResponseProviderName = "Crusoe"
 	ProviderResponseProviderNameDarkbloom           ProviderResponseProviderName = "Darkbloom"
+	ProviderResponseProviderNameDatabricks          ProviderResponseProviderName = "Databricks"
 	ProviderResponseProviderNameDecart              ProviderResponseProviderName = "Decart"
 	ProviderResponseProviderNameDeepgram            ProviderResponseProviderName = "Deepgram"
 	ProviderResponseProviderNameDeepInfra           ProviderResponseProviderName = "DeepInfra"
@@ -261,6 +262,8 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 	case "Crusoe":
 		fallthrough
 	case "Darkbloom":
+		fallthrough
+	case "Databricks":
 		fallthrough
 	case "Decart":
 		fallthrough
