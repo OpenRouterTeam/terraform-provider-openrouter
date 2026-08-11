@@ -8,18 +8,18 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// BenchmarkType - OpenRouter benchmark evaluation type.
-type BenchmarkType string
+// UnifiedBenchmarksORItemBenchmarkType - OpenRouter benchmark evaluation type.
+type UnifiedBenchmarksORItemBenchmarkType string
 
 const (
-	BenchmarkTypeGpqaDiamond             BenchmarkType = "gpqa_diamond"
-	BenchmarkTypeTauBenchVerifiedAirline BenchmarkType = "tau_bench_verified_airline"
+	UnifiedBenchmarksORItemBenchmarkTypeGpqaDiamond             UnifiedBenchmarksORItemBenchmarkType = "gpqa_diamond"
+	UnifiedBenchmarksORItemBenchmarkTypeTauBenchVerifiedAirline UnifiedBenchmarksORItemBenchmarkType = "tau_bench_verified_airline"
 )
 
-func (e BenchmarkType) ToPointer() *BenchmarkType {
+func (e UnifiedBenchmarksORItemBenchmarkType) ToPointer() *UnifiedBenchmarksORItemBenchmarkType {
 	return &e
 }
-func (e *BenchmarkType) UnmarshalJSON(data []byte) error {
+func (e *UnifiedBenchmarksORItemBenchmarkType) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -28,10 +28,34 @@ func (e *BenchmarkType) UnmarshalJSON(data []byte) error {
 	case "gpqa_diamond":
 		fallthrough
 	case "tau_bench_verified_airline":
-		*e = BenchmarkType(v)
+		*e = UnifiedBenchmarksORItemBenchmarkType(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for BenchmarkType: %v", v)
+		return fmt.Errorf("invalid value for UnifiedBenchmarksORItemBenchmarkType: %v", v)
+	}
+}
+
+// UnifiedBenchmarksORItemSource - Benchmark source discriminator.
+type UnifiedBenchmarksORItemSource string
+
+const (
+	UnifiedBenchmarksORItemSourceOpenrouter UnifiedBenchmarksORItemSource = "openrouter"
+)
+
+func (e UnifiedBenchmarksORItemSource) ToPointer() *UnifiedBenchmarksORItemSource {
+	return &e
+}
+func (e *UnifiedBenchmarksORItemSource) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "openrouter":
+		*e = UnifiedBenchmarksORItemSource(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UnifiedBenchmarksORItemSource: %v", v)
 	}
 }
 
@@ -43,7 +67,7 @@ type UnifiedBenchmarksORItem struct {
 	// Average cost per task in USD, or null if unavailable.
 	AvgCostPerTask *float64 `json:"avg_cost_per_task"`
 	// OpenRouter benchmark evaluation type.
-	BenchmarkType BenchmarkType `json:"benchmark_type"`
+	BenchmarkType UnifiedBenchmarksORItemBenchmarkType `json:"benchmark_type"`
 	// Human-readable model name.
 	DisplayName string `json:"display_name"`
 	// Timestamp of the most recent public benchmark run.
@@ -51,8 +75,7 @@ type UnifiedBenchmarksORItem struct {
 	// Stable OpenRouter model identifier.
 	ModelPermaslug string `json:"model_permaslug"`
 	// Benchmark source discriminator.
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	source string `const:"openrouter" json:"source"`
+	Source UnifiedBenchmarksORItemSource `json:"source"`
 	// Total benchmark tasks across runs.
 	TotalTasks int64 `json:"total_tasks"`
 }
@@ -89,9 +112,9 @@ func (u *UnifiedBenchmarksORItem) GetAvgCostPerTask() *float64 {
 	return u.AvgCostPerTask
 }
 
-func (u *UnifiedBenchmarksORItem) GetBenchmarkType() BenchmarkType {
+func (u *UnifiedBenchmarksORItem) GetBenchmarkType() UnifiedBenchmarksORItemBenchmarkType {
 	if u == nil {
-		return BenchmarkType("")
+		return UnifiedBenchmarksORItemBenchmarkType("")
 	}
 	return u.BenchmarkType
 }
@@ -117,8 +140,11 @@ func (u *UnifiedBenchmarksORItem) GetModelPermaslug() string {
 	return u.ModelPermaslug
 }
 
-func (u *UnifiedBenchmarksORItem) GetSource() string {
-	return "openrouter"
+func (u *UnifiedBenchmarksORItem) GetSource() UnifiedBenchmarksORItemSource {
+	if u == nil {
+		return UnifiedBenchmarksORItemSource("")
+	}
+	return u.Source
 }
 
 func (u *UnifiedBenchmarksORItem) GetTotalTasks() int64 {

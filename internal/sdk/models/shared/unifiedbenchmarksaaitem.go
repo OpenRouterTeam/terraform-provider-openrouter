@@ -3,8 +3,34 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
+
+// UnifiedBenchmarksAAItemSource - Benchmark source discriminator.
+type UnifiedBenchmarksAAItemSource string
+
+const (
+	UnifiedBenchmarksAAItemSourceArtificialAnalysis UnifiedBenchmarksAAItemSource = "artificial-analysis"
+)
+
+func (e UnifiedBenchmarksAAItemSource) ToPointer() *UnifiedBenchmarksAAItemSource {
+	return &e
+}
+func (e *UnifiedBenchmarksAAItemSource) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "artificial-analysis":
+		*e = UnifiedBenchmarksAAItemSource(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UnifiedBenchmarksAAItemSource: %v", v)
+	}
+}
 
 type UnifiedBenchmarksAAItem struct {
 	// Artificial Analysis Agentic Index composite score. Higher is better.
@@ -20,8 +46,7 @@ type UnifiedBenchmarksAAItem struct {
 	// OpenRouter pricing per token for this model. Null if pricing is unavailable.
 	Pricing *UnifiedBenchmarkPricing `json:"pricing"`
 	// Benchmark source discriminator.
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	source string `const:"artificial-analysis" json:"source"`
+	Source UnifiedBenchmarksAAItemSource `json:"source"`
 }
 
 func (u UnifiedBenchmarksAAItem) MarshalJSON() ([]byte, error) {
@@ -77,6 +102,9 @@ func (u *UnifiedBenchmarksAAItem) GetPricing() *UnifiedBenchmarkPricing {
 	return u.Pricing
 }
 
-func (u *UnifiedBenchmarksAAItem) GetSource() string {
-	return "artificial-analysis"
+func (u *UnifiedBenchmarksAAItem) GetSource() UnifiedBenchmarksAAItemSource {
+	if u == nil {
+		return UnifiedBenchmarksAAItemSource("")
+	}
+	return u.Source
 }

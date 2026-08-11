@@ -7,19 +7,19 @@ import (
 	"fmt"
 )
 
-// SourceEnum - The source filter applied, or null when all sources are returned.
-type SourceEnum string
+// UnifiedBenchmarksMetaSource - The source filter applied, or null when all sources are returned.
+type UnifiedBenchmarksMetaSource string
 
 const (
-	SourceEnumArtificialAnalysis SourceEnum = "artificial-analysis"
-	SourceEnumDesignArena        SourceEnum = "design-arena"
-	SourceEnumOpenrouter         SourceEnum = "openrouter"
+	UnifiedBenchmarksMetaSourceArtificialAnalysis UnifiedBenchmarksMetaSource = "artificial-analysis"
+	UnifiedBenchmarksMetaSourceDesignArena        UnifiedBenchmarksMetaSource = "design-arena"
+	UnifiedBenchmarksMetaSourceOpenrouter         UnifiedBenchmarksMetaSource = "openrouter"
 )
 
-func (e SourceEnum) ToPointer() *SourceEnum {
+func (e UnifiedBenchmarksMetaSource) ToPointer() *UnifiedBenchmarksMetaSource {
 	return &e
 }
-func (e *SourceEnum) UnmarshalJSON(data []byte) error {
+func (e *UnifiedBenchmarksMetaSource) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -30,10 +30,10 @@ func (e *SourceEnum) UnmarshalJSON(data []byte) error {
 	case "design-arena":
 		fallthrough
 	case "openrouter":
-		*e = SourceEnum(v)
+		*e = UnifiedBenchmarksMetaSource(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for SourceEnum: %v", v)
+		return fmt.Errorf("invalid value for UnifiedBenchmarksMetaSource: %v", v)
 	}
 }
 
@@ -69,7 +69,7 @@ type UnifiedBenchmarksMeta struct {
 	// Number of unique models in the response.
 	ModelCount int64 `json:"model_count"`
 	// The source filter applied, or null when all sources are returned.
-	Source *SourceEnum `json:"source"`
+	Source *UnifiedBenchmarksMetaSource `json:"source"`
 	// URL of the upstream data source, or null when results span multiple sources.
 	SourceURL *string `json:"source_url"`
 	// The task_type filter applied, or null if showing all.
@@ -99,7 +99,7 @@ func (u *UnifiedBenchmarksMeta) GetModelCount() int64 {
 	return u.ModelCount
 }
 
-func (u *UnifiedBenchmarksMeta) GetSource() *SourceEnum {
+func (u *UnifiedBenchmarksMeta) GetSource() *UnifiedBenchmarksMetaSource {
 	if u == nil {
 		return nil
 	}

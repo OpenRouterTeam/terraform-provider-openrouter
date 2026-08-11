@@ -3,7 +3,6 @@
 package shared
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
@@ -12,84 +11,118 @@ import (
 type UnifiedBenchmarksResponseDataType string
 
 const (
-	UnifiedBenchmarksResponseDataTypeArtificialAnalysis UnifiedBenchmarksResponseDataType = "artificial-analysis"
-	UnifiedBenchmarksResponseDataTypeDesignArena        UnifiedBenchmarksResponseDataType = "design-arena"
-	UnifiedBenchmarksResponseDataTypeOpenrouter         UnifiedBenchmarksResponseDataType = "openrouter"
+	UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksAAItem     UnifiedBenchmarksResponseDataType = "UnifiedBenchmarksAAItem"
+	UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksDAItem     UnifiedBenchmarksResponseDataType = "UnifiedBenchmarksDAItem"
+	UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksORItem     UnifiedBenchmarksResponseDataType = "UnifiedBenchmarksORItem"
+	UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksSearchItem UnifiedBenchmarksResponseDataType = "UnifiedBenchmarksSearchItem"
 )
 
 type UnifiedBenchmarksResponseData struct {
-	UnifiedBenchmarksAAItem *UnifiedBenchmarksAAItem `queryParam:"inline" union:"member"`
-	UnifiedBenchmarksDAItem *UnifiedBenchmarksDAItem `queryParam:"inline" union:"member"`
-	UnifiedBenchmarksORItem *UnifiedBenchmarksORItem `queryParam:"inline" union:"member"`
+	UnifiedBenchmarksAAItem     *UnifiedBenchmarksAAItem     `queryParam:"inline" union:"member"`
+	UnifiedBenchmarksDAItem     *UnifiedBenchmarksDAItem     `queryParam:"inline" union:"member"`
+	UnifiedBenchmarksORItem     *UnifiedBenchmarksORItem     `queryParam:"inline" union:"member"`
+	UnifiedBenchmarksSearchItem *UnifiedBenchmarksSearchItem `queryParam:"inline" union:"member"`
 
 	Type UnifiedBenchmarksResponseDataType
 }
 
-func CreateUnifiedBenchmarksResponseDataArtificialAnalysis(artificialAnalysis UnifiedBenchmarksAAItem) UnifiedBenchmarksResponseData {
-	typ := UnifiedBenchmarksResponseDataTypeArtificialAnalysis
+func CreateUnifiedBenchmarksResponseDataUnifiedBenchmarksAAItem(unifiedBenchmarksAAItem UnifiedBenchmarksAAItem) UnifiedBenchmarksResponseData {
+	typ := UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksAAItem
 
 	return UnifiedBenchmarksResponseData{
-		UnifiedBenchmarksAAItem: &artificialAnalysis,
+		UnifiedBenchmarksAAItem: &unifiedBenchmarksAAItem,
 		Type:                    typ,
 	}
 }
 
-func CreateUnifiedBenchmarksResponseDataDesignArena(designArena UnifiedBenchmarksDAItem) UnifiedBenchmarksResponseData {
-	typ := UnifiedBenchmarksResponseDataTypeDesignArena
+func CreateUnifiedBenchmarksResponseDataUnifiedBenchmarksDAItem(unifiedBenchmarksDAItem UnifiedBenchmarksDAItem) UnifiedBenchmarksResponseData {
+	typ := UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksDAItem
 
 	return UnifiedBenchmarksResponseData{
-		UnifiedBenchmarksDAItem: &designArena,
+		UnifiedBenchmarksDAItem: &unifiedBenchmarksDAItem,
 		Type:                    typ,
 	}
 }
 
-func CreateUnifiedBenchmarksResponseDataOpenrouter(openrouter UnifiedBenchmarksORItem) UnifiedBenchmarksResponseData {
-	typ := UnifiedBenchmarksResponseDataTypeOpenrouter
+func CreateUnifiedBenchmarksResponseDataUnifiedBenchmarksORItem(unifiedBenchmarksORItem UnifiedBenchmarksORItem) UnifiedBenchmarksResponseData {
+	typ := UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksORItem
 
 	return UnifiedBenchmarksResponseData{
-		UnifiedBenchmarksORItem: &openrouter,
+		UnifiedBenchmarksORItem: &unifiedBenchmarksORItem,
 		Type:                    typ,
+	}
+}
+
+func CreateUnifiedBenchmarksResponseDataUnifiedBenchmarksSearchItem(unifiedBenchmarksSearchItem UnifiedBenchmarksSearchItem) UnifiedBenchmarksResponseData {
+	typ := UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksSearchItem
+
+	return UnifiedBenchmarksResponseData{
+		UnifiedBenchmarksSearchItem: &unifiedBenchmarksSearchItem,
+		Type:                        typ,
 	}
 }
 
 func (u *UnifiedBenchmarksResponseData) UnmarshalJSON(data []byte) error {
 
-	type discriminator struct {
-		Source string `json:"source"`
+	var candidates []utils.UnionCandidate
+
+	// Collect all valid candidates
+	var unifiedBenchmarksAAItem UnifiedBenchmarksAAItem = UnifiedBenchmarksAAItem{}
+	if err := utils.UnmarshalJSON(data, &unifiedBenchmarksAAItem, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksAAItem,
+			Value: &unifiedBenchmarksAAItem,
+		})
 	}
 
-	dis := new(discriminator)
-	if err := json.Unmarshal(data, &dis); err != nil {
-		return fmt.Errorf("could not unmarshal discriminator: %w", err)
+	var unifiedBenchmarksDAItem UnifiedBenchmarksDAItem = UnifiedBenchmarksDAItem{}
+	if err := utils.UnmarshalJSON(data, &unifiedBenchmarksDAItem, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksDAItem,
+			Value: &unifiedBenchmarksDAItem,
+		})
 	}
 
-	switch dis.Source {
-	case "artificial-analysis":
-		unifiedBenchmarksAAItem := new(UnifiedBenchmarksAAItem)
-		if err := utils.UnmarshalJSON(data, &unifiedBenchmarksAAItem, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Source == artificial-analysis) type UnifiedBenchmarksAAItem within UnifiedBenchmarksResponseData: %w", string(data), err)
-		}
+	var unifiedBenchmarksORItem UnifiedBenchmarksORItem = UnifiedBenchmarksORItem{}
+	if err := utils.UnmarshalJSON(data, &unifiedBenchmarksORItem, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksORItem,
+			Value: &unifiedBenchmarksORItem,
+		})
+	}
 
-		u.UnifiedBenchmarksAAItem = unifiedBenchmarksAAItem
-		u.Type = UnifiedBenchmarksResponseDataTypeArtificialAnalysis
+	var unifiedBenchmarksSearchItem UnifiedBenchmarksSearchItem = UnifiedBenchmarksSearchItem{}
+	if err := utils.UnmarshalJSON(data, &unifiedBenchmarksSearchItem, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksSearchItem,
+			Value: &unifiedBenchmarksSearchItem,
+		})
+	}
+
+	if len(candidates) == 0 {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for UnifiedBenchmarksResponseData", string(data))
+	}
+
+	// Pick the best candidate using multi-stage filtering
+	best := utils.PickBestUnionCandidate(candidates, data)
+	if best == nil {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for UnifiedBenchmarksResponseData", string(data))
+	}
+
+	// Set the union type and value based on the best candidate
+	u.Type = best.Type.(UnifiedBenchmarksResponseDataType)
+	switch best.Type {
+	case UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksAAItem:
+		u.UnifiedBenchmarksAAItem = best.Value.(*UnifiedBenchmarksAAItem)
 		return nil
-	case "design-arena":
-		unifiedBenchmarksDAItem := new(UnifiedBenchmarksDAItem)
-		if err := utils.UnmarshalJSON(data, &unifiedBenchmarksDAItem, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Source == design-arena) type UnifiedBenchmarksDAItem within UnifiedBenchmarksResponseData: %w", string(data), err)
-		}
-
-		u.UnifiedBenchmarksDAItem = unifiedBenchmarksDAItem
-		u.Type = UnifiedBenchmarksResponseDataTypeDesignArena
+	case UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksDAItem:
+		u.UnifiedBenchmarksDAItem = best.Value.(*UnifiedBenchmarksDAItem)
 		return nil
-	case "openrouter":
-		unifiedBenchmarksORItem := new(UnifiedBenchmarksORItem)
-		if err := utils.UnmarshalJSON(data, &unifiedBenchmarksORItem, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Source == openrouter) type UnifiedBenchmarksORItem within UnifiedBenchmarksResponseData: %w", string(data), err)
-		}
-
-		u.UnifiedBenchmarksORItem = unifiedBenchmarksORItem
-		u.Type = UnifiedBenchmarksResponseDataTypeOpenrouter
+	case UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksORItem:
+		u.UnifiedBenchmarksORItem = best.Value.(*UnifiedBenchmarksORItem)
+		return nil
+	case UnifiedBenchmarksResponseDataTypeUnifiedBenchmarksSearchItem:
+		u.UnifiedBenchmarksSearchItem = best.Value.(*UnifiedBenchmarksSearchItem)
 		return nil
 	}
 
@@ -107,6 +140,10 @@ func (u UnifiedBenchmarksResponseData) MarshalJSON() ([]byte, error) {
 
 	if u.UnifiedBenchmarksORItem != nil {
 		return utils.MarshalJSON(u.UnifiedBenchmarksORItem, "", true)
+	}
+
+	if u.UnifiedBenchmarksSearchItem != nil {
+		return utils.MarshalJSON(u.UnifiedBenchmarksSearchItem, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type UnifiedBenchmarksResponseData: all fields are null")
