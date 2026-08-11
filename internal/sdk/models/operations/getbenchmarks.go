@@ -40,13 +40,14 @@ func (e *Source) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// TaskType - Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category.
+// TaskType - Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category. `search` returns OpenRouter search benchmark results only.
 type TaskType string
 
 const (
 	TaskTypeCoding       TaskType = "coding"
 	TaskTypeIntelligence TaskType = "intelligence"
 	TaskTypeAgentic      TaskType = "agentic"
+	TaskTypeSearch       TaskType = "search"
 )
 
 func (e TaskType) ToPointer() *TaskType {
@@ -63,10 +64,78 @@ func (e *TaskType) UnmarshalJSON(data []byte) error {
 	case "intelligence":
 		fallthrough
 	case "agentic":
+		fallthrough
+	case "search":
 		*e = TaskType(v)
 		return nil
 	default:
 		return fmt.Errorf("invalid value for TaskType: %v", v)
+	}
+}
+
+// BenchmarkType - Return results for one exact OpenRouter benchmark. A `search_*` value narrows the response to search results only; a classic value narrows the OpenRouter items and leaves other sources' items as they are.
+type BenchmarkType string
+
+const (
+	BenchmarkTypeGpqaDiamond             BenchmarkType = "gpqa_diamond"
+	BenchmarkTypeTauBenchVerifiedAirline BenchmarkType = "tau_bench_verified_airline"
+	BenchmarkTypeSearchBrowsecomp        BenchmarkType = "search_browsecomp"
+	BenchmarkTypeSearchHle               BenchmarkType = "search_hle"
+	BenchmarkTypeSearchDsqa              BenchmarkType = "search_dsqa"
+	BenchmarkTypeSearchWidesearch        BenchmarkType = "search_widesearch"
+)
+
+func (e BenchmarkType) ToPointer() *BenchmarkType {
+	return &e
+}
+func (e *BenchmarkType) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "gpqa_diamond":
+		fallthrough
+	case "tau_bench_verified_airline":
+		fallthrough
+	case "search_browsecomp":
+		fallthrough
+	case "search_hle":
+		fallthrough
+	case "search_dsqa":
+		fallthrough
+	case "search_widesearch":
+		*e = BenchmarkType(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for BenchmarkType: %v", v)
+	}
+}
+
+// SearchSurface - OpenRouter search benchmarks only: filter by the request surface the lane ran on.
+type SearchSurface string
+
+const (
+	SearchSurfaceServerTool SearchSurface = "server-tool"
+	SearchSurfacePlugin     SearchSurface = "plugin"
+)
+
+func (e SearchSurface) ToPointer() *SearchSurface {
+	return &e
+}
+func (e *SearchSurface) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "server-tool":
+		fallthrough
+	case "plugin":
+		*e = SearchSurface(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for SearchSurface: %v", v)
 	}
 }
 
@@ -103,14 +172,33 @@ func (e *Arena) UnmarshalJSON(data []byte) error {
 type GetBenchmarksRequest struct {
 	// Benchmark source to query. Determines the shape of the returned items. When omitted, returns results from all sources.
 	Source *Source `queryParam:"style=form,explode=true,name=source"`
-	// Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category.
+	// Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category. `search` returns OpenRouter search benchmark results only.
 	TaskType *TaskType `queryParam:"style=form,explode=true,name=task_type"`
+	// Return results for one exact OpenRouter benchmark. A `search_*` value narrows the response to search results only; a classic value narrows the OpenRouter items and leaves other sources' items as they are.
+	BenchmarkType *BenchmarkType `queryParam:"style=form,explode=true,name=benchmark_type"`
+	// Search benchmarks only: include the published lane configuration whitelist in each search item. Defaults to false. The whitelist is limited to agent turn count, reasoning effort, and temperature so future harness configuration changes do not change the public contract.
+	IncludeRunConfig *bool `default:"false" queryParam:"style=form,explode=true,name=include_run_config"`
+	// OpenRouter search benchmarks only: filter by the search engine used.
+	SearchEngine *string `queryParam:"style=form,explode=true,name=search_engine"`
+	// OpenRouter search benchmarks only: filter by the request surface the lane ran on.
+	SearchSurface *SearchSurface `queryParam:"style=form,explode=true,name=search_surface"`
 	// Design Arena only: arena to query. Defaults to `models` when source is `design-arena`.
 	Arena *Arena `queryParam:"style=form,explode=true,name=arena"`
 	// Design Arena only: category within the arena (e.g. `codecategories`, `uicomponent`, `gamedev`, `3d`, `dataviz`, `image`, `video`, `svg`). When omitted, returns all categories.
 	Category *string `queryParam:"style=form,explode=true,name=category"`
 	// Maximum number of items to return. When omitted, all matching results are returned.
 	MaxResults *int64 `queryParam:"style=form,explode=true,name=max_results"`
+}
+
+func (g GetBenchmarksRequest) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(g, "", false)
+}
+
+func (g *GetBenchmarksRequest) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &g, "", false, nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (g *GetBenchmarksRequest) GetSource() *Source {
@@ -125,6 +213,34 @@ func (g *GetBenchmarksRequest) GetTaskType() *TaskType {
 		return nil
 	}
 	return g.TaskType
+}
+
+func (g *GetBenchmarksRequest) GetBenchmarkType() *BenchmarkType {
+	if g == nil {
+		return nil
+	}
+	return g.BenchmarkType
+}
+
+func (g *GetBenchmarksRequest) GetIncludeRunConfig() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.IncludeRunConfig
+}
+
+func (g *GetBenchmarksRequest) GetSearchEngine() *string {
+	if g == nil {
+		return nil
+	}
+	return g.SearchEngine
+}
+
+func (g *GetBenchmarksRequest) GetSearchSurface() *SearchSurface {
+	if g == nil {
+		return nil
+	}
+	return g.SearchSurface
 }
 
 func (g *GetBenchmarksRequest) GetArena() *Arena {

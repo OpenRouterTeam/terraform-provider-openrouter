@@ -3,8 +3,34 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
+
+// UnifiedBenchmarksDAItemSource - Benchmark source discriminator.
+type UnifiedBenchmarksDAItemSource string
+
+const (
+	UnifiedBenchmarksDAItemSourceDesignArena UnifiedBenchmarksDAItemSource = "design-arena"
+)
+
+func (e UnifiedBenchmarksDAItemSource) ToPointer() *UnifiedBenchmarksDAItemSource {
+	return &e
+}
+func (e *UnifiedBenchmarksDAItemSource) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "design-arena":
+		*e = UnifiedBenchmarksDAItemSource(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UnifiedBenchmarksDAItemSource: %v", v)
+	}
+}
 
 // TournamentStats - Placement distribution from tournament matches.
 type TournamentStats struct {
@@ -77,8 +103,7 @@ type UnifiedBenchmarksDAItem struct {
 	// OpenRouter pricing per token for this model. Null if pricing is unavailable.
 	Pricing *UnifiedBenchmarkPricing `json:"pricing"`
 	// Benchmark source discriminator.
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	source string `const:"design-arena" json:"source"`
+	Source UnifiedBenchmarksDAItemSource `json:"source"`
 	// Placement distribution from tournament matches.
 	TournamentStats TournamentStats `json:"tournament_stats"`
 	// Win rate as a percentage (0–100).
@@ -145,8 +170,11 @@ func (u *UnifiedBenchmarksDAItem) GetPricing() *UnifiedBenchmarkPricing {
 	return u.Pricing
 }
 
-func (u *UnifiedBenchmarksDAItem) GetSource() string {
-	return "design-arena"
+func (u *UnifiedBenchmarksDAItem) GetSource() UnifiedBenchmarksDAItemSource {
+	if u == nil {
+		return UnifiedBenchmarksDAItemSource("")
+	}
+	return u.Source
 }
 
 func (u *UnifiedBenchmarksDAItem) GetTournamentStats() TournamentStats {
