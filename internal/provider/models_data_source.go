@@ -604,9 +604,9 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			},
 			"region": schema.StringAttribute{
 				Optional:    true,
-				Description: `Filter to models with endpoints in the given data region. Currently only "eu" is supported. must be "eu"`,
+				Description: `Filter to models with endpoints in the given data region ("eu" or "us"). must be one of ["eu", "us"]`,
 				Validators: []validator.String{
-					stringvalidator.OneOf("eu"),
+					stringvalidator.OneOf("eu", "us"),
 				},
 			},
 			"sort": schema.StringAttribute{
