@@ -154,8 +154,15 @@ func (r *WorkspaceResourceModel) ToOperationsDeleteWorkspaceRequest(ctx context.
 	var id string
 	id = r.ID.ValueString()
 
+	confirmDefaultSettingsDeletion := new(operations.ConfirmDefaultSettingsDeletion)
+	if !r.ConfirmDefaultSettingsDeletion.IsUnknown() && !r.ConfirmDefaultSettingsDeletion.IsNull() {
+		*confirmDefaultSettingsDeletion = operations.ConfirmDefaultSettingsDeletion(r.ConfirmDefaultSettingsDeletion.ValueString())
+	} else {
+		confirmDefaultSettingsDeletion = nil
+	}
 	out := operations.DeleteWorkspaceRequest{
-		ID: id,
+		ID:                             id,
+		ConfirmDefaultSettingsDeletion: confirmDefaultSettingsDeletion,
 	}
 
 	return &out, diags

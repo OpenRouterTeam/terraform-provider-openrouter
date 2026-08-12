@@ -3,14 +3,45 @@
 package operations
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"net/http"
 )
 
+// ConfirmDefaultSettingsDeletion - Required to delete the default workspace (currently limited to internal OpenRouter administrators while the capability rolls out). Deleting it permanently disables the account’s unscoped inference API keys (management/provisioning keys are retained) and its budgets, guardrails, classifiers, and broadcast destinations. Ignored for non-default workspaces.
+type ConfirmDefaultSettingsDeletion string
+
+const (
+	ConfirmDefaultSettingsDeletionTrue  ConfirmDefaultSettingsDeletion = "true"
+	ConfirmDefaultSettingsDeletionFalse ConfirmDefaultSettingsDeletion = "false"
+)
+
+func (e ConfirmDefaultSettingsDeletion) ToPointer() *ConfirmDefaultSettingsDeletion {
+	return &e
+}
+func (e *ConfirmDefaultSettingsDeletion) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "true":
+		fallthrough
+	case "false":
+		*e = ConfirmDefaultSettingsDeletion(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for ConfirmDefaultSettingsDeletion: %v", v)
+	}
+}
+
 type DeleteWorkspaceRequest struct {
 	// The workspace ID (UUID) or slug
 	ID string `pathParam:"style=simple,explode=false,name=id"`
+	// Required to delete the default workspace (currently limited to internal OpenRouter administrators while the capability rolls out). Deleting it permanently disables the account’s unscoped inference API keys (management/provisioning keys are retained) and its budgets, guardrails, classifiers, and broadcast destinations. Ignored for non-default workspaces.
+	ConfirmDefaultSettingsDeletion *ConfirmDefaultSettingsDeletion `queryParam:"style=form,explode=true,name=confirm_default_settings_deletion"`
 }
 
 func (d *DeleteWorkspaceRequest) GetID() string {
@@ -18,6 +49,13 @@ func (d *DeleteWorkspaceRequest) GetID() string {
 		return ""
 	}
 	return d.ID
+}
+
+func (d *DeleteWorkspaceRequest) GetConfirmDefaultSettingsDeletion() *ConfirmDefaultSettingsDeletion {
+	if d == nil {
+		return nil
+	}
+	return d.ConfirmDefaultSettingsDeletion
 }
 
 type DeleteWorkspaceResponse struct {
