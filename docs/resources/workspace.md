@@ -14,10 +14,11 @@ Workspace Resource
 
 ```terraform
 resource "openrouter_workspace" "my_workspace" {
-  default_image_model   = "openai/dall-e-3"
-  default_provider_sort = "price"
-  default_text_model    = "openai/gpt-4o"
-  description           = "Production environment workspace"
+  confirm_default_settings_deletion = "false"
+  default_image_model               = "openai/dall-e-3"
+  default_provider_sort             = "price"
+  default_text_model                = "openai/gpt-4o"
+  description                       = "Production environment workspace"
   io_logging_api_key_ids = [
     4
   ]
@@ -40,6 +41,7 @@ resource "openrouter_workspace" "my_workspace" {
 
 ### Optional
 
+- `confirm_default_settings_deletion` (String) Required to delete the default workspace (currently limited to internal OpenRouter administrators while the capability rolls out). Deleting it permanently disables the account’s unscoped inference API keys (management/provisioning keys are retained) and its budgets, guardrails, classifiers, and broadcast destinations. Ignored for non-default workspaces. must be one of ["true", "false"]
 - `default_image_model` (String) Default image model for this workspace
 - `default_provider_sort` (String) Default provider sort preference (price, throughput, latency, exacto)
 - `default_text_model` (String) Default text model for this workspace
