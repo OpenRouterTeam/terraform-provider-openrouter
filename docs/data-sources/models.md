@@ -74,7 +74,7 @@ data "openrouter_models" "my_models" {
 - `output_modalities` (String) Filter models by output modality. Accepts a comma-separated list of modalities (text, image, audio, embeddings) or "all" to include all models. Defaults to "text".
 - `providers` (String) Filter models by hosting provider. Comma-separated list of provider names.
 - `q` (String) Free-text search by model name or slug.
-- `region` (String) Filter to models with endpoints in the given data region. Currently only "eu" is supported. must be "eu"
+- `region` (String) Filter to models with endpoints in the given data region ("eu" or "us"). must be one of ["eu", "us"]
 - `sort` (String) Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved. must be one of ["most-popular", "newest", "top-weekly", "pricing-low-to-high", "pricing-high-to-low", "context-high-to-low", "throughput-high-to-low", "latency-low-to-high", "intelligence-high-to-low", "coding-high-to-low", "agentic-high-to-low", "design-arena-elo-high-to-low"]
 - `supported_parameters` (String) Filter models by supported parameter (comma-separated)
 - `use_rss` (String) Return results as RSS feed

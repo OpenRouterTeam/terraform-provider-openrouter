@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: eca53f0ad0a79eb151025b4077e50933
+  docChecksum: 49d681a49132b190cb605ebd924d80bf
   docVersion: 1.0.0
   speakeasyVersion: 1.793.1
   generationVersion: 2.928.0
-  releaseVersion: 0.2.20
-  configChecksum: 2a446cc60dd94fa6322977fefb43768f
+  releaseVersion: 0.2.21
+  configChecksum: c23865778c59e2c7ebb785f6b6635e24
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 1167fb8d-b5d8-49dc-831c-10eb8bd4e392
-  pristine_commit_hash: 2d9702ad8ee6561aeefd656228a1f0832a55f969
-  pristine_tree_hash: 876e6a17bdfcbf9a153f83e71e63f7e9b92752fc
+  generation_id: e2a25748-4f75-430e-b8c5-5e6e38272586
+  pristine_commit_hash: 02d55af24e5da9fd203f402c00a7adeef06a81ba
+  pristine_tree_hash: 21fed18b93acbe1f9b069b256aaa092c8a446081
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:2fe675d759150a98b692f06b546b12b96f633c5c
-    pristine_git_object: b13799a55bf3b6434634b45e0d3be3ff2acf80e4
+    last_write_checksum: sha1:5c3ffd82c1bfcdfda222fd7df51c26b61369084e
+    pristine_git_object: c1f4a656e6fb831cab56e56bb42857e945c2b939
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -436,8 +436,8 @@ trackedFiles:
     pristine_git_object: 000072ee20f05994cc4222dcd43de1cec9b8f4cb
   internal/provider/models_data_source.go:
     id: 87336c8367e2
-    last_write_checksum: sha1:d4c26119c5ed0baaf26a1a24fbbfc6403b781a92
-    pristine_git_object: c583312986a1e64c0fee648a9034cf6a7c80d47a
+    last_write_checksum: sha1:fed21e2052e32b44e064129f120160559e0e9b65
+    pristine_git_object: f03d8f452410e849b57e62367741ed6377e0cf19
   internal/provider/models_data_source_sdk.go:
     id: f3f285ee4b20
     last_write_checksum: sha1:0d27a28c9f1c806ee389cb0e99d0df46c54e403d
@@ -1140,8 +1140,8 @@ trackedFiles:
     pristine_git_object: a614e37673d3ea81eabc6139236edfb22a15dc55
   internal/sdk/models.go:
     id: 7b13b8162cf6
-    last_write_checksum: sha1:ce01a0279837d297fedd9eca37ab6d4bc470efcc
-    pristine_git_object: 49d8f3527724e5cf708a0b14178d08f8ca941fb3
+    last_write_checksum: sha1:69720f2c2ebbe65657690c41475087fc1b85d2e2
+    pristine_git_object: 82e22cbc1b94a5ebbf0acdfc73e72bb6c7c0ca3f
   internal/sdk/models/errors/apierror.go:
     id: bf281d768352
     last_write_checksum: sha1:f8493be1606361ffba9bf77d77ede209acc0f562
@@ -1320,8 +1320,8 @@ trackedFiles:
     pristine_git_object: fd5ad9fb4fe99ab6a7a003a45c6be47236dc225a
   internal/sdk/models/operations/getmodels.go:
     id: 5d263af1d2ba
-    last_write_checksum: sha1:1d52dfd3f5073eb0f031e8fe0e4d7fcbb789a8da
-    pristine_git_object: c3272c379fdfd03402320ddac18111ca0bdcd5fa
+    last_write_checksum: sha1:df270797af7904d48abe1e78b8a4e63564a18669
+    pristine_git_object: 2d6c71c220ea5dcc4a70f75e46813ccaa0b3c6e1
   internal/sdk/models/operations/getobservabilitydestination.go:
     id: ce1fb86a3e17
     last_write_checksum: sha1:bf93204c8f3f65adb0d1de280e103832a00a7a0d
@@ -1736,12 +1736,12 @@ trackedFiles:
     pristine_git_object: b20959c52d31c3caae0f1c40cf2ab1a69051f824
   internal/sdk/models/shared/autobetarouterplugin.go:
     id: d7599ceccf80
-    last_write_checksum: sha1:9c2f2b76f3c523a52b34e6aeb04de861bff285f2
-    pristine_git_object: 54b4c0c58e82fa26a661e37a8403990a111fc5bb
+    last_write_checksum: sha1:39f61edaee0c3cb34d474dc3dac7235cecd6cafc
+    pristine_git_object: 815f19410cd827ae97b347967c19d4e09c5b1aaa
   internal/sdk/models/shared/autorouterplugin.go:
     id: 2dea7e626461
-    last_write_checksum: sha1:fe055037dc1c50bf2756667922d329402435d9f7
-    pristine_git_object: ce1ad77a78e64a5cd96a2e0e8b0a722df93af0f5
+    last_write_checksum: sha1:7da264667e2ef4fcb1aa5b0b5648c666b2928e30
+    pristine_git_object: 224c436335b62050208606c7c7532de00b290f23
   internal/sdk/models/shared/badgatewayresponse.go:
     id: 1fc027ccaa6d
     last_write_checksum: sha1:e22b15bdad521437d9f4512d6696d55615e80cc6
@@ -3496,8 +3496,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:379813888c9dee8cc6c4e61761edd9a484e5bb97
-    pristine_git_object: f8c085d2c1b963d499d6b53541902b0b23986798
+    last_write_checksum: sha1:47969bc44d6dcf741c94191fe5379369c3321e70
+    pristine_git_object: 924d3eeb6201613aae9d92a799ddd1ce019b3b6e
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5283,4 +5283,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Databricks)` **Added** (Breaking ⚠️)\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(Databricks)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(databricks)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(databricks)` **Added**\n  *  `response.data.provider_slug.enum(databricks)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(databricks)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(databricks)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Databricks)` **Added** (Breaking ⚠️)\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Databricks)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.databricks` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.databricks` **Added**\n* `OpenRouter.Generations.listContent()`:  `response.data.error` **Added**\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Databricks)` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Databricks)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Databricks)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Databricks)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.databricks` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Models.list()`: \n  *  `request.region` **Changed**\n"
