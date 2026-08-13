@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 2ced11e78189847bf74f7cc97f0fd018
+  docChecksum: 99a225f9dd27a914f7f4528e5a4ebc45
   docVersion: 1.0.0
   speakeasyVersion: 1.793.1
   generationVersion: 2.928.0
-  releaseVersion: 0.2.22
-  configChecksum: d4a8758378950b0e3b76da3071f5e009
+  releaseVersion: 0.2.23
+  configChecksum: 0cc3ea455f3d293c28658e53097e5e1a
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: e73ab744-ed17-4e0f-8c94-1a93e47898e4
-  pristine_commit_hash: bc5073c1a43db0e652e0ee3f607e1a916043c41d
-  pristine_tree_hash: ab810f9b7258a2f118e639928b881f092d2ecce8
+  generation_id: 0508c1e1-f656-4c5b-95b7-12d0fbac316c
+  pristine_commit_hash: 85ab97c31f45cf42ee5c86b35cfa0922fa77b4f9
+  pristine_tree_hash: 6ba39ea10f843f7e2615fa67b29a7d6b2637b4fc
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:c697440534d328c66acb805d3d426163b52b0b4e
-    pristine_git_object: 251d6eceacecbf5e927b1ac914c1567109ddd35e
+    last_write_checksum: sha1:efb3b54251512e99748242ef74d5f1633a4210c0
+    pristine_git_object: a0bc88fcde692c66f64100959f9d9753511b7233
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1048,8 +1048,8 @@ trackedFiles:
     pristine_git_object: dc97bf317d2f42a90fff920dc8a45f35cb7ade58
   internal/sdk/datasets.go:
     id: c03fc9a88bfc
-    last_write_checksum: sha1:2718f3590ab795e9c8df7bfce40b6c840f966bd5
-    pristine_git_object: 24fe5eb4c718d947e16cc752a4aee08caca5674f
+    last_write_checksum: sha1:6bd19a2e2c91181968d4b960d993b3194b04acef
+    pristine_git_object: 8e72fd156b5c8ce205d66d62267b8848e019de25
   internal/sdk/docs/models/operations/option.md:
     id: a35737eb2e35
     last_write_checksum: sha1:0adca2d2d79edbeebacf99fe623f9c8d3ef2738d
@@ -1342,6 +1342,10 @@ trackedFiles:
     id: dfe1dc058037
     last_write_checksum: sha1:e52fed29095762e9e177a4150bc08915d62d4db6
     pristine_git_object: 34e8e7b853753413dcc0f937cc24b985564e71cc
+  internal/sdk/models/operations/getsessioncost.go:
+    id: c3454d681426
+    last_write_checksum: sha1:035d9b2d0f7357012bc3c7c1049f9f87b8466448
+    pristine_git_object: 44767ab510e3edb442aec63ad31b64272d825c7c
   internal/sdk/models/operations/gettaskclassifications.go:
     id: 9593171b6f89
     last_write_checksum: sha1:81b15dd3d7011faebc2929f6dc9d1336f35ceb2a
@@ -3114,6 +3118,18 @@ trackedFiles:
     id: abcff0233012
     last_write_checksum: sha1:d2e58ad05ed727b3364b086cb51a7060d02ba12d
     pristine_git_object: 61c870208c4dd4ce07bd9b0117feaf760c55f3cd
+  internal/sdk/models/shared/sessioncostitem.go:
+    id: 9a50acbb0adc
+    last_write_checksum: sha1:5887a25110da1fd626b8ce1ddd7bc8fdbf056da1
+    pristine_git_object: 1f740df8de86f9d0d6630a01329a6bf2ac07bb5d
+  internal/sdk/models/shared/sessioncostmeta.go:
+    id: d0cc50c6d230
+    last_write_checksum: sha1:bb2dd24f0f10240fb4f0007e9711062b5ddfa209
+    pristine_git_object: 6753965bd91a7caea8ed6e1d7e6b85c928ff2653
+  internal/sdk/models/shared/sessioncostresponse.go:
+    id: 59604721fce6
+    last_write_checksum: sha1:7186b18c08c27dbee9ce14683c5af48d2c3f1bba
+    pristine_git_object: b452a01aef70b2c8403efb2d335c6f58f2c03208
   internal/sdk/models/shared/shellcallitem.go:
     id: 3e50c000c8b0
     last_write_checksum: sha1:5be7d82f1d21a6d440c6a11b5f9325e016b1b512
@@ -3496,8 +3512,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:52aeed825b25cd05e338e738709ad80e2f6482ac
-    pristine_git_object: c50f4bcde7207c4a082bc7453d8c647c849ef76f
+    last_write_checksum: sha1:aff736f2fb5b08480bc1c0f01bae33bda7bde4d4
+    pristine_git_object: fffe1a3f0539e34c0834030ef1e4f86b69be5713
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5284,5 +5300,27 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getSessionCost:
+    speakeasy-default-get-session-cost:
+      parameters:
+        query:
+          app_slug: "hermes-agent"
+          model: "anthropic/claude-4.8-opus"
+          turn_range: "10-49-turns"
+          limit: 100
+          offset: 0
+      responses:
+        "200":
+          application/json: {"data": [{"app_name": "Hermes Agent", "app_slug": "hermes-agent", "median_session_cost_usd": 1.74, "model_permaslug": "anthropic/claude-4.8-opus", "turn_range": "10-49-turns"}], "meta": {"as_of": "2026-05-12T02:00:00.000Z", "version": "v1", "window_days": 30, "window_end_date": "2026-05-11"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Workspaces.delete()`: \n  *  `request.confirm_default_settings_deletion` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Datasets.getSessionCost()`: **Added**
