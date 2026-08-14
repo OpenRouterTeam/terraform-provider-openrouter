@@ -819,3 +819,13 @@ Based on:
 - [terraform v0.2.28] .
 ### Releases
 - [Terraform v0.2.28] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.2.28 - .
+
+## 2026-08-14 20:36:06
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.794.0 (2.930.0) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.2.29] .
+### Releases
+- [Terraform v0.2.29] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.2.29 - .
