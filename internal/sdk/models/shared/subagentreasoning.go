@@ -54,7 +54,7 @@ func (e *SubagentReasoningEffort) UnmarshalJSON(data []byte) error {
 type SubagentReasoning struct {
 	// Reasoning effort level for the subagent call.
 	Effort *SubagentReasoningEffort `json:"effort,omitzero"`
-	// Maximum number of reasoning tokens the subagent may use. Accepted and validated but not yet forwarded to the subagent call.
+	// Maximum number of reasoning tokens the subagent may use. Forwarded to the subagent call as `reasoning.max_tokens`.
 	MaxTokens *int64 `json:"max_tokens,omitzero"`
 }
 
