@@ -71,12 +71,14 @@ func (e *ShellCallItemType) UnmarshalJSON(data []byte) error {
 
 // ShellCallItem - A shell command execution call (newer variant)
 type ShellCallItem struct {
-	Action      ShellCallItemAction `json:"action"`
-	CallID      string              `json:"call_id"`
-	Environment any                 `json:"environment,omitzero"`
-	ID          *string             `json:"id,omitzero"`
-	Status      *ToolCallStatus     `json:"status,omitzero"`
-	Type        ShellCallItemType   `json:"type"`
+	Action ShellCallItemAction `json:"action"`
+	// The raw tool-call arguments string as emitted by the model. Echo back unchanged when replaying history; used verbatim to preserve provider prompt-cache prefixes.
+	Arguments   *string           `json:"arguments,omitzero"`
+	CallID      string            `json:"call_id"`
+	Environment any               `json:"environment,omitzero"`
+	ID          *string           `json:"id,omitzero"`
+	Status      *ToolCallStatus   `json:"status,omitzero"`
+	Type        ShellCallItemType `json:"type"`
 }
 
 func (s ShellCallItem) MarshalJSON() ([]byte, error) {
@@ -95,6 +97,13 @@ func (s *ShellCallItem) GetAction() ShellCallItemAction {
 		return ShellCallItemAction{}
 	}
 	return s.Action
+}
+
+func (s *ShellCallItem) GetArguments() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Arguments
 }
 
 func (s *ShellCallItem) GetCallID() string {

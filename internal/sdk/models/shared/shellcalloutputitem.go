@@ -8,52 +8,6 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type ShellCallOutputItemOutput struct {
-	Content              *string        `json:"content,omitzero"`
-	ExitCode             *int64         `json:"exit_code,omitzero"`
-	Type                 string         `json:"type"`
-	AdditionalProperties map[string]any `additionalProperties:"true" json:"-"`
-}
-
-func (s ShellCallOutputItemOutput) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(s, "", false)
-}
-
-func (s *ShellCallOutputItemOutput) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &s, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s *ShellCallOutputItemOutput) GetContent() *string {
-	if s == nil {
-		return nil
-	}
-	return s.Content
-}
-
-func (s *ShellCallOutputItemOutput) GetExitCode() *int64 {
-	if s == nil {
-		return nil
-	}
-	return s.ExitCode
-}
-
-func (s *ShellCallOutputItemOutput) GetType() string {
-	if s == nil {
-		return ""
-	}
-	return s.Type
-}
-
-func (s *ShellCallOutputItemOutput) GetAdditionalProperties() map[string]any {
-	if s == nil {
-		return nil
-	}
-	return s.AdditionalProperties
-}
-
 type ShellCallOutputItemType string
 
 const (
@@ -79,12 +33,12 @@ func (e *ShellCallOutputItemType) UnmarshalJSON(data []byte) error {
 
 // ShellCallOutputItem - Output from a shell command execution (newer variant)
 type ShellCallOutputItem struct {
-	CallID          string                      `json:"call_id"`
-	ID              *string                     `json:"id,omitzero"`
-	MaxOutputLength *int64                      `json:"max_output_length,omitzero"`
-	Output          []ShellCallOutputItemOutput `json:"output"`
-	Status          *ToolCallStatus             `json:"status,omitzero"`
-	Type            ShellCallOutputItemType     `json:"type"`
+	CallID          string                   `json:"call_id"`
+	ID              *string                  `json:"id,omitzero"`
+	MaxOutputLength *int64                   `json:"max_output_length,omitzero"`
+	Output          []ShellCallOutputContent `json:"output"`
+	Status          *ToolCallStatus          `json:"status,omitzero"`
+	Type            ShellCallOutputItemType  `json:"type"`
 }
 
 func (s ShellCallOutputItem) MarshalJSON() ([]byte, error) {
@@ -119,9 +73,9 @@ func (s *ShellCallOutputItem) GetMaxOutputLength() *int64 {
 	return s.MaxOutputLength
 }
 
-func (s *ShellCallOutputItem) GetOutput() []ShellCallOutputItemOutput {
+func (s *ShellCallOutputItem) GetOutput() []ShellCallOutputContent {
 	if s == nil {
-		return []ShellCallOutputItemOutput{}
+		return []ShellCallOutputContent{}
 	}
 	return s.Output
 }
