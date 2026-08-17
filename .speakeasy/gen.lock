@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 65f2fb579eab89bbfcb86808589934b3
+  docChecksum: 4a7df082b13ab49ace62549992e83a36
   docVersion: 1.0.0
   speakeasyVersion: 1.794.1
   generationVersion: 2.931.0
-  releaseVersion: 0.2.33
-  configChecksum: 13356062c22cb6f8534a8ed35ee6309e
+  releaseVersion: 0.2.34
+  configChecksum: 74846924c2fad67536654489cd21335c
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: c8523db3-caa4-4b14-bbda-0cdd37b211dd
-  pristine_commit_hash: be4e4837ea03598f2515b6c32c83ec32d5e8e94e
-  pristine_tree_hash: 677c4b867096872bbe3003a1720fd004eab82150
+  generation_id: 189ed5ac-97f3-452a-a27d-086e1465f3b0
+  pristine_commit_hash: 29032165a8eda4b05df5575a3143910faceca5fc
+  pristine_tree_hash: 7a8f76c85f4783d4d47c601e734e7b6feb05a751
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:4f38dbb9bf519ca9140b511c8630607a1a4abe0a
-    pristine_git_object: 3bf06d8d0d68139dae0618e43055e5ec6aa64df4
+    last_write_checksum: sha1:4a3ade836b3ee6b0ef41ce95dbcab4838e99ebc8
+    pristine_git_object: a1172b455fa03aa1449d0e96a514f277f493fcf3
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2956,8 +2956,8 @@ trackedFiles:
     pristine_git_object: 2c09abbcb061200f16bd8c26dd5e4eea6a1f4ed6
   internal/sdk/models/shared/provideroptions.go:
     id: 08ee62c5beac
-    last_write_checksum: sha1:83ba41b6eb43e07e900f855d2a4daa127eab259b
-    pristine_git_object: 22274feb86053a9800916eabb55e653c95d7629f
+    last_write_checksum: sha1:ab09161cb6cfca25aa32f7cd8b5794fc491ebec8
+    pristine_git_object: 83dfd7053c03c56a27033fd41a45939b7875f3f2
   internal/sdk/models/shared/provideroverloadedresponse.go:
     id: ad4cd9b9c5e0
     last_write_checksum: sha1:164d8e74db74d57a95a221cfc8aded04e9a186ad
@@ -3404,8 +3404,8 @@ trackedFiles:
     pristine_git_object: 77702b41514cab70100daa8cd3e0640e424c78ae
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:ab5438481068e5a4614206273d3b00e67c2dfe47
-    pristine_git_object: b7a760144d293e8bdfcfa03ab1222c8a9ee95229
+    last_write_checksum: sha1:50f02f88d4bc0aa67512be633be44c4ae20c602f
+    pristine_git_object: 0c3ae903ae20461fac6de2d3d212cef66967d334
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
     last_write_checksum: sha1:08ef2362950118bbce14e15c4c1216de5715795e
@@ -3520,8 +3520,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:8bdd8e8fd8c170084ab617ed596398a407f84b6e
-    pristine_git_object: d01ccc5fd95312e3124d55c93a26ba9c83ba155d
+    last_write_checksum: sha1:c36835e3d5b603c693113fc7bac068ebcb4b5b0d
+    pristine_git_object: 059f40e46d6d9f650c01762a15949a0c7087062c
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5329,4 +5329,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Workspaces.delete()`: \n  *  `request.confirm_default_settings_deletion` **Removed** (Breaking ⚠️)\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.amazon-bedrock/claude-on-aws` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.amazon-bedrock/claude-on-aws` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.amazon-bedrock/claude-on-aws` **Added**\n"
