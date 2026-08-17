@@ -33,6 +33,10 @@ func (e *OutputFilesServerToolItemType) UnmarshalJSON(data []byte) error {
 
 // OutputFilesServerToolItem - An openrouter:files server tool output item
 type OutputFilesServerToolItem struct {
+	// The raw tool-call arguments string as emitted by the model.
+	Arguments *string `json:"arguments,omitzero"`
+	// The model-generated tool call id from the originating turn.
+	CallID *string `json:"call_id,omitzero"`
 	// Error message when the file operation failed.
 	Error *string `json:"error,omitzero"`
 	// The target file id supplied in the tool-call arguments.
@@ -57,6 +61,20 @@ func (o *OutputFilesServerToolItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (o *OutputFilesServerToolItem) GetArguments() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Arguments
+}
+
+func (o *OutputFilesServerToolItem) GetCallID() *string {
+	if o == nil {
+		return nil
+	}
+	return o.CallID
 }
 
 func (o *OutputFilesServerToolItem) GetError() *string {
