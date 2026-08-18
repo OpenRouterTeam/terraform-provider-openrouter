@@ -14660,7 +14660,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             baseUrl:
-              default: 'https://otlp.arize.com'
               type: 'string'
             headers:
               additionalProperties:
@@ -14788,7 +14787,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             baseUrl:
-              default: 'https://api.braintrust.dev'
               type: 'string'
             headers:
               additionalProperties:
@@ -14923,7 +14921,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             table:
-              default: 'OPENROUTER_TRACES'
               type: 'string'
             username:
               description: 'If you have not set a specific username in ClickHouse, simply type in ''default'' below.'
@@ -15053,7 +15050,6 @@ components:
               minLength: 1
               type: 'string'
             url:
-              default: 'https://api.us5.datadoghq.com'
               description: 'Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.datadoghq.eu)'
               type: 'string'
           required:
@@ -15188,7 +15184,6 @@ components:
             value: 'openai/gpt-4o'
       properties:
         logic:
-          default: 'and'
           enum:
             - 'and'
             - 'or'
@@ -15244,7 +15239,6 @@ components:
       example: null
       properties:
         enabled:
-          default: true
           type: 'boolean'
         groups:
           items:
@@ -15260,7 +15254,6 @@ components:
       example: null
       properties:
         enabled:
-          default: true
           type: 'boolean'
         groups:
           items:
@@ -15319,7 +15312,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             baseUrl:
-              default: 'https://otlp-gateway-prod-us-west-0.grafana.net'
               type: 'string'
             headers:
               additionalProperties:
@@ -15437,7 +15429,6 @@ components:
         config:
           properties:
             baseUrl:
-              default: 'https://us.cloud.langfuse.com'
               type: 'string'
             headers:
               additionalProperties:
@@ -15564,7 +15555,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             endpoint:
-              default: 'https://api.smith.langchain.com'
               type: 'string'
             headers:
               additionalProperties:
@@ -15572,7 +15562,6 @@ components:
               description: 'Custom HTTP headers to include in requests to this destination.'
               type: 'object'
             project:
-              default: 'main'
               description: 'The name for this project, such as pr-openrouter-demo. Defaults to "main" if not set.'
               minLength: 1
               type: 'string'
@@ -15694,7 +15683,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             region:
-              default: 'us'
               enum:
                 - 'us'
                 - 'eu'
@@ -16043,7 +16031,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             endpoint:
-              default: 'https://us.i.posthog.com'
               type: 'string'
             headers:
               additionalProperties:
@@ -16161,7 +16148,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             baseUrl:
-              default: 'https://api.ramp.com/developer/v1/ai-usage/openrouter'
               type: 'string'
             headers:
               additionalProperties:
@@ -16291,11 +16277,9 @@ components:
               description: 'Custom HTTP headers to include in requests to this destination.'
               type: 'object'
             pathTemplate:
-              default: '{prefix}/{date}'
               description: 'Template for S3 object path. The filename ({traceId}-{timestamp}.json) is automatically appended. Available variables: {prefix}, {date}, {year}, {month}, {day}, {apiKeyName}'
               type: 'string'
             prefix:
-              default: 'openrouter-traces'
               type: 'string'
             region:
               type: 'string'
@@ -16537,7 +16521,6 @@ components:
               pattern: '^[a-zA-Z0-9_]+(?:[.-][a-zA-Z0-9_]+)*$'
               type: 'string'
             database:
-              default: 'SNOWFLAKE_LEARNING_DB'
               type: 'string'
             headers:
               additionalProperties:
@@ -16545,17 +16528,14 @@ components:
               description: 'Custom HTTP headers to include in requests to this destination.'
               type: 'object'
             schema:
-              default: 'PUBLIC'
               type: 'string'
             table:
-              default: 'OPENROUTER_TRACES'
               type: 'string'
             token:
               minLength: 1
               type: 'string'
               x-speakeasy-param-sensitive: true
             warehouse:
-              default: 'COMPUTE_WH'
               type: 'string'
           required:
             - 'account'
@@ -16670,7 +16650,6 @@ components:
               type: 'string'
               x-speakeasy-param-sensitive: true
             baseUrl:
-              default: 'https://trace.wandb.ai'
               type: 'string'
             entity:
               minLength: 1
@@ -16794,7 +16773,6 @@ components:
                 type: 'string'
               type: 'object'
             method:
-              default: 'POST'
               enum:
                 - 'POST'
                 - 'PUT'

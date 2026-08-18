@@ -288,6 +288,57 @@ resource "openrouter_observability_destination" "test" {
 	})
 }
 
+// TestAccObservabilityDestination_S3NonDefaultConfig is the DEV-856
+// regression test: config attributes that carry a server-side Zod default
+// (S3 prefix, pathTemplate) used to be generated as Computed-only Terraform
+// attributes with a schema Default, so every plan proposed resetting the
+// API-returned value to the default. Setting non-default values and then
+// re-planning must produce an empty plan.
+//
+// The S3 credentials are fake: the Management API stores destination config
+// without validating upstream connectivity, and enabled=false keeps the
+// destination inert even if it were reachable.
+func TestAccObservabilityDestination_S3NonDefaultConfig(t *testing.T) {
+	name := testName("dest-s3")
+
+	config := fmt.Sprintf(`
+resource "openrouter_observability_destination" "test" {
+  name    = %q
+  type    = "s3"
+  enabled = false
+  config = {
+    bucketName      = jsonencode("tf-acc-nonexistent-bucket")
+    accessKeyId     = jsonencode("AKIATFACCTEST00000")
+    secretAccessKey = jsonencode("tf-acc-not-a-real-secret")
+    prefix          = jsonencode("tf-acc-traces")
+    pathTemplate    = jsonencode("{prefix}/{year}/{month}")
+  }
+}
+`, name)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: providerConfig() + config,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "type", "s3"),
+					resource.TestCheckResourceAttrSet("openrouter_observability_destination.test", "id"),
+				),
+			},
+			// Replan with identical config must be empty: catches the DEV-856
+			// perpetual diff where Computed-only attributes with schema
+			// Defaults (prefix, pathTemplate) were reset to the default on
+			// every plan.
+			{
+				Config:   providerConfig() + config,
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
 // NOTE: openrouter_byok_key is intentionally NOT covered here. It requires a
 // real provider credential (encrypted at rest, never echoed back), which we
 // refuse to place in CI secrets. Validate manually per DEV-488.

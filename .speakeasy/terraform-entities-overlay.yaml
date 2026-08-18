@@ -306,3 +306,56 @@ actions:
   - target: $["components"]["schemas"]["UpdateObservabilityDestinationRequest"]["properties"]["config"]
     update:
       x-speakeasy-param-sensitive: true
+
+  # ---------------------------------------------------------------------------
+  # DEV-856: drop doc-only `default` values from destination config schemas.
+  # These defaults come from Zod `.default()` in the server-side broadcast
+  # schemas; the API never applies them, so the emitted OpenAPI `default:` is
+  # documentation-only. Speakeasy turns each one into a `Default:` on a
+  # Computed-only Terraform attribute, which makes every `terraform plan`
+  # propose resetting the API-returned value to the schema default.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["ObservabilityArizeDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityBraintrustDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityClickhouseDestination"]["properties"]["config"]["properties"]["table"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityDatadogDestination"]["properties"]["config"]["properties"]["url"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityFilterRuleGroup"]["properties"]["logic"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityFilterRulesConfig"]["properties"]["enabled"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityFilterRulesConfigNullable"]["properties"]["enabled"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityGrafanaDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityLangfuseDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityLangsmithDestination"]["properties"]["config"]["properties"]["endpoint"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityLangsmithDestination"]["properties"]["config"]["properties"]["project"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityNewrelicDestination"]["properties"]["config"]["properties"]["region"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityPosthogDestination"]["properties"]["config"]["properties"]["endpoint"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityRampDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityS3Destination"]["properties"]["config"]["properties"]["pathTemplate"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityS3Destination"]["properties"]["config"]["properties"]["prefix"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["database"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["schema"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["table"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["warehouse"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityWeaveDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityWebhookDestination"]["properties"]["config"]["properties"]["method"]["default"]
+    remove: true
