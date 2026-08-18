@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 4a7df082b13ab49ace62549992e83a36
+  docChecksum: 408fa2adef386feaf175caf1d9b209d6
   docVersion: 1.0.0
   speakeasyVersion: 1.794.1
   generationVersion: 2.931.0
-  releaseVersion: 0.2.34
-  configChecksum: 74846924c2fad67536654489cd21335c
+  releaseVersion: 0.2.35
+  configChecksum: 06d56c9830fa812296eacd3baabe2aae
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 189ed5ac-97f3-452a-a27d-086e1465f3b0
-  pristine_commit_hash: 29032165a8eda4b05df5575a3143910faceca5fc
-  pristine_tree_hash: 7a8f76c85f4783d4d47c601e734e7b6feb05a751
+  generation_id: 722c44be-475f-45b8-9fbf-7c85eb5d5899
+  pristine_commit_hash: 178b7e1725c9591b157bfeb1fd78f1f8ce76b9a8
+  pristine_tree_hash: 980e66eeb456007d17a3d08fa7d914b5d36caf98
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:4a3ade836b3ee6b0ef41ce95dbcab4838e99ebc8
-    pristine_git_object: a1172b455fa03aa1449d0e96a514f277f493fcf3
+    last_write_checksum: sha1:0315242dc8410931b1a03e134bd0b19b49c3ec48
+    pristine_git_object: 845a985d207c1ce03c0a18826699468047e77884
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2956,8 +2956,8 @@ trackedFiles:
     pristine_git_object: 2c09abbcb061200f16bd8c26dd5e4eea6a1f4ed6
   internal/sdk/models/shared/provideroptions.go:
     id: 08ee62c5beac
-    last_write_checksum: sha1:ab09161cb6cfca25aa32f7cd8b5794fc491ebec8
-    pristine_git_object: 83dfd7053c03c56a27033fd41a45939b7875f3f2
+    last_write_checksum: sha1:c7b9060b9e8739a69fe7b822284fa64cf38ca0e2
+    pristine_git_object: 354158e044f7c03c9d41ca9305ad4eb821479a73
   internal/sdk/models/shared/provideroverloadedresponse.go:
     id: ad4cd9b9c5e0
     last_write_checksum: sha1:164d8e74db74d57a95a221cfc8aded04e9a186ad
@@ -3404,8 +3404,8 @@ trackedFiles:
     pristine_git_object: 77702b41514cab70100daa8cd3e0640e424c78ae
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:50f02f88d4bc0aa67512be633be44c4ae20c602f
-    pristine_git_object: 0c3ae903ae20461fac6de2d3d212cef66967d334
+    last_write_checksum: sha1:dedbaa995c5921aebc2b00f41df45e76640aba67
+    pristine_git_object: d028ef70d2b45b1e131a2fdba3f87888024aa61e
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
     last_write_checksum: sha1:08ef2362950118bbce14e15c4c1216de5715795e
@@ -3520,8 +3520,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:c36835e3d5b603c693113fc7bac068ebcb4b5b0d
-    pristine_git_object: 059f40e46d6d9f650c01762a15949a0c7087062c
+    last_write_checksum: sha1:6ff1cc20fc7115395e9a9923cca3945f2fa7ee3d
+    pristine_git_object: 989ad059fbc03c5a9f761eadbe08b0f832055eff
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5329,4 +5329,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.amazon-bedrock/claude-on-aws` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.amazon-bedrock/claude-on-aws` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.amazon-bedrock/claude-on-aws` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.anthropic/2` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.anthropic/2` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.anthropic/2` **Added**\n"
