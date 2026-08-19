@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 0b6d7c836b8fdab86062d38292bc0009
+  docChecksum: 0a946d918e8868b19ffee68534be55d9
   docVersion: 1.0.0
   speakeasyVersion: 1.795.0
   generationVersion: 2.931.0
-  releaseVersion: 0.2.37
-  configChecksum: 6bcd756227f7e8aebc49f1445ee56f95
+  releaseVersion: 0.2.38
+  configChecksum: 19f8e6e47618d3d112dac1fab94a7e22
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: f6f0ac2a-13a3-442d-bb9e-dfac83ae180b
-  pristine_commit_hash: 5c51ad0bec3524b173b916761723cc7f40e63ae1
-  pristine_tree_hash: 2d8b7fdf55ce8e53e17687c6e99d38ce07f0e016
+  generation_id: c3457c16-95bd-43a6-95b1-b7d0056bc5aa
+  pristine_commit_hash: fdf333f54491c839e0093e02480522d2ee492c93
+  pristine_tree_hash: 8039e50eb3cc56110f9ff5b4c1512a2f8d24e5e3
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:d34379a04c015cf7726c6190bcc1fe3093982725
-    pristine_git_object: 9dc09379ea529370e7a24200f2c758fb5c756a58
+    last_write_checksum: sha1:4d9fdfd150c4b1479533409e24249d53bffc3fb5
+    pristine_git_object: 8fcd0cf339fecf6fb09fa75a0057b54b14dce273
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3400,8 +3400,8 @@ trackedFiles:
     pristine_git_object: 77702b41514cab70100daa8cd3e0640e424c78ae
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:dedbaa995c5921aebc2b00f41df45e76640aba67
-    pristine_git_object: d028ef70d2b45b1e131a2fdba3f87888024aa61e
+    last_write_checksum: sha1:f07ec6818d2a5014abdd0afce1abb86be233444b
+    pristine_git_object: f4123ebe253649ad013764863f9a030e8f570b8b
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
     last_write_checksum: sha1:08ef2362950118bbce14e15c4c1216de5715795e
@@ -3412,8 +3412,8 @@ trackedFiles:
     pristine_git_object: 9a887785dd90c8474fae219539c84b5b5ec66f77
   internal/sdk/models/shared/videomodel.go:
     id: 4a6266e95ed6
-    last_write_checksum: sha1:d5ecb8268a138c192238edb60061bddda3d537a4
-    pristine_git_object: e9513e61c6eb9cc18f0ba33fbc75b6ca2bdc8abf
+    last_write_checksum: sha1:0dc45d267dcf98b43d80af8fc41a79ee07c80faf
+    pristine_git_object: 58f0ff17757177a3872987d4b7a8f4c9b341aa1f
   internal/sdk/models/shared/videomodelslistresponse.go:
     id: 11e35b4e3b57
     last_write_checksum: sha1:8470e47d11d9796f2249d938556f925a288f24af
@@ -3516,8 +3516,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:2fd9d5f667ce1ac4177e48104a7a345f55335475
-    pristine_git_object: 9ae84e441b514c6cac0e3db9677d81529492059f
+    last_write_checksum: sha1:cb84e86da349c33bbe0cddf45364c008b8182780
+    pristine_git_object: 41ec0174c35a05bfab48fd7c540a4fdbc8367c68
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4994,7 +4994,7 @@ examples:
     speakeasy-default-list-videos-models:
       responses:
         "200":
-          application/json: {"data": [{"allowed_passthrough_parameters": [], "canonical_slug": "google/veo-3.1", "created": 1700000000, "description": "Google video generation model", "generate_audio": true, "id": "google/veo-3.1", "name": "Veo 3.1", "pricing_skus": {"generate": "0.50"}, "seed": null, "supported_aspect_ratios": ["16:9"], "supported_durations": [5, 8], "supported_frame_images": ["first_frame", "last_frame"], "supported_resolutions": ["720p"], "supported_sizes": null}]}
+          application/json: {"data": [{"allowed_passthrough_parameters": [], "canonical_slug": "google/veo-3.1", "created": 1700000000, "creativity": [], "description": "Google video generation model", "generate_audio": true, "id": "google/veo-3.1", "name": "Veo 3.1", "pricing_skus": {"generate": "0.50"}, "seed": null, "supported_aspect_ratios": ["16:9"], "supported_durations": [5, 8], "supported_frame_images": ["first_frame", "last_frame"], "supported_resolutions": ["720p"], "supported_sizes": null, "upscale_factor": {}}]}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "500":
@@ -5325,4 +5325,7 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.tools[].union(openrouter:advisor).parameters` **Changed** (Breaking ⚠️)\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(AdditionalToolsItem).tools[].union(AdvisorServerTool_OpenRouter).parameters` **Changed** (Breaking ⚠️)\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.videoGeneration.generate()`:  `request` **Changed**
+  * `OpenRouter.videos.listModels()`:  `response.data[]` **Changed**
