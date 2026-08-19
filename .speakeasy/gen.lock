@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: c938477ef601eec782a09054d1599d1a
+  docChecksum: 0b6d7c836b8fdab86062d38292bc0009
   docVersion: 1.0.0
-  speakeasyVersion: 1.794.1
+  speakeasyVersion: 1.795.0
   generationVersion: 2.931.0
-  releaseVersion: 0.2.36
-  configChecksum: eda65703edc5521fdd63ec584bdb0231
+  releaseVersion: 0.2.37
+  configChecksum: 6bcd756227f7e8aebc49f1445ee56f95
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 74d6a5e5-da96-4f87-83a3-6d8efab597b9
-  pristine_commit_hash: b813e41a903b98278daca1f083cceaa1792c9782
-  pristine_tree_hash: 120be88f2c52c42433250f1ff97ff10816504b2e
+  generation_id: f6f0ac2a-13a3-442d-bb9e-dfac83ae180b
+  pristine_commit_hash: 5c51ad0bec3524b173b916761723cc7f40e63ae1
+  pristine_tree_hash: 2d8b7fdf55ce8e53e17687c6e99d38ce07f0e016
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:862e79a17df4630e1fe85a13a2b3a1182a624fd7
-    pristine_git_object: be93f2806e252901c9abbf25aa8f4ff7506b4831
+    last_write_checksum: sha1:d34379a04c015cf7726c6190bcc1fe3093982725
+    pristine_git_object: 9dc09379ea529370e7a24200f2c758fb5c756a58
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1538,22 +1538,18 @@ trackedFiles:
     id: 112ff187fbef
     last_write_checksum: sha1:f2cb7f333a645a853a90ca05285cb55aa3ab9d26
     pristine_git_object: bb2ed45a5c2fa99678c6862f15d71a1b96906eb4
-  internal/sdk/models/shared/advisornestedtool.go:
-    id: 648d4bcc8797
-    last_write_checksum: sha1:e1c74b901ca3df06bf253fcce2ab9e6137e01bc1
-    pristine_git_object: 4159ad5b03e18df8f3a87514e10c8b39e279732b
   internal/sdk/models/shared/advisorreasoning.go:
     id: f2de1c1624d4
     last_write_checksum: sha1:11edf8fbe066fc6ff6f874c9b3f78c4452413545
     pristine_git_object: 3c5c314c367d77579d45a495aea80ba833f3845c
   internal/sdk/models/shared/advisorservertoolconfig.go:
     id: 8e6f0d76457e
-    last_write_checksum: sha1:e53a456c9f3b5b551cba610c1c2cc96c550b9487
-    pristine_git_object: 8630c533ba7bafcf5c1dcf8cbb62a8fbbd0019d6
+    last_write_checksum: sha1:9c934140279419590581d99da16cc41de3ae0ea4
+    pristine_git_object: 1f2357380206d94c7a8dca0506c001a584bc564f
   internal/sdk/models/shared/advisorservertoolopenrouter.go:
     id: 3c08971b159c
-    last_write_checksum: sha1:d5aca0804de1f26e8e76fff4b4ec369169f295cb
-    pristine_git_object: e5f87b00c5c411a523e19ecd57cbd0e992845317
+    last_write_checksum: sha1:b16a69420fe4378d23acf1a4e8df64ee9c6281aa
+    pristine_git_object: 457db346eb64abaae78554f075baa52374be056a
   internal/sdk/models/shared/agentmessageitem.go:
     id: 7b95d3d573e2
     last_write_checksum: sha1:63b57775273b4b2b1d84bbe086ecbc6780f9a21e
@@ -3520,8 +3516,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:bc150d14bdb7be70b8a394bc20a897110561092f
-    pristine_git_object: 1a678ed11aba03f09874e0282b4841a0665b0658
+    last_write_checksum: sha1:2fd9d5f667ce1ac4177e48104a7a345f55335475
+    pristine_git_object: 9ae84e441b514c6cac0e3db9677d81529492059f
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5329,3 +5325,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.tools[].union(openrouter:advisor).parameters` **Changed** (Breaking ⚠️)\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(AdditionalToolsItem).tools[].union(AdvisorServerTool_OpenRouter).parameters` **Changed** (Breaking ⚠️)\n"
