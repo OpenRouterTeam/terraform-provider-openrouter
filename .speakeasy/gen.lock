@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 5dc4de3d358d811e3feab02b638866ec
+  docChecksum: 33919c97e7d6d1e77480474f7dd1b272
   docVersion: 1.0.0
   speakeasyVersion: 1.795.0
   generationVersion: 2.931.0
-  releaseVersion: 0.2.39
-  configChecksum: 826dbc10c4508d4824168d94a5f384e6
+  releaseVersion: 0.2.40
+  configChecksum: 944808cea3de188dbb4f56a50e7f53fd
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: f3f4aa88-ce21-402c-9441-fc5c14310b3c
-  pristine_commit_hash: eb12cd30f49f240d5acb4e57e6bf24933bedd278
-  pristine_tree_hash: c16c5d303ed647731e6d12803553544338bab990
+  generation_id: aff80a41-11c7-40b9-ba17-389256e6337f
+  pristine_commit_hash: 17b5f89b3b80d53f67d8a94c68d5602b198fba87
+  pristine_tree_hash: 00349b8aeda5726d7a4e34f1f2349893d1269aa5
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:bc0eee94eb235a46e305cb460f826ed6a83b6df4
-    pristine_git_object: 28ac7da3ed8bedbbcbedb7b3289b43b5f7390c4c
+    last_write_checksum: sha1:7443af0dee2fcd6817065002150c18ca60db3cad
+    pristine_git_object: 92a4d31bbbb519075256b8e255e191e49f648cd8
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2132,8 +2132,8 @@ trackedFiles:
     pristine_git_object: 34891c87c542bbec117a964c1a22b6da0c2e1f8d
   internal/sdk/models/shared/customtoolcallitem.go:
     id: "502047560605"
-    last_write_checksum: sha1:ddb5e58420d9236a75cd62057ad9c6fcca308d1b
-    pristine_git_object: 514129932480e9b55d2eb5682f860c86bb812e24
+    last_write_checksum: sha1:c063478f843b7ce25f71ec11d85e5248319d781e
+    pristine_git_object: 5e23d5b26231d73ce85b0af2614ec1ed7f0cca37
   internal/sdk/models/shared/customtoolcalloutputitem.go:
     id: c4a6d1721a03
     last_write_checksum: sha1:cb7e18101321859bcc5f6e74f6a9c3a0aa49399a
@@ -3520,8 +3520,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:940b3ce78df2851427f76395d214a099e7fd35f9
-    pristine_git_object: 2c1d33d3a2a5406698b78b5c70805b2479f5d733
+    last_write_checksum: sha1:e97ca2dc68cebc544ef9532b2b7103886a0d2b0b
+    pristine_git_object: 3db5af35df197fbf252c6a1f47ac3cb9ba13f526
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -5329,4 +5329,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(OutputSubagentServerToolItem).status.enum(failed)` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(CustomToolCallItem).status` **Added**\n"
