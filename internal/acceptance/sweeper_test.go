@@ -97,14 +97,11 @@ func apiRequest(ctx context.Context, method, path string, body io.Reader) ([]byt
 		return nil, err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("%s %s: HTTP %d: %s", method, path, resp.StatusCode, truncate(string(data), 200))
+		// The response body is intentionally excluded from this error: it
+		// may echo sensitive configuration (e.g. destination credentials)
+		// back from the Management API, and this error can surface in CI
+		// logs via the sweeper's stderr diagnostics.
+		return nil, fmt.Errorf("%s %s: HTTP %d", method, path, resp.StatusCode)
 	}
 	return data, nil
-}
-
-func truncate(s string, n int) string {
-	if len(s) <= n {
-		return s
-	}
-	return s[:n] + "..."
 }

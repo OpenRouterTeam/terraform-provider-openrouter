@@ -20,6 +20,7 @@ package acceptance
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"testing"
@@ -96,7 +97,9 @@ func testName(suffix string) string {
 // testAccCheckDestroy verifies, against the live Management API, that every
 // resource Terraform destroyed really is gone. terraform-plugin-testing's
 // built-in destroy check only inspects state; this closes the loop by
-// re-reading each tracked object and requiring a 404.
+// re-reading each tracked object and requiring a 404. Response bodies are
+// drained but never inspected or logged: some resource types echo
+// configuration that other tests mark sensitive.
 func testAccCheckDestroy(resources map[string]destroyTarget) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
@@ -123,10 +126,13 @@ func testAccCheckDestroy(resources map[string]destroyTarget) resource.TestCheckF
 			if err != nil {
 				return fmt.Errorf("CheckDestroy: %s: %w", stateName, err)
 			}
+			// Drain before closing (never log): the body may echo
+			// sensitive configuration for other resource types.
+			_, _ = io.Copy(io.Discard, resp.Body)
 			resp.Body.Close()
 
 			if resp.StatusCode != http.StatusNotFound {
-				return fmt.Errorf("CheckDestroy: %s (%s %s) still exists after destroy: HTTP %d",
+				return fmt.Errorf("CheckDestroy: resource still exists after destroy (state=%s management_path=%s public_id=%s status=%d)",
 					stateName, target.path, idValue, resp.StatusCode)
 			}
 		}
@@ -168,6 +174,8 @@ resource "openrouter_api_key" "test" {
 `, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("openrouter_api_key.test", "name", name),
+					// limit=0 so this key can never spend even if leaked.
+					resource.TestCheckResourceAttr("openrouter_api_key.test", "limit", "0"),
 					// disabled=true only applies via the create->update chain.
 					resource.TestCheckResourceAttr("openrouter_api_key.test", "disabled", "true"),
 					resource.TestCheckResourceAttrSet("openrouter_api_key.test", "hash"),
@@ -239,6 +247,9 @@ resource "openrouter_guardrail" "test" {
 `, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("openrouter_guardrail.test", "name", name),
+					resource.TestCheckResourceAttr("openrouter_guardrail.test", "description", "acceptance test guardrail"),
+					resource.TestCheckResourceAttr("openrouter_guardrail.test", "limit_usd", "1"),
+					resource.TestCheckResourceAttr("openrouter_guardrail.test", "reset_interval", "monthly"),
 					resource.TestCheckResourceAttrSet("openrouter_guardrail.test", "id"),
 				),
 			},
@@ -286,6 +297,7 @@ resource "openrouter_workspace" "test" {
 `, name, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("openrouter_workspace.test", "name", name),
+					resource.TestCheckResourceAttr("openrouter_workspace.test", "slug", name),
 					resource.TestCheckResourceAttrSet("openrouter_workspace.test", "id"),
 				),
 			},
@@ -335,6 +347,7 @@ resource "openrouter_observability_destination" "test" {
 }
 `, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "name", name),
 					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "type", "webhook"),
 					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "enabled", "false"),
 					resource.TestCheckResourceAttrSet("openrouter_observability_destination.test", "id"),
