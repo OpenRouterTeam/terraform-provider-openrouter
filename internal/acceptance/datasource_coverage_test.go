@@ -86,7 +86,9 @@ data "openrouter_presets" "all" {}
 					resource.TestCheckResourceAttrSet("data.openrouter_api_key.by_hash", "label"),
 					resource.TestCheckResourceAttrSet("data.openrouter_guardrail.by_id", "limit_usd"),
 					resource.TestCheckResourceAttrSet("data.openrouter_workspace.by_id", "slug"),
-					resource.TestCheckResourceAttrSet("data.openrouter_observability_destination.by_id", "type"),
+					// No top-level "type" field on Read: the discriminated union
+					// decodes into the matching nested block (here, webhook).
+					resource.TestCheckResourceAttr("data.openrouter_observability_destination.by_id", "webhook.config.url", "https://example.com/tf-acc-ds"),
 					// Public catalog singular lookups.
 					resource.TestCheckResourceAttrSet("data.openrouter_model.by_slug", "data.id"),
 					resource.TestCheckResourceAttrSet("data.openrouter_preset.by_slug", "data.name"),
@@ -138,6 +140,22 @@ data "openrouter_model" "missing" {
 `,
 				ExpectError: regexp.MustCompile(`(?i)not found|error`),
 			},
+			{
+				Config: providerConfig() + `
+data "openrouter_preset" "missing" {
+  slug = "definitely-not-a-preset"
+}
+`,
+				ExpectError: regexp.MustCompile(`(?i)not found|error`),
+			},
+			{
+				Config: providerConfig() + fmt.Sprintf(`
+data "openrouter_observability_destination" "missing" {
+  id = "dest_does_not_exist_%[1]s"
+}
+`, name),
+				ExpectError: regexp.MustCompile(`(?i)not found|error`),
+			},
 		},
 	})
 }
@@ -159,6 +177,62 @@ data "openrouter_byok_key" "missing" {
 }
 `,
 				ExpectError: regexp.MustCompile(`(?i)not found|error`),
+			},
+		},
+	})
+}
+
+// TestAccDataSources_ObservabilityDestinationsList covers the plural
+// openrouter_observability_destinations lookup, filtered to a workspace
+// created fresh in this test. That makes the result set deterministic (no
+// dependence on list ordering or destinations left behind by other tests)
+// and lets total_count and the cross-reference to the fixture resource's id
+// assert an exact, non-vacuous match rather than just "the list is non-empty".
+func TestAccDataSources_ObservabilityDestinationsList(t *testing.T) {
+	name := testName("ds-list")
+
+	config := providerConfig() + fmt.Sprintf(`
+resource "openrouter_workspace" "test" {
+  name = %[1]q
+  slug = %[1]q
+}
+
+resource "openrouter_observability_destination" "test" {
+  name         = %[1]q
+  type         = "webhook"
+  enabled      = false
+  workspace_id = openrouter_workspace.test.id
+  config = {
+    url    = jsonencode("https://example.com/tf-acc-ds-list")
+    method = jsonencode("POST")
+  }
+}
+
+data "openrouter_observability_destinations" "by_workspace" {
+  workspace_id = openrouter_workspace.test.id
+}
+`, name)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					// The fresh workspace has no other destinations, so the
+					// workspace_id filter deterministically returns exactly one.
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "total_count", "1"),
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.#", "1"),
+					// Cross-reference against the fixture resource's own id,
+					// rather than assuming which list index it lands at.
+					resource.TestCheckResourceAttrPair(
+						"data.openrouter_observability_destinations.by_workspace", "data.0.id",
+						"openrouter_observability_destination.test", "id",
+					),
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.0.name", name),
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.0.webhook.config.url", "https://example.com/tf-acc-ds-list"),
+				),
 			},
 		},
 	})
