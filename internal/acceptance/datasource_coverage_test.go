@@ -3,11 +3,9 @@ package acceptance
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 // TestAccDataSources_Singular reads every singular lookup data source against
@@ -189,27 +187,29 @@ data "openrouter_byok_key" "missing" {
 }
 
 // TestAccDataSources_ObservabilityDestinationsList covers the plural
-// openrouter_observability_destinations lookup. It creates a fixture
-// destination in a fresh workspace and reads the list UNFILTERED, then
-// proves the fixture's id is present in the result rather than relying on
-// the workspace_id query filter.
+// openrouter_observability_destinations lookup, filtered by workspace_id.
 //
-// Spec-vs-live discrepancy: the resource provably sends workspace_id on
-// create (ToSharedCreateObservabilityDestinationRequest in
-// observabilitydestination_resource_sdk.go maps r.WorkspaceID into the
-// request body), and .speakeasy/out.openapi.yaml documents workspace_id as
-// a filter on GET /observability/destinations ("Optional workspace ID to
-// filter by. Defaults to the authenticated entity's default workspace.").
-// Despite that, a live run against a fresh workspace with a destination
-// created moments earlier returned total_count=0 when filtered by that
-// workspace's id — either create does not persist the requested
-// workspace_id, or the list filter does not honor it. Until that is
-// resolved server-side, the filter cannot be relied on for a deterministic
-// assertion, so this test reads the account-wide list instead.
+// The data source read is split into its own step, after the fixture
+// workspace and destination are fully created and applied in step 1. A data
+// source with no dependency edge to a resource can be read during that
+// resource's own plan/apply, before it exists — which is what actually
+// produced total_count=0 in two earlier variants of this test: the original
+// filtered variant (whose data source depended only on
+// openrouter_workspace.test.id, never on the destination) and the
+// unfiltered variant that replaced it (which depended on neither resource).
+// Neither failure was evidence that create drops workspace_id or that the
+// workspace_id filter is broken; both were the same ordering race. Putting
+// the data source in step 2 guarantees it is read against a state where
+// step 1 has already applied (proven live) rather than racing it.
+//
+// Residual assumption for the protected run to confirm: that, ordering
+// fixed, the workspace_id filter on GET /observability/destinations
+// (documented in .speakeasy/out.openapi.yaml as "Optional workspace ID to
+// filter by") returns exactly the destinations created in that workspace.
 func TestAccDataSources_ObservabilityDestinationsList(t *testing.T) {
 	name := testName("ds-list")
 
-	config := providerConfig() + fmt.Sprintf(`
+	fixtureConfig := providerConfig() + fmt.Sprintf(`
 resource "openrouter_workspace" "test" {
   name = %[1]q
   slug = %[1]q
@@ -225,9 +225,13 @@ resource "openrouter_observability_destination" "test" {
     method = jsonencode("POST")
   }
 }
-
-data "openrouter_observability_destinations" "all" {}
 `, name)
+
+	listConfig := fixtureConfig + `
+data "openrouter_observability_destinations" "by_workspace" {
+  workspace_id = openrouter_workspace.test.id
+}
+`
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -238,59 +242,21 @@ data "openrouter_observability_destinations" "all" {}
 		}),
 		Steps: []resource.TestStep{
 			{
-				Config: config,
+				// No data source in this step: the workspace and destination are
+				// created and applied against the live API before anything reads
+				// the list in step 2 below.
+				Config: fixtureConfig,
+			},
+			{
+				Config: listConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.openrouter_observability_destinations.all", "total_count"),
-					testAccCheckObservabilityDestinationInList(
-						"data.openrouter_observability_destinations.all",
-						"openrouter_observability_destination.test",
-						name,
-						"https://example.com/tf-acc-ds-list",
-					),
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "total_count", "1"),
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.#", "1"),
+					resource.TestCheckResourceAttrPair("data.openrouter_observability_destinations.by_workspace", "data.0.id", "openrouter_observability_destination.test", "id"),
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.0.name", name),
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.0.webhook.config.url", "https://example.com/tf-acc-ds-list"),
 				),
 			},
 		},
 	})
-}
-
-// testAccCheckObservabilityDestinationInList proves the fixture resource's
-// id appears somewhere in the data source's list, then checks the matching
-// entry's name and webhook config url — the same fields the removed
-// filtered assertion checked, just found by scanning instead of indexing.
-func testAccCheckObservabilityDestinationInList(dataSourceName, resourceName, wantName, wantURL string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		fixture, ok := s.RootModule().Resources[resourceName]
-		if !ok || fixture.Primary == nil {
-			return fmt.Errorf("%s not found in state", resourceName)
-		}
-		wantID := fixture.Primary.Attributes["id"]
-		if wantID == "" {
-			return fmt.Errorf("%s has no id in state", resourceName)
-		}
-
-		list, ok := s.RootModule().Resources[dataSourceName]
-		if !ok || list.Primary == nil {
-			return fmt.Errorf("%s not found in state", dataSourceName)
-		}
-
-		count, err := strconv.Atoi(list.Primary.Attributes["data.#"])
-		if err != nil {
-			return fmt.Errorf("%s has no valid data.# in state: %w", dataSourceName, err)
-		}
-
-		for i := 0; i < count; i++ {
-			prefix := fmt.Sprintf("data.%d.", i)
-			if list.Primary.Attributes[prefix+"id"] != wantID {
-				continue
-			}
-			if got := list.Primary.Attributes[prefix+"name"]; got != wantName {
-				return fmt.Errorf("%s entry for id %s: name = %q, want %q", dataSourceName, wantID, got, wantName)
-			}
-			if got := list.Primary.Attributes[prefix+"webhook.config.url"]; got != wantURL {
-				return fmt.Errorf("%s entry for id %s: webhook.config.url = %q, want %q", dataSourceName, wantID, got, wantURL)
-			}
-			return nil
-		}
-		return fmt.Errorf("%s: id %s from %s not found among %d listed destinations", dataSourceName, wantID, resourceName, count)
-	}
 }
