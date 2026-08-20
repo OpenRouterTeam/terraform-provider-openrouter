@@ -249,3 +249,50 @@ The split is codegen-shaping only; both schema variants serialize identically ov
 ### Files touched by this round
 
 `.speakeasy/terraform-entities-overlay.yaml` (the overlay edit described above), plus the regenerated artifacts it produces: `.speakeasy/gen.lock`, `.speakeasy/gen.yaml`, `.speakeasy/out.openapi.yaml`, `.speakeasy/workflow.lock`, `docs/index.md`, `docs/resources/observability_destination.md`, `examples/provider/provider.tf`, `examples/resources/openrouter_observability_destination/resource.tf`, `internal/provider/observabilitydestination_data_source_sdk.go`, `internal/provider/observabilitydestination_resource.go`, `internal/provider/observabilitydestination_resource_sdk.go`, `internal/provider/observabilitydestinations_data_source_sdk.go`, `internal/provider/types/observability_filter_rule_group.go`, `internal/provider/types/observability_filter_rules_config_nullable.go`, `internal/sdk/models/shared/observabilityfilterrulegroup.go`, `internal/sdk/models/shared/observabilityfilterrulesconfignullable.go`, `internal/sdk/openrouter.go` (all modified); `internal/provider/types/observability_filter_rule_group_nullable.go`, `internal/provider/types/observability_filter_rule_group_nullable_rule.go`, `internal/provider/types/observability_filter_rule_group_nullable_value.go`, `internal/provider/types/observability_filter_rule_group_rule.go`, `internal/sdk/models/shared/observabilityfilterrulegroupnullable.go` (all new); `internal/provider/types/rule.go` (deleted — superseded by the schema-prefixed `observability_filter_rule_group_rule.go` after the disambiguation rename). No manual edits to any generated file.
+
+## Task 3: #192 candidate verdict
+
+This section records an independent verification of the candidate fix (Task 2's regeneration, `050bbe7c` + `d78d441`, doc-corrected by `0fb3d53`/`be80a33`), via a protected live acceptance run dispatched directly against the fix branch, gathered separately from the inventory work above.
+
+### Provenance
+
+- Branch: `dev-856-observability-destination-defaults`.
+- HEAD at dispatch time: `be80a33cb6b0d6b12ca4cd10ab4242a2a014b6c9`, already pushed to `origin` before this task began.
+- Workflow run: [32427723879](https://github.com/OpenRouterTeam/terraform-provider-openrouter/actions/runs/32427723879), `workflow_dispatch`, confirmed via `gh run view 32427723879 --json headSha` to have run against head SHA `be80a33cb6b0d6b12ca4cd10ab4242a2a014b6c9` — an exact match, not a re-resolved branch tip.
+- Job `acceptance` conclusion: `success`, `started 2026-08-20T23:13:21Z` → `completed 2026-08-20T23:14:28Z` (67s wall time for the job).
+
+### Why the conclusion alone was not trusted
+
+This branch's `.github/workflows/acceptance.yaml` invokes `go test` directly (`run: go test ./internal/acceptance/... -v -timeout 30m`), with no `tee` in the pipeline — unlike the pipefail trap that exists on `main`'s copy of this file. That difference was confirmed by reading the file on this branch before dispatch, not assumed. Independently of that, the full run log was downloaded (`gh run view 32427723879 --repo OpenRouterTeam/terraform-provider-openrouter --log`) and audited directly rather than trusting the job conclusion:
+
+- The "Run acceptance tests" step's env block shows `TF_ACC: 1` and `OPENROUTER_MANAGEMENT_KEY: ***` were actually set for this invocation (not the unit job's TF_ACC-unset path).
+- The step took **44.797s** wall time across all 10 tests (each 1.95s–7.85s) — consistent with real live API round-trips, and clearly distinguishable from a skipped/no-op run: the sibling `unit` job (same commit, no `TF_ACC`) completed its equivalent `go test` invocation in **0.007s** with all 10 tests reporting `--- SKIP ... "Acceptance tests skipped unless env 'TF_ACC' set"`. The four-order-of-magnitude timing gap between the two jobs is itself independent confirmation that the acceptance job actually exercised the live path.
+- `grep -in "fail\|panic\|error"` and a search for `##[error]` against the full downloaded log, and against the acceptance job's lines in isolation, returned **zero matches**.
+
+### What the log shows for `TestAccObservabilityDestination_S3NonDefaultConfig`
+
+Verbatim from the "Run acceptance tests" step (non-secret; no sensitive S3 field values are logged by this test):
+
+```text
+=== RUN   TestAccObservabilityDestination_S3NonDefaultConfig
+--- PASS: TestAccObservabilityDestination_S3NonDefaultConfig (1.95s)
+```
+
+All 10 tests in the package reported `--- PASS`, ending `PASS` / `ok  ... 44.797s`. There is no per-check breakdown line for this test (unlike the evidence branch's `requireS3ConfigDrift`, this test doesn't log intermediate plan diffs) — but the test's own structure makes a bare `PASS` dispositive for every step:
+
+- **Create step** (`Config: providerConfig() + config`): applies the exact customer-shaped S3 config from this document (`prefix = "nonprod-coreml"`, `pathTemplate = "{prefix}/{apiKeyName}/{year}/{month}/{day}"`, camelCase keys in the flat `config` map). The step's `Check` block asserts `s3.config.prefix` and `s3.config.path_template` round-trip exactly through the API into state — if either mismatched, the test would have failed here, before any plan check ran.
+- **PostApplyPreRefresh / PostApplyPostRefresh empty-plan checks on the create step**: `plancheck.ExpectEmptyPlan()` on both. `ExpectEmptyPlan` fails the test immediately if the rendered plan proposes any action at all on any attribute of the resource — not scoped to `prefix`/`path_template` the way the pre-fix evidence test's `requireS3ConfigDrift` was. A `PASS` here means the plan was completely empty both before and after refresh, for every attribute in `s3.config`, not just the two DEV-856 named.
+- **Independent `PlanOnly: true` step**: a second, separate `resource.TestStep` re-applies the identical config against already-applied state with no config change, again asserting `ExpectEmptyPlan()` on `PostApplyPreRefresh` and `PostApplyPostRefresh`. This is the direct structural analogue of the evidence branch's "repeated plan" step that proved the pre-fix drift was perpetual (recurring on every plan, not a one-time apply artifact). A `PASS` here proves the post-fix empty plan is equally stable across repeated plans, not a one-time artifact of the initial apply.
+
+No non-empty plan appeared at any of the four checkpoints (first plan pre-refresh, first plan post-refresh, repeated plan pre-refresh, repeated plan post-refresh), so there is no drifting-attribute list to report — the question raised in "Exclusivity of the drifting attributes" above (whether `s3.config` fields beyond `prefix`/`path_template` also drift) is answered by this run for the fields exercised by this config: none of them do, because `ExpectEmptyPlan()` would have caught drift on any field, not only the two named ones.
+
+### Verdict: **#192 sufficient**
+
+The candidate fix (removal of the 53 defective `Computed`-only schema `Default`s, plus the `d78d441` restoration of `Computed`+`Default` on the two legitimate writable `filter_rules` attributes) resolves the DEV-856 perpetual-drift defect for the exact customer-reported configuration. Evidence chain:
+
+1. Pre-fix: run [32417882435](https://github.com/OpenRouterTeam/terraform-provider-openrouter/actions/runs/32417882435) on `dev-856-evidence` (`b452a8d`) proved a perpetual `update` diff on `s3.config.prefix`/`s3.config.path_template` for this exact customer config, on every plan including a repeated one, against provider `main`.
+2. Post-fix: run [32427723879](https://github.com/OpenRouterTeam/terraform-provider-openrouter/actions/runs/32427723879) on `dev-856-observability-destination-defaults` (`be80a33`) proves a completely empty plan for the same exact customer config, on every plan including a repeated one, with the candidate fix applied.
+3. Both runs used camelCase config-map keys and identical `prefix`/`pathTemplate` values, so the comparison is apples-to-apples; the only variable between the two runs is the candidate fix itself.
+4. No unrelated test regressed: all 10 acceptance tests passed live in this run, and `go build ./...` / `go test ./... -count=1` (unit mode, Step 1 of this task) were independently verified clean on this exact commit before the live run was dispatched.
+
+This verdict covers the S3 destination's `prefix`/`path_template` attributes specifically (the only ones with direct pre-fix and post-fix live evidence) and, by the structure of `ExpectEmptyPlan()` covering the whole resource, all other `s3.config` attributes exercised by this test's config (`bucket_name`, `access_key_id`, `secret_access_key`, `prefix`, `path_template`; `region`, `endpoint`, `headers` are not set in this test's config and so remain untested by this run specifically). It does not independently re-verify the other 17 destination types' analogous fields inventoried in "Post-fix inventory (Task 2)" above — those share the identical defective-schema pattern and the identical fix mechanism, but this task did not dispatch a live run against any of them.
