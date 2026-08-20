@@ -324,12 +324,12 @@ resource "openrouter_observability_destination" "s3_drift" {
   type    = "s3"
   enabled = false
   config = {
-    bucket_name       = jsonencode("tf-acc-dev-856-bucket")
-    region            = jsonencode("us-east-1")
-    access_key_id     = jsonencode("AKIADEV856EXAMPLEKEY")
-    secret_access_key = jsonencode("dev856-example-secret-access-key-not-real")
-    prefix            = jsonencode(%q)
-    path_template     = jsonencode(%q)
+    bucketName      = jsonencode("tf-acc-dev-856-bucket")
+    region          = jsonencode("us-east-1")
+    accessKeyId     = jsonencode("AKIADEV856EXAMPLEKEY")
+    secretAccessKey = jsonencode("dev856-example-secret-access-key-not-real")
+    prefix          = jsonencode(%q)
+    pathTemplate    = jsonencode(%q)
   }
 }
 `, name, s3DriftPrefix, s3DriftPathTemplate)
