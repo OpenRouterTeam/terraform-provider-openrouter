@@ -49,7 +49,7 @@ All fixtures are named `tf-acc-<run-id>-<suffix>` and are destroyed by the testi
 
 ### CI
 
-`.github/workflows/acceptance.yaml` runs the suite nightly (01:30 UTC) and on `workflow_dispatch`, using the `acceptance-testing` environment's `OPENROUTER_MANAGEMENT_KEY` secret. It never runs on pull requests, and a concurrency group (`tf-acceptance`, `cancel-in-progress: false`) serializes runs to avoid shared-state flakes. The job requests only the `contents: read` permission. It validates that the management key secret is non-empty before running any tests, and never prints the key. The full test log is uploaded as a workflow artifact on every run (`if: always()`), and never contains Terraform state or the management key.
+`.github/workflows/acceptance.yaml` runs the suite nightly (01:30 UTC) and on `workflow_dispatch`, using the `acceptance-testing` environment's `OPENROUTER_MANAGEMENT_KEY` secret. It never runs on pull requests, and a concurrency group (`tf-acceptance`, `cancel-in-progress: false`) serializes runs to avoid shared-state flakes. The job requests only the `contents: read` permission. It validates that the management key secret is non-empty before running any tests, and never prints the key. The full test log is uploaded as a workflow artifact on every run (`if: always()`), and never contains Terraform state or the management key. Do not set `TF_LOG` or `TF_LOG_PROVIDER` in this workflow: the generated HTTP transport (`internal/provider/utils.go`) redacts only the `Authorization` header, not response bodies, so provider debug logging would leak full HTTP responses — including newly created secret material — into that artifact.
 
 ## Contact
 

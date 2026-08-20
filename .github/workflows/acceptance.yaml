@@ -57,6 +57,10 @@ jobs:
           fi
 
       - name: Run acceptance tests
+        # Do NOT set TF_LOG / TF_LOG_PROVIDER here: internal/provider/utils.go
+        # redacts only the Authorization header, not response bodies -- debug
+        # logging would leak full HTTP responses (e.g. new key material) into
+        # the acceptance.log artifact uploaded below on every run.
         env:
           TF_ACC: "1"
           OPENROUTER_MANAGEMENT_KEY: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
