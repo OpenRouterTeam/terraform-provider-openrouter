@@ -252,8 +252,8 @@ data "openrouter_observability_destinations" "by_workspace" {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "total_count", "1"),
 					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.#", "1"),
-					resource.TestCheckResourceAttrPair("data.openrouter_observability_destinations.by_workspace", "data.0.id", "openrouter_observability_destination.test", "id"),
-					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.0.name", name),
+					resource.TestCheckResourceAttrPair("data.openrouter_observability_destinations.by_workspace", "data.0.webhook.id", "openrouter_observability_destination.test", "id"),
+					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.0.webhook.name", name),
 					resource.TestCheckResourceAttr("data.openrouter_observability_destinations.by_workspace", "data.0.webhook.config.url", "https://example.com/tf-acc-ds-list"),
 				),
 			},
