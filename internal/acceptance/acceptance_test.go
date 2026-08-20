@@ -13,6 +13,8 @@
 //	                           credits. Management keys cannot call inference
 //	                           endpoints, and a zero-credit org means any
 //	                           inference key minted during tests is unusable.
+//	OPENROUTER_BASE_URL        optional; point the harness (provider config
+//	                           and sweeper) at a staging API base URL.
 package acceptance
 
 import (
@@ -46,15 +48,36 @@ func testAccPreCheck(t *testing.T) {
 	}
 }
 
+// testAccServerURL returns the optional OPENROUTER_BASE_URL override for
+// pointing acceptance tests at staging (empty string = production default).
+func testAccServerURL() string {
+	return os.Getenv("OPENROUTER_BASE_URL")
+}
+
+// testAccAPIBase returns the base URL used for direct API calls (sweeper),
+// mirroring the provider's server_url default.
+func testAccAPIBase() string {
+	if u := testAccServerURL(); u != "" {
+		return u
+	}
+	return "https://openrouter.ai/api/v1"
+}
+
 // providerConfig renders the provider block. The generated provider has no
 // environment-variable fallback for api_key, so the key is interpolated
-// into configuration here (state stays on the ephemeral runner).
+// into configuration here (state stays on the ephemeral runner). When
+// OPENROUTER_BASE_URL is set, server_url is rendered too so the whole
+// harness can be pointed at a staging environment.
 func providerConfig() string {
+	serverURL := ""
+	if u := testAccServerURL(); u != "" {
+		serverURL = fmt.Sprintf("\n  server_url = %q", u)
+	}
 	return fmt.Sprintf(`
 provider "openrouter" {
-  api_key = %q
+  api_key = %q%s
 }
-`, os.Getenv("OPENROUTER_MANAGEMENT_KEY"))
+`, os.Getenv("OPENROUTER_MANAGEMENT_KEY"), serverURL)
 }
 
 func testName(suffix string) string {
