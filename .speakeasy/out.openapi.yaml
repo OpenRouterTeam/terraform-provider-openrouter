@@ -231,20 +231,6 @@ components:
         - 'role'
         - 'tools'
       type: 'object'
-    AdvisorNestedTool:
-      additionalProperties: {}
-      description: 'A tool made available to the advisor sub-agent. Only OpenRouter server tools (e.g. openrouter:web_search) are supported; function tools are rejected because the advisor has no way to execute them. The advisor tool may not list itself.'
-      example:
-        type: 'openrouter:web_search'
-      properties:
-        parameters:
-          additionalProperties: {}
-          type: 'object'
-        type:
-          type: 'string'
-      required:
-        - 'type'
-      type: 'object'
     AdvisorReasoning:
       description: 'Reasoning configuration forwarded to the advisor call. Use this to control reasoning effort and token budget for models that support extended thinking.'
       example:
@@ -266,7 +252,7 @@ components:
           type: 'integer'
       type: 'object'
     AdvisorServerTool_OpenRouter:
-      description: 'OpenRouter built-in server tool: consults a higher-intelligence advisor model (any OpenRouter model) for guidance mid-generation and returns its response. The advisor may run as a sub-agent with its own tools. Include multiple entries to offer several named advisors; at most one entry may omit `name` to act as the default advisor.'
+      description: 'OpenRouter built-in server tool: consults a higher-intelligence advisor model (any OpenRouter model) for guidance mid-generation and returns its response. Include multiple entries to offer several named advisors; at most one entry may omit `name` to act as the default advisor.'
       example:
         parameters:
           model: '~anthropic/claude-opus-latest'
@@ -300,14 +286,8 @@ components:
           description: 'Maximum number of output tokens (including reasoning) the advisor may produce. When omitted, the provider''s default applies.'
           example: 2048
           type: 'integer'
-        max_tool_calls:
-          description: 'Maximum number of tool-calling steps the advisor sub-agent may take during its agentic loop. Capped at 25. Only relevant when the advisor is given tools.'
-          example: 5
-          maximum: 25
-          minimum: 1
-          type: 'integer'
         model:
-          description: 'Slug of the advisor model to consult (any OpenRouter model). When omitted, the executor can choose it via the tool call''s `model` argument; if neither is set, the model from the outer API request is used. The advisor tool itself cannot be the advisor model.'
+          description: 'Slug of the advisor model to consult (any OpenRouter model). When omitted, the executor can choose it via the tool call''s `model` argument; if neither is set, the model from the outer API request is used.'
           example: '~anthropic/claude-opus-latest'
           type: 'string'
         name:
@@ -328,11 +308,6 @@ components:
           example: 0.7
           format: 'double'
           type: 'number'
-        tools:
-          description: 'Tools the advisor sub-agent may use while forming its advice. The advisor runs as an agentic sub-agent over these tools, then returns its text. Only OpenRouter server tools are supported — function tools are rejected — and the list must not include the advisor tool itself.'
-          items:
-            $ref: '#/components/schemas/AdvisorNestedTool'
-          type: 'array'
       type: 'object'
     AgentMessageItem:
       additionalProperties: {}
@@ -1565,6 +1540,59 @@ components:
       type:
         - 'object'
         - 'null'
+    AnthropicMessagesErrorResponse:
+      description: 'Error response from the Anthropic Messages API'
+      example:
+        error:
+          error_type: 'invalid_request'
+          message: 'Invalid request: messages field is required'
+          type: 'invalid_request_error'
+        request_id: null
+        type: 'error'
+      properties:
+        error:
+          properties:
+            error_type:
+              $ref: '#/components/schemas/ApiErrorType'
+            message:
+              type: 'string'
+            type:
+              enum:
+                - 'invalid_request_error'
+                - 'authentication_error'
+                - 'permission_error'
+                - 'not_found_error'
+                - 'rate_limit_error'
+                - 'api_error'
+                - 'overloaded_error'
+                - 'billing_error'
+                - 'timeout_error'
+              type: 'string'
+          required:
+            - 'type'
+            - 'message'
+          type: 'object'
+        metadata:
+          additionalProperties: {}
+          type: 'object'
+        openrouter_metadata:
+          additionalProperties: {}
+          type:
+            - 'object'
+            - 'null'
+        request_id:
+          type:
+            - 'string'
+            - 'null'
+        type:
+          enum:
+            - 'error'
+          type: 'string'
+      required:
+        - 'type'
+        - 'error'
+        - 'request_id'
+      type: 'object'
     AnthropicMessageUsageIteration:
       allOf:
         - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
@@ -1643,6 +1671,9 @@ components:
           enum:
             - 'cyber'
             - 'bio'
+            - 'frontier_llm'
+            - 'reasoning_extraction'
+            - 'general_harms'
             - null
           type:
             - 'string'
@@ -7162,7 +7193,7 @@ components:
         reset_interval:
           $ref: '#/components/schemas/GuardrailInterval'
         workspace_id:
-          description: 'The workspace to create the guardrail in. When omitted, the guardrail is created in the default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly.'
+          description: 'The workspace to create the guardrail in. When omitted, the guardrail is created in the default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly. This only places the guardrail in the workspace; the created guardrail enforces nothing for that workspace''s traffic until it is assigned to API keys or members. To restrict all traffic in a workspace, update the workspace''s default guardrail instead.'
           example: '0df9e665-d932-5740-b2c7-b52af166bc11'
           format: 'uuid'
           type: 'string'
@@ -7565,6 +7596,12 @@ components:
         sequence_number: 6
         type: 'response.custom_tool_call_input.done'
     CustomToolCallItem:
+      allOf:
+        - $ref: '#/components/schemas/OpenAIResponseCustomToolCall'
+        - properties:
+            status:
+              $ref: '#/components/schemas/ToolCallStatus'
+          type: 'object'
       description: 'A call to a custom (freeform-grammar) tool created by the model — distinct from `function_call`. Used for tools like Codex CLI''s `apply_patch` whose payload is opaque text rather than JSON arguments.'
       example:
         call_id: 'call-abc123'
@@ -7572,28 +7609,6 @@ components:
         input: "*** Begin Patch\n*** End Patch"
         name: 'apply_patch'
         type: 'custom_tool_call'
-      properties:
-        call_id:
-          type: 'string'
-        id:
-          type: 'string'
-        input:
-          type: 'string'
-        name:
-          type: 'string'
-        namespace:
-          description: 'Namespace qualifier for tools registered as part of a namespace tool group (e.g. an MCP server)'
-          type: 'string'
-        type:
-          enum:
-            - 'custom_tool_call'
-          type: 'string'
-      required:
-        - 'type'
-        - 'call_id'
-        - 'name'
-        - 'input'
-      type: 'object'
     CustomToolCallOutputItem:
       allOf:
         - $ref: '#/components/schemas/OpenAIResponseCustomToolCallOutput'
@@ -8030,6 +8045,14 @@ components:
         param: null
         sequence_number: 2
         type: 'error'
+    FailableToolCallStatus:
+      enum:
+        - 'in_progress'
+        - 'completed'
+        - 'incomplete'
+        - 'failed'
+      example: 'completed'
+      type: 'string'
     FailedEvent:
       description: 'Event emitted when a response has failed'
       example:
@@ -10047,7 +10070,7 @@ components:
             - 'string'
             - 'null'
         workspace_id:
-          description: 'The workspace this guardrail is scoped to, or `null` for an unscoped legacy guardrail predating workspaces. A `null` value does not mean the default workspace, and does not apply the guardrail across every workspace.'
+          description: 'The workspace this guardrail belongs to, or `null` for an unscoped legacy guardrail predating workspaces. Workspace membership organizes the guardrail; it does not apply the guardrail to the workspace''s traffic. A `null` value does not mean the default workspace, and does not apply the guardrail across every workspace.'
           example: '0df9e665-d932-5740-b2c7-b52af166bc11'
           type:
             - 'string'
@@ -10347,7 +10370,7 @@ components:
           example: 'bytedance-seed/seedream-4.5'
           type: 'string'
         'n':
-          description: 'Number of images to generate (1-10). Providers that only support single-image generation reject n > 1.'
+          description: 'Upper bound on the number of images to generate (1-10). Providers may return fewer images, and providers that only support single-image generation reject n > 1.'
           example: 1
           type: 'integer'
         output_compression:
@@ -11303,6 +11326,7 @@ components:
               - $ref: '#/components/schemas/OutputAdvisorServerToolItem'
               - $ref: '#/components/schemas/OutputSubagentServerToolItem'
               - $ref: '#/components/schemas/OutputFilesServerToolItem'
+              - $ref: '#/components/schemas/OutputShellServerToolItem'
               - $ref: '#/components/schemas/LocalShellCallItem'
               - $ref: '#/components/schemas/LocalShellCallOutputItem'
               - $ref: '#/components/schemas/ShellCallItem'
@@ -12662,22 +12686,6 @@ components:
         - 'delta'
         - 'usage'
       type: 'object'
-    MessagesErrorDetail:
-      example:
-        error_type: 'invalid_request'
-        message: 'Invalid request parameters'
-        type: 'invalid_request_error'
-      properties:
-        error_type:
-          $ref: '#/components/schemas/ApiErrorType'
-        message:
-          type: 'string'
-        type:
-          type: 'string'
-      required:
-        - 'type'
-        - 'message'
-      type: 'object'
     MessagesErrorEvent:
       description: 'Error event in the stream'
       example:
@@ -12701,23 +12709,6 @@ components:
           type: 'object'
         openrouter_metadata:
           $ref: '#/components/schemas/OpenRouterMetadata'
-        type:
-          enum:
-            - 'error'
-          type: 'string'
-      required:
-        - 'type'
-        - 'error'
-      type: 'object'
-    MessagesErrorResponse:
-      example:
-        error:
-          message: 'Invalid request parameters'
-          type: 'invalid_request_error'
-        type: 'error'
-      properties:
-        error:
-          $ref: '#/components/schemas/MessagesErrorDetail'
         type:
           enum:
             - 'error'
@@ -17046,6 +17037,20 @@ components:
           type: 'string'
         status:
           $ref: '#/components/schemas/ToolCallStatus'
+        subagent_id:
+          description: 'EXPERIMENTAL — subject to change without notice. String id that matches the `call_id` of the `openrouter:subagent` server tool call that spawned the subagent. Present on every `function_call` item the subagent projects; absent on ordinary function calls.'
+          type: 'string'
+        subagent_items:
+          description: 'EXPERIMENTAL — subject to change without notice. The subagent''s output items produced on this turn. Treat this as an opaque object; you must replay it in the request so that the subagent can continue execution of the tool with the same context. If a subagent created multiple parallel tool calls, only the first tool call will have this field. The other tool calls will only have `subagent_id`. Present only if the tool call originates from a subagent spawned by the `openrouter:subagent` server tool.'
+          items:
+            additionalProperties: {}
+            properties:
+              type:
+                type: 'string'
+            required:
+              - 'type'
+            type: 'object'
+          type: 'array'
         type:
           enum:
             - 'function_call'
@@ -18062,7 +18067,7 @@ components:
           description: 'The advisor model''s response (the advice text returned to the executor).'
           type: 'string'
         error:
-          description: 'Error message when the advisor call did not produce advice.'
+          description: 'Error message when the advisor call did not produce advice. Set together with `status: ''failed''` on the terminal item.'
           type: 'string'
         id:
           type: 'string'
@@ -18077,7 +18082,7 @@ components:
           description: 'The prompt the executor sent to the advisor.'
           type: 'string'
         status:
-          $ref: '#/components/schemas/ToolCallStatus'
+          $ref: '#/components/schemas/FailableToolCallStatus'
         type:
           enum:
             - 'openrouter:advisor'
@@ -18157,10 +18162,14 @@ components:
       properties:
         arguments:
           description: 'The raw tool-call arguments string as emitted by the model.'
-          type: 'string'
+          type:
+            - 'string'
+            - 'null'
         call_id:
           description: 'The model-generated tool call id from the originating turn.'
-          type: 'string'
+          type:
+            - 'string'
+            - 'null'
         command:
           type: 'string'
         exitCode:
@@ -18405,6 +18414,16 @@ components:
         status: 'completed'
         type: 'openrouter:files'
       properties:
+        arguments:
+          description: 'The raw tool-call arguments string as emitted by the model.'
+          type:
+            - 'string'
+            - 'null'
+        call_id:
+          description: 'The model-generated tool call id from the originating turn.'
+          type:
+            - 'string'
+            - 'null'
         error:
           description: 'Error message when the file operation failed.'
           type: 'string'
@@ -18435,7 +18454,21 @@ components:
     OutputFunctionCallItem:
       allOf:
         - $ref: '#/components/schemas/OutputItemFunctionCall'
-        - properties: {}
+        - properties:
+            subagent_id:
+              description: 'EXPERIMENTAL — subject to change without notice. String id that matches the `call_id` of the `openrouter:subagent` server tool call that spawned the subagent. Present on every `function_call` item the subagent projects; absent on ordinary function calls.'
+              type: 'string'
+            subagent_items:
+              description: 'EXPERIMENTAL — subject to change without notice. The subagent''s output items produced on this turn. Treat this as an opaque object; you must replay it in the request so that the subagent can continue execution of the tool with the same context. If a subagent created multiple parallel tool calls, only the first tool call will have this field. The other tool calls will only have `subagent_id`. Present only if the tool call originates from a subagent spawned by the `openrouter:subagent` server tool.'
+              items:
+                additionalProperties: {}
+                properties:
+                  type:
+                    type: 'string'
+                required:
+                  - 'type'
+                type: 'object'
+              type: 'array'
           type: 'object'
       example:
         arguments: '{"location":"San Francisco"}'
@@ -18475,7 +18508,7 @@ components:
             type: 'object'
           type: 'array'
         failure_reason:
-          description: 'Typed failure reason when the fusion run failed. Possible values include: all_panels_failed, insufficient_credits, rate_limited, invalid_model, judge_not_valid_json, judge_schema_mismatch, judge_upstream_error, judge_empty_completion. The four analysis-stage codes keep their pre-rename `judge_` spelling so existing consumers keep matching.'
+          description: 'Typed failure reason when the fusion run failed. Possible values include: all_panels_failed, insufficient_credits, rate_limited, invalid_model, judge_not_valid_json, judge_schema_mismatch, judge_upstream_error, judge_empty_completion. The four analysis-stage codes keep their pre-rename `judge_` spelling so existing consumers keep matching. The consumer-cancellation code is `cancelled`.'
           type: 'string'
         id:
           type: 'string'
@@ -18940,6 +18973,7 @@ components:
           openrouter:image_generation: '#/components/schemas/OutputImageGenerationServerToolItem'
           openrouter:mcp: '#/components/schemas/OutputMcpServerToolItem'
           openrouter:memory: '#/components/schemas/OutputMemoryServerToolItem'
+          openrouter:shell: '#/components/schemas/OutputShellServerToolItem'
           openrouter:subagent: '#/components/schemas/OutputSubagentServerToolItem'
           openrouter:text_editor: '#/components/schemas/OutputTextEditorServerToolItem'
           openrouter:tool_search: '#/components/schemas/OutputToolSearchServerToolItem'
@@ -18979,6 +19013,7 @@ components:
         - $ref: '#/components/schemas/OutputApplyPatchCallItem'
         - $ref: '#/components/schemas/OutputShellCallItem'
         - $ref: '#/components/schemas/OutputShellCallOutputItem'
+        - $ref: '#/components/schemas/OutputShellServerToolItem'
         - $ref: '#/components/schemas/OutputWebFetchServerToolItem'
         - $ref: '#/components/schemas/OutputToolSearchServerToolItem'
         - $ref: '#/components/schemas/OutputMemoryServerToolItem'
@@ -19290,6 +19325,11 @@ components:
             - 'max_output_length'
             - 'timeout_ms'
           type: 'object'
+        arguments:
+          description: 'The raw tool-call arguments string as emitted by the model. Echo back unchanged when replaying history; used verbatim to preserve provider prompt-cache prefixes.'
+          type:
+            - 'string'
+            - 'null'
         call_id:
           type: 'string'
         id:
@@ -19330,37 +19370,7 @@ components:
             - 'null'
         output:
           items:
-            properties:
-              outcome:
-                oneOf:
-                  - properties:
-                      exit_code:
-                        type: 'integer'
-                      type:
-                        enum:
-                          - 'exit'
-                        type: 'string'
-                    required:
-                      - 'type'
-                      - 'exit_code'
-                    type: 'object'
-                  - properties:
-                      type:
-                        enum:
-                          - 'timeout'
-                        type: 'string'
-                    required:
-                      - 'type'
-                    type: 'object'
-              stderr:
-                type: 'string'
-              stdout:
-                type: 'string'
-            required:
-              - 'stdout'
-              - 'stderr'
-              - 'outcome'
-            type: 'object'
+            $ref: '#/components/schemas/ShellCallOutputContent'
           type: 'array'
         status:
           $ref: '#/components/schemas/ShellCallStatus'
@@ -19375,6 +19385,68 @@ components:
         - 'status'
         - 'output'
       type: 'object'
+    OutputShellServerToolItem:
+      description: 'An openrouter:shell server tool output item'
+      example:
+        action:
+          commands:
+            - 'echo hello'
+          max_output_length: null
+          timeout_ms: null
+        call_id: 'call_abc123'
+        id: 'st_tmp_abc123'
+        output:
+          - outcome:
+              exit_code: 0
+              type: 'exit'
+            stderr: ''
+            stdout: "hello\n"
+        status: 'completed'
+        type: 'openrouter:shell'
+      properties:
+        action:
+          properties:
+            commands:
+              items:
+                type: 'string'
+              type: 'array'
+            max_output_length:
+              type:
+                - 'integer'
+                - 'null'
+            timeout_ms:
+              type:
+                - 'integer'
+                - 'null'
+          required:
+            - 'commands'
+          type: 'object'
+        arguments:
+          description: 'The raw tool-call arguments string as emitted by the model.'
+          type:
+            - 'string'
+            - 'null'
+        call_id:
+          description: 'The model-generated tool call id from the originating turn.'
+          type:
+            - 'string'
+            - 'null'
+        id:
+          type: 'string'
+        output:
+          items:
+            $ref: '#/components/schemas/ShellCallOutputContent'
+          type: 'array'
+        status:
+          $ref: '#/components/schemas/ToolCallStatus'
+        type:
+          enum:
+            - 'openrouter:shell'
+          type: 'string'
+      required:
+        - 'status'
+        - 'type'
+      type: 'object'
     OutputSubagentServerToolItem:
       description: 'An openrouter:subagent server tool output item'
       example:
@@ -19382,8 +19454,11 @@ components:
         status: 'completed'
         type: 'openrouter:subagent'
       properties:
+        call_id:
+          description: 'EXPERIMENTAL — subject to change without notice. The `call_id` of the tool call that spawned this subagent. This id will also be included as the `subagent_id` on any `function_call` items created by the subagent. This must be returned in the request so the `function_call` can be matched with the correct subagent. A suspended `in_progress` item is announced once and never re-emitted or terminally closed — completion arrives as a new item with the same `call_id`.'
+          type: 'string'
         error:
-          description: 'Error message when the subagent task did not produce an outcome.'
+          description: 'Error message when the subagent task did not produce an outcome. Set together with `status: ''failed''` on the terminal item.'
           type: 'string'
         id:
           type: 'string'
@@ -19402,7 +19477,7 @@ components:
           description: 'The worker model''s result (the outcome text returned to the delegating model).'
           type: 'string'
         status:
-          $ref: '#/components/schemas/ToolCallStatus'
+          $ref: '#/components/schemas/FailableToolCallStatus'
         task_description:
           description: 'The task description the delegating model sent to the worker.'
           type: 'string'
@@ -20398,6 +20473,9 @@ components:
         amazon-bedrock:
           additionalProperties: {}
           type: 'object'
+        amazon-bedrock/claude-on-aws:
+          additionalProperties: {}
+          type: 'object'
         amazon-nova:
           additionalProperties: {}
           type: 'object'
@@ -20405,6 +20483,9 @@ components:
           additionalProperties: {}
           type: 'object'
         anthropic:
+          additionalProperties: {}
+          type: 'object'
+        anthropic/2:
           additionalProperties: {}
           type: 'object'
         anyscale:
@@ -21717,6 +21798,7 @@ components:
         - 'openai-responses-v1'
         - 'azure-openai-responses-v1'
         - 'bedrock-openai-responses-v1'
+        - 'bedrock-xai-responses-v1'
         - 'xai-responses-v1'
         - 'meta-responses-v1'
         - 'anthropic-claude-v1'
@@ -22550,6 +22632,82 @@ components:
         - 'code'
         - 'message'
       type: 'object'
+    SessionCostItem:
+      properties:
+        app_name:
+          description: 'Published harness display label.'
+          example: 'Hermes Agent'
+          type: 'string'
+        app_slug:
+          description: 'Stable public slug of the harness.'
+          example: 'hermes-agent'
+          type: 'string'
+        median_session_cost_usd:
+          description: 'Median USD spend per sampled session.'
+          example: 1.74
+          format: 'double'
+          type: 'number'
+        model_permaslug:
+          description: 'Exact model permaslug.'
+          example: 'anthropic/claude-4.8-opus'
+          type: 'string'
+        turn_range:
+          description: 'Inclusive session turn-count range.'
+          enum:
+            - '1-turn'
+            - '2-9-turns'
+            - '10-49-turns'
+            - '50-plus-turns'
+          example: '10-49-turns'
+          type: 'string'
+      required:
+        - 'app_slug'
+        - 'app_name'
+        - 'turn_range'
+        - 'model_permaslug'
+        - 'median_session_cost_usd'
+      type: 'object'
+    SessionCostMeta:
+      properties:
+        as_of:
+          description: 'ISO-8601 timestamp when the response was generated.'
+          example: '2026-05-12T02:00:00.000Z'
+          type: 'string'
+        version:
+          description: 'Dataset version.'
+          enum:
+            - 'v1'
+          type: 'string'
+        window_days:
+          description: 'Number of days in the weekly session sample window, or null when no snapshot is published.'
+          example: 30
+          type:
+            - 'integer'
+            - 'null'
+        window_end_date:
+          description: 'UTC date of the final day in the session sample window, or null when no snapshot is published.'
+          example: '2026-05-11'
+          type:
+            - 'string'
+            - 'null'
+      required:
+        - 'as_of'
+        - 'version'
+        - 'window_days'
+        - 'window_end_date'
+      type: 'object'
+    SessionCostResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SessionCostItem'
+          type: 'array'
+        meta:
+          $ref: '#/components/schemas/SessionCostMeta'
+      required:
+        - 'data'
+        - 'meta'
+      type: 'object'
     ShellCallItem:
       description: 'A shell command execution call (newer variant)'
       example:
@@ -22579,6 +22737,11 @@ components:
           required:
             - 'commands'
           type: 'object'
+        arguments:
+          description: 'The raw tool-call arguments string as emitted by the model. Echo back unchanged when replaying history; used verbatim to preserve provider prompt-cache prefixes.'
+          type:
+            - 'string'
+            - 'null'
         call_id:
           type: 'string'
         environment: {}
@@ -22599,13 +22762,58 @@ components:
         - 'call_id'
         - 'action'
       type: 'object'
+    ShellCallOutputContent:
+      additionalProperties: {}
+      description: 'Captured stdout and stderr for one command of a shell call, with its exit or timeout outcome.'
+      example:
+        outcome:
+          exit_code: 0
+          type: 'exit'
+        stderr: ''
+        stdout: "total 0\n"
+      properties:
+        outcome:
+          oneOf:
+            - additionalProperties: {}
+              properties:
+                exit_code:
+                  type: 'integer'
+                type:
+                  enum:
+                    - 'exit'
+                  type: 'string'
+              required:
+                - 'type'
+                - 'exit_code'
+              type: 'object'
+            - additionalProperties: {}
+              properties:
+                type:
+                  enum:
+                    - 'timeout'
+                  type: 'string'
+              required:
+                - 'type'
+              type: 'object'
+        stderr:
+          type: 'string'
+        stdout:
+          type: 'string'
+      required:
+        - 'stdout'
+        - 'stderr'
+        - 'outcome'
+      type: 'object'
     ShellCallOutputItem:
       description: 'Output from a shell command execution (newer variant)'
       example:
         call_id: 'call-abc123'
         output:
-          - content: "total 0\n"
-            type: 'stdout'
+          - outcome:
+              exit_code: 0
+              type: 'exit'
+            stderr: ''
+            stdout: "total 0\n"
         status: 'completed'
         type: 'shell_call_output'
       properties:
@@ -22621,21 +22829,7 @@ components:
             - 'null'
         output:
           items:
-            additionalProperties: {}
-            properties:
-              content:
-                type:
-                  - 'string'
-                  - 'null'
-              exit_code:
-                type:
-                  - 'integer'
-                  - 'null'
-              type:
-                type: 'string'
-            required:
-              - 'type'
-            type: 'object'
+            $ref: '#/components/schemas/ShellCallOutputContent'
           type: 'array'
         status:
           anyOf:
@@ -23548,7 +23742,7 @@ components:
             - 'none'
           type: 'string'
         max_tokens:
-          description: 'Maximum number of reasoning tokens the subagent may use. Accepted and validated but not yet forwarded to the subagent call.'
+          description: 'Maximum number of reasoning tokens the subagent may use. Forwarded to the subagent call as `reasoning.max_tokens`.'
           type: 'integer'
       type: 'object'
     SubagentServerTool_OpenRouter:
@@ -23573,6 +23767,18 @@ components:
         model: '~anthropic/claude-haiku-latest'
         name: 'summarizer'
       properties:
+        inherit_functions:
+          description: 'EXPERIMENTAL — subject to change without notice. When true, the subagent inherits every client function defined in the request''s top-level `tools` list. Supported on the Responses API (`/api/v1/responses`) only; other APIs reject it with a `400`.'
+          example: true
+          type: 'boolean'
+        inherited_function_names:
+          description: 'EXPERIMENTAL — subject to change without notice. Names of the top-level function tools that the subagent will inherit. Any tool that matches by name will be copied fully into the tools array of the subagent. When `inherit_functions` is `true`, this list does nothing, because every client function will be inherited by default. Names are trimmed before validation, so a whitespace-only name is rejected with a `400`. Supported on the Responses API (`/api/v1/responses`) only; other APIs reject it with a `400`.'
+          example:
+            - 'lookup_order'
+          items:
+            minLength: 1
+            type: 'string'
+          type: 'array'
         instructions:
           description: 'System instructions for the subagent. When omitted, the subagent responds with no system prompt of its own.'
           example: 'You are a fast, focused worker. Complete the task exactly as described.'
@@ -23582,7 +23788,7 @@ components:
           example: 2048
           type: 'integer'
         max_tool_calls:
-          description: 'Maximum number of tool-calling steps the subagent may take during its agentic loop. Capped at 25. Only relevant when the subagent is given tools. Accepted and validated but not yet enforced on the subagent call.'
+          description: 'Maximum number of tool-calling steps the subagent may take during its agentic loop. Capped at 25. Only relevant when the subagent is given tools. Forwarded to the subagent call as `max_tool_calls`.'
           example: 5
           maximum: 25
           minimum: 1
@@ -25205,6 +25411,10 @@ components:
           example: 'https://example.com/webhook'
           format: 'uri'
           type: 'string'
+        creativity:
+          description: 'Creativity level for video upscaling models only. This parameter is not supported by video generation models.'
+          example: 1
+          type: 'integer'
         duration:
           description: 'Duration of the generated video in seconds'
           example: 8
@@ -25260,6 +25470,12 @@ components:
           description: 'Exact pixel dimensions of the generated video in "WIDTHxHEIGHT" format (e.g. "1280x720"). Interchangeable with resolution + aspect_ratio.'
           example: '1280x720'
           type: 'string'
+        upscale_factor:
+          description: 'Upscale factor for video upscaling models only. This parameter is not supported by video generation models.'
+          example: 2
+          exclusiveMinimum: true
+          minimum: 0
+          type: 'number'
       required:
         - 'model'
       type: 'object'
@@ -25352,6 +25568,13 @@ components:
           description: 'Unix timestamp of when the model was created'
           example: 1692901234
           type: 'integer'
+        creativity:
+          description: 'Supported creativity levels for video upscaling models'
+          items:
+            type: 'integer'
+          type:
+            - 'array'
+            - 'null'
         description:
           description: 'Description of the model'
           example: 'GPT-4 is a large multimodal model that can solve difficult problems with greater accuracy.'
@@ -25506,6 +25729,22 @@ components:
           type:
             - 'array'
             - 'null'
+        upscale_factor:
+          description: 'Supported upscale factor range for video upscaling models'
+          properties:
+            max:
+              format: 'double'
+              type:
+                - 'number'
+                - 'null'
+            min:
+              format: 'double'
+              type:
+                - 'number'
+                - 'null'
+          type:
+            - 'object'
+            - 'null'
       required:
         - 'id'
         - 'canonical_slug'
@@ -25516,6 +25755,8 @@ components:
         - 'supported_sizes'
         - 'supported_durations'
         - 'supported_frame_images'
+        - 'upscale_factor'
+        - 'creativity'
         - 'generate_audio'
         - 'seed'
         - 'allowed_passthrough_parameters'
@@ -25759,7 +26000,7 @@ components:
       example: 'auto'
       type: 'string'
     WebSearchMode:
-      description: 'Engine-native search mode. Exa supports instant, fast, auto (default), deep-lite, deep, and deep-reasoning. Parallel supports turbo, basic (default), and advanced. Modes unsupported by the selected engine are ignored.'
+      description: 'Engine-native search mode. Exa supports instant, fast, auto (default), deep-lite, deep, and deep-reasoning. Parallel supports turbo, fast, basic (default), and advanced. Modes unsupported by the selected engine are ignored.'
       enum:
         - 'instant'
         - 'fast'
@@ -26543,7 +26784,7 @@ paths:
           description: 'Internal Server Error - Unexpected server error'
       summary: 'Get available analytics metrics and dimensions'
       tags:
-        - 'beta.Analytics'
+        - 'Analytics'
       x-speakeasy-group: analytics
       x-speakeasy-name-override: getMeta
   /analytics/query:
@@ -26575,10 +26816,10 @@ paths:
                       type: 'string'
                     dimension_names:
                       items:
-                        description: 'Classifier dimension name (snake_case identifier). When exactly one name is provided, the response uses it as the column key; with multiple names or none, the response uses `clf_dimension_name`/`clf_dimension_value` columns.'
+                        description: 'Classifier dimension name (snake_case identifier). Each name becomes its own column key in the response; providing two names cross-groups results by both dimensions. With no names, the response uses `clf_dimension_name`/`clf_dimension_value` columns (one row per dimension/value pair).'
                         example: 'department'
                         type: 'string'
-                      maxItems: 10
+                      maxItems: 2
                       type: 'array'
                     include_nulls:
                       description: 'When true, also include generations that have no tag from this classifier. Defaults to false, which returns only classified generations.'
@@ -26823,7 +27064,7 @@ paths:
           description: 'Internal Server Error - Unexpected server error'
       summary: 'Query analytics data'
       tags:
-        - 'beta.Analytics'
+        - 'Analytics'
       x-speakeasy-group: analytics
       x-speakeasy-name-override: query
   /audio/speech:
@@ -28550,7 +28791,7 @@ paths:
       x-speakeasy-name-override: 'createCoinbaseCharge'
   /datasets/app-rankings:
     get:
-      description: "Returns the top public apps on OpenRouter ranked by token usage inside the requested\ndate window, matching the public apps marketplace on openrouter.ai/apps. Token totals\nare `prompt_tokens + completion_tokens`; hidden and private apps are excluded and\ntraffic from related app aliases is merged into the canonical visible app.\n\n`sort=popular` (default) ranks by total token volume inside the window.\n`sort=trending` ranks by absolute excess token growth: window volume minus the average\nvolume of the three equal-length periods immediately preceding the window. Apps with\nno excess growth are omitted, so `trending` may return fewer than `limit` rows.\n\nFilter with `category` (marketplace category group, e.g. `coding`) or `subcategory`\n(e.g. `cli-agent`). Ranks are re-numbered 1..N after filtering. Page with `offset` —\n`rank` stays absolute, so the first row of `offset=50` is `rank: 51`.\n\nAuthenticate with any valid OpenRouter API key (same key used for inference).\nRate-limited to 30 requests/minute per key and 500 requests/day per account.\n\nWhen republishing or quoting this dataset, OpenRouter must be cited as:\n\"Source: OpenRouter (openrouter.ai/apps), as of {as_of}.\"\n\nToken counts come from each upstream provider's own tokenizer, so a token attributed\nto one app is not directly comparable to a token attributed to another app whose\ntraffic flows through a different provider."
+      description: "Returns the top public apps on OpenRouter ranked by token usage inside the requested\ndate window, matching the public apps marketplace on openrouter.ai/apps. Token totals\nare `prompt_tokens + completion_tokens`; hidden and private apps are excluded and\ntraffic from related app aliases is merged into the canonical visible app.\n\n`sort=popular` (default) ranks by total token volume inside the window.\n`sort=trending` ranks by absolute excess token growth: window volume minus the average\nvolume of the three equal-length periods immediately preceding the window. Apps with\nno excess growth are omitted, so `trending` may return fewer than `limit` rows.\n\nFilter with `category` (marketplace category group, e.g. `coding`) or `subcategory`\n(e.g. `cli-agent`). Ranks are re-numbered 1..N after filtering. Page with `offset` —\n`rank` stays absolute, so the first row of `offset=50` is `rank: 51`.\n\nAuthenticate with any valid OpenRouter API key (same key used for inference).\nRate-limited to 30 requests/minute per key and 500 requests/day per account.\n\nWhen republishing or quoting this dataset, OpenRouter must be cited as:\n\"Source: OpenRouter (openrouter.ai/apps), as of {as_of}.\"\n\nToken counts come from each upstream provider's own tokenizer, so a token attributed\nto one app is not directly comparable to a token attributed to another app whose\ntraffic flows through a different provider.\n\nLicensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter."
       operationId: 'getAppRankings'
       parameters:
         - description: 'Marketplace category group to filter by (e.g. `coding`). Only apps tagged with a subcategory inside this group are returned. Mutually combinable with `subcategory` — when both are supplied the `subcategory` must belong to the `category` group.'
@@ -28724,7 +28965,7 @@ paths:
         type: 'offsetLimit'
   /datasets/rankings-daily:
     get:
-      description: "Returns the top 50 public models per day by total token usage on OpenRouter, plus a\nsingle aggregated `other` row per day that sums every model outside that top 50.\nToken totals are `prompt_tokens + completion_tokens`, matching the public rankings\nchart on openrouter.ai/rankings.\n\nEach row is a distinct `(date, model_permaslug)` pair. The `other` row uses the\nreserved permaslug `other` and is always returned last within its date, so callers\ncan compute `top-50 traffic / total daily traffic` without a second request.\n\nOptional filters slice the dataset. `period` (`day`/`week`/`month`) sets the time\ngrain. `modality` and `context_bucket` narrow the exact dataset by output/input\nmodality (or tool-calling activity) and request context length. `category` and\n`language_type` instead read a sampled, upsampled dataset whose `total_tokens` are\nweekly-grain estimates — they cannot be combined with each other or with the exact\nfilters, and reject `period=day` with a 400.\n\nAuthenticate with any valid OpenRouter API key (same key used for inference).\nRate-limited to 30 requests/minute per key and 500 requests/day per account.\n\nWhen republishing or quoting this dataset, OpenRouter must be cited as:\n\"Source: OpenRouter (openrouter.ai/rankings), as of {as_of}.\"\n\nToken counts come from each upstream provider's own tokenizer (Anthropic counts\nare as reported by Anthropic, OpenAI counts are as reported by OpenAI, etc.), so\na token in one row is not directly comparable to a token in another row from a\ndifferent provider."
+      description: "Returns the top 50 public models per day by total token usage on OpenRouter, plus a\nsingle aggregated `other` row per day that sums every model outside that top 50.\nToken totals are `prompt_tokens + completion_tokens`, matching the public rankings\nchart on openrouter.ai/rankings.\n\nEach row is a distinct `(date, model_permaslug)` pair. The `other` row uses the\nreserved permaslug `other` and is always returned last within its date, so callers\ncan compute `top-50 traffic / total daily traffic` without a second request.\n\nOptional filters slice the dataset. `period` (`day`/`week`/`month`) sets the time\ngrain. `modality` and `context_bucket` narrow the exact dataset by output/input\nmodality (or tool-calling activity) and request context length. `category` and\n`language_type` instead read a sampled, upsampled dataset whose `total_tokens` are\nweekly-grain estimates — they cannot be combined with each other or with the exact\nfilters, and reject `period=day` with a 400.\n\nAuthenticate with any valid OpenRouter API key (same key used for inference).\nRate-limited to 30 requests/minute per key and 500 requests/day per account.\n\nWhen republishing or quoting this dataset, OpenRouter must be cited as:\n\"Source: OpenRouter (openrouter.ai/rankings), as of {as_of}.\"\n\nToken counts come from each upstream provider's own tokenizer (Anthropic counts\nare as reported by Anthropic, OpenAI counts are as reported by OpenAI, etc.), so\na token in one row is not directly comparable to a token in another row from a\ndifferent provider.\n\nLicensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter."
       operationId: 'getRankingsDaily'
       parameters:
         - description: 'Start of the date window in YYYY-MM-DD (UTC), inclusive. Defaults to 30 days before `end_date`. The dataset begins at 2025-01-01; earlier values are clamped forward to that floor and the resolved value is echoed in `meta.start_date`.'
@@ -28884,6 +29125,137 @@ paths:
       tags:
         - 'Datasets'
       x-speakeasy-name-override: listRankingsDaily
+  /datasets/session-cost:
+    get:
+      description: "Returns weekly refreshed, aggregated cost-per-session cells for the published harnesses.\nSessions are never pooled across apps. Medians are of per-session USD spend, and\nprivacy-preserving aggregation never exposes clerk_user_id values or per-session rows.\n\nFilter by `app_slug`, `model`, or `turn_range`. Filtering by `model` alone works across apps\nfor harness-vs-harness comparison at a fixed model. Results refresh weekly and include the source snapshot\nwindow in `meta`.\n\nLicensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter."
+      operationId: 'getSessionCost'
+      parameters:
+        - description: 'Filter to one published harness slug.'
+          in: 'query'
+          name: 'app_slug'
+          required: false
+          schema:
+            description: 'Filter to one published harness slug.'
+            example: 'hermes-agent'
+            type: 'string'
+        - description: 'Exact model permaslug filter. Works across all harness apps.'
+          in: 'query'
+          name: 'model'
+          required: false
+          schema:
+            description: 'Exact model permaslug filter. Works across all harness apps.'
+            example: 'anthropic/claude-4.8-opus'
+            type: 'string'
+        - description: 'Filter by the inclusive number of turns in a session.'
+          in: 'query'
+          name: 'turn_range'
+          required: false
+          schema:
+            description: 'Filter by the inclusive number of turns in a session.'
+            enum:
+              - '1-turn'
+              - '2-9-turns'
+              - '10-49-turns'
+              - '50-plus-turns'
+            example: '10-49-turns'
+            type: 'string'
+        - description: 'Maximum number of cells to return (1-500). Defaults to 100.'
+          in: 'query'
+          name: 'limit'
+          required: false
+          schema:
+            default: 100
+            description: 'Maximum number of cells to return (1-500). Defaults to 100.'
+            example: 100
+            maximum: 500
+            minimum: 1
+            type: 'integer'
+        - description: 'Number of sorted cells to skip (0-5000). Defaults to 0.'
+          in: 'query'
+          name: 'offset'
+          required: false
+          schema:
+            default: 0
+            description: 'Number of sorted cells to skip (0-5000). Defaults to 0.'
+            example: 0
+            maximum: 5000
+            minimum: 0
+            type:
+              - 'integer'
+              - 'null'
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                data:
+                  - app_name: 'Hermes Agent'
+                    app_slug: 'hermes-agent'
+                    median_session_cost_usd: 1.74
+                    model_permaslug: 'anthropic/claude-4.8-opus'
+                    turn_range: '10-49-turns'
+                meta:
+                  as_of: '2026-05-12T02:00:00.000Z'
+                  version: 'v1'
+                  window_days: 30
+                  window_end_date: '2026-05-11'
+              schema:
+                $ref: '#/components/schemas/SessionCostResponse'
+          description: 'Aggregated cost-per-session cells for the requested filters.'
+        '400':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 400
+                  message: 'Invalid request parameters'
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          description: 'Bad Request - Invalid request parameters or malformed input'
+        '401':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 401
+                  message: 'Missing Authentication header'
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          description: 'Unauthorized - Authentication required or invalid credentials'
+        '429':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 429
+                  message: 'Rate limit exceeded'
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsResponse'
+          description: 'Too Many Requests - Rate limit exceeded'
+        '500':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 500
+                  message: 'Internal Server Error'
+              schema:
+                $ref: '#/components/schemas/InternalServerResponse'
+          description: 'Internal Server Error - Unexpected server error'
+      summary: 'Cost per session by harness and model'
+      tags:
+        - 'Datasets'
+      x-speakeasy-pagination:
+        inputs:
+          - in: 'parameters'
+            name: 'offset'
+            type: 'offset'
+          - in: 'parameters'
+            name: 'limit'
+            type: 'limit'
+        outputs:
+          results: '$.data'
+        type: 'offsetLimit'
   /embeddings:
     post:
       description: 'Submits an embedding request to the embeddings router'
@@ -30276,22 +30648,13 @@ paths:
             application/json:
               example:
                 data:
-                  error:
-                    message: 'Timed out waiting for the provider'
-                    previous_errors:
-                      - code: 429
-                        message: 'Provider returned error'
-                        provider_name: 'Google'
-                        raw: '{"error":{"code":429,"message":"Resource exhausted"}}'
-                    provider_name: 'Vertex'
-                    raw: '{"error":{"code":504,"message":"Deadline exceeded"}}'
-                    status: 504
+                  error: null
                   input:
                     messages:
                       - content: 'What is the meaning of life?'
                         role: 'user'
                   output:
-                    completion: null
+                    completion: 'The meaning of life is a philosophical question...'
                     reasoning: null
               schema:
                 $ref: '#/components/schemas/GenerationContentResponse'
@@ -30569,7 +30932,7 @@ paths:
         type: 'offsetLimit'
       x-speakeasy-entity-operation: Guardrails#read
     post:
-      description: 'Create a new guardrail for the authenticated user. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      description: 'Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace''s traffic. To restrict all traffic in a workspace, update the workspace''s default guardrail instead. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'createGuardrail'
       requestBody:
         content:
@@ -33471,9 +33834,10 @@ paths:
                 error:
                   message: 'Invalid request: messages is required'
                   type: 'invalid_request_error'
+                request_id: null
                 type: 'error'
               schema:
-                $ref: '#/components/schemas/MessagesErrorResponse'
+                $ref: '#/components/schemas/AnthropicMessagesErrorResponse'
           description: 'Invalid request error'
         '401':
           content:
@@ -33482,9 +33846,10 @@ paths:
                 error:
                   message: 'Invalid API key'
                   type: 'authentication_error'
+                request_id: null
                 type: 'error'
               schema:
-                $ref: '#/components/schemas/MessagesErrorResponse'
+                $ref: '#/components/schemas/AnthropicMessagesErrorResponse'
           description: 'Authentication error'
         '403':
           content:
@@ -33494,46 +33859,26 @@ paths:
                   summary: 'Guardrail blocked the request'
                   value:
                     error:
-                      code: 403
                       message: 'Request blocked: prompt injection patterns detected'
-                      metadata:
-                        patterns:
-                          - 'ignore all previous instructions'
+                      type: 'permission_error'
                     openrouter_metadata:
-                      attempt: 1
-                      endpoints:
-                        available:
-                          - model: 'openai/gpt-4o'
-                            provider: 'OpenAI'
-                            selected: false
-                        total: 1
-                      is_byok: false
                       pipeline:
-                        - data:
-                            action: 'blocked'
-                            detected: true
-                            engines:
-                              - 'regex'
-                            patterns:
-                              - 'ignore all previous instructions'
-                          guardrail_id: 'grd_abc123'
-                          guardrail_scope: 'api-key'
-                          name: 'regex_pi_detection'
+                        - name: 'regex_pi_detection'
                           summary: 'Blocked: prompt injection detected (1 pattern matched)'
                           type: 'guardrail'
-                      region: 'iad'
-                      requested: 'openai/gpt-4o'
-                      strategy: 'direct'
-                      summary: 'available=1'
+                    request_id: null
+                    type: 'error'
                 insufficient-permissions:
                   summary: 'Insufficient permissions'
                   value:
                     error:
-                      code: 403
                       message: 'Only management keys can perform this operation'
+                      type: 'permission_error'
+                    request_id: null
+                    type: 'error'
               schema:
-                $ref: '#/components/schemas/ForbiddenResponse'
-          description: 'Forbidden - Authentication successful but insufficient permissions, or a guardrail blocked the request. When guardrails block and the `X-OpenRouter-Metadata: enabled` header is present, the response includes `openrouter_metadata` with full routing context and a `pipeline` array containing guardrail stage details.'
+                $ref: '#/components/schemas/AnthropicMessagesErrorResponse'
+          description: 'Forbidden error'
         '404':
           content:
             application/json:
@@ -33541,9 +33886,10 @@ paths:
                 error:
                   message: 'Model not found'
                   type: 'not_found_error'
+                request_id: 'gen-xxxxxxxxxxxxxxxxxxxxxxxx'
                 type: 'error'
               schema:
-                $ref: '#/components/schemas/MessagesErrorResponse'
+                $ref: '#/components/schemas/AnthropicMessagesErrorResponse'
           description: 'Not found error'
         '429':
           content:
@@ -33552,9 +33898,10 @@ paths:
                 error:
                   message: 'Rate limit exceeded'
                   type: 'rate_limit_error'
+                request_id: 'gen-xxxxxxxxxxxxxxxxxxxxxxxx'
                 type: 'error'
               schema:
-                $ref: '#/components/schemas/MessagesErrorResponse'
+                $ref: '#/components/schemas/AnthropicMessagesErrorResponse'
           description: 'Rate limit error'
         '500':
           content:
@@ -33563,9 +33910,10 @@ paths:
                 error:
                   message: 'Internal server error'
                   type: 'api_error'
+                request_id: 'gen-xxxxxxxxxxxxxxxxxxxxxxxx'
                 type: 'error'
               schema:
-                $ref: '#/components/schemas/MessagesErrorResponse'
+                $ref: '#/components/schemas/AnthropicMessagesErrorResponse'
           description: 'API error'
         '503':
           content:
@@ -33574,9 +33922,10 @@ paths:
                 error:
                   message: 'Service temporarily overloaded'
                   type: 'overloaded_error'
+                request_id: 'gen-xxxxxxxxxxxxxxxxxxxxxxxx'
                 type: 'error'
               schema:
-                $ref: '#/components/schemas/MessagesErrorResponse'
+                $ref: '#/components/schemas/AnthropicMessagesErrorResponse'
           description: 'Overloaded error'
         '529':
           content:
@@ -33585,9 +33934,10 @@ paths:
                 error:
                   message: 'Provider is temporarily overloaded'
                   type: 'overloaded_error'
+                request_id: 'gen-xxxxxxxxxxxxxxxxxxxxxxxx'
                 type: 'error'
               schema:
-                $ref: '#/components/schemas/MessagesErrorResponse'
+                $ref: '#/components/schemas/AnthropicMessagesErrorResponse'
           description: 'Overloaded error'
       summary: 'Create a message'
       tags:
@@ -37833,7 +38183,7 @@ paths:
       x-speakeasy-entity-operation: Workspace#create
   /workspaces/{id}:
     delete:
-      description: 'Delete an existing workspace. Workspaces with active API keys cannot be deleted; remove the keys first. Deleting the default workspace is currently limited to internal OpenRouter administrators while the capability rolls out; other callers receive a 403. When permitted, it requires `confirm_default_settings_deletion=true` and additionally disables the account’s unscoped inference API keys; management (provisioning) keys are retained. Deleting any workspace permanently deletes its budgets and guardrails and disables its classifiers and broadcast destinations. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      description: 'Delete an existing workspace. Workspaces with active API keys cannot be deleted; remove the keys first. Deleting the default workspace is not yet generally available; callers not enabled for it receive a 403 while the capability rolls out. Deleting any workspace permanently deletes its budgets and guardrails and disables its classifiers and broadcast destinations. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'deleteWorkspace'
       parameters:
         - description: 'The workspace ID (UUID) or slug'
@@ -37845,18 +38195,6 @@ paths:
             example: 'production'
             minLength: 1
             type: 'string'
-        - description: 'Required to delete the default workspace (currently limited to internal OpenRouter administrators while the capability rolls out). Deleting it permanently disables the account’s unscoped inference API keys (management/provisioning keys are retained) and its budgets, guardrails, classifiers, and broadcast destinations. Ignored for non-default workspaces.'
-          in: 'query'
-          name: 'confirm_default_settings_deletion'
-          required: false
-          schema:
-            description: 'Required to delete the default workspace (currently limited to internal OpenRouter administrators while the capability rolls out). Deleting it permanently disables the account’s unscoped inference API keys (management/provisioning keys are retained) and its budgets, guardrails, classifiers, and broadcast destinations. Ignored for non-default workspaces.'
-            enum:
-              - 'true'
-              - 'false'
-            example: 'false'
-            type: 'string'
-            x-openrouter-type: 'boolean'
       responses:
         '200':
           content:
@@ -38717,7 +39055,7 @@ tags:
     name: 'Classifications'
   - description: 'Credit management endpoints'
     name: 'Credits'
-  - description: 'Datasets endpoints'
+  - description: 'Public OpenRouter usage datasets. Data returned by these endpoints is licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): reuse and republish it, including commercially, with attribution to OpenRouter.'
     name: 'Datasets'
   - description: 'Text embedding endpoints'
     name: 'Embeddings'
@@ -38759,8 +39097,6 @@ tags:
     name: 'Video Generation'
   - description: 'Workspaces endpoints'
     name: 'Workspaces'
-  - description: 'beta.Analytics endpoints'
-    name: 'beta.Analytics'
 x-retry-strategy:
   initialDelay: 500
   maxAttempts: 3

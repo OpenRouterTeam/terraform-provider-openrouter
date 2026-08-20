@@ -30,7 +30,7 @@ jobs:
   generate:
     uses: speakeasy-api/sdk-generation-action/.github/workflows/workflow-executor.yaml@v15
     with:
-      runs-on: ${{ vars.USE_GITHUB_RUNNERS == 'true' && 'ubuntu-latest' || 'blacksmith-8vcpu-ubuntu-2404' }}
+      runs-on: ubuntu-latest
       force: ${{ github.event.inputs.force }}
       mode: pr
       set_version: ${{ github.event.inputs.set_version }}
@@ -41,7 +41,7 @@ jobs:
   resolve-branch:
     needs: generate
     if: ${{ !cancelled() && needs.generate.result == 'success' }}
-    runs-on: ${{ vars.USE_GITHUB_RUNNERS == 'true' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2404' }}
+    runs-on: ubuntu-latest
     outputs:
       branch_name: ${{ steps.branch.outputs.branch_name }}
       run_started_at: ${{ steps.branch.outputs.run_started_at }}

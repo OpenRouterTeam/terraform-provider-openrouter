@@ -617,7 +617,7 @@ func (s *Workspaces) Create(ctx context.Context, request shared.CreateWorkspaceR
 }
 
 // Delete a workspace
-// Delete an existing workspace. Workspaces with active API keys cannot be deleted; remove the keys first. Deleting the default workspace is currently limited to internal OpenRouter administrators while the capability rolls out; other callers receive a 403. When permitted, it requires `confirm_default_settings_deletion=true` and additionally disables the account’s unscoped inference API keys; management (provisioning) keys are retained. Deleting any workspace permanently deletes its budgets and guardrails and disables its classifiers and broadcast destinations. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Delete an existing workspace. Workspaces with active API keys cannot be deleted; remove the keys first. Deleting the default workspace is not yet generally available; callers not enabled for it receive a 403 while the capability rolls out. Deleting any workspace permanently deletes its budgets and guardrails and disables its classifiers and broadcast destinations. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Workspaces) Delete(ctx context.Context, request operations.DeleteWorkspaceRequest, opts ...operations.Option) (*operations.DeleteWorkspaceResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -669,10 +669,6 @@ func (s *Workspaces) Delete(ctx context.Context, request operations.DeleteWorksp
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", s.sdkConfiguration.UserAgent)
-
-	if err := utils.PopulateQueryParams(ctx, req, request, nil, nil); err != nil {
-		return nil, fmt.Errorf("error populating query params: %w", err)
-	}
 
 	if err := utils.PopulateSecurity(ctx, req, s.sdkConfiguration.Security); err != nil {
 		return nil, err

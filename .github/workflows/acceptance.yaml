@@ -32,7 +32,7 @@ concurrency:
 
 jobs:
   acceptance:
-    runs-on: ${{ vars.USE_GITHUB_RUNNERS == 'true' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2404' }}
+    runs-on: ubuntu-latest
     environment: acceptance-testing
     timeout-minutes: 45
     steps:
@@ -67,7 +67,7 @@ jobs:
   # Unit-mode smoke on the same schedule: proves the module still builds and
   # that acceptance tests skip cleanly without TF_ACC (the PR-safe path).
   unit:
-    runs-on: ${{ vars.USE_GITHUB_RUNNERS == 'true' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2404' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-go@v6
