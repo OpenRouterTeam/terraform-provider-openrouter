@@ -267,7 +267,7 @@ This branch's `.github/workflows/acceptance.yaml` invokes `go test` directly (`r
 
 - The "Run acceptance tests" step's env block shows `TF_ACC: 1` and `OPENROUTER_MANAGEMENT_KEY: ***` were actually set for this invocation (not the unit job's TF_ACC-unset path).
 - The step took **44.797s** wall time across all 10 tests (each 1.95s–7.85s) — consistent with real live API round-trips, and clearly distinguishable from a skipped/no-op run: the sibling `unit` job (same commit, no `TF_ACC`) completed its equivalent `go test` invocation in **0.007s** with all 10 tests reporting `--- SKIP ... "Acceptance tests skipped unless env 'TF_ACC' set"`. The four-order-of-magnitude timing gap between the two jobs is itself independent confirmation that the acceptance job actually exercised the live path.
-- `grep -in "fail\|panic\|error"` and a search for `##[error]` against the full downloaded log, and against the acceptance job's lines in isolation, returned **zero matches**.
+- `grep -in "fail\|panic\|error"` and a search for `##[error]` against the "Run acceptance tests" step's lines in isolation returned **zero matches within the acceptance-test step**. (The unscoped grep against the full downloaded log returns one unrelated match: a benign Node.js deprecation notice inside the separate `Run hashicorp/setup-terraform@v3` step, which has no bearing on the test outcome.)
 
 ### What the log shows for `TestAccObservabilityDestination_S3NonDefaultConfig`
 

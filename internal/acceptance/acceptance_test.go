@@ -298,7 +298,9 @@ resource "openrouter_observability_destination" "test" {
 // value back to the default -- a perpetual, non-converging diff. This test
 // requires every plan taken after apply -- before refresh, after refresh,
 // and on a second independent PlanOnly invocation -- to be completely empty,
-// and fails loudly via plancheck.ExpectEmptyPlan if it is not.
+// and fails loudly via plancheck.ExpectEmptyPlan if it is not. It then
+// updates prefix/pathTemplate from the applied state and repeats the same
+// empty-plan checks, proving the fix converges on update, not just create.
 //
 // The S3 credentials are fake: the Management API stores destination config
 // without validating upstream connectivity, and enabled=false keeps the
@@ -322,6 +324,23 @@ resource "openrouter_observability_destination" "test" {
     secretAccessKey = jsonencode("tf-acc-not-a-real-secret")
     prefix          = jsonencode("nonprod-coreml")
     pathTemplate    = jsonencode("{prefix}/{apiKeyName}/{year}/{month}/{day}")
+  }
+}
+`, name)
+
+	// updatedConfig changes both DEV-856 attributes from the applied state,
+	// re-using the same placeholder bucket/credential values.
+	updatedConfig := fmt.Sprintf(`
+resource "openrouter_observability_destination" "test" {
+  name    = %q
+  type    = "s3"
+  enabled = false
+  config = {
+    bucketName      = jsonencode("tf-acc-nonexistent-bucket")
+    accessKeyId     = jsonencode("AKIAIOSFODNN7EXAMPLE")
+    secretAccessKey = jsonencode("tf-acc-not-a-real-secret")
+    prefix          = jsonencode("nonprod-coreml-updated")
+    pathTemplate    = jsonencode("{prefix}/{year}/{month}/{day}/{apiKeyName}")
   }
 }
 `, name)
@@ -350,6 +369,26 @@ resource "openrouter_observability_destination" "test" {
 			// one-off artifact of the apply step.
 			{
 				Config:           providerConfig() + config,
+				PlanOnly:         true,
+				ConfigPlanChecks: emptyPlanChecks,
+			},
+			// A third step that changes prefix/pathTemplate from the applied
+			// state: the original DEV-856 drift would have resurfaced here
+			// too, since the provider kept proposing to reset the new value
+			// back toward the stale schema default on every plan.
+			{
+				Config: providerConfig() + updatedConfig,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "s3.config.prefix", "nonprod-coreml-updated"),
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "s3.config.path_template", "{prefix}/{year}/{month}/{day}/{apiKeyName}"),
+				),
+				ConfigPlanChecks: emptyPlanChecks,
+			},
+			// A fourth, independent plan invocation with no config change
+			// after the update: proves the post-update empty plan is stable
+			// too, not a one-off artifact of the update apply.
+			{
+				Config:           providerConfig() + updatedConfig,
 				PlanOnly:         true,
 				ConfigPlanChecks: emptyPlanChecks,
 			},
