@@ -20,7 +20,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -628,15 +630,20 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 				Optional: true,
 				Attributes: map[string]schema.Attribute{
 					"enabled": schema.BoolAttribute{
-						Optional: true,
+						Computed:    true,
+						Optional:    true,
+						Default:     booldefault.StaticBool(true),
+						Description: `Default: true`,
 					},
 					"groups": schema.ListNestedAttribute{
 						Required: true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"logic": schema.StringAttribute{
+									Computed:    true,
 									Optional:    true,
-									Description: `must be one of ["and", "or"]`,
+									Default:     stringdefault.StaticString(`and`),
+									Description: `Default: "and"; must be one of ["and", "or"]`,
 									Validators: []validator.String{
 										stringvalidator.OneOf(
 											"and",

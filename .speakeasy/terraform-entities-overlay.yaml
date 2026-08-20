@@ -327,8 +327,82 @@ actions:
     remove: true
   - target: $["components"]["schemas"]["ObservabilityFilterRulesConfig"]["properties"]["enabled"]["default"]
     remove: true
-  - target: $["components"]["schemas"]["ObservabilityFilterRulesConfigNullable"]["properties"]["enabled"]["default"]
-    remove: true
+
+  # ---------------------------------------------------------------------------
+  # DEV-856 fix round 1: ObservabilityFilterRuleGroup.logic is shared by both
+  # the 17 read-only per-destination paths (via ObservabilityFilterRulesConfig)
+  # and the 1 writable top-level path (via ObservabilityFilterRulesConfigNullable),
+  # so the `default` removal above strips Computed from the writable path too.
+  # Split it the same way ObservabilityFilterRulesConfig/ConfigNullable already
+  # are: add a nullable-only sibling that keeps `default` (and thus Computed),
+  # and repoint the writable path's `groups[].items` ref at it. The read-only
+  # ObservabilityFilterRuleGroup above is untouched and keeps `default` removed.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]
+    update:
+      ObservabilityFilterRuleGroupNullable:
+        example:
+          logic: 'and'
+          rules:
+            - field: 'model'
+              operator: 'equals'
+              value: 'openai/gpt-4o'
+        properties:
+          logic:
+            default: 'and'
+            enum:
+              - 'and'
+              - 'or'
+            type: 'string'
+          rules:
+            items:
+              properties:
+                field:
+                  enum:
+                    - 'model'
+                    - 'provider'
+                    - 'session_id'
+                    - 'user_id'
+                    - 'api_key_name'
+                    - 'finish_reason'
+                    - 'input'
+                    - 'output'
+                    - 'total_cost'
+                    - 'total_tokens'
+                    - 'prompt_tokens'
+                    - 'completion_tokens'
+                  type: 'string'
+                operator:
+                  enum:
+                    - 'equals'
+                    - 'not_equals'
+                    - 'contains'
+                    - 'not_contains'
+                    - 'regex'
+                    - 'starts_with'
+                    - 'ends_with'
+                    - 'gt'
+                    - 'lt'
+                    - 'gte'
+                    - 'lte'
+                    - 'exists'
+                    - 'not_exists'
+                  type: 'string'
+                value:
+                  anyOf:
+                    - type: 'string'
+                    - type: 'number'
+              required:
+                - 'field'
+                - 'operator'
+              type: 'object'
+            type: 'array'
+        required:
+          - 'rules'
+        type: 'object'
+  - target: $["components"]["schemas"]["ObservabilityFilterRulesConfigNullable"]["properties"]["groups"]["items"]
+    update:
+      $ref: '#/components/schemas/ObservabilityFilterRuleGroupNullable'
   - target: $["components"]["schemas"]["ObservabilityGrafanaDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
     remove: true
   - target: $["components"]["schemas"]["ObservabilityLangfuseDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]

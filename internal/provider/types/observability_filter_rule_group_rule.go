@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type Rule struct {
+type ObservabilityFilterRuleGroupRule struct {
 	Field    types.String                       `tfsdk:"field"`
 	Operator types.String                       `tfsdk:"operator"`
 	Value    *ObservabilityFilterRuleGroupValue `tfsdk:"value"`

@@ -190,3 +190,62 @@ Net effect: a user who omits `filter_rules.enabled` or a `filter_rules.groups[].
 ### Regression test
 
 `TestAccObservabilityDestination_S3NonDefaultConfig` (`internal/acceptance/acceptance_test.go`) replaces the class-equivalent placeholder values the existing PR #192 test used with the exact customer values from this document (`prefix = "nonprod-coreml"`, `pathTemplate = "{prefix}/{apiKeyName}/{year}/{month}/{day}"`), and requires an empty plan rather than the evidence branch's drift-requiring assertions: `ExpectNonEmptyPlan` is gone, and `plancheck.ExpectEmptyPlan()` is asserted on `PostApplyPreRefresh` and `PostApplyPostRefresh` for both the initial apply step and a second, independent `PlanOnly` step. Verified to compile and skip cleanly without `TF_ACC` set (`go test ./internal/acceptance/... -v -timeout 5m`, all 10 tests in the package skip with `"Acceptance tests skipped unless env 'TF_ACC' set"`); not dispatched live in this task — no protected acceptance run was authorized or run.
+
+## Fix round 1: restoring `Computed` + `Default` on the two writable `filter_rules` attributes
+
+This section addresses the regression flagged directly above ("Regression: the two legitimate defaults were not preserved"). It does not alter anything written above it.
+
+### Mechanism: split `ObservabilityFilterRuleGroup` the same way `ObservabilityFilterRulesConfig` was already split
+
+`.speakeasy/terraform-entities-overlay.yaml` gained a new schema-creation action instead of a `default`-removal action. Two changes:
+
+1. **The `ObservabilityFilterRulesConfigNullable.enabled.default` removal action was deleted outright** (not scoped, deleted — there is no longer any removal targeting this path), restoring `default: true` on the writable top-level `filter_rules.enabled` attribute's underlying schema.
+2. **A new sibling schema `ObservabilityFilterRuleGroupNullable`** was added via an overlay `update` action targeting `$["components"]["schemas"]` (a merge onto the existing `components.schemas` map — the same mechanism already used elsewhere in this file to inject `x-speakeasy-entity-operation` keys that don't exist in the raw vendor spec). It is a byte-for-byte copy of `ObservabilityFilterRuleGroup`'s shape (`logic` with `default: 'and'` and the `and`/`or` enum, `rules` with the same `field`/`operator`/`value` sub-schema), except it keeps `logic.default` where the original schema has had it removed by the pre-existing `ObservabilityFilterRuleGroup.logic.default` removal action (untouched by this round). A third action then repoints `ObservabilityFilterRulesConfigNullable.properties.groups.items.$ref` from `#/components/schemas/ObservabilityFilterRuleGroup` to `#/components/schemas/ObservabilityFilterRuleGroupNullable`.
+
+Net effect: the 17 read-only per-destination-type paths keep consuming `ObservabilityFilterRulesConfig` → `ObservabilityFilterRuleGroup` (both still `default`-free, unaffected), while the 1 writable top-level `filter_rules` path now consumes `ObservabilityFilterRulesConfigNullable` → `ObservabilityFilterRuleGroupNullable` (both `default`-bearing, `enabled: true` / `logic: 'and'`), matching the split already established for `ObservabilityFilterRulesConfig`/`ObservabilityFilterRulesConfigNullable` in the original Task 2 work.
+
+Regenerated with the same pinned CLI (`/tmp/speakeasy-1.795.0/speakeasy`, `speakeasy run --target open-router -y -o console`) and zero manual edits to any generated Go file, per the same generation contract as Task 2.
+
+### Result: exactly 2 `Default:` declarations, both correctly placed
+
+`internal/provider/observabilitydestination_resource.go` now contains exactly 2 real `Default:` field declarations (verified with a grep pattern anchored to the field-assignment syntax, `^\s*Default:\s*[a-z]`, to exclude the literal substring `"Default:"` that appears inside two `Description:` string literals) — both on the top-level writable `filter_rules` attribute, both `Optional` + `Computed` + `Default`:
+
+```go
+"enabled": schema.BoolAttribute{
+    Computed:    true,
+    Optional:    true,
+    Default:     booldefault.StaticBool(true),
+    Description: `Default: true`,
+},
+...
+"logic": schema.StringAttribute{
+    Computed:    true,
+    Optional:    true,
+    Default:     stringdefault.StaticString(`and`),
+    Description: `Default: "and"; must be one of ["and", "or"]`,
+},
+```
+
+The 53 previously-defective `Computed`-only defaults inventoried above remain gone (0 of those reappeared), and `internal/provider/observabilitydestination_data_source.go` / `observabilitydestinations_data_source.go` remain at 0 `Default:` declarations, unaffected either way.
+
+### Writable-path routing confirmed
+
+`internal/provider/observabilitydestination_resource_sdk.go` was grepped for every `ObservabilityFilterRuleGroup*` / `ObservabilityFilterRulesConfig*` reference post-regeneration. The 17 read-only per-destination-type conversion blocks (state-refresh paths) still construct `tfTypes.ObservabilityFilterRulesConfig{}` / `tfTypes.ObservabilityFilterRuleGroup{}` — the original, unmodified types. The two request-building functions (Create and Update, which populate the writable top-level `filter_rules` attribute) now construct `shared.ObservabilityFilterRulesConfigNullable{...}` populated with `shared.ObservabilityFilterRuleGroupNullable{...}` (and its associated `...NullableLogic` / `...NullableField` / `...NullableOperator` / `...NullableValue` / `...NullableRule` types) — confirming the writable path correctly routes through the new split schema.
+
+### Wire compatibility confirmed
+
+The split is codegen-shaping only; both schema variants serialize identically over the wire:
+
+- **JSON property names unchanged.** Diffing `internal/sdk/models/shared/observabilityfilterrulegroup.go` before/after this round shows the only change is Go-level generic-to-specific type renames forced by disambiguation (`Logic` → `ObservabilityFilterRuleGroupLogic`, `Field` → `ObservabilityFilterRuleGroupField`, `Operator` → `ObservabilityFilterRuleGroupOperator`, `Rule` → `ObservabilityFilterRuleGroupRule`) — a Go-only symbol rename, not a wire-visible change. The `json:` tags themselves (`field`, `operator`, `value,omitzero`, `logic,omitzero`, `rules`) are byte-for-byte identical before and after. The new `internal/sdk/models/shared/observabilityfilterrulegroupnullable.go` uses the identical property names (`json:"field"`, `json:"operator"`, `json:"value,omitzero"`, `json:"rules"`) on its own struct.
+- **The one real serialization difference is the intended mechanism, not a wire-shape change.** `ObservabilityFilterRuleGroupNullable.Logic` and `ObservabilityFilterRulesConfigNullable.Enabled` are tagged `` `default:"and" json:"logic"` `` / `` `default:"true" json:"enabled"` `` instead of `json:"...,omitzero"`. Per `internal/sdk/internal/utils/json.go`'s `marshalValue`/`handleDefaultConstValue`, a `default`-tagged nil pointer field is serialized as its literal default value instead of being omitted — i.e. an unset `filter_rules.enabled` now serializes as `"enabled": true` rather than being dropped from the request body, and an unset `filter_rules.groups[].logic` serializes as `"logic": "and"`. This is not a new pattern: `ObservabilityFilterRulesConfigNullable.Enabled` already carried this exact `omitzero` → `default` transition in the original Task 2 regeneration (to make `Computed`+`Default` work end-to-end at the SDK layer for that field), so applying the same transition to `Logic` is the established mechanism, not a novel risk.
+
+### Verification
+
+- `go build ./...` — clean, exit 0.
+- `go vet ./...` — 215 warnings, identical count to the pre-existing baseline from Task 2's verification; confirmed all 215 are the same long-standing `struct field type_ has json tag but is not exported` artifact across unrelated `internal/sdk/models/*.go` files, and confirmed zero of them are attributable to the two touched/new files (`observabilityfilterrulegroup.go`, `observabilityfilterrulegroupnullable.go`, `observabilityfilterrulesconfignullable.go`).
+- `go test ./internal/acceptance/... -v -timeout 5m` — all 10 tests, including `TestAccObservabilityDestination_S3NonDefaultConfig`, still compile and `SKIP` cleanly with `"Acceptance tests skipped unless env 'TF_ACC' set"`; `TF_ACC` and `OPENROUTER_MANAGEMENT_KEY` presence-checked only, both confirmed absent, never echoed.
+- `go test ./...` — full module, all packages pass or report `[no test files]`, no failures.
+
+### Files touched by this round
+
+`.speakeasy/terraform-entities-overlay.yaml` (the overlay edit described above), plus the regenerated artifacts it produces: `.speakeasy/gen.lock`, `.speakeasy/gen.yaml`, `.speakeasy/out.openapi.yaml`, `.speakeasy/workflow.lock`, `docs/index.md`, `docs/resources/observability_destination.md`, `examples/provider/provider.tf`, `examples/resources/openrouter_observability_destination/resource.tf`, `internal/provider/observabilitydestination_data_source_sdk.go`, `internal/provider/observabilitydestination_resource.go`, `internal/provider/observabilitydestination_resource_sdk.go`, `internal/provider/observabilitydestinations_data_source_sdk.go`, `internal/provider/types/observability_filter_rule_group.go`, `internal/provider/types/observability_filter_rules_config_nullable.go`, `internal/sdk/models/shared/observabilityfilterrulegroup.go`, `internal/sdk/models/shared/observabilityfilterrulesconfignullable.go`, `internal/sdk/openrouter.go` (all modified); `internal/provider/types/observability_filter_rule_group_nullable.go`, `internal/provider/types/observability_filter_rule_group_nullable_rule.go`, `internal/provider/types/observability_filter_rule_group_nullable_value.go`, `internal/provider/types/observability_filter_rule_group_rule.go`, `internal/sdk/models/shared/observabilityfilterrulegroupnullable.go` (all new); `internal/provider/types/rule.go` (deleted — superseded by the schema-prefixed `observability_filter_rule_group_rule.go` after the disambiguation rename). No manual edits to any generated file.

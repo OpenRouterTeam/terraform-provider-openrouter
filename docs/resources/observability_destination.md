@@ -25,7 +25,7 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
   }
   enabled = true
   filter_rules = {
-    enabled = false
+    enabled = true
     groups = [
       {
         logic = "and"
@@ -102,7 +102,7 @@ Required:
 
 Optional:
 
-- `enabled` (Boolean)
+- `enabled` (Boolean) Default: true
 
 <a id="nestedatt--filter_rules--groups"></a>
 ### Nested Schema for `filter_rules.groups`
@@ -113,7 +113,7 @@ Required:
 
 Optional:
 
-- `logic` (String) must be one of ["and", "or"]
+- `logic` (String) Default: "and"; must be one of ["and", "or"]
 
 <a id="nestedatt--filter_rules--groups--rules"></a>
 ### Nested Schema for `filter_rules.groups.rules`

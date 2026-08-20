@@ -7,6 +7,6 @@ import (
 )
 
 type ObservabilityFilterRulesConfigNullable struct {
-	Enabled types.Bool                     `tfsdk:"enabled"`
-	Groups  []ObservabilityFilterRuleGroup `tfsdk:"groups"`
+	Enabled types.Bool                             `tfsdk:"enabled"`
+	Groups  []ObservabilityFilterRuleGroupNullable `tfsdk:"groups"`
 }

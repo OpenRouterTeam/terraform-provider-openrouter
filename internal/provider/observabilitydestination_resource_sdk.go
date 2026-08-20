@@ -76,10 +76,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups.Logic = types.StringNull()
 				}
-				groups.Rules = []tfTypes.Rule{}
+				groups.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem := range groupsItem.Rules {
-					var rules tfTypes.Rule
+					var rules tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules.Field = types.StringValue(string(rulesItem.Field))
 					rules.Operator = types.StringValue(string(rulesItem.Operator))
@@ -157,10 +157,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups1.Logic = types.StringNull()
 				}
-				groups1.Rules = []tfTypes.Rule{}
+				groups1.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem1 := range groupsItem1.Rules {
-					var rules1 tfTypes.Rule
+					var rules1 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules1.Field = types.StringValue(string(rulesItem1.Field))
 					rules1.Operator = types.StringValue(string(rulesItem1.Operator))
@@ -240,10 +240,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups2.Logic = types.StringNull()
 				}
-				groups2.Rules = []tfTypes.Rule{}
+				groups2.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem2 := range groupsItem2.Rules {
-					var rules2 tfTypes.Rule
+					var rules2 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules2.Field = types.StringValue(string(rulesItem2.Field))
 					rules2.Operator = types.StringValue(string(rulesItem2.Operator))
@@ -321,10 +321,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups3.Logic = types.StringNull()
 				}
-				groups3.Rules = []tfTypes.Rule{}
+				groups3.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem3 := range groupsItem3.Rules {
-					var rules3 tfTypes.Rule
+					var rules3 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules3.Field = types.StringValue(string(rulesItem3.Field))
 					rules3.Operator = types.StringValue(string(rulesItem3.Operator))
@@ -402,10 +402,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups4.Logic = types.StringNull()
 				}
-				groups4.Rules = []tfTypes.Rule{}
+				groups4.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem4 := range groupsItem4.Rules {
-					var rules4 tfTypes.Rule
+					var rules4 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules4.Field = types.StringValue(string(rulesItem4.Field))
 					rules4.Operator = types.StringValue(string(rulesItem4.Operator))
@@ -483,10 +483,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups5.Logic = types.StringNull()
 				}
-				groups5.Rules = []tfTypes.Rule{}
+				groups5.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem5 := range groupsItem5.Rules {
-					var rules5 tfTypes.Rule
+					var rules5 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules5.Field = types.StringValue(string(rulesItem5.Field))
 					rules5.Operator = types.StringValue(string(rulesItem5.Operator))
@@ -565,10 +565,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups6.Logic = types.StringNull()
 				}
-				groups6.Rules = []tfTypes.Rule{}
+				groups6.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem6 := range groupsItem6.Rules {
-					var rules6 tfTypes.Rule
+					var rules6 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules6.Field = types.StringValue(string(rulesItem6.Field))
 					rules6.Operator = types.StringValue(string(rulesItem6.Operator))
@@ -649,10 +649,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups7.Logic = types.StringNull()
 				}
-				groups7.Rules = []tfTypes.Rule{}
+				groups7.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem7 := range groupsItem7.Rules {
-					var rules7 tfTypes.Rule
+					var rules7 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules7.Field = types.StringValue(string(rulesItem7.Field))
 					rules7.Operator = types.StringValue(string(rulesItem7.Operator))
@@ -730,10 +730,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups8.Logic = types.StringNull()
 				}
-				groups8.Rules = []tfTypes.Rule{}
+				groups8.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem8 := range groupsItem8.Rules {
-					var rules8 tfTypes.Rule
+					var rules8 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules8.Field = types.StringValue(string(rulesItem8.Field))
 					rules8.Operator = types.StringValue(string(rulesItem8.Operator))
@@ -809,10 +809,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups9.Logic = types.StringNull()
 				}
-				groups9.Rules = []tfTypes.Rule{}
+				groups9.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem9 := range groupsItem9.Rules {
-					var rules9 tfTypes.Rule
+					var rules9 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules9.Field = types.StringValue(string(rulesItem9.Field))
 					rules9.Operator = types.StringValue(string(rulesItem9.Operator))
@@ -889,10 +889,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups10.Logic = types.StringNull()
 				}
-				groups10.Rules = []tfTypes.Rule{}
+				groups10.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem10 := range groupsItem10.Rules {
-					var rules10 tfTypes.Rule
+					var rules10 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules10.Field = types.StringValue(string(rulesItem10.Field))
 					rules10.Operator = types.StringValue(string(rulesItem10.Operator))
@@ -969,10 +969,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups11.Logic = types.StringNull()
 				}
-				groups11.Rules = []tfTypes.Rule{}
+				groups11.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem11 := range groupsItem11.Rules {
-					var rules11 tfTypes.Rule
+					var rules11 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules11.Field = types.StringValue(string(rulesItem11.Field))
 					rules11.Operator = types.StringValue(string(rulesItem11.Operator))
@@ -1055,10 +1055,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups12.Logic = types.StringNull()
 				}
-				groups12.Rules = []tfTypes.Rule{}
+				groups12.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem12 := range groupsItem12.Rules {
-					var rules12 tfTypes.Rule
+					var rules12 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules12.Field = types.StringValue(string(rulesItem12.Field))
 					rules12.Operator = types.StringValue(string(rulesItem12.Operator))
@@ -1135,10 +1135,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups13.Logic = types.StringNull()
 				}
-				groups13.Rules = []tfTypes.Rule{}
+				groups13.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem13 := range groupsItem13.Rules {
-					var rules13 tfTypes.Rule
+					var rules13 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules13.Field = types.StringValue(string(rulesItem13.Field))
 					rules13.Operator = types.StringValue(string(rulesItem13.Operator))
@@ -1219,10 +1219,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups14.Logic = types.StringNull()
 				}
-				groups14.Rules = []tfTypes.Rule{}
+				groups14.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem14 := range groupsItem14.Rules {
-					var rules14 tfTypes.Rule
+					var rules14 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules14.Field = types.StringValue(string(rulesItem14.Field))
 					rules14.Operator = types.StringValue(string(rulesItem14.Operator))
@@ -1301,10 +1301,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups15.Logic = types.StringNull()
 				}
-				groups15.Rules = []tfTypes.Rule{}
+				groups15.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem15 := range groupsItem15.Rules {
-					var rules15 tfTypes.Rule
+					var rules15 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules15.Field = types.StringValue(string(rulesItem15.Field))
 					rules15.Operator = types.StringValue(string(rulesItem15.Operator))
@@ -1385,10 +1385,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				} else {
 					groups16.Logic = types.StringNull()
 				}
-				groups16.Rules = []tfTypes.Rule{}
+				groups16.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem16 := range groupsItem16.Rules {
-					var rules16 tfTypes.Rule
+					var rules16 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules16.Field = types.StringValue(string(rulesItem16.Field))
 					rules16.Operator = types.StringValue(string(rulesItem16.Operator))
@@ -1489,10 +1489,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups.Logic = types.StringNull()
 				}
-				groups.Rules = []tfTypes.Rule{}
+				groups.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem := range groupsItem.Rules {
-					var rules tfTypes.Rule
+					var rules tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules.Field = types.StringValue(string(rulesItem.Field))
 					rules.Operator = types.StringValue(string(rulesItem.Operator))
@@ -1570,10 +1570,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups1.Logic = types.StringNull()
 				}
-				groups1.Rules = []tfTypes.Rule{}
+				groups1.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem1 := range groupsItem1.Rules {
-					var rules1 tfTypes.Rule
+					var rules1 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules1.Field = types.StringValue(string(rulesItem1.Field))
 					rules1.Operator = types.StringValue(string(rulesItem1.Operator))
@@ -1653,10 +1653,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups2.Logic = types.StringNull()
 				}
-				groups2.Rules = []tfTypes.Rule{}
+				groups2.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem2 := range groupsItem2.Rules {
-					var rules2 tfTypes.Rule
+					var rules2 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules2.Field = types.StringValue(string(rulesItem2.Field))
 					rules2.Operator = types.StringValue(string(rulesItem2.Operator))
@@ -1734,10 +1734,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups3.Logic = types.StringNull()
 				}
-				groups3.Rules = []tfTypes.Rule{}
+				groups3.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem3 := range groupsItem3.Rules {
-					var rules3 tfTypes.Rule
+					var rules3 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules3.Field = types.StringValue(string(rulesItem3.Field))
 					rules3.Operator = types.StringValue(string(rulesItem3.Operator))
@@ -1815,10 +1815,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups4.Logic = types.StringNull()
 				}
-				groups4.Rules = []tfTypes.Rule{}
+				groups4.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem4 := range groupsItem4.Rules {
-					var rules4 tfTypes.Rule
+					var rules4 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules4.Field = types.StringValue(string(rulesItem4.Field))
 					rules4.Operator = types.StringValue(string(rulesItem4.Operator))
@@ -1896,10 +1896,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups5.Logic = types.StringNull()
 				}
-				groups5.Rules = []tfTypes.Rule{}
+				groups5.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem5 := range groupsItem5.Rules {
-					var rules5 tfTypes.Rule
+					var rules5 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules5.Field = types.StringValue(string(rulesItem5.Field))
 					rules5.Operator = types.StringValue(string(rulesItem5.Operator))
@@ -1978,10 +1978,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups6.Logic = types.StringNull()
 				}
-				groups6.Rules = []tfTypes.Rule{}
+				groups6.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem6 := range groupsItem6.Rules {
-					var rules6 tfTypes.Rule
+					var rules6 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules6.Field = types.StringValue(string(rulesItem6.Field))
 					rules6.Operator = types.StringValue(string(rulesItem6.Operator))
@@ -2062,10 +2062,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups7.Logic = types.StringNull()
 				}
-				groups7.Rules = []tfTypes.Rule{}
+				groups7.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem7 := range groupsItem7.Rules {
-					var rules7 tfTypes.Rule
+					var rules7 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules7.Field = types.StringValue(string(rulesItem7.Field))
 					rules7.Operator = types.StringValue(string(rulesItem7.Operator))
@@ -2143,10 +2143,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups8.Logic = types.StringNull()
 				}
-				groups8.Rules = []tfTypes.Rule{}
+				groups8.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem8 := range groupsItem8.Rules {
-					var rules8 tfTypes.Rule
+					var rules8 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules8.Field = types.StringValue(string(rulesItem8.Field))
 					rules8.Operator = types.StringValue(string(rulesItem8.Operator))
@@ -2222,10 +2222,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups9.Logic = types.StringNull()
 				}
-				groups9.Rules = []tfTypes.Rule{}
+				groups9.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem9 := range groupsItem9.Rules {
-					var rules9 tfTypes.Rule
+					var rules9 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules9.Field = types.StringValue(string(rulesItem9.Field))
 					rules9.Operator = types.StringValue(string(rulesItem9.Operator))
@@ -2302,10 +2302,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups10.Logic = types.StringNull()
 				}
-				groups10.Rules = []tfTypes.Rule{}
+				groups10.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem10 := range groupsItem10.Rules {
-					var rules10 tfTypes.Rule
+					var rules10 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules10.Field = types.StringValue(string(rulesItem10.Field))
 					rules10.Operator = types.StringValue(string(rulesItem10.Operator))
@@ -2382,10 +2382,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups11.Logic = types.StringNull()
 				}
-				groups11.Rules = []tfTypes.Rule{}
+				groups11.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem11 := range groupsItem11.Rules {
-					var rules11 tfTypes.Rule
+					var rules11 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules11.Field = types.StringValue(string(rulesItem11.Field))
 					rules11.Operator = types.StringValue(string(rulesItem11.Operator))
@@ -2468,10 +2468,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups12.Logic = types.StringNull()
 				}
-				groups12.Rules = []tfTypes.Rule{}
+				groups12.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem12 := range groupsItem12.Rules {
-					var rules12 tfTypes.Rule
+					var rules12 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules12.Field = types.StringValue(string(rulesItem12.Field))
 					rules12.Operator = types.StringValue(string(rulesItem12.Operator))
@@ -2548,10 +2548,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups13.Logic = types.StringNull()
 				}
-				groups13.Rules = []tfTypes.Rule{}
+				groups13.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem13 := range groupsItem13.Rules {
-					var rules13 tfTypes.Rule
+					var rules13 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules13.Field = types.StringValue(string(rulesItem13.Field))
 					rules13.Operator = types.StringValue(string(rulesItem13.Operator))
@@ -2632,10 +2632,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups14.Logic = types.StringNull()
 				}
-				groups14.Rules = []tfTypes.Rule{}
+				groups14.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem14 := range groupsItem14.Rules {
-					var rules14 tfTypes.Rule
+					var rules14 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules14.Field = types.StringValue(string(rulesItem14.Field))
 					rules14.Operator = types.StringValue(string(rulesItem14.Operator))
@@ -2714,10 +2714,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups15.Logic = types.StringNull()
 				}
-				groups15.Rules = []tfTypes.Rule{}
+				groups15.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem15 := range groupsItem15.Rules {
-					var rules15 tfTypes.Rule
+					var rules15 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules15.Field = types.StringValue(string(rulesItem15.Field))
 					rules15.Operator = types.StringValue(string(rulesItem15.Operator))
@@ -2798,10 +2798,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				} else {
 					groups16.Logic = types.StringNull()
 				}
-				groups16.Rules = []tfTypes.Rule{}
+				groups16.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem16 := range groupsItem16.Rules {
-					var rules16 tfTypes.Rule
+					var rules16 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules16.Field = types.StringValue(string(rulesItem16.Field))
 					rules16.Operator = types.StringValue(string(rulesItem16.Operator))
@@ -2902,10 +2902,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups.Logic = types.StringNull()
 				}
-				groups.Rules = []tfTypes.Rule{}
+				groups.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem := range groupsItem.Rules {
-					var rules tfTypes.Rule
+					var rules tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules.Field = types.StringValue(string(rulesItem.Field))
 					rules.Operator = types.StringValue(string(rulesItem.Operator))
@@ -2983,10 +2983,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups1.Logic = types.StringNull()
 				}
-				groups1.Rules = []tfTypes.Rule{}
+				groups1.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem1 := range groupsItem1.Rules {
-					var rules1 tfTypes.Rule
+					var rules1 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules1.Field = types.StringValue(string(rulesItem1.Field))
 					rules1.Operator = types.StringValue(string(rulesItem1.Operator))
@@ -3066,10 +3066,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups2.Logic = types.StringNull()
 				}
-				groups2.Rules = []tfTypes.Rule{}
+				groups2.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem2 := range groupsItem2.Rules {
-					var rules2 tfTypes.Rule
+					var rules2 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules2.Field = types.StringValue(string(rulesItem2.Field))
 					rules2.Operator = types.StringValue(string(rulesItem2.Operator))
@@ -3147,10 +3147,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups3.Logic = types.StringNull()
 				}
-				groups3.Rules = []tfTypes.Rule{}
+				groups3.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem3 := range groupsItem3.Rules {
-					var rules3 tfTypes.Rule
+					var rules3 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules3.Field = types.StringValue(string(rulesItem3.Field))
 					rules3.Operator = types.StringValue(string(rulesItem3.Operator))
@@ -3228,10 +3228,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups4.Logic = types.StringNull()
 				}
-				groups4.Rules = []tfTypes.Rule{}
+				groups4.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem4 := range groupsItem4.Rules {
-					var rules4 tfTypes.Rule
+					var rules4 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules4.Field = types.StringValue(string(rulesItem4.Field))
 					rules4.Operator = types.StringValue(string(rulesItem4.Operator))
@@ -3309,10 +3309,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups5.Logic = types.StringNull()
 				}
-				groups5.Rules = []tfTypes.Rule{}
+				groups5.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem5 := range groupsItem5.Rules {
-					var rules5 tfTypes.Rule
+					var rules5 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules5.Field = types.StringValue(string(rulesItem5.Field))
 					rules5.Operator = types.StringValue(string(rulesItem5.Operator))
@@ -3391,10 +3391,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups6.Logic = types.StringNull()
 				}
-				groups6.Rules = []tfTypes.Rule{}
+				groups6.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem6 := range groupsItem6.Rules {
-					var rules6 tfTypes.Rule
+					var rules6 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules6.Field = types.StringValue(string(rulesItem6.Field))
 					rules6.Operator = types.StringValue(string(rulesItem6.Operator))
@@ -3475,10 +3475,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups7.Logic = types.StringNull()
 				}
-				groups7.Rules = []tfTypes.Rule{}
+				groups7.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem7 := range groupsItem7.Rules {
-					var rules7 tfTypes.Rule
+					var rules7 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules7.Field = types.StringValue(string(rulesItem7.Field))
 					rules7.Operator = types.StringValue(string(rulesItem7.Operator))
@@ -3556,10 +3556,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups8.Logic = types.StringNull()
 				}
-				groups8.Rules = []tfTypes.Rule{}
+				groups8.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem8 := range groupsItem8.Rules {
-					var rules8 tfTypes.Rule
+					var rules8 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules8.Field = types.StringValue(string(rulesItem8.Field))
 					rules8.Operator = types.StringValue(string(rulesItem8.Operator))
@@ -3635,10 +3635,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups9.Logic = types.StringNull()
 				}
-				groups9.Rules = []tfTypes.Rule{}
+				groups9.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem9 := range groupsItem9.Rules {
-					var rules9 tfTypes.Rule
+					var rules9 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules9.Field = types.StringValue(string(rulesItem9.Field))
 					rules9.Operator = types.StringValue(string(rulesItem9.Operator))
@@ -3715,10 +3715,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups10.Logic = types.StringNull()
 				}
-				groups10.Rules = []tfTypes.Rule{}
+				groups10.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem10 := range groupsItem10.Rules {
-					var rules10 tfTypes.Rule
+					var rules10 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules10.Field = types.StringValue(string(rulesItem10.Field))
 					rules10.Operator = types.StringValue(string(rulesItem10.Operator))
@@ -3795,10 +3795,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups11.Logic = types.StringNull()
 				}
-				groups11.Rules = []tfTypes.Rule{}
+				groups11.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem11 := range groupsItem11.Rules {
-					var rules11 tfTypes.Rule
+					var rules11 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules11.Field = types.StringValue(string(rulesItem11.Field))
 					rules11.Operator = types.StringValue(string(rulesItem11.Operator))
@@ -3881,10 +3881,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups12.Logic = types.StringNull()
 				}
-				groups12.Rules = []tfTypes.Rule{}
+				groups12.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem12 := range groupsItem12.Rules {
-					var rules12 tfTypes.Rule
+					var rules12 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules12.Field = types.StringValue(string(rulesItem12.Field))
 					rules12.Operator = types.StringValue(string(rulesItem12.Operator))
@@ -3961,10 +3961,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups13.Logic = types.StringNull()
 				}
-				groups13.Rules = []tfTypes.Rule{}
+				groups13.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem13 := range groupsItem13.Rules {
-					var rules13 tfTypes.Rule
+					var rules13 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules13.Field = types.StringValue(string(rulesItem13.Field))
 					rules13.Operator = types.StringValue(string(rulesItem13.Operator))
@@ -4045,10 +4045,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups14.Logic = types.StringNull()
 				}
-				groups14.Rules = []tfTypes.Rule{}
+				groups14.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem14 := range groupsItem14.Rules {
-					var rules14 tfTypes.Rule
+					var rules14 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules14.Field = types.StringValue(string(rulesItem14.Field))
 					rules14.Operator = types.StringValue(string(rulesItem14.Operator))
@@ -4127,10 +4127,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups15.Logic = types.StringNull()
 				}
-				groups15.Rules = []tfTypes.Rule{}
+				groups15.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem15 := range groupsItem15.Rules {
-					var rules15 tfTypes.Rule
+					var rules15 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules15.Field = types.StringValue(string(rulesItem15.Field))
 					rules15.Operator = types.StringValue(string(rulesItem15.Operator))
@@ -4211,10 +4211,10 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				} else {
 					groups16.Logic = types.StringNull()
 				}
-				groups16.Rules = []tfTypes.Rule{}
+				groups16.Rules = []tfTypes.ObservabilityFilterRuleGroupRule{}
 
 				for _, rulesItem16 := range groupsItem16.Rules {
-					var rules16 tfTypes.Rule
+					var rules16 tfTypes.ObservabilityFilterRuleGroupRule
 
 					rules16.Field = types.StringValue(string(rulesItem16.Field))
 					rules16.Operator = types.StringValue(string(rulesItem16.Operator))
@@ -4346,19 +4346,19 @@ func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDesti
 		} else {
 			enabled1 = nil
 		}
-		groups := make([]shared.ObservabilityFilterRuleGroup, 0, len(r.FilterRules.Groups))
+		groups := make([]shared.ObservabilityFilterRuleGroupNullable, 0, len(r.FilterRules.Groups))
 		for groupsIndex := range r.FilterRules.Groups {
-			logic := new(shared.Logic)
+			logic := new(shared.ObservabilityFilterRuleGroupNullableLogic)
 			if !r.FilterRules.Groups[groupsIndex].Logic.IsUnknown() && !r.FilterRules.Groups[groupsIndex].Logic.IsNull() {
-				*logic = shared.Logic(r.FilterRules.Groups[groupsIndex].Logic.ValueString())
+				*logic = shared.ObservabilityFilterRuleGroupNullableLogic(r.FilterRules.Groups[groupsIndex].Logic.ValueString())
 			} else {
 				logic = nil
 			}
-			rules := make([]shared.Rule, 0, len(r.FilterRules.Groups[groupsIndex].Rules))
+			rules := make([]shared.ObservabilityFilterRuleGroupNullableRule, 0, len(r.FilterRules.Groups[groupsIndex].Rules))
 			for rulesIndex := range r.FilterRules.Groups[groupsIndex].Rules {
-				field := shared.Field(r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Field.ValueString())
-				operator := shared.Operator(r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Operator.ValueString())
-				var value *shared.ObservabilityFilterRuleGroupValue
+				field := shared.ObservabilityFilterRuleGroupNullableField(r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Field.ValueString())
+				operator := shared.ObservabilityFilterRuleGroupNullableOperator(r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Operator.ValueString())
+				var value *shared.ObservabilityFilterRuleGroupNullableValue
 				if r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Value != nil {
 					str := new(string)
 					if !r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Value.Str.IsUnknown() && !r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Value.Str.IsNull() {
@@ -4367,7 +4367,7 @@ func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDesti
 						str = nil
 					}
 					if str != nil {
-						value = &shared.ObservabilityFilterRuleGroupValue{
+						value = &shared.ObservabilityFilterRuleGroupNullableValue{
 							Str: str,
 						}
 					}
@@ -4378,18 +4378,18 @@ func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDesti
 						number = nil
 					}
 					if number != nil {
-						value = &shared.ObservabilityFilterRuleGroupValue{
+						value = &shared.ObservabilityFilterRuleGroupNullableValue{
 							Number: number,
 						}
 					}
 				}
-				rules = append(rules, shared.Rule{
+				rules = append(rules, shared.ObservabilityFilterRuleGroupNullableRule{
 					Field:    field,
 					Operator: operator,
 					Value:    value,
 				})
 			}
-			groups = append(groups, shared.ObservabilityFilterRuleGroup{
+			groups = append(groups, shared.ObservabilityFilterRuleGroupNullable{
 				Logic: logic,
 				Rules: rules,
 			})
@@ -4487,19 +4487,19 @@ func (r *ObservabilityDestinationResourceModel) ToSharedUpdateObservabilityDesti
 		} else {
 			enabled1 = nil
 		}
-		groups := make([]shared.ObservabilityFilterRuleGroup, 0, len(r.FilterRules.Groups))
+		groups := make([]shared.ObservabilityFilterRuleGroupNullable, 0, len(r.FilterRules.Groups))
 		for groupsIndex := range r.FilterRules.Groups {
-			logic := new(shared.Logic)
+			logic := new(shared.ObservabilityFilterRuleGroupNullableLogic)
 			if !r.FilterRules.Groups[groupsIndex].Logic.IsUnknown() && !r.FilterRules.Groups[groupsIndex].Logic.IsNull() {
-				*logic = shared.Logic(r.FilterRules.Groups[groupsIndex].Logic.ValueString())
+				*logic = shared.ObservabilityFilterRuleGroupNullableLogic(r.FilterRules.Groups[groupsIndex].Logic.ValueString())
 			} else {
 				logic = nil
 			}
-			rules := make([]shared.Rule, 0, len(r.FilterRules.Groups[groupsIndex].Rules))
+			rules := make([]shared.ObservabilityFilterRuleGroupNullableRule, 0, len(r.FilterRules.Groups[groupsIndex].Rules))
 			for rulesIndex := range r.FilterRules.Groups[groupsIndex].Rules {
-				field := shared.Field(r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Field.ValueString())
-				operator := shared.Operator(r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Operator.ValueString())
-				var value *shared.ObservabilityFilterRuleGroupValue
+				field := shared.ObservabilityFilterRuleGroupNullableField(r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Field.ValueString())
+				operator := shared.ObservabilityFilterRuleGroupNullableOperator(r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Operator.ValueString())
+				var value *shared.ObservabilityFilterRuleGroupNullableValue
 				if r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Value != nil {
 					str := new(string)
 					if !r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Value.Str.IsUnknown() && !r.FilterRules.Groups[groupsIndex].Rules[rulesIndex].Value.Str.IsNull() {
@@ -4508,7 +4508,7 @@ func (r *ObservabilityDestinationResourceModel) ToSharedUpdateObservabilityDesti
 						str = nil
 					}
 					if str != nil {
-						value = &shared.ObservabilityFilterRuleGroupValue{
+						value = &shared.ObservabilityFilterRuleGroupNullableValue{
 							Str: str,
 						}
 					}
@@ -4519,18 +4519,18 @@ func (r *ObservabilityDestinationResourceModel) ToSharedUpdateObservabilityDesti
 						number = nil
 					}
 					if number != nil {
-						value = &shared.ObservabilityFilterRuleGroupValue{
+						value = &shared.ObservabilityFilterRuleGroupNullableValue{
 							Number: number,
 						}
 					}
 				}
-				rules = append(rules, shared.Rule{
+				rules = append(rules, shared.ObservabilityFilterRuleGroupNullableRule{
 					Field:    field,
 					Operator: operator,
 					Value:    value,
 				})
 			}
-			groups = append(groups, shared.ObservabilityFilterRuleGroup{
+			groups = append(groups, shared.ObservabilityFilterRuleGroupNullable{
 				Logic: logic,
 				Rules: rules,
 			})

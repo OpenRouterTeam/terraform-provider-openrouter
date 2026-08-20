@@ -10,7 +10,7 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
   }
   enabled = true
   filter_rules = {
-    enabled = false
+    enabled = true
     groups = [
       {
         logic = "and"
