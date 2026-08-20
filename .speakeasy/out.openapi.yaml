@@ -26784,7 +26784,7 @@ paths:
           description: 'Internal Server Error - Unexpected server error'
       summary: 'Get available analytics metrics and dimensions'
       tags:
-        - 'beta.Analytics'
+        - 'Analytics'
       x-speakeasy-group: analytics
       x-speakeasy-name-override: getMeta
   /analytics/query:
@@ -27064,7 +27064,7 @@ paths:
           description: 'Internal Server Error - Unexpected server error'
       summary: 'Query analytics data'
       tags:
-        - 'beta.Analytics'
+        - 'Analytics'
       x-speakeasy-group: analytics
       x-speakeasy-name-override: query
   /audio/speech:
@@ -39097,8 +39097,6 @@ tags:
     name: 'Video Generation'
   - description: 'Workspaces endpoints'
     name: 'Workspaces'
-  - description: 'beta.Analytics endpoints'
-    name: 'beta.Analytics'
 x-retry-strategy:
   initialDelay: 500
   maxAttempts: 3
