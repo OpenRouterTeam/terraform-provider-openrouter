@@ -2,25 +2,10 @@
 
 package shared
 
-import (
-	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
-)
-
 // ObservabilityFilterRulesConfigNullable - Optional structured filter rules controlling which events are forwarded.
 type ObservabilityFilterRulesConfigNullable struct {
-	Enabled *bool                          `default:"true" json:"enabled"`
+	Enabled *bool                          `json:"enabled,omitzero"`
 	Groups  []ObservabilityFilterRuleGroup `json:"groups"`
-}
-
-func (o ObservabilityFilterRulesConfigNullable) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(o, "", false)
-}
-
-func (o *ObservabilityFilterRulesConfigNullable) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &o, "", false, nil); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (o *ObservabilityFilterRulesConfigNullable) GetEnabled() *bool {

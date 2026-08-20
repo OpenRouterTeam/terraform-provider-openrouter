@@ -37,7 +37,7 @@ func (e *CreateObservabilityDestinationResponseMethod) UnmarshalJSON(data []byte
 
 type CreateObservabilityDestinationResponseConfigWebhook struct {
 	Headers map[string]string                             `json:"headers,omitzero"`
-	Method  *CreateObservabilityDestinationResponseMethod `default:"POST" json:"method"`
+	Method  *CreateObservabilityDestinationResponseMethod `json:"method,omitzero"`
 	URL     string                                        `json:"url"`
 }
 
@@ -220,7 +220,7 @@ func (c *CreateObservabilityDestinationResponseObservabilityWebhookDestination) 
 
 type CreateObservabilityDestinationResponseConfigWeave struct {
 	APIKey  string  `json:"apiKey"`
-	BaseURL *string `default:"https://trace.wandb.ai" json:"baseUrl"`
+	BaseURL *string `json:"baseUrl,omitzero"`
 	Entity  string  `json:"entity"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers map[string]string `json:"headers,omitzero"`
@@ -420,13 +420,13 @@ func (c *CreateObservabilityDestinationResponseObservabilityWeaveDestination) Ge
 
 type CreateObservabilityDestinationResponseConfigSnowflake struct {
 	Account  string  `json:"account"`
-	Database *string `default:"SNOWFLAKE_LEARNING_DB" json:"database"`
+	Database *string `json:"database,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers   map[string]string `json:"headers,omitzero"`
-	Schema    *string           `default:"PUBLIC" json:"schema"`
-	Table     *string           `default:"OPENROUTER_TRACES" json:"table"`
+	Schema    *string           `json:"schema,omitzero"`
+	Table     *string           `json:"table,omitzero"`
 	Token     string            `json:"token"`
-	Warehouse *string           `default:"COMPUTE_WH" json:"warehouse"`
+	Warehouse *string           `json:"warehouse,omitzero"`
 }
 
 func (c CreateObservabilityDestinationResponseConfigSnowflake) MarshalJSON() ([]byte, error) {
@@ -826,8 +826,8 @@ type CreateObservabilityDestinationResponseConfigS3 struct {
 	// Custom HTTP headers to include in requests to this destination.
 	Headers map[string]string `json:"headers,omitzero"`
 	// Template for S3 object path. The filename ({traceId}-{timestamp}.json) is automatically appended. Available variables: {prefix}, {date}, {year}, {month}, {day}, {apiKeyName}
-	PathTemplate    *string `default:"{prefix}/{date}" json:"pathTemplate"`
-	Prefix          *string `default:"openrouter-traces" json:"prefix"`
+	PathTemplate    *string `json:"pathTemplate,omitzero"`
+	Prefix          *string `json:"prefix,omitzero"`
 	Region          *string `json:"region,omitzero"`
 	SecretAccessKey string  `json:"secretAccessKey"`
 	SessionToken    *string `json:"sessionToken,omitzero"`
@@ -1061,7 +1061,7 @@ func (c *CreateObservabilityDestinationResponseObservabilityS3Destination) GetWo
 type CreateObservabilityDestinationResponseConfigRamp struct {
 	// Generate this in your Ramp integration settings.
 	APIKey  string  `json:"apiKey"`
-	BaseURL *string `default:"https://api.ramp.com/developer/v1/ai-usage/openrouter" json:"baseUrl"`
+	BaseURL *string `json:"baseUrl,omitzero"`
 	// Custom HTTP headers to include in requests to Ramp.
 	Headers map[string]string `json:"headers,omitzero"`
 }
@@ -1245,7 +1245,7 @@ func (c *CreateObservabilityDestinationResponseObservabilityRampDestination) Get
 
 type CreateObservabilityDestinationResponseConfigPosthog struct {
 	APIKey   string  `json:"apiKey"`
-	Endpoint *string `default:"https://us.i.posthog.com" json:"endpoint"`
+	Endpoint *string `json:"endpoint,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers map[string]string `json:"headers,omitzero"`
 }
@@ -1825,7 +1825,7 @@ type CreateObservabilityDestinationResponseConfigNewrelic struct {
 	// Custom HTTP headers to include in requests to this destination.
 	Headers    map[string]string                             `json:"headers,omitzero"`
 	LicenseKey string                                        `json:"licenseKey"`
-	Region     *CreateObservabilityDestinationResponseRegion `default:"us" json:"region"`
+	Region     *CreateObservabilityDestinationResponseRegion `json:"region,omitzero"`
 }
 
 func (c CreateObservabilityDestinationResponseConfigNewrelic) MarshalJSON() ([]byte, error) {
@@ -2007,11 +2007,11 @@ func (c *CreateObservabilityDestinationResponseObservabilityNewrelicDestination)
 
 type CreateObservabilityDestinationResponseConfigLangsmith struct {
 	APIKey   string  `json:"apiKey"`
-	Endpoint *string `default:"https://api.smith.langchain.com" json:"endpoint"`
+	Endpoint *string `json:"endpoint,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers map[string]string `json:"headers,omitzero"`
 	// The name for this project, such as pr-openrouter-demo. Defaults to "main" if not set.
-	Project *string `default:"main" json:"project"`
+	Project *string `json:"project,omitzero"`
 	// Required for org-scoped API keys. Find this in your LangSmith workspace settings.
 	WorkspaceID *string `json:"workspaceId,omitzero"`
 }
@@ -2208,7 +2208,7 @@ func (c *CreateObservabilityDestinationResponseObservabilityLangsmithDestination
 }
 
 type CreateObservabilityDestinationResponseConfigLangfuse struct {
-	BaseURL *string `default:"https://us.cloud.langfuse.com" json:"baseUrl"`
+	BaseURL *string `json:"baseUrl,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers   map[string]string `json:"headers,omitzero"`
 	PublicKey string            `json:"publicKey"`
@@ -2401,7 +2401,7 @@ func (c *CreateObservabilityDestinationResponseObservabilityLangfuseDestination)
 
 type CreateObservabilityDestinationResponseConfigGrafana struct {
 	APIKey  string  `json:"apiKey"`
-	BaseURL *string `default:"https://otlp-gateway-prod-us-west-0.grafana.net" json:"baseUrl"`
+	BaseURL *string `json:"baseUrl,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers    map[string]string `json:"headers,omitzero"`
 	InstanceID string            `json:"instanceId"`
@@ -2599,7 +2599,7 @@ type CreateObservabilityDestinationResponseConfigDatadog struct {
 	// Name to identify your application in Datadog LLM Observability
 	MlApp string `json:"mlApp"`
 	// Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.datadoghq.eu)
-	URL *string `default:"https://api.us5.datadoghq.com" json:"url"`
+	URL *string `json:"url,omitzero"`
 }
 
 func (c CreateObservabilityDestinationResponseConfigDatadog) MarshalJSON() ([]byte, error) {
@@ -2792,7 +2792,7 @@ type CreateObservabilityDestinationResponseConfigClickhouse struct {
 	Headers  map[string]string `json:"headers,omitzero"`
 	Host     string            `json:"host"`
 	Password string            `json:"password"`
-	Table    *string           `default:"OPENROUTER_TRACES" json:"table"`
+	Table    *string           `json:"table,omitzero"`
 	// If you have not set a specific username in ClickHouse, simply type in 'default' below.
 	Username string `json:"username"`
 }
@@ -2997,7 +2997,7 @@ func (c *CreateObservabilityDestinationResponseObservabilityClickhouseDestinatio
 
 type CreateObservabilityDestinationResponseConfigBraintrust struct {
 	APIKey  string  `json:"apiKey"`
-	BaseURL *string `default:"https://api.braintrust.dev" json:"baseUrl"`
+	BaseURL *string `json:"baseUrl,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers   map[string]string `json:"headers,omitzero"`
 	ProjectID string            `json:"projectId"`
@@ -3189,7 +3189,7 @@ func (c *CreateObservabilityDestinationResponseObservabilityBraintrustDestinatio
 
 type CreateObservabilityDestinationResponseConfigArize struct {
 	APIKey  string  `json:"apiKey"`
-	BaseURL *string `default:"https://otlp.arize.com" json:"baseUrl"`
+	BaseURL *string `json:"baseUrl,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers map[string]string `json:"headers,omitzero"`
 	// The name of the tracing project in Arize AX

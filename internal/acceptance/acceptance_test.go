@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider"
@@ -289,11 +290,15 @@ resource "openrouter_observability_destination" "test" {
 }
 
 // TestAccObservabilityDestination_S3NonDefaultConfig is the DEV-856
-// regression test: config attributes that carry a server-side Zod default
-// (S3 prefix, pathTemplate) used to be generated as Computed-only Terraform
-// attributes with a schema Default, so every plan proposed resetting the
-// API-returned value to the default. Setting non-default values and then
-// re-planning must produce an empty plan.
+// regression test, using the exact customer-reported prefix and
+// pathTemplate values (see docs/investigations/dev-856-observability-drift.md).
+// Before the fix, config attributes carrying a server-side Zod default (S3
+// prefix, pathTemplate) were generated as Computed-only Terraform attributes
+// with a schema Default, so every plan proposed resetting the API-returned
+// value back to the default -- a perpetual, non-converging diff. This test
+// requires every plan taken after apply -- before refresh, after refresh,
+// and on a second independent PlanOnly invocation -- to be completely empty,
+// and fails loudly via plancheck.ExpectEmptyPlan if it is not.
 //
 // The S3 credentials are fake: the Management API stores destination config
 // without validating upstream connectivity, and enabled=false keeps the
@@ -301,6 +306,11 @@ resource "openrouter_observability_destination" "test" {
 func TestAccObservabilityDestination_S3NonDefaultConfig(t *testing.T) {
 	name := testName("dest-s3")
 
+	// prefix/pathTemplate are the exact customer values from Linear DEV-856,
+	// deliberately different from the generated schema's former static
+	// Defaults ("openrouter-traces" and "{prefix}/{date}") -- the drift this
+	// test guards against only surfaces when the remote value diverges from
+	// the baked-in default.
 	config := fmt.Sprintf(`
 resource "openrouter_observability_destination" "test" {
   name    = %q
@@ -308,13 +318,18 @@ resource "openrouter_observability_destination" "test" {
   enabled = false
   config = {
     bucketName      = jsonencode("tf-acc-nonexistent-bucket")
-    accessKeyId     = jsonencode("AKIATFACCTEST00000")
+    accessKeyId     = jsonencode("AKIAIOSFODNN7EXAMPLE")
     secretAccessKey = jsonencode("tf-acc-not-a-real-secret")
-    prefix          = jsonencode("tf-acc-traces")
-    pathTemplate    = jsonencode("{prefix}/{year}/{month}")
+    prefix          = jsonencode("nonprod-coreml")
+    pathTemplate    = jsonencode("{prefix}/{apiKeyName}/{year}/{month}/{day}")
   }
 }
 `, name)
+
+	emptyPlanChecks := resource.ConfigPlanChecks{
+		PostApplyPreRefresh:  []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+		PostApplyPostRefresh: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+	}
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -325,15 +340,18 @@ resource "openrouter_observability_destination" "test" {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "type", "s3"),
 					resource.TestCheckResourceAttrSet("openrouter_observability_destination.test", "id"),
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "s3.config.prefix", "nonprod-coreml"),
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "s3.config.path_template", "{prefix}/{apiKeyName}/{year}/{month}/{day}"),
 				),
+				ConfigPlanChecks: emptyPlanChecks,
 			},
-			// Replan with identical config must be empty: catches the DEV-856
-			// perpetual diff where Computed-only attributes with schema
-			// Defaults (prefix, pathTemplate) were reset to the default on
-			// every plan.
+			// A second, independent plan invocation with no config change:
+			// proves the empty plan is stable across repeated plans, not a
+			// one-off artifact of the apply step.
 			{
-				Config:   providerConfig() + config,
-				PlanOnly: true,
+				Config:           providerConfig() + config,
+				PlanOnly:         true,
+				ConfigPlanChecks: emptyPlanChecks,
 			},
 		},
 	})

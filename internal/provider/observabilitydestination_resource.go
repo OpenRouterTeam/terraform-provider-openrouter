@@ -20,9 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -123,9 +121,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Sensitive: true,
 							},
 							"base_url": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`https://otlp.arize.com`),
-								Description: `Default: "https://otlp.arize.com"`,
+								Computed: true,
 							},
 							"headers": schema.MapAttribute{
 								Computed:    true,
@@ -154,18 +150,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -251,9 +243,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Sensitive: true,
 							},
 							"base_url": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`https://api.braintrust.dev`),
-								Description: `Default: "https://api.braintrust.dev"`,
+								Computed: true,
 							},
 							"headers": schema.MapAttribute{
 								Computed:    true,
@@ -277,18 +267,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -409,9 +395,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Sensitive: true,
 							},
 							"table": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`OPENROUTER_TRACES`),
-								Description: `Default: "OPENROUTER_TRACES"`,
+								Computed: true,
 							},
 							"username": schema.StringAttribute{
 								Computed:    true,
@@ -431,18 +415,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -555,8 +535,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							},
 							"url": schema.StringAttribute{
 								Computed:    true,
-								Default:     stringdefault.StaticString(`https://api.us5.datadoghq.com`),
-								Description: `Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.datadoghq.eu). Default: "https://api.us5.datadoghq.com"`,
+								Description: `Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.datadoghq.eu)`,
 							},
 						},
 					},
@@ -572,18 +551,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -653,20 +628,15 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 				Optional: true,
 				Attributes: map[string]schema.Attribute{
 					"enabled": schema.BoolAttribute{
-						Computed:    true,
-						Optional:    true,
-						Default:     booldefault.StaticBool(true),
-						Description: `Default: true`,
+						Optional: true,
 					},
 					"groups": schema.ListNestedAttribute{
 						Required: true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"logic": schema.StringAttribute{
-									Computed:    true,
 									Optional:    true,
-									Default:     stringdefault.StaticString(`and`),
-									Description: `Default: "and"; must be one of ["and", "or"]`,
+									Description: `must be one of ["and", "or"]`,
 									Validators: []validator.String{
 										stringvalidator.OneOf(
 											"and",
@@ -777,9 +747,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Sensitive: true,
 							},
 							"base_url": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`https://otlp-gateway-prod-us-west-0.grafana.net`),
-								Description: `Default: "https://otlp-gateway-prod-us-west-0.grafana.net"`,
+								Computed: true,
 							},
 							"headers": schema.MapAttribute{
 								Computed:    true,
@@ -803,18 +771,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -903,9 +867,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"base_url": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`https://us.cloud.langfuse.com`),
-								Description: `Default: "https://us.cloud.langfuse.com"`,
+								Computed: true,
 							},
 							"headers": schema.MapAttribute{
 								Computed:    true,
@@ -934,18 +896,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -1031,9 +989,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Sensitive: true,
 							},
 							"endpoint": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`https://api.smith.langchain.com`),
-								Description: `Default: "https://api.smith.langchain.com"`,
+								Computed: true,
 							},
 							"headers": schema.MapAttribute{
 								Computed:    true,
@@ -1042,8 +998,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							},
 							"project": schema.StringAttribute{
 								Computed:    true,
-								Default:     stringdefault.StaticString(`main`),
-								Description: `The name for this project, such as pr-openrouter-demo. Defaults to "main" if not set. Default: "main"`,
+								Description: `The name for this project, such as pr-openrouter-demo. Defaults to "main" if not set.`,
 							},
 							"workspace_id": schema.StringAttribute{
 								Computed:    true,
@@ -1063,18 +1018,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -1169,9 +1120,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Sensitive: true,
 							},
 							"region": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`us`),
-								Description: `Default: "us"`,
+								Computed: true,
 							},
 						},
 					},
@@ -1187,18 +1136,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -1308,18 +1253,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -1422,18 +1363,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -1519,9 +1456,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Sensitive: true,
 							},
 							"endpoint": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`https://us.i.posthog.com`),
-								Description: `Default: "https://us.i.posthog.com"`,
+								Computed: true,
 							},
 							"headers": schema.MapAttribute{
 								Computed:    true,
@@ -1542,18 +1477,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -1648,9 +1579,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Description: `Generate this in your Ramp integration settings.`,
 							},
 							"base_url": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`https://api.ramp.com/developer/v1/ai-usage/openrouter`),
-								Description: `Default: "https://api.ramp.com/developer/v1/ai-usage/openrouter"`,
+								Computed: true,
 							},
 							"headers": schema.MapAttribute{
 								Computed:    true,
@@ -1671,18 +1600,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -1781,13 +1706,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							},
 							"path_template": schema.StringAttribute{
 								Computed:    true,
-								Default:     stringdefault.StaticString(`{prefix}/{date}`),
-								Description: `Template for S3 object path. The filename ({traceId}-{timestamp}.json) is automatically appended. Available variables: {prefix}, {date}, {year}, {month}, {day}, {apiKeyName}. Default: "{prefix}/{date}"`,
+								Description: `Template for S3 object path. The filename ({traceId}-{timestamp}.json) is automatically appended. Available variables: {prefix}, {date}, {year}, {month}, {day}, {apiKeyName}`,
 							},
 							"prefix": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`openrouter-traces`),
-								Description: `Default: "openrouter-traces"`,
+								Computed: true,
 							},
 							"region": schema.StringAttribute{
 								Computed: true,
@@ -1814,18 +1736,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -1940,18 +1858,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -2036,9 +1950,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Computed: true,
 							},
 							"database": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`SNOWFLAKE_LEARNING_DB`),
-								Description: `Default: "SNOWFLAKE_LEARNING_DB"`,
+								Computed: true,
 							},
 							"headers": schema.MapAttribute{
 								Computed:    true,
@@ -2046,23 +1958,17 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Description: `Custom HTTP headers to include in requests to this destination.`,
 							},
 							"schema": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`PUBLIC`),
-								Description: `Default: "PUBLIC"`,
+								Computed: true,
 							},
 							"table": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`OPENROUTER_TRACES`),
-								Description: `Default: "OPENROUTER_TRACES"`,
+								Computed: true,
 							},
 							"token": schema.StringAttribute{
 								Computed:  true,
 								Sensitive: true,
 							},
 							"warehouse": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`COMPUTE_WH`),
-								Description: `Default: "COMPUTE_WH"`,
+								Computed: true,
 							},
 						},
 					},
@@ -2078,18 +1984,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -2211,9 +2113,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Sensitive: true,
 							},
 							"base_url": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`https://trace.wandb.ai`),
-								Description: `Default: "https://trace.wandb.ai"`,
+								Computed: true,
 							},
 							"entity": schema.StringAttribute{
 								Computed: true,
@@ -2240,18 +2140,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,
@@ -2337,9 +2233,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								ElementType: types.StringType,
 							},
 							"method": schema.StringAttribute{
-								Computed:    true,
-								Default:     stringdefault.StaticString(`POST`),
-								Description: `Default: "POST"`,
+								Computed: true,
 							},
 							"url": schema.StringAttribute{
 								Computed: true,
@@ -2358,18 +2252,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
-								Computed:    true,
-								Default:     booldefault.StaticBool(true),
-								Description: `Default: true`,
+								Computed: true,
 							},
 							"groups": schema.ListNestedAttribute{
 								Computed: true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"logic": schema.StringAttribute{
-											Computed:    true,
-											Default:     stringdefault.StaticString(`and`),
-											Description: `Default: "and"`,
+											Computed: true,
 										},
 										"rules": schema.ListNestedAttribute{
 											Computed: true,

@@ -25,7 +25,7 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
   }
   enabled = true
   filter_rules = {
-    enabled = true
+    enabled = false
     groups = [
       {
         logic = "and"
@@ -102,7 +102,7 @@ Required:
 
 Optional:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 
 <a id="nestedatt--filter_rules--groups"></a>
 ### Nested Schema for `filter_rules.groups`
@@ -113,7 +113,7 @@ Required:
 
 Optional:
 
-- `logic` (String) Default: "and"; must be one of ["and", "or"]
+- `logic` (String) must be one of ["and", "or"]
 
 <a id="nestedatt--filter_rules--groups--rules"></a>
 ### Nested Schema for `filter_rules.groups.rules`
@@ -165,7 +165,7 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive)
-- `base_url` (String) Default: "https://otlp.arize.com"
+- `base_url` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `model_id` (String) The name of the tracing project in Arize AX
 - `space_key` (String, Sensitive)
@@ -176,7 +176,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--arize--filter_rules--groups))
 
 <a id="nestedatt--arize--filter_rules--groups"></a>
@@ -184,7 +184,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--arize--filter_rules--groups--rules))
 
 <a id="nestedatt--arize--filter_rules--groups--rules"></a>
@@ -235,7 +235,7 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive)
-- `base_url` (String) Default: "https://api.braintrust.dev"
+- `base_url` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `project_id` (String)
 
@@ -245,7 +245,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--braintrust--filter_rules--groups))
 
 <a id="nestedatt--braintrust--filter_rules--groups"></a>
@@ -253,7 +253,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--braintrust--filter_rules--groups--rules))
 
 <a id="nestedatt--braintrust--filter_rules--groups--rules"></a>
@@ -307,7 +307,7 @@ Read-Only:
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `host` (String)
 - `password` (String, Sensitive)
-- `table` (String) Default: "OPENROUTER_TRACES"
+- `table` (String)
 - `username` (String) If you have not set a specific username in ClickHouse, simply type in 'default' below.
 
 
@@ -316,7 +316,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--clickhouse--filter_rules--groups))
 
 <a id="nestedatt--clickhouse--filter_rules--groups"></a>
@@ -324,7 +324,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--clickhouse--filter_rules--groups--rules))
 
 <a id="nestedatt--clickhouse--filter_rules--groups--rules"></a>
@@ -377,7 +377,7 @@ Read-Only:
 - `api_key` (String, Sensitive) Datadog API key must have LLM Observability permissions. Create at:
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `ml_app` (String) Name to identify your application in Datadog LLM Observability
-- `url` (String) Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.datadoghq.eu). Default: "https://api.us5.datadoghq.com"
+- `url` (String) Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.datadoghq.eu)
 
 
 <a id="nestedatt--datadog--filter_rules"></a>
@@ -385,7 +385,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--datadog--filter_rules--groups))
 
 <a id="nestedatt--datadog--filter_rules--groups"></a>
@@ -393,7 +393,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--datadog--filter_rules--groups--rules))
 
 <a id="nestedatt--datadog--filter_rules--groups--rules"></a>
@@ -444,7 +444,7 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive)
-- `base_url` (String) Default: "https://otlp-gateway-prod-us-west-0.grafana.net"
+- `base_url` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `instance_id` (String)
 
@@ -454,7 +454,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--grafana--filter_rules--groups))
 
 <a id="nestedatt--grafana--filter_rules--groups"></a>
@@ -462,7 +462,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--grafana--filter_rules--groups--rules))
 
 <a id="nestedatt--grafana--filter_rules--groups--rules"></a>
@@ -512,7 +512,7 @@ Read-Only:
 
 Read-Only:
 
-- `base_url` (String) Default: "https://us.cloud.langfuse.com"
+- `base_url` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `public_key` (String, Sensitive)
 - `secret_key` (String, Sensitive)
@@ -523,7 +523,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--langfuse--filter_rules--groups))
 
 <a id="nestedatt--langfuse--filter_rules--groups"></a>
@@ -531,7 +531,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--langfuse--filter_rules--groups--rules))
 
 <a id="nestedatt--langfuse--filter_rules--groups--rules"></a>
@@ -582,9 +582,9 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive)
-- `endpoint` (String) Default: "https://api.smith.langchain.com"
+- `endpoint` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
-- `project` (String) The name for this project, such as pr-openrouter-demo. Defaults to "main" if not set. Default: "main"
+- `project` (String) The name for this project, such as pr-openrouter-demo. Defaults to "main" if not set.
 - `workspace_id` (String) Required for org-scoped API keys. Find this in your LangSmith workspace settings.
 
 
@@ -593,7 +593,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--langsmith--filter_rules--groups))
 
 <a id="nestedatt--langsmith--filter_rules--groups"></a>
@@ -601,7 +601,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--langsmith--filter_rules--groups--rules))
 
 <a id="nestedatt--langsmith--filter_rules--groups--rules"></a>
@@ -653,7 +653,7 @@ Read-Only:
 
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `license_key` (String, Sensitive)
-- `region` (String) Default: "us"
+- `region` (String)
 
 
 <a id="nestedatt--newrelic--filter_rules"></a>
@@ -661,7 +661,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--newrelic--filter_rules--groups))
 
 <a id="nestedatt--newrelic--filter_rules--groups"></a>
@@ -669,7 +669,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--newrelic--filter_rules--groups--rules))
 
 <a id="nestedatt--newrelic--filter_rules--groups--rules"></a>
@@ -730,7 +730,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--opik--filter_rules--groups))
 
 <a id="nestedatt--opik--filter_rules--groups"></a>
@@ -738,7 +738,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--opik--filter_rules--groups--rules))
 
 <a id="nestedatt--opik--filter_rules--groups--rules"></a>
@@ -797,7 +797,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--otel_collector--filter_rules--groups))
 
 <a id="nestedatt--otel_collector--filter_rules--groups"></a>
@@ -805,7 +805,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--otel_collector--filter_rules--groups--rules))
 
 <a id="nestedatt--otel_collector--filter_rules--groups--rules"></a>
@@ -856,7 +856,7 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive)
-- `endpoint` (String) Default: "https://us.i.posthog.com"
+- `endpoint` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 
 
@@ -865,7 +865,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--posthog--filter_rules--groups))
 
 <a id="nestedatt--posthog--filter_rules--groups"></a>
@@ -873,7 +873,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--posthog--filter_rules--groups--rules))
 
 <a id="nestedatt--posthog--filter_rules--groups--rules"></a>
@@ -924,7 +924,7 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) Generate this in your Ramp integration settings.
-- `base_url` (String) Default: "https://api.ramp.com/developer/v1/ai-usage/openrouter"
+- `base_url` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to Ramp.
 
 
@@ -933,7 +933,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--ramp--filter_rules--groups))
 
 <a id="nestedatt--ramp--filter_rules--groups"></a>
@@ -941,7 +941,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--ramp--filter_rules--groups--rules))
 
 <a id="nestedatt--ramp--filter_rules--groups--rules"></a>
@@ -995,8 +995,8 @@ Read-Only:
 - `bucket_name` (String)
 - `endpoint` (String) Only for S3-compatible services like Cloudflare R2 (https://account-id.r2.cloudflarestorage.com) or MinIO. Leave blank for standard AWS S3.
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
-- `path_template` (String) Template for S3 object path. The filename ({traceId}-{timestamp}.json) is automatically appended. Available variables: {prefix}, {date}, {year}, {month}, {day}, {apiKeyName}. Default: "{prefix}/{date}"
-- `prefix` (String) Default: "openrouter-traces"
+- `path_template` (String) Template for S3 object path. The filename ({traceId}-{timestamp}.json) is automatically appended. Available variables: {prefix}, {date}, {year}, {month}, {day}, {apiKeyName}
+- `prefix` (String)
 - `region` (String)
 - `secret_access_key` (String, Sensitive)
 - `session_token` (String, Sensitive)
@@ -1007,7 +1007,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--s3--filter_rules--groups))
 
 <a id="nestedatt--s3--filter_rules--groups"></a>
@@ -1015,7 +1015,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--s3--filter_rules--groups--rules))
 
 <a id="nestedatt--s3--filter_rules--groups--rules"></a>
@@ -1075,7 +1075,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--sentry--filter_rules--groups))
 
 <a id="nestedatt--sentry--filter_rules--groups"></a>
@@ -1083,7 +1083,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--sentry--filter_rules--groups--rules))
 
 <a id="nestedatt--sentry--filter_rules--groups--rules"></a>
@@ -1134,12 +1134,12 @@ Read-Only:
 Read-Only:
 
 - `account` (String)
-- `database` (String) Default: "SNOWFLAKE_LEARNING_DB"
+- `database` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
-- `schema` (String) Default: "PUBLIC"
-- `table` (String) Default: "OPENROUTER_TRACES"
+- `schema` (String)
+- `table` (String)
 - `token` (String, Sensitive)
-- `warehouse` (String) Default: "COMPUTE_WH"
+- `warehouse` (String)
 
 
 <a id="nestedatt--snowflake--filter_rules"></a>
@@ -1147,7 +1147,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--snowflake--filter_rules--groups))
 
 <a id="nestedatt--snowflake--filter_rules--groups"></a>
@@ -1155,7 +1155,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--snowflake--filter_rules--groups--rules))
 
 <a id="nestedatt--snowflake--filter_rules--groups--rules"></a>
@@ -1206,7 +1206,7 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive)
-- `base_url` (String) Default: "https://trace.wandb.ai"
+- `base_url` (String)
 - `entity` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `project` (String)
@@ -1217,7 +1217,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--weave--filter_rules--groups))
 
 <a id="nestedatt--weave--filter_rules--groups"></a>
@@ -1225,7 +1225,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--weave--filter_rules--groups--rules))
 
 <a id="nestedatt--weave--filter_rules--groups--rules"></a>
@@ -1276,7 +1276,7 @@ Read-Only:
 Read-Only:
 
 - `headers` (Map of String)
-- `method` (String) Default: "POST"
+- `method` (String)
 - `url` (String)
 
 
@@ -1285,7 +1285,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Default: true
+- `enabled` (Boolean)
 - `groups` (Attributes List) (see [below for nested schema](#nestedatt--webhook--filter_rules--groups))
 
 <a id="nestedatt--webhook--filter_rules--groups"></a>
@@ -1293,7 +1293,7 @@ Read-Only:
 
 Read-Only:
 
-- `logic` (String) Default: "and"
+- `logic` (String)
 - `rules` (Attributes List) (see [below for nested schema](#nestedatt--webhook--filter_rules--groups--rules))
 
 <a id="nestedatt--webhook--filter_rules--groups--rules"></a>

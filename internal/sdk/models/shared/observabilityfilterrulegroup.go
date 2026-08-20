@@ -278,7 +278,7 @@ func (r *Rule) GetValue() *ObservabilityFilterRuleGroupValue {
 }
 
 type ObservabilityFilterRuleGroup struct {
-	Logic *Logic `default:"and" json:"logic"`
+	Logic *Logic `json:"logic,omitzero"`
 	Rules []Rule `json:"rules"`
 }
 

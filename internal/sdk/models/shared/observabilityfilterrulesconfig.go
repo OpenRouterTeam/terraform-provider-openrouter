@@ -8,7 +8,7 @@ import (
 
 // ObservabilityFilterRulesConfig - Optional structured filter rules controlling which events are forwarded.
 type ObservabilityFilterRulesConfig struct {
-	Enabled *bool                          `default:"true" json:"enabled"`
+	Enabled *bool                          `json:"enabled,omitzero"`
 	Groups  []ObservabilityFilterRuleGroup `json:"groups"`
 }
 
