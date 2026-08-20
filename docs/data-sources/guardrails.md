@@ -58,7 +58,7 @@ Read-Only:
 - `name` (String) Name of the guardrail
 - `reset_interval` (String) Interval at which the limit resets (daily, weekly, monthly)
 - `updated_at` (String) ISO 8601 timestamp of when the guardrail was last updated
-- `workspace_id` (String) The workspace this guardrail is scoped to, or `null` for an unscoped legacy guardrail predating workspaces. A `null` value does not mean the default workspace, and does not apply the guardrail across every workspace.
+- `workspace_id` (String) The workspace this guardrail belongs to, or `null` for an unscoped legacy guardrail predating workspaces. Workspace membership organizes the guardrail; it does not apply the guardrail to the workspace's traffic. A `null` value does not mean the default workspace, and does not apply the guardrail across every workspace.
 
 <a id="nestedatt--data--content_filter_builtins"></a>
 ### Nested Schema for `data.content_filter_builtins`

@@ -328,6 +328,26 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 	}
 }
 
+// UpscaleFactor - Supported upscale factor range for video upscaling models
+type UpscaleFactor struct {
+	Max *float64 `json:"max,omitzero"`
+	Min *float64 `json:"min,omitzero"`
+}
+
+func (u *UpscaleFactor) GetMax() *float64 {
+	if u == nil {
+		return nil
+	}
+	return u.Max
+}
+
+func (u *UpscaleFactor) GetMin() *float64 {
+	if u == nil {
+		return nil
+	}
+	return u.Min
+}
+
 type VideoModel struct {
 	// List of parameters that are allowed to be passed through to the provider
 	AllowedPassthroughParameters []string `json:"allowed_passthrough_parameters"`
@@ -335,6 +355,8 @@ type VideoModel struct {
 	CanonicalSlug string `json:"canonical_slug"`
 	// Unix timestamp of when the model was created
 	Created int64 `json:"created"`
+	// Supported creativity levels for video upscaling models
+	Creativity []int64 `json:"creativity"`
 	// Description of the model
 	Description *string `json:"description,omitzero"`
 	// Whether the model supports generating audio alongside video
@@ -359,6 +381,8 @@ type VideoModel struct {
 	SupportedResolutions []SupportedResolution `json:"supported_resolutions"`
 	// Supported output sizes (width x height)
 	SupportedSizes []SupportedSize `json:"supported_sizes"`
+	// Supported upscale factor range for video upscaling models
+	UpscaleFactor *UpscaleFactor `json:"upscale_factor"`
 }
 
 func (v VideoModel) MarshalJSON() ([]byte, error) {
@@ -391,6 +415,13 @@ func (v *VideoModel) GetCreated() int64 {
 		return 0
 	}
 	return v.Created
+}
+
+func (v *VideoModel) GetCreativity() []int64 {
+	if v == nil {
+		return nil
+	}
+	return v.Creativity
 }
 
 func (v *VideoModel) GetDescription() *string {
@@ -475,4 +506,11 @@ func (v *VideoModel) GetSupportedSizes() []SupportedSize {
 		return nil
 	}
 	return v.SupportedSizes
+}
+
+func (v *VideoModel) GetUpscaleFactor() *UpscaleFactor {
+	if v == nil {
+		return nil
+	}
+	return v.UpscaleFactor
 }

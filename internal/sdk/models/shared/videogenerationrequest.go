@@ -1221,6 +1221,8 @@ type VideoGenerationRequest struct {
 	AspectRatio *VideoGenerationRequestAspectRatio `json:"aspect_ratio,omitzero"`
 	// URL to receive a webhook notification when the video generation job completes. Overrides the workspace-level default callback URL if set. Must be HTTPS.
 	CallbackURL *string `json:"callback_url,omitzero"`
+	// Creativity level for video upscaling models only. This parameter is not supported by video generation models.
+	Creativity *int64 `json:"creativity,omitzero"`
 	// Duration of the generated video in seconds
 	Duration *int64 `json:"duration,omitzero"`
 	// Images to use as the first and/or last frame of the generated video. Each image must specify a frame_type of first_frame or last_frame.
@@ -1240,6 +1242,8 @@ type VideoGenerationRequest struct {
 	Seed *int64 `json:"seed,omitzero"`
 	// Exact pixel dimensions of the generated video in "WIDTHxHEIGHT" format (e.g. "1280x720"). Interchangeable with resolution + aspect_ratio.
 	Size *string `json:"size,omitzero"`
+	// Upscale factor for video upscaling models only. This parameter is not supported by video generation models.
+	UpscaleFactor *float64 `json:"upscale_factor,omitzero"`
 }
 
 func (v VideoGenerationRequest) MarshalJSON() ([]byte, error) {
@@ -1265,6 +1269,13 @@ func (v *VideoGenerationRequest) GetCallbackURL() *string {
 		return nil
 	}
 	return v.CallbackURL
+}
+
+func (v *VideoGenerationRequest) GetCreativity() *int64 {
+	if v == nil {
+		return nil
+	}
+	return v.Creativity
 }
 
 func (v *VideoGenerationRequest) GetDuration() *int64 {
@@ -1335,4 +1346,11 @@ func (v *VideoGenerationRequest) GetSize() *string {
 		return nil
 	}
 	return v.Size
+}
+
+func (v *VideoGenerationRequest) GetUpscaleFactor() *float64 {
+	if v == nil {
+		return nil
+	}
+	return v.UpscaleFactor
 }
