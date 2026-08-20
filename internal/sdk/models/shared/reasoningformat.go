@@ -14,6 +14,7 @@ const (
 	ReasoningFormatOpenaiResponsesV1        ReasoningFormat = "openai-responses-v1"
 	ReasoningFormatAzureOpenaiResponsesV1   ReasoningFormat = "azure-openai-responses-v1"
 	ReasoningFormatBedrockOpenaiResponsesV1 ReasoningFormat = "bedrock-openai-responses-v1"
+	ReasoningFormatBedrockXaiResponsesV1    ReasoningFormat = "bedrock-xai-responses-v1"
 	ReasoningFormatXaiResponsesV1           ReasoningFormat = "xai-responses-v1"
 	ReasoningFormatMetaResponsesV1          ReasoningFormat = "meta-responses-v1"
 	ReasoningFormatAnthropicClaudeV1        ReasoningFormat = "anthropic-claude-v1"
@@ -36,6 +37,8 @@ func (e *ReasoningFormat) UnmarshalJSON(data []byte) error {
 	case "azure-openai-responses-v1":
 		fallthrough
 	case "bedrock-openai-responses-v1":
+		fallthrough
+	case "bedrock-xai-responses-v1":
 		fallthrough
 	case "xai-responses-v1":
 		fallthrough
