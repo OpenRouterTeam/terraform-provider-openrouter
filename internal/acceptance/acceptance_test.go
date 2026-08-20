@@ -18,9 +18,12 @@
 package acceptance
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
@@ -90,6 +93,54 @@ func testName(suffix string) string {
 	return fmt.Sprintf("%s-%s-%s", runPrefix, id, suffix)
 }
 
+// testAccCheckDestroy verifies, against the live Management API, that every
+// resource Terraform destroyed really is gone. terraform-plugin-testing's
+// built-in destroy check only inspects state; this closes the loop by
+// re-reading each tracked object and requiring a 404.
+func testAccCheckDestroy(resources map[string]destroyTarget) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+		defer cancel()
+
+		for stateName, target := range resources {
+			rs, ok := s.RootModule().Resources[stateName]
+			if !ok || rs.Primary == nil {
+				continue
+			}
+			idValue := rs.Primary.Attributes[target.idAttr]
+			if idValue == "" {
+				return fmt.Errorf("CheckDestroy: %s has no %q in state", stateName, target.idAttr)
+			}
+
+			req, err := http.NewRequestWithContext(ctx, http.MethodGet,
+				testAccAPIBase()+target.path+"/"+idValue, nil)
+			if err != nil {
+				return fmt.Errorf("CheckDestroy: build request for %s: %w", stateName, err)
+			}
+			req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_MANAGEMENT_KEY"))
+
+			resp, err := http.DefaultClient.Do(req)
+			if err != nil {
+				return fmt.Errorf("CheckDestroy: %s: %w", stateName, err)
+			}
+			resp.Body.Close()
+
+			if resp.StatusCode != http.StatusNotFound {
+				return fmt.Errorf("CheckDestroy: %s (%s %s) still exists after destroy: HTTP %d",
+					stateName, target.path, idValue, resp.StatusCode)
+			}
+		}
+		return nil
+	}
+}
+
+// destroyTarget describes how to re-read one deleted resource through the
+// Management API for CheckDestroy.
+type destroyTarget struct {
+	path   string // collection path, e.g. "/keys"
+	idAttr string // state attribute holding the object identifier
+}
+
 // TestAccApiKey_Lifecycle exercises create -> import -> update on
 // openrouter_api_key, including the two provider behaviors we specifically
 // need proven live:
@@ -103,6 +154,9 @@ func TestAccApiKey_Lifecycle(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_api_key.test": {path: "/keys", idAttr: "hash"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -170,6 +224,9 @@ func TestAccGuardrail_Lifecycle(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_guardrail.test": {path: "/guardrails", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -216,6 +273,9 @@ func TestAccWorkspace_Lifecycle(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_workspace.test": {path: "/workspaces", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -258,6 +318,9 @@ func TestAccObservabilityDestination_Lifecycle(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_observability_destination.test": {path: "/observability/destinations", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -276,6 +339,15 @@ resource "openrouter_observability_destination" "test" {
 					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "enabled", "false"),
 					resource.TestCheckResourceAttrSet("openrouter_observability_destination.test", "id"),
 				),
+			},
+			{
+				ResourceName:      "openrouter_observability_destination.test",
+				ImportState:       true,
+				ImportStateVerify: true,
+				// config is an open map: the API echoes typed structure that
+				// may not byte-match the import's sparse state, so verify the
+				// stable fields only.
+				ImportStateVerifyIgnore: []string{"config"},
 			},
 			{
 				Config: providerConfig() + fmt.Sprintf(`
