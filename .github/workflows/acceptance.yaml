@@ -67,7 +67,13 @@ jobs:
         # -parallel 4 keeps resource-cap collisions (e.g. 5 observability
         # destinations per type) and API rate limits out of the picture while
         # still finishing well inside the timeout.
-        run: go test ./internal/acceptance/... -v -parallel 4 -timeout 30m 2>&1 | tee acceptance.log
+        #
+        # set -o pipefail: the default `bash -e {0}` does not propagate a
+        # failing go test's exit code through `tee` on its own, which would
+        # report this step (and the job) green on test failures.
+        run: |
+          set -o pipefail
+          go test ./internal/acceptance/... -v -parallel 4 -timeout 30m 2>&1 | tee acceptance.log
 
       - name: Upload acceptance logs
         if: always()
