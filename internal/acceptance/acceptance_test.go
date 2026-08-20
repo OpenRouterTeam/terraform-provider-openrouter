@@ -147,6 +147,19 @@ type destroyTarget struct {
 	idAttr string // state attribute holding the object identifier
 }
 
+/*
+ * The TestCheckResourceAttr lines in each create step below only prove
+ * config/state consistency, not a live-API round trip: Create's
+ * refreshPlan (internal/provider/utils.go) copies known plan values back
+ * over whatever the API returned, before State.Set. A field set from a
+ * config literal therefore always reads back as that literal, regardless
+ * of what the server actually stored. The ImportStateVerify step right
+ * after each create is what proves the value survived the live API,
+ * because Read never calls refreshPlan. Do not add these fields to
+ * ImportStateVerifyIgnore, and do not remove the import steps as
+ * redundant with the create-step checks above them.
+ */
+
 // TestAccApiKey_Lifecycle exercises create -> import -> update on
 // openrouter_api_key, including the two provider behaviors we specifically
 // need proven live:
