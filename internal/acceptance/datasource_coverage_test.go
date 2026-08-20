@@ -73,6 +73,12 @@ data "openrouter_presets" "all" {}
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_workspace.test":                 {path: "/workspaces", idAttr: "id"},
+			"openrouter_api_key.test":                   {path: "/keys", idAttr: "hash"},
+			"openrouter_guardrail.test":                 {path: "/guardrails", idAttr: "id"},
+			"openrouter_observability_destination.test": {path: "/observability/destinations", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -216,6 +222,10 @@ data "openrouter_observability_destinations" "by_workspace" {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_workspace.test":                 {path: "/workspaces", idAttr: "id"},
+			"openrouter_observability_destination.test": {path: "/observability/destinations", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
