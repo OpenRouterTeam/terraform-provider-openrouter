@@ -2523,6 +2523,15 @@ func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resou
 		return
 	}
 
+	// DEV-856: refreshPlan restores the flat `config` map from the plan; then
+	// re-sync it from the API-returned typed variant config so state stores the
+	// API-normalized form. See observabilitydestination_config_sync.go.
+	resp.Diagnostics.Append(data.refreshFlatConfigFromCreateResponse(res.CreateObservabilityDestinationResponse)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
