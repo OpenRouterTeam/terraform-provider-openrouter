@@ -65,6 +65,7 @@ const (
 	ProviderIonstream        Provider = "ionstream"
 	ProviderKrea             Provider = "krea"
 	ProviderLiquid           Provider = "liquid"
+	ProviderMakora           Provider = "makora"
 	ProviderMancer           Provider = "mancer"
 	ProviderMara             Provider = "mara"
 	ProviderMeta             Provider = "meta"
@@ -227,6 +228,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "krea":
 		fallthrough
 	case "liquid":
+		fallthrough
+	case "makora":
 		fallthrough
 	case "mancer":
 		fallthrough

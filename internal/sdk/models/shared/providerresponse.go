@@ -91,6 +91,7 @@ const (
 	ProviderResponseProviderNameInferactVLlm        ProviderResponseProviderName = "Inferact vLLM"
 	ProviderResponseProviderNameInflection          ProviderResponseProviderName = "Inflection"
 	ProviderResponseProviderNameLiquid              ProviderResponseProviderName = "Liquid"
+	ProviderResponseProviderNameMakora              ProviderResponseProviderName = "Makora"
 	ProviderResponseProviderNameMara                ProviderResponseProviderName = "Mara"
 	ProviderResponseProviderNameMancer2             ProviderResponseProviderName = "Mancer 2"
 	ProviderResponseProviderNameMeta                ProviderResponseProviderName = "Meta"
@@ -312,6 +313,8 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 	case "Inflection":
 		fallthrough
 	case "Liquid":
+		fallthrough
+	case "Makora":
 		fallthrough
 	case "Mara":
 		fallthrough

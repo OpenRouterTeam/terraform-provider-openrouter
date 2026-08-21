@@ -62,6 +62,7 @@ const (
 	BYOKProviderSlugIonstream        BYOKProviderSlug = "ionstream"
 	BYOKProviderSlugKrea             BYOKProviderSlug = "krea"
 	BYOKProviderSlugLiquid           BYOKProviderSlug = "liquid"
+	BYOKProviderSlugMakora           BYOKProviderSlug = "makora"
 	BYOKProviderSlugMancer           BYOKProviderSlug = "mancer"
 	BYOKProviderSlugMara             BYOKProviderSlug = "mara"
 	BYOKProviderSlugMeta             BYOKProviderSlug = "meta"
@@ -224,6 +225,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "krea":
 		fallthrough
 	case "liquid":
+		fallthrough
+	case "makora":
 		fallthrough
 	case "mancer":
 		fallthrough
