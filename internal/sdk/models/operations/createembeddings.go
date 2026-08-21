@@ -896,6 +896,10 @@ type CreateEmbeddingsResponse struct {
 	PaymentRequiredResponse *shared.PaymentRequiredResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
+	// Payload Too Large - Request payload exceeds size limits
+	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
@@ -982,6 +986,20 @@ func (c *CreateEmbeddingsResponse) GetNotFoundResponse() *shared.NotFoundRespons
 		return nil
 	}
 	return c.NotFoundResponse
+}
+
+func (c *CreateEmbeddingsResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if c == nil {
+		return nil
+	}
+	return c.RequestTimeoutResponse
+}
+
+func (c *CreateEmbeddingsResponse) GetPayloadTooLargeResponse() *shared.PayloadTooLargeResponse {
+	if c == nil {
+		return nil
+	}
+	return c.PayloadTooLargeResponse
 }
 
 func (c *CreateEmbeddingsResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {

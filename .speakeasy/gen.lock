@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 57e9d3a9cf8433b12e39894ba4536f28
+  docChecksum: 93885a17866147ace4b0712a7f77da94
   docVersion: 1.0.0
   speakeasyVersion: 1.795.1
   generationVersion: 2.932.9
-  releaseVersion: 0.2.45
-  configChecksum: 41369b04451df5675cd7e9cb0cd2ffd8
+  releaseVersion: 0.2.46
+  configChecksum: 60a1826da422a3bfe516dfc58a4f5405
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 1a8aa029-d0df-4993-9f16-945ecc5c5895
-  pristine_commit_hash: 1b360e3f2628cb11cd330f449e92864df2aeb7fb
-  pristine_tree_hash: 819887111e7a009e853d0a4c30903c441044239f
+  generation_id: 668671d6-453a-44ab-bb4c-d12879eae54c
+  pristine_commit_hash: e58191e23bdd76671e94363723aabc73b3c99ab6
+  pristine_tree_hash: 8d3ddfbbd7ec90e41647c65e02c0be502fc66bb9
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -124,8 +124,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:94af1eac4223eb94820bed9366eb983a3b2329cc
-    pristine_git_object: 2f22beb4e2ff7cf31310ae032999ebb81416626c
+    last_write_checksum: sha1:941cae27578cdad01559592f33b834ea2a373bac
+    pristine_git_object: 19d6ccded3bac3c1d88706e60f078f2522ff8f2d
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1056,8 +1056,8 @@ trackedFiles:
     pristine_git_object: 63cd63a6752ddc5a1476fd01b643723d3b05f8d4
   internal/sdk/embeddings.go:
     id: 301e958cb606
-    last_write_checksum: sha1:99f4b3901f5b9c862e24c13943eee1a33c0e4044
-    pristine_git_object: 2d71d5fc2fb8a43b967fd2b20cc2bf032d6d7a68
+    last_write_checksum: sha1:e4dc32234668634fd1afbe6761119e7d4e6369bd
+    pristine_git_object: 736baec463006284efda1547432255361c2c5785
   internal/sdk/endpoints.go:
     id: cd3622951e47
     last_write_checksum: sha1:aaa3bb096f9a65692dfe05a35fd85afb5305db9c
@@ -1192,8 +1192,8 @@ trackedFiles:
     pristine_git_object: d5f9890b7dc66a3712218e86f06da3c904c4bddc
   internal/sdk/models/operations/createembeddings.go:
     id: db494cf871a8
-    last_write_checksum: sha1:a794aa05c0835ec5b43674b6f2dd1fb75b8df04d
-    pristine_git_object: 6d672883e3ab6740206e762ae95db63ea846f3f5
+    last_write_checksum: sha1:dd82de09c555b50e2dfab7045dd33f65ba002c5d
+    pristine_git_object: e10ff8e6ba6e2bb6312a7f8007249bc2456d0db4
   internal/sdk/models/operations/createguardrail.go:
     id: ceff42af9379
     last_write_checksum: sha1:0f047093e59d2921f07f8a3616a830dc8fa93fdc
@@ -3520,8 +3520,8 @@ trackedFiles:
     pristine_git_object: 3d7b4c6e6cfa1d16105dc8b44bba5808702f48ff
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:aea927fb650c065df0192f4719a160ac08d59136
-    pristine_git_object: d6b98bce1799b1763baaa80b0c9fa9a19e0695c7
+    last_write_checksum: sha1:9d4133627e9936cc35d90b287d0e4ad20aede518
+    pristine_git_object: 37b94b425b6118969edd6cbf6d789c8998fb3909
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:d6aff1a420c31e025ea21d46cf056e305ae76fe8
@@ -4024,6 +4024,10 @@ examples:
           application/json: {"error": {"code": 524, "message": "Request timed out. Please try again later."}}
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request payload too large"}}
   listEmbeddingsModels:
     speakeasy-default-list-embeddings-models:
       parameters:
@@ -5329,4 +5333,6 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(Makora)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Makora)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(makora)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(makora)` **Added**\n  *  `response.data.provider_slug.enum(makora)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(makora)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(makora)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Makora)` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Makora)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Makora)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.makora` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.makora` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Makora)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Makora)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Makora)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.makora` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Embeddings.generate()`:  `response` **Changed** (Breaking ⚠️)
