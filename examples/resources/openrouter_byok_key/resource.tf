@@ -1,4 +1,7 @@
 resource "openrouter_byok_key" "my_byokkey" {
+  allowed_api_key_hashes = [
+    "f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943",
+  ]
   allowed_models = [
     "..."
   ]
