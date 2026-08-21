@@ -130,6 +130,7 @@ type VideoGenerationRequestOptions struct {
 	Liquid                   map[string]any `json:"liquid,omitzero"`
 	Lynn                     map[string]any `json:"lynn,omitzero"`
 	LynnPrivate              map[string]any `json:"lynn-private,omitzero"`
+	Makora                   map[string]any `json:"makora,omitzero"`
 	Mancer                   map[string]any `json:"mancer,omitzero"`
 	MancerOld                map[string]any `json:"mancer-old,omitzero"`
 	Mara                     map[string]any `json:"mara,omitzero"`
@@ -708,6 +709,13 @@ func (v *VideoGenerationRequestOptions) GetLynnPrivate() map[string]any {
 		return nil
 	}
 	return v.LynnPrivate
+}
+
+func (v *VideoGenerationRequestOptions) GetMakora() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Makora
 }
 
 func (v *VideoGenerationRequestOptions) GetMancer() map[string]any {
