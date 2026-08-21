@@ -60,8 +60,13 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 		Attributes: map[string]schema.Attribute{
 			"allowed_api_key_hashes": schema.ListAttribute{
 				Computed:    true,
+				Optional:    true,
 				ElementType: types.StringType,
-				Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) that may use this credential. ` + "`" + `null` + "`" + ` means no restriction.`,
+				Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) that may use this credential. ` + "`" + `null` + "`" + ` means no restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400.`,
+				Validators: []validator.List{
+					listvalidator.SizeAtLeast(1),
+					listvalidator.SizeAtMost(100),
+				},
 			},
 			"allowed_models": schema.ListAttribute{
 				Computed:    true,

@@ -14,6 +14,9 @@ ByokKey Resource
 
 ```terraform
 resource "openrouter_byok_key" "my_byokkey" {
+  allowed_api_key_hashes = [
+    "f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943",
+  ]
   allowed_models = [
     "..."
   ]
@@ -39,6 +42,7 @@ resource "openrouter_byok_key" "my_byokkey" {
 
 ### Optional
 
+- `allowed_api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400.
 - `allowed_models` (List of String) Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
 - `allowed_user_ids` (List of String) Optional allowlist of user IDs that may use this credential. `null` means no restriction.
 - `disabled` (Boolean) Whether this credential should be created in a disabled state.
@@ -48,7 +52,6 @@ resource "openrouter_byok_key" "my_byokkey" {
 
 ### Read-Only
 
-- `allowed_api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction.
 - `created_at` (String) ISO timestamp of when the credential was created.
 - `id` (String) The BYOK credential ID (UUID).
 - `label` (String) Short masked snippet of the key (e.g. the first/last few characters) used to identify it in the UI.

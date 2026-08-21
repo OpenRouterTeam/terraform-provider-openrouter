@@ -225,6 +225,13 @@ func (r *ByokKeyResourceModel) ToOperationsUpdateBYOKKeyRequest(ctx context.Cont
 func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context) (*shared.CreateBYOKKeyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	var allowedAPIKeyHashes []string
+	if r.AllowedAPIKeyHashes != nil {
+		allowedAPIKeyHashes = make([]string, 0, len(r.AllowedAPIKeyHashes))
+		for allowedAPIKeyHashesIndex := range r.AllowedAPIKeyHashes {
+			allowedAPIKeyHashes = append(allowedAPIKeyHashes, r.AllowedAPIKeyHashes[allowedAPIKeyHashesIndex].ValueString())
+		}
+	}
 	var allowedModels []string
 	if r.AllowedModels != nil {
 		allowedModels = make([]string, 0, len(r.AllowedModels))
@@ -268,14 +275,15 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 		workspaceID = nil
 	}
 	out := shared.CreateBYOKKeyRequest{
-		AllowedModels:  allowedModels,
-		AllowedUserIds: allowedUserIds,
-		Disabled:       disabled,
-		IsFallback:     isFallback,
-		Key:            key,
-		Name:           name,
-		ProviderSlug:   providerSlug,
-		WorkspaceID:    workspaceID,
+		AllowedAPIKeyHashes: allowedAPIKeyHashes,
+		AllowedModels:       allowedModels,
+		AllowedUserIds:      allowedUserIds,
+		Disabled:            disabled,
+		IsFallback:          isFallback,
+		Key:                 key,
+		Name:                name,
+		ProviderSlug:        providerSlug,
+		WorkspaceID:         workspaceID,
 	}
 
 	return &out, diags
@@ -284,6 +292,13 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context) (*shared.UpdateBYOKKeyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	var allowedAPIKeyHashes []string
+	if r.AllowedAPIKeyHashes != nil {
+		allowedAPIKeyHashes = make([]string, 0, len(r.AllowedAPIKeyHashes))
+		for allowedAPIKeyHashesIndex := range r.AllowedAPIKeyHashes {
+			allowedAPIKeyHashes = append(allowedAPIKeyHashes, r.AllowedAPIKeyHashes[allowedAPIKeyHashesIndex].ValueString())
+		}
+	}
 	var allowedModels []string
 	if r.AllowedModels != nil {
 		allowedModels = make([]string, 0, len(r.AllowedModels))
@@ -323,12 +338,13 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 		name = nil
 	}
 	out := shared.UpdateBYOKKeyRequest{
-		AllowedModels:  allowedModels,
-		AllowedUserIds: allowedUserIds,
-		Disabled:       disabled,
-		IsFallback:     isFallback,
-		Key:            key,
-		Name:           name,
+		AllowedAPIKeyHashes: allowedAPIKeyHashes,
+		AllowedModels:       allowedModels,
+		AllowedUserIds:      allowedUserIds,
+		Disabled:            disabled,
+		IsFallback:          isFallback,
+		Key:                 key,
+		Name:                name,
 	}
 
 	return &out, diags
