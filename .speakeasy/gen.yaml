@@ -26,13 +26,13 @@ generation:
   requestBodyFieldName: body
   versioningStrategy: automatic
   persistentEdits:
-    enabled: true
+    enabled: "true"
   tests:
     generateTests: false
     generateNewTests: true
     skipResponseBodyAssertions: false
 terraform:
-  version: 0.2.46
+  version: 0.2.47
   additionalActions: []
   additionalDataSources: []
   additionalDependencies:
