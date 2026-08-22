@@ -311,7 +311,9 @@ resource "openrouter_guardrail" "test" {
   limit_usd = 1
 }
 `, name),
-				ExpectError: regexp.MustCompile("Reset interval is required when setting a budget limit"),
+				// (?s): the generated provider embeds the JSON error body with escaped
+				// newlines inside debugResponse output.
+				ExpectError: regexp.MustCompile("(?s)Reset interval is required"),
 			},
 			{
 				// reset_interval without limit_usd -> 400.
@@ -321,7 +323,7 @@ resource "openrouter_guardrail" "test" {
   reset_interval = "monthly"
 }
 `, name),
-				ExpectError: regexp.MustCompile("Budget limit is required when setting a reset interval"),
+				ExpectError: regexp.MustCompile("(?s)Budget limit is required"),
 			},
 		},
 	})
