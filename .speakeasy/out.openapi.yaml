@@ -7427,6 +7427,7 @@ components:
         - 'workspace_id'
         - 'role'
       type: 'object'
+      x-speakeasy-entity: ScimGroupMapping
     CreateScimGroupMappingResponse:
       properties:
         data:
@@ -22532,6 +22533,7 @@ components:
         - 'created_at'
         - 'updated_at'
       type: 'object'
+      x-speakeasy-entity: ScimGroupMapping
     SearchContextSizeEnum:
       description: 'Size of the search context for web search tools'
       enum:
@@ -25192,6 +25194,7 @@ components:
       required:
         - 'role'
       type: 'object'
+      x-speakeasy-entity: ScimGroupMapping
     UpdateScimGroupMappingResponse:
       properties:
         data:
@@ -37481,6 +37484,7 @@ paths:
       tags:
         - 'SCIM'
       x-speakeasy-name-override: 'create'
+      x-speakeasy-entity-operation: ScimGroupMapping#create
   /scim/group-mappings/{id}:
     delete:
       description: 'Delete a SCIM group-to-workspace mapping. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -37556,6 +37560,7 @@ paths:
       tags:
         - 'SCIM'
       x-speakeasy-name-override: 'delete'
+      x-speakeasy-entity-operation: ScimGroupMapping#delete
     get:
       description: 'Get a SCIM group-to-workspace mapping. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'getScimGroupMapping'
@@ -37607,6 +37612,7 @@ paths:
       tags:
         - 'SCIM'
       x-speakeasy-name-override: 'read'
+      x-speakeasy-entity-operation: ScimGroupMapping#read
     patch:
       description: 'Update a SCIM group mapping role. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'updateScimGroupMapping'
@@ -37674,6 +37680,7 @@ paths:
       tags:
         - 'SCIM'
       x-speakeasy-name-override: 'update'
+      x-speakeasy-entity-operation: ScimGroupMapping#update
   /scim/groups:
     get:
       description: 'List SCIM groups for the organization. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
