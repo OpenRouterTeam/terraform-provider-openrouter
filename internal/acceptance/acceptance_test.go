@@ -23,6 +23,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
 	"testing"
 	"time"
 
@@ -284,6 +285,43 @@ resource "openrouter_guardrail" "test" {
 					resource.TestCheckResourceAttr("openrouter_guardrail.test", "description", "acceptance test guardrail (updated)"),
 					resource.TestCheckResourceAttr("openrouter_guardrail.test", "limit_usd", "2"),
 				),
+			},
+		},
+	})
+}
+
+// TestAccGuardrail_BudgetPairingRequired pins the server-side contract from
+// Linear ENT-1743: the guardrail-create API rejects a budget that sets only
+// one of limit_usd / reset_interval with a 400 naming the missing field.
+// The OpenAPI spec historically did not declare this dependency, so plan-time
+// client validation could not catch it — this test is the executable
+// documentation of the API behavior.
+func TestAccGuardrail_BudgetPairingRequired(t *testing.T) {
+	name := testName("guardrail-pair")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				// limit_usd without reset_interval -> 400.
+				Config: providerConfig() + fmt.Sprintf(`
+resource "openrouter_guardrail" "test" {
+  name      = %q
+  limit_usd = 1
+}
+`, name),
+				ExpectError: regexp.MustCompile("Reset interval is required when setting a budget limit"),
+			},
+			{
+				// reset_interval without limit_usd -> 400.
+				Config: providerConfig() + fmt.Sprintf(`
+resource "openrouter_guardrail" "test" {
+  name           = %q
+  reset_interval = "monthly"
+}
+`, name),
+				ExpectError: regexp.MustCompile("Budget limit is required when setting a reset interval"),
 			},
 		},
 	})
