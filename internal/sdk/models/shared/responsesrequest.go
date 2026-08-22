@@ -382,6 +382,8 @@ type ResponsesRequestToolFunction struct {
 	Strict      *bool          `json:"strict,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"function" json:"type"`
+	// Withhold this tool from the model until `openrouter:tool_search` finds it. Requires the tool search server tool; at least one tool must remain non-deferred.
+	DeferLoading *bool `json:"defer_loading,omitzero"`
 }
 
 func (r ResponsesRequestToolFunction) MarshalJSON() ([]byte, error) {
@@ -427,6 +429,13 @@ func (r *ResponsesRequestToolFunction) GetType() string {
 	return "function"
 }
 
+func (r *ResponsesRequestToolFunction) GetDeferLoading() *bool {
+	if r == nil {
+		return nil
+	}
+	return r.DeferLoading
+}
+
 type ResponsesRequestToolUnionType string
 
 const (
@@ -457,6 +466,7 @@ const (
 	ResponsesRequestToolUnionTypeOpenrouterApplyPatch               ResponsesRequestToolUnionType = "openrouter:apply_patch"
 	ResponsesRequestToolUnionTypeOpenrouterBash                     ResponsesRequestToolUnionType = "openrouter:bash"
 	ResponsesRequestToolUnionTypeOpenrouterShell                    ResponsesRequestToolUnionType = "openrouter:shell"
+	ResponsesRequestToolUnionTypeOpenrouterToolSearch               ResponsesRequestToolUnionType = "openrouter:tool_search"
 )
 
 type ResponsesRequestToolUnion struct {
@@ -487,6 +497,7 @@ type ResponsesRequestToolUnion struct {
 	ApplyPatchServerToolOpenRouter      *ApplyPatchServerToolOpenRouter      `queryParam:"inline" union:"member"`
 	BashServerTool                      *BashServerTool                      `queryParam:"inline" union:"member"`
 	ShellServerToolOpenRouter           *ShellServerToolOpenRouter           `queryParam:"inline" union:"member"`
+	ToolSearchServerTool                *ToolSearchServerTool                `queryParam:"inline" union:"member"`
 
 	Type ResponsesRequestToolUnionType
 }
@@ -812,6 +823,18 @@ func CreateResponsesRequestToolUnionOpenrouterShell(openrouterShell ShellServerT
 	}
 }
 
+func CreateResponsesRequestToolUnionOpenrouterToolSearch(openrouterToolSearch ToolSearchServerTool) ResponsesRequestToolUnion {
+	typ := ResponsesRequestToolUnionTypeOpenrouterToolSearch
+
+	typStr := ToolSearchServerToolType(typ)
+	openrouterToolSearch.Type = typStr
+
+	return ResponsesRequestToolUnion{
+		ToolSearchServerTool: &openrouterToolSearch,
+		Type:                 typ,
+	}
+}
+
 func (u *ResponsesRequestToolUnion) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
@@ -1067,6 +1090,15 @@ func (u *ResponsesRequestToolUnion) UnmarshalJSON(data []byte) error {
 		u.ShellServerToolOpenRouter = shellServerToolOpenRouter
 		u.Type = ResponsesRequestToolUnionTypeOpenrouterShell
 		return nil
+	case "openrouter:tool_search":
+		toolSearchServerTool := new(ToolSearchServerTool)
+		if err := utils.UnmarshalJSON(data, &toolSearchServerTool, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:tool_search) type ToolSearchServerTool within ResponsesRequestToolUnion: %w", string(data), err)
+		}
+
+		u.ToolSearchServerTool = toolSearchServerTool
+		u.Type = ResponsesRequestToolUnionTypeOpenrouterToolSearch
+		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for ResponsesRequestToolUnion", string(data))
@@ -1179,6 +1211,10 @@ func (u ResponsesRequestToolUnion) MarshalJSON() ([]byte, error) {
 
 	if u.ShellServerToolOpenRouter != nil {
 		return utils.MarshalJSON(u.ShellServerToolOpenRouter, "", true)
+	}
+
+	if u.ToolSearchServerTool != nil {
+		return utils.MarshalJSON(u.ToolSearchServerTool, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ResponsesRequestToolUnion: all fields are null")
