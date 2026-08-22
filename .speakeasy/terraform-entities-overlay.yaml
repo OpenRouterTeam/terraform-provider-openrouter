@@ -6,7 +6,8 @@ info:
   description: >-
     Maps OpenRouter management API operations to Terraform entities via
     x-speakeasy-entity / x-speakeasy-entity-operation. Resources: ApiKey,
-    Guardrail, Workspace, ByokKey, ObservabilityDestination. Plus read-only
+    Guardrail, Workspace, ByokKey, ObservabilityDestination,
+    ScimGroupMapping. Plus read-only
     data-source entities for management lists and the model/provider/preset
     /credits catalog.
 actions:
@@ -306,3 +307,32 @@ actions:
   - target: $["components"]["schemas"]["UpdateObservabilityDestinationRequest"]["properties"]["config"]
     update:
       x-speakeasy-param-sensitive: true
+
+  # ---------------------------------------------------------------------------
+  # ScimGroupMapping  (POST /scim/group-mappings, GET/PATCH/DELETE .../{id})
+  # Component-based, mirroring Guardrail: annotate the model plus its request
+  # schemas; response envelopes $ref the annotated component so reads inherit
+  # the entity. DEV-709.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["ScimGroupMapping"]
+    update:
+      x-speakeasy-entity: ScimGroupMapping
+  - target: $["components"]["schemas"]["CreateScimGroupMappingRequest"]
+    update:
+      x-speakeasy-entity: ScimGroupMapping
+  - target: $["components"]["schemas"]["UpdateScimGroupMappingRequest"]
+    update:
+      x-speakeasy-entity: ScimGroupMapping
+
+  - target: $["paths"]["/scim/group-mappings"]["post"]
+    update:
+      x-speakeasy-entity-operation: ScimGroupMapping#create
+  - target: $["paths"]["/scim/group-mappings/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation: ScimGroupMapping#read
+  - target: $["paths"]["/scim/group-mappings/{id}"]["patch"]
+    update:
+      x-speakeasy-entity-operation: ScimGroupMapping#update
+  - target: $["paths"]["/scim/group-mappings/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: ScimGroupMapping#delete
