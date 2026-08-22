@@ -13,12 +13,18 @@
 //	                           credits. Management keys cannot call inference
 //	                           endpoints, and a zero-credit org means any
 //	                           inference key minted during tests is unusable.
+//	OPENROUTER_BASE_URL        optional; point the harness (provider config
+//	                           and sweeper) at a staging API base URL.
 package acceptance
 
 import (
+	"context"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
@@ -46,15 +52,36 @@ func testAccPreCheck(t *testing.T) {
 	}
 }
 
+// testAccServerURL returns the optional OPENROUTER_BASE_URL override for
+// pointing acceptance tests at staging (empty string = production default).
+func testAccServerURL() string {
+	return os.Getenv("OPENROUTER_BASE_URL")
+}
+
+// testAccAPIBase returns the base URL used for direct API calls (sweeper),
+// mirroring the provider's server_url default.
+func testAccAPIBase() string {
+	if u := testAccServerURL(); u != "" {
+		return u
+	}
+	return "https://openrouter.ai/api/v1"
+}
+
 // providerConfig renders the provider block. The generated provider has no
 // environment-variable fallback for api_key, so the key is interpolated
-// into configuration here (state stays on the ephemeral runner).
+// into configuration here (state stays on the ephemeral runner). When
+// OPENROUTER_BASE_URL is set, server_url is rendered too so the whole
+// harness can be pointed at a staging environment.
 func providerConfig() string {
+	serverURL := ""
+	if u := testAccServerURL(); u != "" {
+		serverURL = fmt.Sprintf("\n  server_url = %q", u)
+	}
 	return fmt.Sprintf(`
 provider "openrouter" {
-  api_key = %q
+  api_key = %q%s
 }
-`, os.Getenv("OPENROUTER_MANAGEMENT_KEY"))
+`, os.Getenv("OPENROUTER_MANAGEMENT_KEY"), serverURL)
 }
 
 func testName(suffix string) string {
@@ -66,6 +93,72 @@ func testName(suffix string) string {
 	}
 	return fmt.Sprintf("%s-%s-%s", runPrefix, id, suffix)
 }
+
+// testAccCheckDestroy verifies, against the live Management API, that every
+// resource Terraform destroyed really is gone. terraform-plugin-testing's
+// built-in destroy check only inspects state; this closes the loop by
+// re-reading each tracked object and requiring a 404. Response bodies are
+// drained but never inspected or logged: some resource types echo
+// configuration that other tests mark sensitive.
+func testAccCheckDestroy(resources map[string]destroyTarget) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+		defer cancel()
+
+		for stateName, target := range resources {
+			rs, ok := s.RootModule().Resources[stateName]
+			if !ok || rs.Primary == nil {
+				continue
+			}
+			idValue := rs.Primary.Attributes[target.idAttr]
+			if idValue == "" {
+				return fmt.Errorf("CheckDestroy: %s has no %q in state", stateName, target.idAttr)
+			}
+
+			req, err := http.NewRequestWithContext(ctx, http.MethodGet,
+				testAccAPIBase()+target.path+"/"+idValue, nil)
+			if err != nil {
+				return fmt.Errorf("CheckDestroy: build request for %s: %w", stateName, err)
+			}
+			req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_MANAGEMENT_KEY"))
+
+			resp, err := http.DefaultClient.Do(req)
+			if err != nil {
+				return fmt.Errorf("CheckDestroy: %s: %w", stateName, err)
+			}
+			// Drain before closing (never log): the body may echo
+			// sensitive configuration for other resource types.
+			_, _ = io.Copy(io.Discard, resp.Body)
+			resp.Body.Close()
+
+			if resp.StatusCode != http.StatusNotFound {
+				return fmt.Errorf("CheckDestroy: resource still exists after destroy (state=%s management_path=%s public_id=%s status=%d)",
+					stateName, target.path, idValue, resp.StatusCode)
+			}
+		}
+		return nil
+	}
+}
+
+// destroyTarget describes how to re-read one deleted resource through the
+// Management API for CheckDestroy.
+type destroyTarget struct {
+	path   string // collection path, e.g. "/keys"
+	idAttr string // state attribute holding the object identifier
+}
+
+/*
+ * The TestCheckResourceAttr lines in each create step below only prove
+ * config/state consistency, not a live-API round trip: Create's
+ * refreshPlan (internal/provider/utils.go) copies known plan values back
+ * over whatever the API returned, before State.Set. A field set from a
+ * config literal therefore always reads back as that literal, regardless
+ * of what the server actually stored. The ImportStateVerify step right
+ * after each create is what proves the value survived the live API,
+ * because Read never calls refreshPlan. Do not add these fields to
+ * ImportStateVerifyIgnore, and do not remove the import steps as
+ * redundant with the create-step checks above them.
+ */
 
 // TestAccApiKey_Lifecycle exercises create -> import -> update on
 // openrouter_api_key, including the two provider behaviors we specifically
@@ -80,6 +173,9 @@ func TestAccApiKey_Lifecycle(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_api_key.test": {path: "/keys", idAttr: "hash"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -91,6 +187,8 @@ resource "openrouter_api_key" "test" {
 `, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("openrouter_api_key.test", "name", name),
+					// limit=0 so this key can never spend even if leaked.
+					resource.TestCheckResourceAttr("openrouter_api_key.test", "limit", "0"),
 					// disabled=true only applies via the create->update chain.
 					resource.TestCheckResourceAttr("openrouter_api_key.test", "disabled", "true"),
 					resource.TestCheckResourceAttrSet("openrouter_api_key.test", "hash"),
@@ -147,6 +245,9 @@ func TestAccGuardrail_Lifecycle(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_guardrail.test": {path: "/guardrails", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -159,6 +260,9 @@ resource "openrouter_guardrail" "test" {
 `, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("openrouter_guardrail.test", "name", name),
+					resource.TestCheckResourceAttr("openrouter_guardrail.test", "description", "acceptance test guardrail"),
+					resource.TestCheckResourceAttr("openrouter_guardrail.test", "limit_usd", "1"),
+					resource.TestCheckResourceAttr("openrouter_guardrail.test", "reset_interval", "monthly"),
 					resource.TestCheckResourceAttrSet("openrouter_guardrail.test", "id"),
 				),
 			},
@@ -193,6 +297,9 @@ func TestAccWorkspace_Lifecycle(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_workspace.test": {path: "/workspaces", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -203,6 +310,7 @@ resource "openrouter_workspace" "test" {
 `, name, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("openrouter_workspace.test", "name", name),
+					resource.TestCheckResourceAttr("openrouter_workspace.test", "slug", name),
 					resource.TestCheckResourceAttrSet("openrouter_workspace.test", "id"),
 				),
 			},
@@ -235,6 +343,9 @@ func TestAccObservabilityDestination_Lifecycle(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_observability_destination.test": {path: "/observability/destinations", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -249,6 +360,7 @@ resource "openrouter_observability_destination" "test" {
 }
 `, name),
 				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "name", name),
 					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "type", "webhook"),
 					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "enabled", "false"),
 					resource.TestCheckResourceAttrSet("openrouter_observability_destination.test", "id"),
@@ -283,6 +395,55 @@ resource "openrouter_observability_destination" "test" {
 }
 `, name),
 				PlanOnly: true,
+			},
+		},
+	})
+}
+
+// TestAccObservabilityDestination_Import is split out of
+// TestAccObservabilityDestination_Lifecycle as a whole-test skip for a
+// tracked product bug (DEV-872), not an ImportStateVerifyIgnore entry: the
+// API contract does return top-level "type" on GET, so ignoring it here
+// would convert a real defect into a silent pass.
+func TestAccObservabilityDestination_Import(t *testing.T) {
+	t.Skip("DEV-872: generated Read mapper never assigns 'type', so import produces incomplete state and ImportStateVerify fails; remove this skip when DEV-872 lands — https://linear.app/openrouter/issue/DEV-872")
+
+	name := testName("dest")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_observability_destination.test": {path: "/observability/destinations", idAttr: "id"},
+		}),
+		Steps: []resource.TestStep{
+			{
+				Config: providerConfig() + fmt.Sprintf(`
+resource "openrouter_observability_destination" "test" {
+  name    = %q
+  type    = "webhook"
+  enabled = false
+  config = {
+    url    = jsonencode("https://example.com/tf-acc")
+    method = jsonencode("POST")
+  }
+}
+`, name),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "name", name),
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "type", "webhook"),
+					resource.TestCheckResourceAttr("openrouter_observability_destination.test", "enabled", "false"),
+					resource.TestCheckResourceAttrSet("openrouter_observability_destination.test", "id"),
+				),
+			},
+			{
+				ResourceName:      "openrouter_observability_destination.test",
+				ImportState:       true,
+				ImportStateVerify: true,
+				// config is an open map: the API echoes typed structure that
+				// may not byte-match the import's sparse state, so verify the
+				// stable fields only.
+				ImportStateVerifyIgnore: []string{"config"},
 			},
 		},
 	})

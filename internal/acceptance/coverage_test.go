@@ -17,6 +17,9 @@ func TestAccApiKey_ForceNew(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_api_key.test": {path: "/keys", idAttr: "hash"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig() + fmt.Sprintf(`
@@ -75,6 +78,11 @@ resource "openrouter_guardrail" "test" {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_workspace.a":    {path: "/workspaces", idAttr: "id"},
+			"openrouter_workspace.b":    {path: "/workspaces", idAttr: "id"},
+			"openrouter_guardrail.test": {path: "/guardrails", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: base("a"),
@@ -165,6 +173,11 @@ data "openrouter_credits" "current" {}
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_workspace.test": {path: "/workspaces", idAttr: "id"},
+			"openrouter_api_key.test":   {path: "/keys", idAttr: "hash"},
+			"openrouter_guardrail.test": {path: "/guardrails", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -263,6 +276,12 @@ resource "openrouter_observability_destination" "hook" {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy: testAccCheckDestroy(map[string]destroyTarget{
+			"openrouter_workspace.env":                  {path: "/workspaces", idAttr: "id"},
+			"openrouter_api_key.svc":                    {path: "/keys", idAttr: "hash"},
+			"openrouter_guardrail.cap":                  {path: "/guardrails", idAttr: "id"},
+			"openrouter_observability_destination.hook": {path: "/observability/destinations", idAttr: "id"},
+		}),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
