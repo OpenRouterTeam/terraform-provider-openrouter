@@ -114,6 +114,8 @@ type AdditionalToolsItemToolFunction struct {
 	Parameters  map[string]any                  `json:"parameters"`
 	Strict      *bool                           `json:"strict,omitzero"`
 	Type        AdditionalToolsItemTypeFunction `json:"type"`
+	// Withhold this tool from the model until `openrouter:tool_search` finds it. Requires the tool search server tool; at least one tool must remain non-deferred.
+	DeferLoading *bool `json:"defer_loading,omitzero"`
 }
 
 func (a AdditionalToolsItemToolFunction) MarshalJSON() ([]byte, error) {
@@ -162,6 +164,13 @@ func (a *AdditionalToolsItemToolFunction) GetType() AdditionalToolsItemTypeFunct
 	return a.Type
 }
 
+func (a *AdditionalToolsItemToolFunction) GetDeferLoading() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.DeferLoading
+}
+
 type AdditionalToolsItemToolUnionType string
 
 const (
@@ -192,6 +201,7 @@ const (
 	AdditionalToolsItemToolUnionTypeApplyPatchServerToolOpenRouter      AdditionalToolsItemToolUnionType = "ApplyPatchServerTool_OpenRouter"
 	AdditionalToolsItemToolUnionTypeBashServerTool                      AdditionalToolsItemToolUnionType = "BashServerTool"
 	AdditionalToolsItemToolUnionTypeShellServerToolOpenRouter           AdditionalToolsItemToolUnionType = "ShellServerTool_OpenRouter"
+	AdditionalToolsItemToolUnionTypeToolSearchServerTool                AdditionalToolsItemToolUnionType = "ToolSearchServerTool"
 	AdditionalToolsItemToolUnionTypeAdditionalToolsItemTool             AdditionalToolsItemToolUnionType = "AdditionalToolsItem_tool"
 )
 
@@ -223,6 +233,7 @@ type AdditionalToolsItemToolUnion struct {
 	ApplyPatchServerToolOpenRouter      *ApplyPatchServerToolOpenRouter      `queryParam:"inline" union:"member"`
 	BashServerTool                      *BashServerTool                      `queryParam:"inline" union:"member"`
 	ShellServerToolOpenRouter           *ShellServerToolOpenRouter           `queryParam:"inline" union:"member"`
+	ToolSearchServerTool                *ToolSearchServerTool                `queryParam:"inline" union:"member"`
 	AdditionalToolsItemTool             *AdditionalToolsItemTool             `queryParam:"inline" union:"member"`
 
 	Type AdditionalToolsItemToolUnionType
@@ -471,6 +482,15 @@ func CreateAdditionalToolsItemToolUnionShellServerToolOpenRouter(shellServerTool
 	}
 }
 
+func CreateAdditionalToolsItemToolUnionToolSearchServerTool(toolSearchServerTool ToolSearchServerTool) AdditionalToolsItemToolUnion {
+	typ := AdditionalToolsItemToolUnionTypeToolSearchServerTool
+
+	return AdditionalToolsItemToolUnion{
+		ToolSearchServerTool: &toolSearchServerTool,
+		Type:                 typ,
+	}
+}
+
 func CreateAdditionalToolsItemToolUnionAdditionalToolsItemTool(additionalToolsItemTool AdditionalToolsItemTool) AdditionalToolsItemToolUnion {
 	typ := AdditionalToolsItemToolUnionTypeAdditionalToolsItemTool
 
@@ -701,6 +721,14 @@ func (u *AdditionalToolsItemToolUnion) UnmarshalJSON(data []byte) error {
 		})
 	}
 
+	var toolSearchServerTool ToolSearchServerTool = ToolSearchServerTool{}
+	if err := utils.UnmarshalJSON(data, &toolSearchServerTool, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  AdditionalToolsItemToolUnionTypeToolSearchServerTool,
+			Value: &toolSearchServerTool,
+		})
+	}
+
 	var additionalToolsItemTool AdditionalToolsItemTool = AdditionalToolsItemTool{}
 	if err := utils.UnmarshalJSON(data, &additionalToolsItemTool, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
@@ -802,6 +830,9 @@ func (u *AdditionalToolsItemToolUnion) UnmarshalJSON(data []byte) error {
 		return nil
 	case AdditionalToolsItemToolUnionTypeShellServerToolOpenRouter:
 		u.ShellServerToolOpenRouter = best.Value.(*ShellServerToolOpenRouter)
+		return nil
+	case AdditionalToolsItemToolUnionTypeToolSearchServerTool:
+		u.ToolSearchServerTool = best.Value.(*ToolSearchServerTool)
 		return nil
 	case AdditionalToolsItemToolUnionTypeAdditionalToolsItemTool:
 		u.AdditionalToolsItemTool = best.Value.(*AdditionalToolsItemTool)
@@ -918,6 +949,10 @@ func (u AdditionalToolsItemToolUnion) MarshalJSON() ([]byte, error) {
 
 	if u.ShellServerToolOpenRouter != nil {
 		return utils.MarshalJSON(u.ShellServerToolOpenRouter, "", true)
+	}
+
+	if u.ToolSearchServerTool != nil {
+		return utils.MarshalJSON(u.ToolSearchServerTool, "", true)
 	}
 
 	if u.AdditionalToolsItemTool != nil {
