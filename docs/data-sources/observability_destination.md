@@ -293,7 +293,7 @@ Read-Only:
 - `api_key` (String, Sensitive) Datadog API key must have LLM Observability permissions. Create at:
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `ml_app` (String) Name to identify your application in Datadog LLM Observability
-- `url` (String) Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.datadoghq.eu)
+- `url` (String) Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.us5.datadoghq.com, https://api.datadoghq.eu)
 
 
 <a id="nestedatt--datadog--filter_rules"></a>
