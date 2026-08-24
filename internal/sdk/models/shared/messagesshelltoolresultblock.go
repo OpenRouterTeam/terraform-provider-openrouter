@@ -4,13 +4,104 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+type MessagesShellToolResultBlockTypeContainerFileCitation string
+
+const (
+	MessagesShellToolResultBlockTypeContainerFileCitationContainerFileCitation MessagesShellToolResultBlockTypeContainerFileCitation = "container_file_citation"
+)
+
+func (e MessagesShellToolResultBlockTypeContainerFileCitation) ToPointer() *MessagesShellToolResultBlockTypeContainerFileCitation {
+	return &e
+}
+func (e *MessagesShellToolResultBlockTypeContainerFileCitation) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "container_file_citation":
+		*e = MessagesShellToolResultBlockTypeContainerFileCitation(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for MessagesShellToolResultBlockTypeContainerFileCitation: %v", v)
+	}
+}
+
+type MessagesShellToolResultBlockFile struct {
+	ContainerID string                                                `json:"container_id"`
+	EndIndex    int64                                                 `json:"end_index"`
+	FileID      string                                                `json:"file_id"`
+	Filename    string                                                `json:"filename"`
+	StartIndex  int64                                                 `json:"start_index"`
+	Type        MessagesShellToolResultBlockTypeContainerFileCitation `json:"type"`
+}
+
+func (m MessagesShellToolResultBlockFile) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(m, "", false)
+}
+
+func (m *MessagesShellToolResultBlockFile) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &m, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *MessagesShellToolResultBlockFile) GetContainerID() string {
+	if m == nil {
+		return ""
+	}
+	return m.ContainerID
+}
+
+func (m *MessagesShellToolResultBlockFile) GetEndIndex() int64 {
+	if m == nil {
+		return 0
+	}
+	return m.EndIndex
+}
+
+func (m *MessagesShellToolResultBlockFile) GetFileID() string {
+	if m == nil {
+		return ""
+	}
+	return m.FileID
+}
+
+func (m *MessagesShellToolResultBlockFile) GetFilename() string {
+	if m == nil {
+		return ""
+	}
+	return m.Filename
+}
+
+func (m *MessagesShellToolResultBlockFile) GetStartIndex() int64 {
+	if m == nil {
+		return 0
+	}
+	return m.StartIndex
+}
+
+func (m *MessagesShellToolResultBlockFile) GetType() MessagesShellToolResultBlockTypeContainerFileCitation {
+	if m == nil {
+		return MessagesShellToolResultBlockTypeContainerFileCitation("")
+	}
+	return m.Type
+}
+
 // MessagesShellToolResultBlock - Output of an `openrouter:shell` call from a prior assistant turn. Accepted on replay and dropped before the provider request — Anthropic has no equivalent block.
 type MessagesShellToolResultBlock struct {
-	Content   map[string]any `json:"content"`
-	ToolUseID string         `json:"tool_use_id"`
+	// The canonical container id the command ran under — the `{container_id}` for the Container Files API, reusable as a `container_reference` in later requests. Present on every sandbox-executed call, even when no files changed.
+	ContainerID *string        `json:"container_id,omitzero"`
+	Content     map[string]any `json:"content"`
+	// Citations for the files the sandbox command created or modified, most-recently-touched first (at most 10). Retrieve them via the Container Files API.
+	Files     []MessagesShellToolResultBlockFile `json:"files,omitzero"`
+	ToolUseID string                             `json:"tool_use_id"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"openrouter_shell_tool_result" json:"type"`
 }
@@ -26,11 +117,25 @@ func (m *MessagesShellToolResultBlock) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (m *MessagesShellToolResultBlock) GetContainerID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.ContainerID
+}
+
 func (m *MessagesShellToolResultBlock) GetContent() map[string]any {
 	if m == nil {
 		return map[string]any{}
 	}
 	return m.Content
+}
+
+func (m *MessagesShellToolResultBlock) GetFiles() []MessagesShellToolResultBlockFile {
+	if m == nil {
+		return nil
+	}
+	return m.Files
 }
 
 func (m *MessagesShellToolResultBlock) GetToolUseID() string {
