@@ -47,8 +47,10 @@ type CreateKeysRequest struct {
 	CreatorUserID *string `json:"creator_user_id,omitzero"`
 	// Optional ISO 8601 UTC timestamp when the API key should expire. Must be UTC, other timezones will be rejected
 	ExpiresAt *time.Time `json:"expires_at,omitzero"`
-	// Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret.
+	// Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret; supplying it with a management key is rejected with 403.
 	ExternalAPIKey *string `json:"external_api_key,omitzero"`
+	// Partner's end-user identifier for attribution, between 1 and 512 characters. Accepted only when authenticating with a Connect client secret, where it is required; supplying it with a management key is rejected with 403.
+	ExternalUser *string `json:"external_user,omitzero"`
 	// Whether to include BYOK usage in the limit
 	IncludeByokInLimit *bool `json:"include_byok_in_limit,omitzero"`
 	// Optional spending limit for the API key in USD
@@ -91,6 +93,13 @@ func (c *CreateKeysRequest) GetExternalAPIKey() *string {
 		return nil
 	}
 	return c.ExternalAPIKey
+}
+
+func (c *CreateKeysRequest) GetExternalUser() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ExternalUser
 }
 
 func (c *CreateKeysRequest) GetIncludeByokInLimit() *bool {
@@ -146,6 +155,8 @@ type CreateKeysData struct {
 	Disabled bool `json:"disabled"`
 	// ISO 8601 UTC timestamp when the API key expires, or null if no expiration
 	ExpiresAt *time.Time `json:"expires_at,omitzero"`
+	// Partner's end-user identifier used for attribution.
+	ExternalUser *string `json:"external_user"`
 	// Unique hash identifier for the API key
 	Hash string `json:"hash"`
 	// Whether to include external BYOK usage in the credit limit
@@ -239,6 +250,13 @@ func (c *CreateKeysData) GetExpiresAt() *time.Time {
 		return nil
 	}
 	return c.ExpiresAt
+}
+
+func (c *CreateKeysData) GetExternalUser() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ExternalUser
 }
 
 func (c *CreateKeysData) GetHash() string {

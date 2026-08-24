@@ -18,6 +18,7 @@ resource "openrouter_api_key" "my_apikey" {
   disabled              = false
   expires_at            = "2027-12-31T23:59:59Z"
   external_api_key      = "...my_external_api_key..."
+  external_user         = "...my_external_user..."
   include_byok_in_limit = true
   limit                 = 50
   limit_reset           = "monthly"
@@ -38,7 +39,8 @@ resource "openrouter_api_key" "my_apikey" {
 - `creator_user_id` (String) Optional user ID of the key creator. Only meaningful for organization-owned keys where a specific member is creating the key. Requires replacement if changed.
 - `disabled` (Boolean) Whether to disable the API key
 - `expires_at` (String) Optional ISO 8601 UTC timestamp when the API key should expire. Must be UTC, other timezones will be rejected. Requires replacement if changed.
-- `external_api_key` (String) Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret. Requires replacement if changed.
+- `external_api_key` (String) Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret; supplying it with a management key is rejected with 403. Requires replacement if changed.
+- `external_user` (String) Partner's end-user identifier for attribution, between 1 and 512 characters. Accepted only when authenticating with a Connect client secret, where it is required; supplying it with a management key is rejected with 403. Requires replacement if changed.
 - `include_byok_in_limit` (Boolean) Whether to include BYOK usage in the limit
 - `limit` (Number) New spending limit for the API key in USD
 - `limit_reset` (String) New limit reset type for the API key (daily, weekly, monthly, or null for no reset). Resets happen automatically at midnight UTC, and weeks are Monday through Sunday. must be one of ["daily", "weekly", "monthly"]

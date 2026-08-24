@@ -29,6 +29,7 @@ func (r *APIKeysDataSourceModel) RefreshFromOperationsListResponseBody(ctx conte
 			data.CreatorUserID = types.StringPointerValue(dataItem.CreatorUserID)
 			data.Disabled = types.BoolValue(dataItem.Disabled)
 			data.ExpiresAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(dataItem.ExpiresAt))
+			data.ExternalUser = types.StringPointerValue(dataItem.ExternalUser)
 			data.Hash = types.StringValue(dataItem.Hash)
 			data.IncludeByokInLimit = types.BoolValue(dataItem.IncludeByokInLimit)
 			data.Label = types.StringValue(dataItem.Label)

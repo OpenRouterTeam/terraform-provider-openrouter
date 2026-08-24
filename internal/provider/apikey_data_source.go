@@ -37,6 +37,7 @@ type APIKeyDataSourceModel struct {
 	CreatorUserID      types.String  `tfsdk:"creator_user_id"`
 	Disabled           types.Bool    `tfsdk:"disabled"`
 	ExpiresAt          types.String  `tfsdk:"expires_at"`
+	ExternalUser       types.String  `tfsdk:"external_user"`
 	Hash               types.String  `tfsdk:"hash"`
 	IncludeByokInLimit types.Bool    `tfsdk:"include_byok_in_limit"`
 	Label              types.String  `tfsdk:"label"`
@@ -94,6 +95,10 @@ func (r *APIKeyDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			"expires_at": schema.StringAttribute{
 				Computed:    true,
 				Description: `ISO 8601 UTC timestamp when the API key expires, or null if no expiration`,
+			},
+			"external_user": schema.StringAttribute{
+				Computed:    true,
+				Description: `Partner's end-user identifier used for attribution.`,
 			},
 			"hash": schema.StringAttribute{
 				Required:    true,
