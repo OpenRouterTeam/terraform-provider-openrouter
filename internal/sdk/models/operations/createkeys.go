@@ -47,6 +47,8 @@ type CreateKeysRequest struct {
 	CreatorUserID *string `json:"creator_user_id,omitzero"`
 	// Optional ISO 8601 UTC timestamp when the API key should expire. Must be UTC, other timezones will be rejected
 	ExpiresAt *time.Time `json:"expires_at,omitzero"`
+	// Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret.
+	ExternalAPIKey *string `json:"external_api_key,omitzero"`
 	// Whether to include BYOK usage in the limit
 	IncludeByokInLimit *bool `json:"include_byok_in_limit,omitzero"`
 	// Optional spending limit for the API key in USD
@@ -82,6 +84,13 @@ func (c *CreateKeysRequest) GetExpiresAt() *time.Time {
 		return nil
 	}
 	return c.ExpiresAt
+}
+
+func (c *CreateKeysRequest) GetExternalAPIKey() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ExternalAPIKey
 }
 
 func (c *CreateKeysRequest) GetIncludeByokInLimit() *bool {
