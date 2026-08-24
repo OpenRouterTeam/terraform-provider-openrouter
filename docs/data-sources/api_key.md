@@ -35,6 +35,7 @@ data "openrouter_api_key" "my_apikey" {
 - `creator_user_id` (String) The user ID of the key creator. For organization-owned keys, this is the member who created the key. For individual users, this is the user's own ID.
 - `disabled` (Boolean) Whether the API key is disabled
 - `expires_at` (String) ISO 8601 UTC timestamp when the API key expires, or null if no expiration
+- `external_user` (String) Partner's end-user identifier used for attribution.
 - `include_byok_in_limit` (Boolean) Whether to include external BYOK usage in the credit limit
 - `label` (String) Human-readable label for the API key
 - `limit` (Number) Spending limit for the API key in USD

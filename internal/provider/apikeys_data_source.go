@@ -85,6 +85,10 @@ func (r *APIKeysDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 							Computed:    true,
 							Description: `ISO 8601 UTC timestamp when the API key expires, or null if no expiration`,
 						},
+						"external_user": schema.StringAttribute{
+							Computed:    true,
+							Description: `Partner's end-user identifier used for attribution.`,
+						},
 						"hash": schema.StringAttribute{
 							Computed:    true,
 							Description: `Unique hash identifier for the API key`,

@@ -16,6 +16,7 @@ type ListData struct {
 	CreatorUserID      types.String  `tfsdk:"creator_user_id"`
 	Disabled           types.Bool    `tfsdk:"disabled"`
 	ExpiresAt          types.String  `tfsdk:"expires_at"`
+	ExternalUser       types.String  `tfsdk:"external_user"`
 	Hash               types.String  `tfsdk:"hash"`
 	IncludeByokInLimit types.Bool    `tfsdk:"include_byok_in_limit"`
 	Label              types.String  `tfsdk:"label"`

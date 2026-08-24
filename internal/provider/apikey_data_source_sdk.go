@@ -22,6 +22,7 @@ func (r *APIKeyDataSourceModel) RefreshFromOperationsGetKeyData(ctx context.Cont
 	r.CreatorUserID = types.StringPointerValue(resp.CreatorUserID)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ExpiresAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(resp.ExpiresAt))
+	r.ExternalUser = types.StringPointerValue(resp.ExternalUser)
 	r.Hash = types.StringValue(resp.Hash)
 	r.IncludeByokInLimit = types.BoolValue(resp.IncludeByokInLimit)
 	r.Label = types.StringValue(resp.Label)
