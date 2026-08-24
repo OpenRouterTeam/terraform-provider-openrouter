@@ -23,6 +23,7 @@ func (r *APIKeyResourceModel) RefreshFromOperationsCreateKeysData(ctx context.Co
 	r.CreatorUserID = types.StringPointerValue(resp.CreatorUserID)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ExpiresAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(resp.ExpiresAt))
+	r.ExternalUser = types.StringPointerValue(resp.ExternalUser)
 	r.Hash = types.StringValue(resp.Hash)
 	r.IncludeByokInLimit = types.BoolValue(resp.IncludeByokInLimit)
 	r.Label = types.StringValue(resp.Label)
@@ -71,6 +72,7 @@ func (r *APIKeyResourceModel) RefreshFromOperationsGetKeyData(ctx context.Contex
 	r.CreatorUserID = types.StringPointerValue(resp.CreatorUserID)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ExpiresAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(resp.ExpiresAt))
+	r.ExternalUser = types.StringPointerValue(resp.ExternalUser)
 	r.Hash = types.StringValue(resp.Hash)
 	r.IncludeByokInLimit = types.BoolValue(resp.IncludeByokInLimit)
 	r.Label = types.StringValue(resp.Label)
@@ -118,6 +120,7 @@ func (r *APIKeyResourceModel) RefreshFromOperationsUpdateKeysData(ctx context.Co
 	r.CreatorUserID = types.StringPointerValue(resp.CreatorUserID)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ExpiresAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(resp.ExpiresAt))
+	r.ExternalUser = types.StringPointerValue(resp.ExternalUser)
 	r.Hash = types.StringValue(resp.Hash)
 	r.IncludeByokInLimit = types.BoolValue(resp.IncludeByokInLimit)
 	r.Label = types.StringValue(resp.Label)
@@ -175,6 +178,12 @@ func (r *APIKeyResourceModel) ToOperationsCreateKeysRequest(ctx context.Context)
 	} else {
 		externalAPIKey = nil
 	}
+	externalUser := new(string)
+	if !r.ExternalUser.IsUnknown() && !r.ExternalUser.IsNull() {
+		*externalUser = r.ExternalUser.ValueString()
+	} else {
+		externalUser = nil
+	}
 	includeByokInLimit := new(bool)
 	if !r.IncludeByokInLimit.IsUnknown() && !r.IncludeByokInLimit.IsNull() {
 		*includeByokInLimit = r.IncludeByokInLimit.ValueBool()
@@ -206,6 +215,7 @@ func (r *APIKeyResourceModel) ToOperationsCreateKeysRequest(ctx context.Context)
 		CreatorUserID:      creatorUserID,
 		ExpiresAt:          expiresAt,
 		ExternalAPIKey:     externalAPIKey,
+		ExternalUser:       externalUser,
 		IncludeByokInLimit: includeByokInLimit,
 		Limit:              limit,
 		LimitReset:         limitReset,
