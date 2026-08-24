@@ -8,14 +8,15 @@ import (
 )
 
 type PricingOverride struct {
-	Audio             types.String  `tfsdk:"audio"`
-	Completion        types.String  `tfsdk:"completion"`
-	InputAudioCache   types.String  `tfsdk:"input_audio_cache"`
-	InputCacheRead    types.String  `tfsdk:"input_cache_read"`
-	InputCacheWrite   types.String  `tfsdk:"input_cache_write"`
-	InputCacheWrite1h types.String  `tfsdk:"input_cache_write_1h"`
-	MinPromptTokens   types.Float64 `tfsdk:"min_prompt_tokens"`
-	Prompt            types.String  `tfsdk:"prompt"`
-	UtcEnd            types.Float64 `tfsdk:"utc_end"`
-	UtcStart          types.Float64 `tfsdk:"utc_start"`
+	Audio             types.String   `tfsdk:"audio"`
+	Completion        types.String   `tfsdk:"completion"`
+	InputAudioCache   types.String   `tfsdk:"input_audio_cache"`
+	InputCacheRead    types.String   `tfsdk:"input_cache_read"`
+	InputCacheWrite   types.String   `tfsdk:"input_cache_write"`
+	InputCacheWrite1h types.String   `tfsdk:"input_cache_write_1h"`
+	MinPromptTokens   types.Float64  `tfsdk:"min_prompt_tokens"`
+	Prompt            types.String   `tfsdk:"prompt"`
+	UtcDays           []types.String `tfsdk:"utc_days"`
+	UtcEnd            types.Float64  `tfsdk:"utc_end"`
+	UtcStart          types.Float64  `tfsdk:"utc_start"`
 }

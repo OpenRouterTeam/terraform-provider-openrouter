@@ -174,6 +174,7 @@ Read-Only:
 - `input_cache_write_1h` (String) Overridden price in USD per 1-hour cache-write token
 - `min_prompt_tokens` (Number) Condition: the entry applies when the total prompt tokens of a request are strictly greater than this threshold
 - `prompt` (String) Overridden price in USD per token for prompt (input) processing
+- `utc_days` (List of String) Condition: UTC weekdays the entry applies on, evaluated at the request instant. Scopes the utc_start/utc_end window (or, without a window, the whole UTC day) to the listed days. Absent means every day.
 - `utc_end` (Number) Condition: exclusive end of a daily UTC time window as an HHMM clock number (e.g. 400 = 04:00)
 - `utc_start` (Number) Condition: inclusive start of a daily UTC time window as an HHMM clock number (e.g. 100 = 01:00, 1030 = 10:30). The entry applies while the current UTC time is inside the half-open window [utc_start, utc_end), which may wrap past midnight (utc_start > utc_end).
 
