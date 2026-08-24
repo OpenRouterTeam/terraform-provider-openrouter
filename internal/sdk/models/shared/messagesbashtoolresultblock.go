@@ -4,13 +4,104 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+type MessagesBashToolResultBlockTypeContainerFileCitation string
+
+const (
+	MessagesBashToolResultBlockTypeContainerFileCitationContainerFileCitation MessagesBashToolResultBlockTypeContainerFileCitation = "container_file_citation"
+)
+
+func (e MessagesBashToolResultBlockTypeContainerFileCitation) ToPointer() *MessagesBashToolResultBlockTypeContainerFileCitation {
+	return &e
+}
+func (e *MessagesBashToolResultBlockTypeContainerFileCitation) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "container_file_citation":
+		*e = MessagesBashToolResultBlockTypeContainerFileCitation(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for MessagesBashToolResultBlockTypeContainerFileCitation: %v", v)
+	}
+}
+
+type MessagesBashToolResultBlockFile struct {
+	ContainerID string                                               `json:"container_id"`
+	EndIndex    int64                                                `json:"end_index"`
+	FileID      string                                               `json:"file_id"`
+	Filename    string                                               `json:"filename"`
+	StartIndex  int64                                                `json:"start_index"`
+	Type        MessagesBashToolResultBlockTypeContainerFileCitation `json:"type"`
+}
+
+func (m MessagesBashToolResultBlockFile) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(m, "", false)
+}
+
+func (m *MessagesBashToolResultBlockFile) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &m, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *MessagesBashToolResultBlockFile) GetContainerID() string {
+	if m == nil {
+		return ""
+	}
+	return m.ContainerID
+}
+
+func (m *MessagesBashToolResultBlockFile) GetEndIndex() int64 {
+	if m == nil {
+		return 0
+	}
+	return m.EndIndex
+}
+
+func (m *MessagesBashToolResultBlockFile) GetFileID() string {
+	if m == nil {
+		return ""
+	}
+	return m.FileID
+}
+
+func (m *MessagesBashToolResultBlockFile) GetFilename() string {
+	if m == nil {
+		return ""
+	}
+	return m.Filename
+}
+
+func (m *MessagesBashToolResultBlockFile) GetStartIndex() int64 {
+	if m == nil {
+		return 0
+	}
+	return m.StartIndex
+}
+
+func (m *MessagesBashToolResultBlockFile) GetType() MessagesBashToolResultBlockTypeContainerFileCitation {
+	if m == nil {
+		return MessagesBashToolResultBlockTypeContainerFileCitation("")
+	}
+	return m.Type
+}
+
 // MessagesBashToolResultBlock - Output of a sandbox-executed `openrouter:bash` call from a prior assistant turn. Accepted on replay and dropped before the provider request — Anthropic has no equivalent block.
 type MessagesBashToolResultBlock struct {
-	Content   map[string]any `json:"content"`
-	ToolUseID string         `json:"tool_use_id"`
+	// The canonical container id the command ran under — the `{container_id}` for the Container Files API, reusable as a `container_reference` in later requests. Present on every sandbox-executed call, even when no files changed.
+	ContainerID *string        `json:"container_id,omitzero"`
+	Content     map[string]any `json:"content"`
+	// Citations for the files the sandbox command created or modified, most-recently-touched first (at most 10). Retrieve them via the Container Files API.
+	Files     []MessagesBashToolResultBlockFile `json:"files,omitzero"`
+	ToolUseID string                            `json:"tool_use_id"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"openrouter_bash_tool_result" json:"type"`
 }
@@ -26,11 +117,25 @@ func (m *MessagesBashToolResultBlock) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (m *MessagesBashToolResultBlock) GetContainerID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.ContainerID
+}
+
 func (m *MessagesBashToolResultBlock) GetContent() map[string]any {
 	if m == nil {
 		return map[string]any{}
 	}
 	return m.Content
+}
+
+func (m *MessagesBashToolResultBlock) GetFiles() []MessagesBashToolResultBlockFile {
+	if m == nil {
+		return nil
+	}
+	return m.Files
 }
 
 func (m *MessagesBashToolResultBlock) GetToolUseID() string {
