@@ -70,6 +70,8 @@ type OpenRouter struct {
 	Byok       *Byok
 	// Task classification market-share endpoints
 	Classifications *Classifications
+	// Containers endpoints
+	Containers *Containers
 	// Credit management endpoints
 	Credits *Credits
 	// Public OpenRouter usage datasets. Data returned by these endpoints is licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): reuse and republish it, including commercially, with attribution to OpenRouter.
@@ -181,9 +183,9 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.2.48",
+		SDKVersion: "0.2.49",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:  "speakeasy-sdk/terraform 0.2.48 2.932.9 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			UserAgent:  "speakeasy-sdk/terraform 0.2.49 2.932.9 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
 			ServerList: ServerList,
 		},
 		hooks: hooks.New(),
@@ -212,6 +214,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Benchmarks = newBenchmarks(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Byok = newByok(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Classifications = newClassifications(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.Containers = newContainers(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Credits = newCredits(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Datasets = newDatasets(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Embeddings = newEmbeddings(sdk, sdk.sdkConfiguration, sdk.hooks)
