@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 3a989c795dbb3f5065ba3ecd5a273a34
+  docChecksum: a17f4e44b03c6739c941236c0d5f71ff
   docVersion: 1.0.0
   speakeasyVersion: 1.795.3
   generationVersion: 2.932.9
-  releaseVersion: 0.2.54
-  configChecksum: c1e0a8a44a0e64fe2d272aba71309912
+  releaseVersion: 0.2.55
+  configChecksum: 214df712d09c9360595cca536b4f05f0
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 094ff7c1-2754-431a-b6fe-3893cf4828b2
-  pristine_commit_hash: fab408656110730334d26cbb07c4fda7c3e5d177
-  pristine_tree_hash: 45a5c6bc724aa77f3e2c00b46c50538f51361e64
+  generation_id: 5b3bcd21-e365-4bda-b737-7789f4c7f9f9
+  pristine_commit_hash: cd105c1eccdf40e829cd5b1af52dc2ba918eb9ee
+  pristine_tree_hash: e2f9d60c8fdcf976b619eb2191a6666dc3d9d96f
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -128,8 +128,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:bd81d9f5916fecd4068a93faa5c58af3db895548
-    pristine_git_object: 6675bed9f01f5e62d0776ecb3d370d1075d03a64
+    last_write_checksum: sha1:299366bbc6d5caf22240921ba441df45c9998147
+    pristine_git_object: b5cc43c2dd336e927d6cf0a3ec6059891839d026
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1060,8 +1060,8 @@ trackedFiles:
     pristine_git_object: 20a170b15936f8e8e9ac2a511c8d48463657be7b
   internal/sdk/apikeys.go:
     id: a40d4b208cc3
-    last_write_checksum: sha1:53c0d57f98ea3f0cf43de86abf72352901539ce5
-    pristine_git_object: b0b869fbde0f3b1f424a007543508a9ac69be2cc
+    last_write_checksum: sha1:bdb7028088949b83468cf17e527efb39c2aee834
+    pristine_git_object: f618ea4607e25027d1f800bde4144b869b327c77
   internal/sdk/benchmarks.go:
     id: 9f6912f01cd6
     last_write_checksum: sha1:43e7fda76ae666c7a0c51784477c8eca6f1d544d
@@ -3584,8 +3584,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:0b7b178f1dfc232268e4b9c2b5015c6caf5cfb77
-    pristine_git_object: 6f7ca610f7baf2dda9c0e012106decdd4735b7f5
+    last_write_checksum: sha1:2f19a0a4823786f07c5f77d743d98610cacba29a
+    pristine_git_object: a9817a738186e5be7033bb931e4af7ee4d386223
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5469,11 +5469,3 @@ examples:
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.Embeddings.listModels()`:  `response.data[].pricing.overrides[].utc_days` **Added**
-  * `OpenRouter.Endpoints.listZdr()`:  `response.data[].pricing.overrides[].utc_days` **Added**
-  * `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].pricing.overrides[].utc_days` **Added**
-  * `OpenRouter.Models.getModel()`:  `response.data.pricing.overrides[].utc_days` **Added**
-  * `OpenRouter.Models.list()`:  `response.data[].pricing.overrides[].utc_days` **Added**
-  * `OpenRouter.Models.listForUser()`:  `response.data[].pricing.overrides[].utc_days` **Added**
