@@ -44,6 +44,7 @@ type APIKeyResourceModel struct {
 	CreatorUserID      types.String  `tfsdk:"creator_user_id"`
 	Disabled           types.Bool    `tfsdk:"disabled"`
 	ExpiresAt          types.String  `tfsdk:"expires_at"`
+	ExternalAPIKey     types.String  `tfsdk:"external_api_key"`
 	Hash               types.String  `tfsdk:"hash"`
 	IncludeByokInLimit types.Bool    `tfsdk:"include_byok_in_limit"`
 	Key                types.String  `tfsdk:"key"`
@@ -115,6 +116,16 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Description: `Optional ISO 8601 UTC timestamp when the API key should expire. Must be UTC, other timezones will be rejected. Requires replacement if changed.`,
 				Validators: []validator.String{
 					validators.IsRFC3339(),
+				},
+			},
+			"external_api_key": schema.StringAttribute{
+				Optional: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplaceIfConfigured(),
+				},
+				Description: `Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret. Requires replacement if changed.`,
+				Validators: []validator.String{
+					stringvalidator.UTF8LengthBetween(1, 512),
 				},
 			},
 			"hash": schema.StringAttribute{
