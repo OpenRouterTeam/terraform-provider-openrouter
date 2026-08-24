@@ -139,6 +139,12 @@ func (r *ModelsDataSourceModel) RefreshFromSharedModelsListResponse(ctx context.
 				overrides.InputCacheWrite1h = types.StringPointerValue(overridesItem.InputCacheWrite1h)
 				overrides.MinPromptTokens = types.Float64PointerValue(overridesItem.MinPromptTokens)
 				overrides.Prompt = types.StringPointerValue(overridesItem.Prompt)
+				if overrides.UtcDays == nil {
+					overrides.UtcDays = make([]types.String, 0, len(overridesItem.UtcDays))
+				}
+				for _, v := range overridesItem.UtcDays {
+					overrides.UtcDays = append(overrides.UtcDays, types.StringValue(string(v)))
+				}
 				overrides.UtcEnd = types.Float64PointerValue(overridesItem.UtcEnd)
 				overrides.UtcStart = types.Float64PointerValue(overridesItem.UtcStart)
 

@@ -318,6 +318,11 @@ func (r *ModelDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 											Computed:    true,
 											Description: `Overridden price in USD per token for prompt (input) processing`,
 										},
+										"utc_days": schema.ListAttribute{
+											Computed:    true,
+											ElementType: types.StringType,
+											Description: `Condition: UTC weekdays the entry applies on, evaluated at the request instant. Scopes the utc_start/utc_end window (or, without a window, the whole UTC day) to the listed days. Absent means every day.`,
+										},
 										"utc_end": schema.Float64Attribute{
 											Computed:    true,
 											Description: `Condition: exclusive end of a daily UTC time window as an HHMM clock number (e.g. 400 = 04:00)`,
