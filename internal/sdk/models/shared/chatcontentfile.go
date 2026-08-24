@@ -7,7 +7,7 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type File struct {
+type ChatContentFileFile struct {
 	// File content as base64 data URL or URL
 	FileData *string `json:"file_data,omitzero"`
 	// File ID for previously uploaded files
@@ -16,41 +16,41 @@ type File struct {
 	Filename *string `json:"filename,omitzero"`
 }
 
-func (f File) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(f, "", false)
+func (c ChatContentFileFile) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(c, "", false)
 }
 
-func (f *File) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &f, "", false, nil); err != nil {
+func (c *ChatContentFileFile) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &c, "", false, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (f *File) GetFileData() *string {
-	if f == nil {
+func (c *ChatContentFileFile) GetFileData() *string {
+	if c == nil {
 		return nil
 	}
-	return f.FileData
+	return c.FileData
 }
 
-func (f *File) GetFileID() *string {
-	if f == nil {
+func (c *ChatContentFileFile) GetFileID() *string {
+	if c == nil {
 		return nil
 	}
-	return f.FileID
+	return c.FileID
 }
 
-func (f *File) GetFilename() *string {
-	if f == nil {
+func (c *ChatContentFileFile) GetFilename() *string {
+	if c == nil {
 		return nil
 	}
-	return f.Filename
+	return c.Filename
 }
 
 // ChatContentFile - File content part for document processing
 type ChatContentFile struct {
-	File File `json:"file"`
+	File ChatContentFileFile `json:"file"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"file" json:"type"`
 }
@@ -66,9 +66,9 @@ func (c *ChatContentFile) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (c *ChatContentFile) GetFile() File {
+func (c *ChatContentFile) GetFile() ChatContentFileFile {
 	if c == nil {
-		return File{}
+		return ChatContentFileFile{}
 	}
 	return c.File
 }
