@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 353a13e3dfaa75aafaa060787d9548fd
+  docChecksum: 11f1c221a3d9b5f18c2d0a8a8c88c2b4
   docVersion: 1.0.0
   speakeasyVersion: 1.795.1
   generationVersion: 2.932.9
-  releaseVersion: 0.2.48
-  configChecksum: cb1ba8e509b291c2ad9410d42c6dd710
+  releaseVersion: 0.2.49
+  configChecksum: c17b3e69ac12b59a4eb587a564fba872
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: d6b62d3f-acd3-4138-80ae-13f3b4ae043b
-  pristine_commit_hash: 1310fb0f57e4696c85f784c472198d9582679e3f
-  pristine_tree_hash: fd8244c7abd1ad05a8b9d302dec0bffc0ea3cca2
+  generation_id: 9916e131-a12a-4fb2-bf82-c33efaef62e1
+  pristine_commit_hash: c0404546cde497ba2763b716615f7631f489735f
+  pristine_tree_hash: a01eb1180c95a77a5ff8703afa73125f26937858
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -128,8 +128,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:c59a07323ab55d09cfb1844be4390fe07b539fc3
-    pristine_git_object: e4d4cd04add9a998ad0b9ee3b70ab2e684cbbb9d
+    last_write_checksum: sha1:b437524f37f94a84c1b7b3dd14a00ba9a64976e3
+    pristine_git_object: 420bbbfaf5ea2e32545487316b40bb849b7c1779
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1074,6 +1074,10 @@ trackedFiles:
     id: 3e000fc98302
     last_write_checksum: sha1:1b3f5bd629190bf4520c1186215f72b66c429f68
     pristine_git_object: a1b37fc8fc36ad19008b1313a7eb4f9dcc48335b
+  internal/sdk/containers.go:
+    id: 1ae2e9899498
+    last_write_checksum: sha1:7ee9f957490118e2bea602cba26c9a3bcd6979fa
+    pristine_git_object: 7bb5155ed3f235916f55f802292d39073153a8b4
   internal/sdk/credits.go:
     id: 5a044e5f0348
     last_write_checksum: sha1:f10b331791293c125ae078f2cf2d54c18e6d33e8
@@ -1298,6 +1302,10 @@ trackedFiles:
     id: ea9d87457232
     last_write_checksum: sha1:f398c61e63682b455d169041dbeadd4ddad1a56f
     pristine_git_object: f7548a11b994a19589aa4aef85313722eaa78fd8
+  internal/sdk/models/operations/downloadcontainerfilecontent.go:
+    id: 667c48f59c5d
+    last_write_checksum: sha1:e1141a09fb7b47465579b48662720ea531e6fe59
+    pristine_git_object: 7706ef63223b7cca718666eaf084d5c97bed9319
   internal/sdk/models/operations/downloadfilecontent.go:
     id: 13addbce6315
     last_write_checksum: sha1:3af0dd2d8dd495880e1e8423add27809c2f9c71a
@@ -1322,6 +1330,10 @@ trackedFiles:
     id: 9c28bdd9d271
     last_write_checksum: sha1:f51a386455a8a1356ba3884ee6e262d6ae5fe0c5
     pristine_git_object: 258366a4fd14a053ba2f4d8655024a61543dfd7f
+  internal/sdk/models/operations/getcontainerfile.go:
+    id: 168ce8b158f1
+    last_write_checksum: sha1:8cd19e30343890ec1ebe7e33f12f074116fb68dd
+    pristine_git_object: e0b8857c8fc6442f4169c1e391086d713ec03c36
   internal/sdk/models/operations/getcredits.go:
     id: 99801c0f03bc
     last_write_checksum: sha1:87c55d0e6351f3bb6e6d1839f4bd489344d7a977
@@ -1406,6 +1418,10 @@ trackedFiles:
     id: c0c010232a74
     last_write_checksum: sha1:19032c9af9cf91cde96b428eb733812919ecb164
     pristine_git_object: 8c21831be0b9ba4122c6abd5e44839faef909d11
+  internal/sdk/models/operations/listcontainerfiles.go:
+    id: 542e401d7b82
+    last_write_checksum: sha1:cbe12034ebaf42d979dee1e66275364003b5b7a7
+    pristine_git_object: 700a67f065e7fec3432d82d32f7050b7c56ac201
   internal/sdk/models/operations/listembeddingsmodels.go:
     id: 16455d611795
     last_write_checksum: sha1:e2d28ffb0139db97c0f004b993e42c38793b350d
@@ -1512,8 +1528,8 @@ trackedFiles:
     pristine_git_object: b45968e0b54a4fca66432fac64115c0bb67415a9
   internal/sdk/models/operations/options.go:
     id: 6d0d29414e00
-    last_write_checksum: sha1:537615d7529e272e2b3b6f26bc5d534e010671f4
-    pristine_git_object: cb1fceb728a557a740dd1b9adab9b4a052ab6771
+    last_write_checksum: sha1:a63834bef72168287a0ba15a0c9749db7627b339
+    pristine_git_object: 7a3d54745db27eba39cb2e9457c8937c9fc76a1a
   internal/sdk/models/operations/queryanalytics.go:
     id: 8220db2e9ee1
     last_write_checksum: sha1:03ad374d34c11e61a545840b41c0abc92c48c4e8
@@ -2046,6 +2062,14 @@ trackedFiles:
     id: 27a0029ef6da
     last_write_checksum: sha1:5141d7924c6e4277349c13a4c49d0fb528b14cd1
     pristine_git_object: 07046dfb5a5e6b8279fe9adaf6c52228bedf4919
+  internal/sdk/models/shared/containerfile.go:
+    id: c84e437ce1c7
+    last_write_checksum: sha1:f0fd246d6f0a9f96c9e4231737244c470201e17b
+    pristine_git_object: e7057f8b1c7bd71a8da9581c2f0456cdf52a53da
+  internal/sdk/models/shared/containerfilelistresponse.go:
+    id: 40c554f78a07
+    last_write_checksum: sha1:c7c62117e97eeaa612ceac85a42c37891acb16eb
+    pristine_git_object: 7c87b48bacac02e8916e5e0c2232deb7e41ec9ae
   internal/sdk/models/shared/containerreferenceenvironment.go:
     id: 8c6e73730e23
     last_write_checksum: sha1:551f2f5edb12eb160506e94e5ca5dfe12bf068d4
@@ -3560,8 +3584,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:f8f0142e3a4554fd758890319619f1b38520450b
-    pristine_git_object: f29e38c117c9ec733550d957ca0337a1193f3d09
+    last_write_checksum: sha1:82c0933d111f3b3aa0c0eff46bc7508d35d61ab5
+    pristine_git_object: 84a6c769b53f1eea285ccdb74d51e525380dada9
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5372,5 +5396,78 @@ examples:
           application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  listContainerFiles:
+    speakeasy-default-list-container-files:
+      parameters:
+        path:
+          session_id: "sess-abc123"
+        query:
+          limit: 100
+          after: "cfile_b3V0L3JlcG9ydC5jc3Y"
+      responses:
+        "200":
+          application/json: {"data": [], "first_id": "cfile_b3V0L3JlcG9ydC5jc3Y", "has_more": false, "last_id": "cfile_b3V0L3JlcG9ydC5jc3Y", "object": "list"}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+  getContainerFile:
+    speakeasy-default-get-container-file:
+      parameters:
+        path:
+          session_id: "sess-abc123"
+          file_id: "cfile_b3V0L3JlcG9ydC5jc3Y"
+      responses:
+        "200":
+          application/json: {"bytes": 123, "container_id": "sess-abc123", "created_at": 1755640000, "id": "cfile_b3V0L3JlcG9ydC5jc3Y", "object": "container.file", "path": "out/report.csv", "source": "assistant"}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+  downloadContainerFileContent:
+    speakeasy-default-download-container-file-content:
+      parameters:
+        path:
+          session_id: "sess-abc123"
+          file_id: "cfile_b3V0L3JlcG9ydC5jc3Y"
+      responses:
+        "200":
+          application/octet-stream: "0xe538366D9e"
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body` **Changed** (Breaking ⚠️)\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.tools[].union(ToolSearchServerTool)` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Containers.listContainerFiles()`: **Added**
+  * `OpenRouter.Containers.getContainerFile()`: **Added**
+  * `OpenRouter.Containers.downloadContainerFileContent()`: **Added**
