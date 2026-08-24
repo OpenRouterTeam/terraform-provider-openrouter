@@ -489,7 +489,7 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 							},
 							"url": schema.StringAttribute{
 								Computed:    true,
-								Description: `Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.datadoghq.eu)`,
+								Description: `Datadog API URL for your region (e.g., https://api.datadoghq.com, https://api.us3.datadoghq.com, https://api.us5.datadoghq.com, https://api.datadoghq.eu)`,
 							},
 						},
 					},
