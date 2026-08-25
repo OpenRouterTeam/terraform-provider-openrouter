@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 1a040c274b5b26142f9f13c5a4d681e3
+  docChecksum: 270a80ce288e8f28eb7c0b5599c59a47
   docVersion: 1.0.0
   speakeasyVersion: 1.795.3
   generationVersion: 2.932.9
-  releaseVersion: 0.2.57
-  configChecksum: a82f1ec629ceb67874a9a03f4aa064b5
+  releaseVersion: 0.2.58
+  configChecksum: ceb8e9fe1d4f0093a43adae89a4bd916
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: a7cf5125-5fb1-4700-a49e-6eee026af5cf
-  pristine_commit_hash: d7b2b16761f07245e27f50d8164a41aac3d64e6e
-  pristine_tree_hash: 198c86165e5c4d1bc2eb2ac428ee5c4dc4de17d1
+  generation_id: 07c8e832-6a87-415e-8500-6b7a316f5fd7
+  pristine_commit_hash: 4b6d5c77358667bf6ff74580d1dbf71e25ac7116
+  pristine_tree_hash: 7c0fda4d0f54ffd8017fd219c17226821b4e9e21
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -128,8 +128,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:9f3c5138d4207c8474ee7dd78b59db549db73b82
-    pristine_git_object: 365a90f2f1983a82c15b47e08839b276874559cb
+    last_write_checksum: sha1:f313a55a7bf28df4dc3cab52278f67a587f46384
+    pristine_git_object: 5c6f6bdd14f6b83e89801d60ee9879910c1e4798
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2060,8 +2060,8 @@ trackedFiles:
     pristine_git_object: 89d06a57b4cd3e11344caa7a9bb876ecd2176a92
   internal/sdk/models/shared/containerautoenvironment.go:
     id: 27a0029ef6da
-    last_write_checksum: sha1:a1cc3d9527c0098a5e2e60231625c439f7ba5ef7
-    pristine_git_object: 9d8288f4d1cf7d7bc9544f357da693ec15e735ae
+    last_write_checksum: sha1:02fcb6d9e5b8ad5ab31d32879d29efa51b736e90
+    pristine_git_object: 0ccc776339575ed9d34aae41ddce68a2e116f335
   internal/sdk/models/shared/containerfile.go:
     id: c84e437ce1c7
     last_write_checksum: sha1:ca2916627a9f03f1352274379f51e985fa392754
@@ -2076,8 +2076,8 @@ trackedFiles:
     pristine_git_object: 796ab06196647af148ef8e1247baf9d089fd812b
   internal/sdk/models/shared/containerreferenceenvironment.go:
     id: 8c6e73730e23
-    last_write_checksum: sha1:1d7bd683fdfe0c5078a6e91372cd157d9df3e757
-    pristine_git_object: d15d99a20821ffdc4d85396193186e295438f889
+    last_write_checksum: sha1:a88e0b6e263798431b33b1586973e80da3358a60
+    pristine_git_object: f8b3de9bcf2a23c68cd4cf2f3efc8bf45f127781
   internal/sdk/models/shared/contentfilteraction.go:
     id: c22526c89650
     last_write_checksum: sha1:d655b3b2b4fd13d83cdbbb5c7107dc14db48f9d1
@@ -3588,8 +3588,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:4d69b81a3e56e86fa9fc0a17dabae74d3557a269
-    pristine_git_object: 67e198e515955bcb8793ac88ce89bc63604f8124
+    last_write_checksum: sha1:82049e9e9e27cf0e43f1c3af4365ede18151a99d
+    pristine_git_object: 1de22104acb453d394de740fb8945f2fc95799be
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5473,3 +5473,4 @@ examples:
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.tools[].union(openrouter:bash).parameters.environment` **Changed**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.tools[].union(BashServerTool).parameters.environment` **Changed**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(AdditionalToolsItem).tools[].union(ShellServerTool_OpenRouter).parameters.environment` **Changed**\n"
