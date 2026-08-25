@@ -8,6 +8,6 @@ import (
 )
 
 type ObservabilityFilterRuleGroup struct {
-	Logic types.String `tfsdk:"logic"`
-	Rules []Rule       `tfsdk:"rules"`
+	Logic types.String                       `tfsdk:"logic"`
+	Rules []ObservabilityFilterRuleGroupRule `tfsdk:"rules"`
 }
