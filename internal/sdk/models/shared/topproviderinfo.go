@@ -9,7 +9,7 @@ type TopProviderInfo struct {
 	ContextLength *int64 `json:"context_length,omitzero"`
 	// Whether the top provider moderates content
 	IsModerated bool `json:"is_moderated"`
-	// Maximum completion tokens from the top provider
+	// Maximum completion tokens from the top provider. Input and output tokens share the context window, so the effective maximum output for a request is further limited by the context remaining after input tokens.
 	MaxCompletionTokens *int64 `json:"max_completion_tokens,omitzero"`
 }
 
