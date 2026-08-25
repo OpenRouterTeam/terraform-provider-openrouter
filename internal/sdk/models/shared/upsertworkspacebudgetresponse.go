@@ -3,15 +3,108 @@
 
 package shared
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
+// UpsertWorkspaceBudgetResponseResetInterval - Interval at which spend resets. Null means a lifetime (one-time) budget.
+type UpsertWorkspaceBudgetResponseResetInterval string
+
+const (
+	UpsertWorkspaceBudgetResponseResetIntervalDaily   UpsertWorkspaceBudgetResponseResetInterval = "daily"
+	UpsertWorkspaceBudgetResponseResetIntervalWeekly  UpsertWorkspaceBudgetResponseResetInterval = "weekly"
+	UpsertWorkspaceBudgetResponseResetIntervalMonthly UpsertWorkspaceBudgetResponseResetInterval = "monthly"
+)
+
+func (e UpsertWorkspaceBudgetResponseResetInterval) ToPointer() *UpsertWorkspaceBudgetResponseResetInterval {
+	return &e
+}
+func (e *UpsertWorkspaceBudgetResponseResetInterval) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "daily":
+		fallthrough
+	case "weekly":
+		fallthrough
+	case "monthly":
+		*e = UpsertWorkspaceBudgetResponseResetInterval(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UpsertWorkspaceBudgetResponseResetInterval: %v", v)
+	}
+}
+
+// UpsertWorkspaceBudgetResponseData - The created or updated budget
+type UpsertWorkspaceBudgetResponseData struct {
+	// ISO 8601 timestamp of when the budget was created
+	CreatedAt string `json:"created_at"`
+	// Unique identifier for the budget
+	ID string `json:"id"`
+	// Spending limit in USD for this interval
+	LimitUsd float64 `json:"limit_usd"`
+	// Interval at which spend resets. Null means a lifetime (one-time) budget.
+	ResetInterval *UpsertWorkspaceBudgetResponseResetInterval `json:"reset_interval"`
+	// ISO 8601 timestamp of when the budget was last updated
+	UpdatedAt string `json:"updated_at"`
+	// ID of the workspace the budget belongs to
+	WorkspaceID string `json:"workspace_id"`
+}
+
+func (u *UpsertWorkspaceBudgetResponseData) GetCreatedAt() string {
+	if u == nil {
+		return ""
+	}
+	return u.CreatedAt
+}
+
+func (u *UpsertWorkspaceBudgetResponseData) GetID() string {
+	if u == nil {
+		return ""
+	}
+	return u.ID
+}
+
+func (u *UpsertWorkspaceBudgetResponseData) GetLimitUsd() float64 {
+	if u == nil {
+		return 0.0
+	}
+	return u.LimitUsd
+}
+
+func (u *UpsertWorkspaceBudgetResponseData) GetResetInterval() *UpsertWorkspaceBudgetResponseResetInterval {
+	if u == nil {
+		return nil
+	}
+	return u.ResetInterval
+}
+
+func (u *UpsertWorkspaceBudgetResponseData) GetUpdatedAt() string {
+	if u == nil {
+		return ""
+	}
+	return u.UpdatedAt
+}
+
+func (u *UpsertWorkspaceBudgetResponseData) GetWorkspaceID() string {
+	if u == nil {
+		return ""
+	}
+	return u.WorkspaceID
+}
+
 type UpsertWorkspaceBudgetResponse struct {
-	Data WorkspaceBudget `json:"data"`
+	Data UpsertWorkspaceBudgetResponseData `json:"data"`
 	// Whether BYOK (bring-your-own-key) spend is included when enforcing the workspace's budgets. This is a workspace-wide setting that applies to all budget intervals (daily, weekly, monthly, and lifetime).
 	IncludeByokInBudgets *bool `json:"include_byok_in_budgets,omitzero"`
 }
 
-func (u *UpsertWorkspaceBudgetResponse) GetData() WorkspaceBudget {
+func (u *UpsertWorkspaceBudgetResponse) GetData() UpsertWorkspaceBudgetResponseData {
 	if u == nil {
-		return WorkspaceBudget{}
+		return UpsertWorkspaceBudgetResponseData{}
 	}
 	return u.Data
 }
