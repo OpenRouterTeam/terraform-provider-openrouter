@@ -46,6 +46,7 @@ func (e *Billable) UnmarshalJSON(data []byte) error {
 type Unit string
 
 const (
+	UnitRequest   Unit = "request"
 	UnitImage     Unit = "image"
 	UnitMegapixel Unit = "megapixel"
 	UnitToken     Unit = "token"
@@ -60,6 +61,8 @@ func (e *Unit) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
+	case "request":
+		fallthrough
 	case "image":
 		fallthrough
 	case "megapixel":
