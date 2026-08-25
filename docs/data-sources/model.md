@@ -199,4 +199,4 @@ Read-Only:
 
 - `context_length` (Number) Context length from the top provider
 - `is_moderated` (Boolean) Whether the top provider moderates content
-- `max_completion_tokens` (Number) Maximum completion tokens from the top provider
+- `max_completion_tokens` (Number) Maximum completion tokens from the top provider. Input and output tokens share the context window, so the effective maximum output for a request is further limited by the context remaining after input tokens.

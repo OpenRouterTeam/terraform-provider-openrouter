@@ -461,7 +461,7 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 								},
 								"max_completion_tokens": schema.Int64Attribute{
 									Computed:    true,
-									Description: `Maximum completion tokens from the top provider`,
+									Description: `Maximum completion tokens from the top provider. Input and output tokens share the context window, so the effective maximum output for a request is further limited by the context remaining after input tokens.`,
 								},
 							},
 							Description: `Information about the top provider for this model`,
