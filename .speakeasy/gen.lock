@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 270a80ce288e8f28eb7c0b5599c59a47
+  docChecksum: a34e2cd15a0663641589a7ed60c5c368
   docVersion: 1.0.0
   speakeasyVersion: 1.795.3
   generationVersion: 2.932.9
-  releaseVersion: 0.2.58
-  configChecksum: ceb8e9fe1d4f0093a43adae89a4bd916
+  releaseVersion: 0.2.59
+  configChecksum: 03d4763993edc21bf59949bac88010ce
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 07c8e832-6a87-415e-8500-6b7a316f5fd7
-  pristine_commit_hash: 4b6d5c77358667bf6ff74580d1dbf71e25ac7116
-  pristine_tree_hash: 7c0fda4d0f54ffd8017fd219c17226821b4e9e21
+  generation_id: 54c2a70d-e84b-4906-af2c-888286caabbe
+  pristine_commit_hash: 56c223b02c1ca9a9401cfca24877c160885bf9ac
+  pristine_tree_hash: 1f6d1a8a99250459ca303482235c894d4daf9fa4
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -128,8 +128,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:f313a55a7bf28df4dc3cab52278f67a587f46384
-    pristine_git_object: 5c6f6bdd14f6b83e89801d60ee9879910c1e4798
+    last_write_checksum: sha1:c03c3e975ec144bb64bdd8a085c068c3a7db8264
+    pristine_git_object: 1aafa0d04611e530ee38a243da3c50ca0e75dff9
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1076,8 +1076,8 @@ trackedFiles:
     pristine_git_object: a1b37fc8fc36ad19008b1313a7eb4f9dcc48335b
   internal/sdk/containers.go:
     id: 1ae2e9899498
-    last_write_checksum: sha1:fca26538fc921172385afafc410d6cc98d241d72
-    pristine_git_object: 57f70b1bb2062435303e886d5e425a602f5abd7c
+    last_write_checksum: sha1:82115574c54257f5c7133a8f06bf21e75db81c6b
+    pristine_git_object: 4111d167deed13e0f59fee19fde8ec2cb10f8dc0
   internal/sdk/credits.go:
     id: 5a044e5f0348
     last_write_checksum: sha1:f10b331791293c125ae078f2cf2d54c18e6d33e8
@@ -1530,6 +1530,10 @@ trackedFiles:
     id: 6d0d29414e00
     last_write_checksum: sha1:a63834bef72168287a0ba15a0c9749db7627b339
     pristine_git_object: 7a3d54745db27eba39cb2e9457c8937c9fc76a1a
+  internal/sdk/models/operations/promotecontainerfile.go:
+    id: bc538230d0f9
+    last_write_checksum: sha1:5ef36e870642834871fc9f2683c827339c5d4914
+    pristine_git_object: 176d6406b263cb4c63453e397b54a912a8a7d0f3
   internal/sdk/models/operations/queryanalytics.go:
     id: 8220db2e9ee1
     last_write_checksum: sha1:03ad374d34c11e61a545840b41c0abc92c48c4e8
@@ -3588,8 +3592,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:82049e9e9e27cf0e43f1c3af4365ede18151a99d
-    pristine_git_object: 1de22104acb453d394de740fb8945f2fc95799be
+    last_write_checksum: sha1:a8a0c9acb24c2f2bfcffb5feae8e82dac331f702
+    pristine_git_object: 6a0ee7d7990d4b975ab2264a96f8d21f049a1da3
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5472,5 +5476,32 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+  promoteContainerFile:
+    speakeasy-default-promote-container-file:
+      parameters:
+        path:
+          container_id: "sess_abc123"
+          file_id: "cfile_b3V0L3JlcG9ydC5jc3Y"
+      responses:
+        "200":
+          application/json: {"_shape": "openrouter", "created_at": "2025-01-01T00:00:00Z", "downloadable": false, "filename": "document.pdf", "id": "or_file_011CNha8iCJcU1wXNR6q4V8w", "mime_type": "application/pdf", "size_bytes": 1024000, "type": "file"}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request payload too large"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.tools[].union(openrouter:bash).parameters.environment` **Changed**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.tools[].union(BashServerTool).parameters.environment` **Changed**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(AdditionalToolsItem).tools[].union(ShellServerTool_OpenRouter).parameters.environment` **Changed**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Containers.promoteContainerFile()`: **Added**
