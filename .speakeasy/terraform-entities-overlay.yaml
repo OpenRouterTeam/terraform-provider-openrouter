@@ -7,7 +7,7 @@ info:
     Maps OpenRouter management API operations to Terraform entities via
     x-speakeasy-entity / x-speakeasy-entity-operation. Resources: ApiKey,
     Guardrail, Workspace, ByokKey, ObservabilityDestination,
-    ScimGroupMapping. Plus read-only
+    ScimGroupMapping, WorkspaceBudget. Plus read-only
     data-source entities for management lists and the model/provider/preset
     /credits catalog.
 actions:
@@ -192,9 +192,8 @@ actions:
   - target: $["paths"]["/organization/members"]["get"]
     update:
       x-speakeasy-entity-operation: OrganizationMembers#read
-  # WorkspaceBudget managed resource is deferred: no singular GET exists for
-  # refresh/import (Linear ENT-1741, provider tracking DEV-486). The list
-  # endpoint also 404s for budget-less workspaces (Linear ENT-1742).
+  # Plural list data source. The singular WorkspaceBudget managed resource is
+  # annotated at the end of this file (DEV-1073).
   - target: $["paths"]["/workspaces/{id}/budgets"]["get"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudgets#read
@@ -339,3 +338,36 @@ actions:
   - target: $["paths"]["/scim/group-mappings/{id}"]["delete"]
     update:
       x-speakeasy-entity-operation: ScimGroupMapping#delete
+
+  # ---------------------------------------------------------------------------
+  # WorkspaceBudget  (PUT/GET/DELETE /workspaces/{id}/budgets/{interval})
+  # Component-based, mirroring Guardrail: annotate the WorkspaceBudget model
+  # plus the upsert request schema. The singular response envelopes reach the
+  # model through `allOf: [$ref WorkspaceBudget, {description}]`, so reads
+  # inherit the entity.
+  #
+  # PUT is an upsert, so one operation serves both create and update -- the
+  # same list form the ApiKey PATCH uses above. Identity is the (workspace,
+  # interval) path-param pair; there is no standalone budget id in the route.
+  #
+  # Unblocked by DEV-1074 (acceptance org granted the workspace_budgets
+  # entitlement); the API's singular GET shipped 2026-08-04. DEV-1073.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["WorkspaceBudget"]
+    update:
+      x-speakeasy-entity: WorkspaceBudget
+  - target: $["components"]["schemas"]["UpsertWorkspaceBudgetRequest"]
+    update:
+      x-speakeasy-entity: WorkspaceBudget
+
+  - target: $["paths"]["/workspaces/{id}/budgets/{interval}"]["put"]
+    update:
+      x-speakeasy-entity-operation:
+        - WorkspaceBudget#create
+        - WorkspaceBudget#update
+  - target: $["paths"]["/workspaces/{id}/budgets/{interval}"]["get"]
+    update:
+      x-speakeasy-entity-operation: WorkspaceBudget#read
+  - target: $["paths"]["/workspaces/{id}/budgets/{interval}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: WorkspaceBudget#delete
