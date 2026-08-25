@@ -23,7 +23,7 @@ terraform {
   required_providers {
     openrouter = {
       source  = "OpenRouterTeam/openrouter"
-      version = "0.2.60"
+      version = "0.2.61"
     }
   }
 }
@@ -91,6 +91,7 @@ Available configuration:
 * [openrouter_observability_destination](docs/resources/observability_destination.md)
 * [openrouter_scim_group_mapping](docs/resources/scim_group_mapping.md)
 * [openrouter_workspace](docs/resources/workspace.md)
+* [openrouter_workspace_budget](docs/resources/workspace_budget.md)
 
 ### Data Sources
 
@@ -113,6 +114,7 @@ Available configuration:
 * [openrouter_providers](docs/data-sources/providers.md)
 * [openrouter_scim_group_mapping](docs/data-sources/scim_group_mapping.md)
 * [openrouter_workspace](docs/data-sources/workspace.md)
+* [openrouter_workspace_budget](docs/data-sources/workspace_budget.md)
 * [openrouter_workspace_budgets](docs/data-sources/workspace_budgets.md)
 * [openrouter_workspace_members](docs/data-sources/workspace_members.md)
 * [openrouter_workspaces](docs/data-sources/workspaces.md)
