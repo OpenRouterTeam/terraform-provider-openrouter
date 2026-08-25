@@ -52,7 +52,9 @@ terraform:
   enableOperationSecurity: false
   enableOperationServers: false
   enableTypeDeduplication: false
-  environmentVariables: []
+  environmentVariables:
+    - env: OPENROUTER_API_KEY
+      providerAttribute: api_key
   excludeEmptyObjectSchemas: true
   forwardCompatibleEnumsByDefault: false
   includeEmptyObjects: true
