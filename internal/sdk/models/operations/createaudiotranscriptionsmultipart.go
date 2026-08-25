@@ -168,6 +168,8 @@ type CreateAudioTranscriptionsMultipartResponse struct {
 	PaymentRequiredResponse *shared.PaymentRequiredResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Payload Too Large - Request payload exceeds size limits
+	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
@@ -247,6 +249,13 @@ func (c *CreateAudioTranscriptionsMultipartResponse) GetNotFoundResponse() *shar
 		return nil
 	}
 	return c.NotFoundResponse
+}
+
+func (c *CreateAudioTranscriptionsMultipartResponse) GetPayloadTooLargeResponse() *shared.PayloadTooLargeResponse {
+	if c == nil {
+		return nil
+	}
+	return c.PayloadTooLargeResponse
 }
 
 func (c *CreateAudioTranscriptionsMultipartResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
