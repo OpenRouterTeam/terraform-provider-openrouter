@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"net/http"
+	"os"
 )
 
 var _ provider.Provider = (*OpenrouterProvider)(nil)
@@ -46,7 +47,7 @@ func (p *OpenrouterProvider) Schema(ctx context.Context, req provider.SchemaRequ
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"api_key": schema.StringAttribute{
-				MarkdownDescription: `API key as bearer token in Authorization header.`,
+				MarkdownDescription: `API key as bearer token in Authorization header. Configurable via environment variable ` + "`" + `OPENROUTER_API_KEY` + "`" + `.`,
 				Optional:            true,
 				Sensitive:           true,
 			},
@@ -78,6 +79,10 @@ func (p *OpenrouterProvider) Configure(ctx context.Context, req provider.Configu
 
 	if !data.APIKey.IsUnknown() {
 		security.APIKey = data.APIKey.ValueStringPointer()
+	}
+
+	if apiKeyEnvVar := os.Getenv("OPENROUTER_API_KEY"); security.APIKey == nil && apiKeyEnvVar != "" {
+		security.APIKey = &apiKeyEnvVar
 	}
 
 	providerHTTPTransportOpts := ProviderHTTPTransportOpts{
