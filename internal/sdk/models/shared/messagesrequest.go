@@ -1179,9 +1179,9 @@ func (t *ThinkingEnabled) GetType() string {
 type ThinkingType string
 
 const (
-	ThinkingTypeEnabled  ThinkingType = "enabled"
-	ThinkingTypeDisabled ThinkingType = "disabled"
-	ThinkingTypeAdaptive ThinkingType = "adaptive"
+	ThinkingTypeEnabled       ThinkingType = "enabled"
+	ThinkingTypeDisabledValue ThinkingType = "disabled"
+	ThinkingTypeAdaptive      ThinkingType = "adaptive"
 )
 
 type Thinking struct {
@@ -1202,7 +1202,7 @@ func CreateThinkingEnabled(enabled ThinkingEnabled) Thinking {
 }
 
 func CreateThinkingDisabled(disabled ThinkingDisabled) Thinking {
-	typ := ThinkingTypeDisabled
+	typ := ThinkingTypeDisabledValue
 
 	return Thinking{
 		ThinkingDisabled: &disabled,
@@ -1247,7 +1247,7 @@ func (u *Thinking) UnmarshalJSON(data []byte) error {
 		}
 
 		u.ThinkingDisabled = thinkingDisabled
-		u.Type = ThinkingTypeDisabled
+		u.Type = ThinkingTypeDisabledValue
 		return nil
 	case "adaptive":
 		thinkingAdaptive := new(ThinkingAdaptive)
