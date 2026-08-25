@@ -9,8 +9,8 @@ import (
 
 // ObservabilityFilterRulesConfigNullable - Optional structured filter rules controlling which events are forwarded.
 type ObservabilityFilterRulesConfigNullable struct {
-	Enabled *bool                          `default:"true" json:"enabled"`
-	Groups  []ObservabilityFilterRuleGroup `json:"groups"`
+	Enabled *bool                                  `default:"true" json:"enabled"`
+	Groups  []ObservabilityFilterRuleGroupNullable `json:"groups"`
 }
 
 func (o ObservabilityFilterRulesConfigNullable) MarshalJSON() ([]byte, error) {
@@ -31,9 +31,9 @@ func (o *ObservabilityFilterRulesConfigNullable) GetEnabled() *bool {
 	return o.Enabled
 }
 
-func (o *ObservabilityFilterRulesConfigNullable) GetGroups() []ObservabilityFilterRuleGroup {
+func (o *ObservabilityFilterRulesConfigNullable) GetGroups() []ObservabilityFilterRuleGroupNullable {
 	if o == nil {
-		return []ObservabilityFilterRuleGroup{}
+		return []ObservabilityFilterRuleGroupNullable{}
 	}
 	return o.Groups
 }
