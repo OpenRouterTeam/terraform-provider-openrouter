@@ -371,3 +371,128 @@ actions:
   - target: $["paths"]["/workspaces/{id}/budgets/{interval}"]["delete"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudget#delete
+  # DEV-856: drop doc-only `default` values from destination config schemas.
+  # These defaults come from Zod `.default()` in the server-side broadcast
+  # schemas; the API never applies them, so the emitted OpenAPI `default:` is
+  # documentation-only. Speakeasy turns each one into a `Default:` on a
+  # Computed-only Terraform attribute, which makes every `terraform plan`
+  # propose resetting the API-returned value to the schema default.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["ObservabilityArizeDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityBraintrustDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityClickhouseDestination"]["properties"]["config"]["properties"]["table"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityDatadogDestination"]["properties"]["config"]["properties"]["url"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityFilterRuleGroup"]["properties"]["logic"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityFilterRulesConfig"]["properties"]["enabled"]["default"]
+    remove: true
+
+  # ---------------------------------------------------------------------------
+  # DEV-856 fix round 1: ObservabilityFilterRuleGroup.logic is shared by both
+  # the 17 read-only per-destination paths (via ObservabilityFilterRulesConfig)
+  # and the 1 writable top-level path (via ObservabilityFilterRulesConfigNullable),
+  # so the `default` removal above strips Computed from the writable path too.
+  # Split it the same way ObservabilityFilterRulesConfig/ConfigNullable already
+  # are: add a nullable-only sibling that keeps `default` (and thus Computed),
+  # and repoint the writable path's `groups[].items` ref at it. The read-only
+  # ObservabilityFilterRuleGroup above is untouched and keeps `default` removed.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]
+    update:
+      ObservabilityFilterRuleGroupNullable:
+        example:
+          logic: 'and'
+          rules:
+            - field: 'model'
+              operator: 'equals'
+              value: 'openai/gpt-4o'
+        properties:
+          logic:
+            default: 'and'
+            enum:
+              - 'and'
+              - 'or'
+            type: 'string'
+          rules:
+            items:
+              properties:
+                field:
+                  enum:
+                    - 'model'
+                    - 'provider'
+                    - 'session_id'
+                    - 'user_id'
+                    - 'api_key_name'
+                    - 'finish_reason'
+                    - 'input'
+                    - 'output'
+                    - 'total_cost'
+                    - 'total_tokens'
+                    - 'prompt_tokens'
+                    - 'completion_tokens'
+                  type: 'string'
+                operator:
+                  enum:
+                    - 'equals'
+                    - 'not_equals'
+                    - 'contains'
+                    - 'not_contains'
+                    - 'regex'
+                    - 'starts_with'
+                    - 'ends_with'
+                    - 'gt'
+                    - 'lt'
+                    - 'gte'
+                    - 'lte'
+                    - 'exists'
+                    - 'not_exists'
+                  type: 'string'
+                value:
+                  anyOf:
+                    - type: 'string'
+                    - type: 'number'
+              required:
+                - 'field'
+                - 'operator'
+              type: 'object'
+            type: 'array'
+        required:
+          - 'rules'
+        type: 'object'
+  - target: $["components"]["schemas"]["ObservabilityFilterRulesConfigNullable"]["properties"]["groups"]["items"]
+    update:
+      $ref: '#/components/schemas/ObservabilityFilterRuleGroupNullable'
+  - target: $["components"]["schemas"]["ObservabilityGrafanaDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityLangfuseDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityLangsmithDestination"]["properties"]["config"]["properties"]["endpoint"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityLangsmithDestination"]["properties"]["config"]["properties"]["project"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityNewrelicDestination"]["properties"]["config"]["properties"]["region"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityPosthogDestination"]["properties"]["config"]["properties"]["endpoint"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityRampDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityS3Destination"]["properties"]["config"]["properties"]["pathTemplate"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityS3Destination"]["properties"]["config"]["properties"]["prefix"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["database"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["schema"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["table"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilitySnowflakeDestination"]["properties"]["config"]["properties"]["warehouse"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityWeaveDestination"]["properties"]["config"]["properties"]["baseUrl"]["default"]
+    remove: true
+  - target: $["components"]["schemas"]["ObservabilityWebhookDestination"]["properties"]["config"]["properties"]["method"]["default"]
+    remove: true
