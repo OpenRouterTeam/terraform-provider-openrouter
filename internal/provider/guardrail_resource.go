@@ -284,7 +284,7 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 			"limit_usd": schema.Float64Attribute{
 				Computed:    true,
 				Optional:    true,
-				Description: `Spending limit in USD`,
+				Description: `Spending limit in USD. Must be provided together with ` + "`" + `reset_interval` + "`" + `: a request that sets only one of the two is rejected with a 400.`,
 			},
 			"name": schema.StringAttribute{
 				Required:    true,
