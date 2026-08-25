@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 65931841e3ef8cd0b6bf37a5aea2550b
+  docChecksum: 1a040c274b5b26142f9f13c5a4d681e3
   docVersion: 1.0.0
   speakeasyVersion: 1.795.3
   generationVersion: 2.932.9
-  releaseVersion: 0.2.56
-  configChecksum: 883fa148b2f7425d8aec369342713df7
+  releaseVersion: 0.2.57
+  configChecksum: a82f1ec629ceb67874a9a03f4aa064b5
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 8074a7d2-73e9-4bb6-bf8e-2e083a14d008
-  pristine_commit_hash: c77987a65999e87ca5fd3d7496ba28fa1bf7f1c5
-  pristine_tree_hash: 2328ad8af727d3e135140358f49269c328bd492e
+  generation_id: a7cf5125-5fb1-4700-a49e-6eee026af5cf
+  pristine_commit_hash: d7b2b16761f07245e27f50d8164a41aac3d64e6e
+  pristine_tree_hash: 198c86165e5c4d1bc2eb2ac428ee5c4dc4de17d1
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -128,8 +128,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:d5469bfb36426bc5440ff3ca2ef0e5e0f16c254f
-    pristine_git_object: 231d95c85c65bfe614e8eebbcdd924bf552d97d8
+    last_write_checksum: sha1:9f3c5138d4207c8474ee7dd78b59db549db73b82
+    pristine_git_object: 365a90f2f1983a82c15b47e08839b276874559cb
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1812,8 +1812,8 @@ trackedFiles:
     pristine_git_object: 06effff66fd64c8f6d97d17f0ced47a7501541fd
   internal/sdk/models/shared/bashservertoolconfig.go:
     id: 05c2d7fd2b6c
-    last_write_checksum: sha1:2c2434ef13d51be658672020e8ed6c02d000f97a
-    pristine_git_object: 99ad2a714a918a03b080e63d4ce6d44350496f7c
+    last_write_checksum: sha1:4259da498ab495dc9cad283e769d49d47498b62d
+    pristine_git_object: 91e8f6f000aa1e491fc6f99941f7267d72ce31d3
   internal/sdk/models/shared/bashservertoolengine.go:
     id: e8344c954c82
     last_write_checksum: sha1:ad75677b765b6c3a7569cb5ecb05eaf7f487d1bf
@@ -3212,8 +3212,8 @@ trackedFiles:
     pristine_git_object: f47a2a5ee85a3aff232dd588b6f4a7bda0ebc254
   internal/sdk/models/shared/shellservertoolconfig.go:
     id: 4a71932185ee
-    last_write_checksum: sha1:266d7109e44aba017885a01b53d3684cf86369a1
-    pristine_git_object: 21fb14fd32e6ed194e249ec8d1063287b01d5c19
+    last_write_checksum: sha1:e9f9fa0bd720fe4762ffe61377514adf2b6a7527
+    pristine_git_object: 8201a7adabdd34dd3b0a8cc9545e622d93b524d6
   internal/sdk/models/shared/shellservertoolengine.go:
     id: 5258a9177bef
     last_write_checksum: sha1:e218bb4a108f22b21e91c04f63f4e48038755ad3
@@ -3588,8 +3588,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:b1fa9e618464106f16d3ded909726e7279f2321d
-    pristine_git_object: ce955c8a685166701ecbea6df49b094882395ffb
+    last_write_checksum: sha1:4d69b81a3e56e86fa9fc0a17dabae74d3557a269
+    pristine_git_object: 67e198e515955bcb8793ac88ce89bc63604f8124
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5473,4 +5473,3 @@ examples:
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.tools[].union(openrouter:bash).parameters.environment` **Changed**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.tools[].union(ShellServerTool_OpenRouter).parameters.environment` **Changed**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(AdditionalToolsItem).tools[].union(BashServerTool).parameters.environment` **Changed**\n"
