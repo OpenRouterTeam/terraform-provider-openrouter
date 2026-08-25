@@ -10,17 +10,17 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type Logic string
+type ObservabilityFilterRuleGroupLogic string
 
 const (
-	LogicAnd Logic = "and"
-	LogicOr  Logic = "or"
+	ObservabilityFilterRuleGroupLogicAnd ObservabilityFilterRuleGroupLogic = "and"
+	ObservabilityFilterRuleGroupLogicOr  ObservabilityFilterRuleGroupLogic = "or"
 )
 
-func (e Logic) ToPointer() *Logic {
+func (e ObservabilityFilterRuleGroupLogic) ToPointer() *ObservabilityFilterRuleGroupLogic {
 	return &e
 }
-func (e *Logic) UnmarshalJSON(data []byte) error {
+func (e *ObservabilityFilterRuleGroupLogic) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -29,34 +29,34 @@ func (e *Logic) UnmarshalJSON(data []byte) error {
 	case "and":
 		fallthrough
 	case "or":
-		*e = Logic(v)
+		*e = ObservabilityFilterRuleGroupLogic(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for Logic: %v", v)
+		return fmt.Errorf("invalid value for ObservabilityFilterRuleGroupLogic: %v", v)
 	}
 }
 
-type Field string
+type ObservabilityFilterRuleGroupField string
 
 const (
-	FieldModel            Field = "model"
-	FieldProvider         Field = "provider"
-	FieldSessionID        Field = "session_id"
-	FieldUserID           Field = "user_id"
-	FieldAPIKeyName       Field = "api_key_name"
-	FieldFinishReason     Field = "finish_reason"
-	FieldInput            Field = "input"
-	FieldOutput           Field = "output"
-	FieldTotalCost        Field = "total_cost"
-	FieldTotalTokens      Field = "total_tokens"
-	FieldPromptTokens     Field = "prompt_tokens"
-	FieldCompletionTokens Field = "completion_tokens"
+	ObservabilityFilterRuleGroupFieldModel            ObservabilityFilterRuleGroupField = "model"
+	ObservabilityFilterRuleGroupFieldProvider         ObservabilityFilterRuleGroupField = "provider"
+	ObservabilityFilterRuleGroupFieldSessionID        ObservabilityFilterRuleGroupField = "session_id"
+	ObservabilityFilterRuleGroupFieldUserID           ObservabilityFilterRuleGroupField = "user_id"
+	ObservabilityFilterRuleGroupFieldAPIKeyName       ObservabilityFilterRuleGroupField = "api_key_name"
+	ObservabilityFilterRuleGroupFieldFinishReason     ObservabilityFilterRuleGroupField = "finish_reason"
+	ObservabilityFilterRuleGroupFieldInput            ObservabilityFilterRuleGroupField = "input"
+	ObservabilityFilterRuleGroupFieldOutput           ObservabilityFilterRuleGroupField = "output"
+	ObservabilityFilterRuleGroupFieldTotalCost        ObservabilityFilterRuleGroupField = "total_cost"
+	ObservabilityFilterRuleGroupFieldTotalTokens      ObservabilityFilterRuleGroupField = "total_tokens"
+	ObservabilityFilterRuleGroupFieldPromptTokens     ObservabilityFilterRuleGroupField = "prompt_tokens"
+	ObservabilityFilterRuleGroupFieldCompletionTokens ObservabilityFilterRuleGroupField = "completion_tokens"
 )
 
-func (e Field) ToPointer() *Field {
+func (e ObservabilityFilterRuleGroupField) ToPointer() *ObservabilityFilterRuleGroupField {
 	return &e
 }
-func (e *Field) UnmarshalJSON(data []byte) error {
+func (e *ObservabilityFilterRuleGroupField) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -85,35 +85,35 @@ func (e *Field) UnmarshalJSON(data []byte) error {
 	case "prompt_tokens":
 		fallthrough
 	case "completion_tokens":
-		*e = Field(v)
+		*e = ObservabilityFilterRuleGroupField(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for Field: %v", v)
+		return fmt.Errorf("invalid value for ObservabilityFilterRuleGroupField: %v", v)
 	}
 }
 
-type Operator string
+type ObservabilityFilterRuleGroupOperator string
 
 const (
-	OperatorEquals      Operator = "equals"
-	OperatorNotEquals   Operator = "not_equals"
-	OperatorContains    Operator = "contains"
-	OperatorNotContains Operator = "not_contains"
-	OperatorRegex       Operator = "regex"
-	OperatorStartsWith  Operator = "starts_with"
-	OperatorEndsWith    Operator = "ends_with"
-	OperatorGt          Operator = "gt"
-	OperatorLt          Operator = "lt"
-	OperatorGte         Operator = "gte"
-	OperatorLte         Operator = "lte"
-	OperatorExists      Operator = "exists"
-	OperatorNotExists   Operator = "not_exists"
+	ObservabilityFilterRuleGroupOperatorEquals      ObservabilityFilterRuleGroupOperator = "equals"
+	ObservabilityFilterRuleGroupOperatorNotEquals   ObservabilityFilterRuleGroupOperator = "not_equals"
+	ObservabilityFilterRuleGroupOperatorContains    ObservabilityFilterRuleGroupOperator = "contains"
+	ObservabilityFilterRuleGroupOperatorNotContains ObservabilityFilterRuleGroupOperator = "not_contains"
+	ObservabilityFilterRuleGroupOperatorRegex       ObservabilityFilterRuleGroupOperator = "regex"
+	ObservabilityFilterRuleGroupOperatorStartsWith  ObservabilityFilterRuleGroupOperator = "starts_with"
+	ObservabilityFilterRuleGroupOperatorEndsWith    ObservabilityFilterRuleGroupOperator = "ends_with"
+	ObservabilityFilterRuleGroupOperatorGt          ObservabilityFilterRuleGroupOperator = "gt"
+	ObservabilityFilterRuleGroupOperatorLt          ObservabilityFilterRuleGroupOperator = "lt"
+	ObservabilityFilterRuleGroupOperatorGte         ObservabilityFilterRuleGroupOperator = "gte"
+	ObservabilityFilterRuleGroupOperatorLte         ObservabilityFilterRuleGroupOperator = "lte"
+	ObservabilityFilterRuleGroupOperatorExists      ObservabilityFilterRuleGroupOperator = "exists"
+	ObservabilityFilterRuleGroupOperatorNotExists   ObservabilityFilterRuleGroupOperator = "not_exists"
 )
 
-func (e Operator) ToPointer() *Operator {
+func (e ObservabilityFilterRuleGroupOperator) ToPointer() *ObservabilityFilterRuleGroupOperator {
 	return &e
 }
-func (e *Operator) UnmarshalJSON(data []byte) error {
+func (e *ObservabilityFilterRuleGroupOperator) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -144,10 +144,10 @@ func (e *Operator) UnmarshalJSON(data []byte) error {
 	case "exists":
 		fallthrough
 	case "not_exists":
-		*e = Operator(v)
+		*e = ObservabilityFilterRuleGroupOperator(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for Operator: %v", v)
+		return fmt.Errorf("invalid value for ObservabilityFilterRuleGroupOperator: %v", v)
 	}
 }
 
@@ -240,47 +240,47 @@ func (u ObservabilityFilterRuleGroupValue) MarshalJSON() ([]byte, error) {
 	return nil, errors.New("could not marshal union type ObservabilityFilterRuleGroupValue: all fields are null")
 }
 
-type Rule struct {
-	Field    Field                              `json:"field"`
-	Operator Operator                           `json:"operator"`
-	Value    *ObservabilityFilterRuleGroupValue `json:"value,omitzero"`
+type ObservabilityFilterRuleGroupRule struct {
+	Field    ObservabilityFilterRuleGroupField    `json:"field"`
+	Operator ObservabilityFilterRuleGroupOperator `json:"operator"`
+	Value    *ObservabilityFilterRuleGroupValue   `json:"value,omitzero"`
 }
 
-func (r Rule) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(r, "", false)
+func (o ObservabilityFilterRuleGroupRule) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(o, "", false)
 }
 
-func (r *Rule) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &r, "", false, nil); err != nil {
+func (o *ObservabilityFilterRuleGroupRule) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &o, "", false, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *Rule) GetField() Field {
-	if r == nil {
-		return Field("")
+func (o *ObservabilityFilterRuleGroupRule) GetField() ObservabilityFilterRuleGroupField {
+	if o == nil {
+		return ObservabilityFilterRuleGroupField("")
 	}
-	return r.Field
+	return o.Field
 }
 
-func (r *Rule) GetOperator() Operator {
-	if r == nil {
-		return Operator("")
+func (o *ObservabilityFilterRuleGroupRule) GetOperator() ObservabilityFilterRuleGroupOperator {
+	if o == nil {
+		return ObservabilityFilterRuleGroupOperator("")
 	}
-	return r.Operator
+	return o.Operator
 }
 
-func (r *Rule) GetValue() *ObservabilityFilterRuleGroupValue {
-	if r == nil {
+func (o *ObservabilityFilterRuleGroupRule) GetValue() *ObservabilityFilterRuleGroupValue {
+	if o == nil {
 		return nil
 	}
-	return r.Value
+	return o.Value
 }
 
 type ObservabilityFilterRuleGroup struct {
-	Logic *Logic `default:"and" json:"logic"`
-	Rules []Rule `json:"rules"`
+	Logic *ObservabilityFilterRuleGroupLogic `json:"logic,omitzero"`
+	Rules []ObservabilityFilterRuleGroupRule `json:"rules"`
 }
 
 func (o ObservabilityFilterRuleGroup) MarshalJSON() ([]byte, error) {
@@ -294,16 +294,16 @@ func (o *ObservabilityFilterRuleGroup) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (o *ObservabilityFilterRuleGroup) GetLogic() *Logic {
+func (o *ObservabilityFilterRuleGroup) GetLogic() *ObservabilityFilterRuleGroupLogic {
 	if o == nil {
 		return nil
 	}
 	return o.Logic
 }
 
-func (o *ObservabilityFilterRuleGroup) GetRules() []Rule {
+func (o *ObservabilityFilterRuleGroup) GetRules() []ObservabilityFilterRuleGroupRule {
 	if o == nil {
-		return []Rule{}
+		return []ObservabilityFilterRuleGroupRule{}
 	}
 	return o.Rules
 }
