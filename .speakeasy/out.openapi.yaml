@@ -36346,6 +36346,7 @@ paths:
         outputs:
           results: '$.data'
         type: 'offsetLimit'
+      x-speakeasy-entity-operation: OrganizationMembers#read
   /presets:
     get:
       description: 'Lists all presets for the authenticated user, ordered by most recently updated first.'

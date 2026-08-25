@@ -16,7 +16,7 @@ terraform {
   required_providers {
     openrouter = {
       source  = "OpenRouterTeam/openrouter"
-      version = "0.2.60"
+      version = "0.2.61"
     }
   }
 }
@@ -31,5 +31,5 @@ provider "openrouter" {
 
 ### Optional
 
-- `api_key` (String, Sensitive) API key as bearer token in Authorization header.
+- `api_key` (String, Sensitive) API key as bearer token in Authorization header. Configurable via environment variable `OPENROUTER_MANAGEMENT_KEY`.
 - `server_url` (String) Server URL (defaults to https://openrouter.ai/api/v1)

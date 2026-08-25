@@ -23,7 +23,7 @@ terraform {
   required_providers {
     openrouter = {
       source  = "OpenRouterTeam/openrouter"
-      version = "0.2.59"
+      version = "0.2.60"
     }
   }
 }
@@ -66,13 +66,18 @@ resource "openrouter_guardrail" "cost_cap" {
 <!-- Start Authentication [security] -->
 ## Authentication
 
-This provider supports authentication configuration via provider configuration.
+This provider supports authentication configuration via environment variables and provider configuration.
+
+The configuration precedence is:
+
+- Provider configuration
+- Environment variables
 
 Available configuration:
 
 | Provider Attribute | Description |
 |---|---|
-| `api_key` | API key as bearer token in Authorization header. |
+| `api_key` | API key as bearer token in Authorization header. Configurable via environment variable `OPENROUTER_MANAGEMENT_KEY`. |
 <!-- End Authentication [security] -->
 
 <!-- Start Available Resources and Data Sources [operations] -->
@@ -102,6 +107,7 @@ Available configuration:
 * [openrouter_models](docs/data-sources/models.md)
 * [openrouter_observability_destination](docs/data-sources/observability_destination.md)
 * [openrouter_observability_destinations](docs/data-sources/observability_destinations.md)
+* [openrouter_organization_members](docs/data-sources/organization_members.md)
 * [openrouter_preset](docs/data-sources/preset.md)
 * [openrouter_presets](docs/data-sources/presets.md)
 * [openrouter_providers](docs/data-sources/providers.md)
