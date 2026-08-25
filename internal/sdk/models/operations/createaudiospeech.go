@@ -26,6 +26,8 @@ type CreateAudioSpeechResponse struct {
 	PaymentRequiredResponse *shared.PaymentRequiredResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Payload Too Large - Request payload exceeds size limits
+	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
@@ -105,6 +107,13 @@ func (c *CreateAudioSpeechResponse) GetNotFoundResponse() *shared.NotFoundRespon
 		return nil
 	}
 	return c.NotFoundResponse
+}
+
+func (c *CreateAudioSpeechResponse) GetPayloadTooLargeResponse() *shared.PayloadTooLargeResponse {
+	if c == nil {
+		return nil
+	}
+	return c.PayloadTooLargeResponse
 }
 
 func (c *CreateAudioSpeechResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {

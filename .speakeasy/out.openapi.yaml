@@ -27563,6 +27563,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: 'Not Found - Resource does not exist'
+        '413':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 413
+                  message: 'Request payload too large'
+              schema:
+                $ref: '#/components/schemas/PayloadTooLargeResponse'
+          description: 'Payload Too Large - Request payload exceeds size limits'
         '429':
           content:
             application/json:
@@ -27738,6 +27748,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: 'Not Found - Resource does not exist'
+        '413':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 413
+                  message: 'Request payload too large'
+              schema:
+                $ref: '#/components/schemas/PayloadTooLargeResponse'
+          description: 'Payload Too Large - Request payload exceeds size limits'
         '429':
           content:
             application/json:
@@ -37903,6 +37923,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: 'Not Found - Resource does not exist'
+        '413':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 413
+                  message: 'Request payload too large'
+              schema:
+                $ref: '#/components/schemas/PayloadTooLargeResponse'
+          description: 'Payload Too Large - Request payload exceeds size limits'
         '429':
           content:
             application/json:
@@ -38723,6 +38753,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: 'Not Found - Resource does not exist'
+        '413':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 413
+                  message: 'Request payload too large'
+              schema:
+                $ref: '#/components/schemas/PayloadTooLargeResponse'
+          description: 'Payload Too Large - Request payload exceeds size limits'
         '429':
           content:
             application/json:
