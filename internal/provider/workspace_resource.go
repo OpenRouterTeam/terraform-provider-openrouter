@@ -33,6 +33,7 @@ type WorkspaceResource struct {
 
 // WorkspaceResourceModel describes the resource data model.
 type WorkspaceResourceModel struct {
+	ConfirmDefaultWorkspaceDeletion types.String  `queryParam:"style=form,explode=true,name=confirm_default_workspace_deletion" tfsdk:"confirm_default_workspace_deletion"`
 	CreatedAt                       types.String  `tfsdk:"created_at"`
 	CreatedBy                       types.String  `tfsdk:"created_by"`
 	DefaultGuardrailID              types.String  `tfsdk:"default_guardrail_id"`
@@ -60,6 +61,16 @@ func (r *WorkspaceResource) Schema(ctx context.Context, req resource.SchemaReque
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Workspace Resource",
 		Attributes: map[string]schema.Attribute{
+			"confirm_default_workspace_deletion": schema.StringAttribute{
+				Optional:    true,
+				Description: `Required to delete the default workspace. Deleting it permanently disables the account’s unscoped inference API keys (management/provisioning keys are retained) and its budgets, guardrails, classifiers, and broadcast destinations. Ignored for non-default workspaces. must be one of ["true", "false"]`,
+				Validators: []validator.String{
+					stringvalidator.OneOf(
+						"true",
+						"false",
+					),
+				},
+			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,
 				Description: `ISO 8601 timestamp of when the workspace was created`,

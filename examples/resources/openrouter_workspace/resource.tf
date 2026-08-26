@@ -1,8 +1,9 @@
 resource "openrouter_workspace" "my_workspace" {
-  default_image_model   = "openai/dall-e-3"
-  default_provider_sort = "price"
-  default_text_model    = "openai/gpt-4o"
-  description           = "Production environment workspace"
+  confirm_default_workspace_deletion = "false"
+  default_image_model                = "openai/dall-e-3"
+  default_provider_sort              = "price"
+  default_text_model                 = "openai/gpt-4o"
+  description                        = "Production environment workspace"
   io_logging_api_key_ids = [
     4
   ]
