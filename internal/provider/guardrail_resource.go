@@ -135,7 +135,7 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 						"slug": schema.StringAttribute{
 							Computed:    true,
 							Optional:    true,
-							Description: `The builtin filter identifier. Not Null; must be one of ["email", "phone", "ssn", "credit-card", "ip-address", "person-name", "address", "regex-prompt-injection"]`,
+							Description: `The builtin filter identifier. Not Null; must be one of ["email", "phone", "ssn", "credit-card", "ip-address", "secrets", "person-name", "address", "regex-prompt-injection"]`,
 							Validators: []validator.String{
 								speakeasy_stringvalidators.NotNull(),
 								stringvalidator.OneOf(
@@ -144,6 +144,7 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 									"ssn",
 									"credit-card",
 									"ip-address",
+									"secrets",
 									"person-name",
 									"address",
 									"regex-prompt-injection",

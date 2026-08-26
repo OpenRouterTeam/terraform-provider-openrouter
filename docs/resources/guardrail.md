@@ -107,7 +107,7 @@ Optional:
 - `action` (String) Action taken when the builtin filter triggers. Not Null; must be one of ["redact", "block", "flag"]
 - `label` (String, Deprecated) Deprecated: labels are system-assigned and cannot be set by the caller. Accepted for backward compatibility but silently ignored.
 - `scan_scope` (String) Which message roles to scan for prompt injection. Only applies to the regex-prompt-injection builtin. Defaults to all_messages. must be one of ["user_only", "all_messages"]
-- `slug` (String) The builtin filter identifier. Not Null; must be one of ["email", "phone", "ssn", "credit-card", "ip-address", "person-name", "address", "regex-prompt-injection"]
+- `slug` (String) The builtin filter identifier. Not Null; must be one of ["email", "phone", "ssn", "credit-card", "ip-address", "secrets", "person-name", "address", "regex-prompt-injection"]
 
 
 <a id="nestedatt--content_filters"></a>

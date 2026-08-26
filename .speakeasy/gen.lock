@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 0e033877373d432694685fb202131ec5
+  docChecksum: 2747bfa61d8c00185c151304227ee488
   docVersion: 1.0.0
   speakeasyVersion: 1.795.4
   generationVersion: 2.932.9
-  releaseVersion: 0.2.71
-  configChecksum: ca0443711d96bca8e9cbfcbf5dcca44f
+  releaseVersion: 0.2.72
+  configChecksum: 7cd7a4d8f2ca6e45db35aa10da1c2eb2
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 2e09a37c-7ffa-4dbe-9157-8f8aea8e85cd
-  pristine_commit_hash: bc5f649a9f2850cb914a748b60ae8afaa3f5c3f0
-  pristine_tree_hash: a2867a88ce23a0445c47847c693e8f80a953e764
+  generation_id: 3eb111d7-dbf6-435d-9e88-1b712024ffcc
+  pristine_commit_hash: 340ad7fea6e94569494e5d6edc4b60a81deb4ab1
+  pristine_tree_hash: 7514a29337d84371038289eef081c6d6850b06a9
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:9bc687dd490ecb39013da157a227da5fb5fbf5d2
-    pristine_git_object: 554e0b8e71ff2fe53a62b001420ba610ffa717f1
+    last_write_checksum: sha1:d9b08943e86cef63b334e3785f7b99811224a228
+    pristine_git_object: 25b5d67b076a8bb292fcd57b661380cad809cdbb
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -432,8 +432,8 @@ trackedFiles:
     pristine_git_object: cadc3b33c64289e577570165d5bbc4cacbca0552
   internal/provider/guardrail_resource.go:
     id: 2c8f3b209709
-    last_write_checksum: sha1:ccd4c93ce78b28c59a33348b9e9d713db96ec0bf
-    pristine_git_object: e4752c540262f5dba8c62bad319f1a10cd64c571
+    last_write_checksum: sha1:62f79310ea5afd4336f2563a99f56936a136288a
+    pristine_git_object: cbdd7999f56c24ad376b9d5422017e32020d0cf0
   internal/provider/guardrail_resource_sdk.go:
     id: f2bb0750b16f
     last_write_checksum: sha1:ab0cc0919f6eb921e811a88bd84c85bce74ea804
@@ -2152,16 +2152,16 @@ trackedFiles:
     pristine_git_object: 6dda5bd83c428804844c621ed4a40ca4e4bf018f
   internal/sdk/models/shared/contentfilterbuiltinentry.go:
     id: 3f8aed5a0bc9
-    last_write_checksum: sha1:ffe1d5dfd449690f8420a72e918517affc7120e1
-    pristine_git_object: 93cd384a853f1e74fe067ea34f7db2d602b3c5a3
+    last_write_checksum: sha1:a802e4e923544f771135bbce03c30d1ba82636e5
+    pristine_git_object: cfd995dbaf19bd44dac3393efd0be886cea0983d
   internal/sdk/models/shared/contentfilterbuiltinentryinput.go:
     id: 4918db9c25fb
     last_write_checksum: sha1:ba7554085af85a4f881350eb6b127bd220ac59df
     pristine_git_object: 6bf43c51bf575c9005df89e9705af043daac1894
   internal/sdk/models/shared/contentfilterbuiltinslug.go:
     id: ee5bc9ec4c5c
-    last_write_checksum: sha1:141db58d891aedc819b0e04837a5e75d5b88ae50
-    pristine_git_object: 09617d2ec6e4595ec6efc14c945152f39c4f49bf
+    last_write_checksum: sha1:87e2c3f84b44df92e5dd9cdde0e61b2559f0c0f4
+    pristine_git_object: 7a28f0768f24d371d9863486b2a8354a37ff3043
   internal/sdk/models/shared/contentfilterentry.go:
     id: 8ee7aa3981c2
     last_write_checksum: sha1:58098a8ce674ae0c0825518d6f3234293e6abf0c
@@ -3656,8 +3656,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:913571329c89c7d58ed20e15ab0240cb9d654425
-    pristine_git_object: 991914bddb6ae76fd2530c6637f2425db83e727a
+    last_write_checksum: sha1:89119c3d472ddc6fd982666a117fd9c01608d11a
+    pristine_git_object: fefe7084a0380492cbb898814d29cf2a89763182
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5577,4 +5577,4 @@ examples:
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Workspaces.delete()`: \n  *  `request.confirm_default_workspace_deletion` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Guardrails.list()`:  `response.data[].content_filter_builtins[].slug.enum(secrets)` **Added** (Breaking ⚠️)\n* `OpenRouter.Guardrails.create()`: \n  *  `request.content_filter_builtins[].slug.enum(secrets)` **Added**\n  *  `response.data.content_filter_builtins[].slug.enum(secrets)` **Added** (Breaking ⚠️)\n* `OpenRouter.Guardrails.getGuardrail()`:  `response.data.content_filter_builtins[].slug.enum(secrets)` **Added** (Breaking ⚠️)\n* `OpenRouter.Guardrails.update()`: \n  *  `request.body.content_filter_builtins[].slug.enum(secrets)` **Added**\n  *  `response.data.content_filter_builtins[].slug.enum(secrets)` **Added** (Breaking ⚠️)\n"
