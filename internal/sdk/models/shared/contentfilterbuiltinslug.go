@@ -17,6 +17,7 @@ const (
 	ContentFilterBuiltinSlugSsn                  ContentFilterBuiltinSlug = "ssn"
 	ContentFilterBuiltinSlugCreditCard           ContentFilterBuiltinSlug = "credit-card"
 	ContentFilterBuiltinSlugIPAddress            ContentFilterBuiltinSlug = "ip-address"
+	ContentFilterBuiltinSlugSecrets              ContentFilterBuiltinSlug = "secrets"
 	ContentFilterBuiltinSlugPersonName           ContentFilterBuiltinSlug = "person-name"
 	ContentFilterBuiltinSlugAddress              ContentFilterBuiltinSlug = "address"
 	ContentFilterBuiltinSlugRegexPromptInjection ContentFilterBuiltinSlug = "regex-prompt-injection"
@@ -40,6 +41,8 @@ func (e *ContentFilterBuiltinSlug) UnmarshalJSON(data []byte) error {
 	case "credit-card":
 		fallthrough
 	case "ip-address":
+		fallthrough
+	case "secrets":
 		fallthrough
 	case "person-name":
 		fallthrough
