@@ -15,6 +15,8 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"sort"
+	"strings"
 	"sync"
 	"testing"
 
@@ -207,4 +209,143 @@ func TestStubObservabilityDestinationOutOfBandDrift(t *testing.T) {
 			// the empty-plan invariant verified in step 2.
 		},
 	})
+}
+
+// ---------------------------------------------------------------------------
+// DEV-1070: parameterized perpetual-diff coverage across destination types.
+//
+// DEV-856 was marked Done and reopened twice while this package was green,
+// because the only destination exercised above is `webhook`, whose fields
+// happened to carry no schema Default. Every other type did: 110 `Default:`
+// declarations sat on Computed-only attributes, and any user whose stored
+// value differed from one hit a plan that never converged.
+//
+// The table below covers every property the DEV-856 overlay stripped a
+// `default` from, each seeded with a NON-default value. A `Default:` on a
+// Computed-only attribute makes the framework rewrite the planned value on
+// every plan, so the post-apply plan is non-empty and the case fails.
+//
+// `config` is an open JSON map on this resource, so a case only needs to
+// carry the properties under test rather than a type's full valid payload.
+// ---------------------------------------------------------------------------
+
+// destDefaultCase is one destination type plus config entries chosen to
+// differ from the schema defaults that DEV-856 removed.
+type destDefaultCase struct {
+	destType string
+	// config maps a config key to an already-jsonencode()d HCL expression.
+	config map[string]string
+}
+
+// nonDefaultDestCases enumerates the properties whose `default` the DEV-856
+// overlay removes. Values deliberately differ from the removed defaults.
+var nonDefaultDestCases = []destDefaultCase{
+	{
+		// Printify's reported case (Pylon #2627): non-default prefix and
+		// path_template on S3. This is the exact scenario DEV-856 shipped
+		// broken for seven days while this package reported green.
+		destType: "s3",
+		config: map[string]string{
+			"prefix":       `jsonencode("nonprod-coreml")`,
+			"pathTemplate": `jsonencode("{prefix}/{apiKeyName}/{year}/{month}/{day}")`,
+		},
+	},
+	{destType: "webhook", config: map[string]string{"method": `jsonencode("PUT")`}},
+	{destType: "arize", config: map[string]string{"baseUrl": `jsonencode("https://arize.example.test")`}},
+	{destType: "braintrust", config: map[string]string{"baseUrl": `jsonencode("https://braintrust.example.test")`}},
+	{destType: "grafana", config: map[string]string{"baseUrl": `jsonencode("https://grafana.example.test")`}},
+	{destType: "langfuse", config: map[string]string{"baseUrl": `jsonencode("https://langfuse.example.test")`}},
+	{destType: "ramp", config: map[string]string{"baseUrl": `jsonencode("https://ramp.example.test")`}},
+	{destType: "weave", config: map[string]string{"baseUrl": `jsonencode("https://weave.example.test")`}},
+	{destType: "clickhouse", config: map[string]string{"table": `jsonencode("tf_acc_traces")`}},
+	{destType: "datadog", config: map[string]string{"url": `jsonencode("https://dd.example.test/intake")`}},
+	{destType: "posthog", config: map[string]string{"endpoint": `jsonencode("https://posthog.example.test")`}},
+	{destType: "newrelic", config: map[string]string{"region": `jsonencode("eu")`}},
+	{
+		destType: "langsmith",
+		config: map[string]string{
+			"endpoint": `jsonencode("https://langsmith.example.test")`,
+			"project":  `jsonencode("tf-acc-project")`,
+		},
+	},
+	{
+		destType: "snowflake",
+		config: map[string]string{
+			"database":  `jsonencode("TF_ACC_DB")`,
+			"schema":    `jsonencode("TF_ACC_SCHEMA")`,
+			"table":     `jsonencode("TF_ACC_TABLE")`,
+			"warehouse": `jsonencode("TF_ACC_WH")`,
+		},
+	},
+}
+
+// stubDestConfigFor renders a destination resource for one case. Keys are
+// emitted in sorted order so the generated HCL is deterministic.
+func stubDestConfigFor(serverURL string, c destDefaultCase) string {
+	keys := make([]string, 0, len(c.config))
+	for k := range c.config {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var entries strings.Builder
+	for _, k := range keys {
+		fmt.Fprintf(&entries, "    %s = %s\n", k, c.config[k])
+	}
+
+	return fmt.Sprintf(`
+provider "openrouter" {
+  api_key    = "«redacted:sk-…»"
+  server_url = %q
+}
+resource "openrouter_observability_destination" "test" {
+  name    = "tf-stub-%s"
+  type    = %q
+  enabled = false
+  config = {
+%s  }
+}
+`, serverURL, c.destType, c.destType, entries.String())
+}
+
+// TestStubObservabilityDestinationNoPerpetualDiff_AllTypes asserts that a
+// destination created with non-default config values produces an EMPTY plan
+// immediately afterwards, for every type whose schema previously carried a
+// Default on a Computed-only attribute.
+//
+// Proving this test has teeth: against a provider built before the DEV-856
+// overlay (v0.2.66 or earlier), the `s3` case MUST fail with a non-empty
+// plan resetting prefix/path_template to "openrouter-traces" and
+// "{prefix}/{date}". Against v0.2.67+ every case passes. Verify both
+// directions before trusting a green run here — a suite that cannot go red
+// is what let DEV-856 ship.
+func TestStubObservabilityDestinationNoPerpetualDiff_AllTypes(t *testing.T) {
+	for _, c := range nonDefaultDestCases {
+		t.Run(c.destType, func(t *testing.T) {
+			// resource.Test skips unless TF_ACC is set. These cases drive an
+			// in-process stub and need no management key, so opt in here
+			// rather than gating them behind the live acceptance lane.
+			t.Setenv("TF_ACC", "1")
+
+			srv := newStubAPI(t, nil)
+			config := stubDestConfigFor(srv.URL, c)
+
+			resource.Test(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{
+						Config: config,
+						Check:  resource.TestCheckResourceAttrSet("openrouter_observability_destination.test", "id"),
+					},
+					// The regression assertion: replanning the identical
+					// config must be a no-op. A surviving Computed-only
+					// Default makes this step fail.
+					{
+						Config:   config,
+						PlanOnly: true,
+					},
+				},
+			})
+		})
+	}
 }
