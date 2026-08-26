@@ -4,14 +4,45 @@
 package operations
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"net/http"
 )
 
+// ConfirmDefaultWorkspaceDeletion - Required to delete the default workspace. Deleting it permanently disables the account’s unscoped inference API keys (management/provisioning keys are retained) and its budgets, guardrails, classifiers, and broadcast destinations. Ignored for non-default workspaces.
+type ConfirmDefaultWorkspaceDeletion string
+
+const (
+	ConfirmDefaultWorkspaceDeletionTrue  ConfirmDefaultWorkspaceDeletion = "true"
+	ConfirmDefaultWorkspaceDeletionFalse ConfirmDefaultWorkspaceDeletion = "false"
+)
+
+func (e ConfirmDefaultWorkspaceDeletion) ToPointer() *ConfirmDefaultWorkspaceDeletion {
+	return &e
+}
+func (e *ConfirmDefaultWorkspaceDeletion) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "true":
+		fallthrough
+	case "false":
+		*e = ConfirmDefaultWorkspaceDeletion(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for ConfirmDefaultWorkspaceDeletion: %v", v)
+	}
+}
+
 type DeleteWorkspaceRequest struct {
 	// The workspace ID (UUID) or slug
 	ID string `pathParam:"style=simple,explode=false,name=id"`
+	// Required to delete the default workspace. Deleting it permanently disables the account’s unscoped inference API keys (management/provisioning keys are retained) and its budgets, guardrails, classifiers, and broadcast destinations. Ignored for non-default workspaces.
+	ConfirmDefaultWorkspaceDeletion *ConfirmDefaultWorkspaceDeletion `queryParam:"style=form,explode=true,name=confirm_default_workspace_deletion"`
 }
 
 func (d *DeleteWorkspaceRequest) GetID() string {
@@ -19,6 +50,13 @@ func (d *DeleteWorkspaceRequest) GetID() string {
 		return ""
 	}
 	return d.ID
+}
+
+func (d *DeleteWorkspaceRequest) GetConfirmDefaultWorkspaceDeletion() *ConfirmDefaultWorkspaceDeletion {
+	if d == nil {
+		return nil
+	}
+	return d.ConfirmDefaultWorkspaceDeletion
 }
 
 type DeleteWorkspaceResponse struct {
