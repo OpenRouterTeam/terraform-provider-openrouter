@@ -35,6 +35,7 @@ const (
 	BYOKProviderSlugCloudflare       BYOKProviderSlug = "cloudflare"
 	BYOKProviderSlugCohere           BYOKProviderSlug = "cohere"
 	BYOKProviderSlugCoreweave        BYOKProviderSlug = "coreweave"
+	BYOKProviderSlugCosine           BYOKProviderSlug = "cosine"
 	BYOKProviderSlugCrusoe           BYOKProviderSlug = "crusoe"
 	BYOKProviderSlugDarkbloom        BYOKProviderSlug = "darkbloom"
 	BYOKProviderSlugDatabricks       BYOKProviderSlug = "databricks"
@@ -171,6 +172,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "cohere":
 		fallthrough
 	case "coreweave":
+		fallthrough
+	case "cosine":
 		fallthrough
 	case "crusoe":
 		fallthrough

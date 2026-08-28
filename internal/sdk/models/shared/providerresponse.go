@@ -64,6 +64,7 @@ const (
 	ProviderResponseProviderNameCloudflare          ProviderResponseProviderName = "Cloudflare"
 	ProviderResponseProviderNameCohere              ProviderResponseProviderName = "Cohere"
 	ProviderResponseProviderNameCoreWeave           ProviderResponseProviderName = "CoreWeave"
+	ProviderResponseProviderNameCosine              ProviderResponseProviderName = "Cosine"
 	ProviderResponseProviderNameCrucible            ProviderResponseProviderName = "Crucible"
 	ProviderResponseProviderNameCrusoe              ProviderResponseProviderName = "Crusoe"
 	ProviderResponseProviderNameDarkbloom           ProviderResponseProviderName = "Darkbloom"
@@ -259,6 +260,8 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 	case "Cohere":
 		fallthrough
 	case "CoreWeave":
+		fallthrough
+	case "Cosine":
 		fallthrough
 	case "Crucible":
 		fallthrough

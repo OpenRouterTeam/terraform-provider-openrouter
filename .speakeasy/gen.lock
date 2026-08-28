@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 5a1e920cf1885c446d30c7dd7d83b35d
+  docChecksum: b82d3f09a99293849797dc2ab7c10531
   docVersion: 1.0.0
   speakeasyVersion: 1.796.2
   generationVersion: 2.933.0
-  releaseVersion: 0.2.78
-  configChecksum: d64bd86b2351821286850031f934aa40
+  releaseVersion: 0.2.79
+  configChecksum: 3ae7df6516a9728c66410503e88c0813
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 0857619e-70da-43ff-8c11-18a6bdd7408f
-  pristine_commit_hash: 3a43f13df76c4a02c02ea05551eeacc19aa53087
-  pristine_tree_hash: 039ddcb4917506499a8e3bac820cb1af162f52c6
+  generation_id: ca4cd406-95f0-4ce2-82e1-e5cd7f3908c3
+  pristine_commit_hash: 3bac53681f535aa9990f9568ef2eca9adf4dae1d
+  pristine_tree_hash: adf2912571975adffd7421118a626645e71fd86c
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:e44eebdbf44cd7758a9b5a90c699bab839028382
-    pristine_git_object: 05446e1ed2e23c9aa7ca4ce9b03c963e1e005b8e
+    last_write_checksum: sha1:d6d4ebea306e76eb192b4bfac523747a42f09ad8
+    pristine_git_object: 0ffc6e5b700eb91ef7792658ad93f3f9f85f6a71
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -400,16 +400,16 @@ trackedFiles:
     pristine_git_object: eeef0664bd2b319d490a6ec7d88c02ee1b9ddd78
   internal/provider/byokkey_resource.go:
     id: 7c3b6c42a696
-    last_write_checksum: sha1:f7e59471cd2600dcf8ef38ff60584ff1ced8dd04
-    pristine_git_object: 8d3a843db846f67b25ded32ad0ccd6cfc58820a9
+    last_write_checksum: sha1:f22e46603305e82442094793cbebd1493b741856
+    pristine_git_object: 90626342210bba3e3b7a3620340a94f83e5e3c71
   internal/provider/byokkey_resource_sdk.go:
     id: f02d4f42598a
     last_write_checksum: sha1:7238612235176bcb439e31f622ac14276157dc90
     pristine_git_object: 28a5ba84b9105f1fa4905e6eb2a54b99d711cc42
   internal/provider/byokkeys_data_source.go:
     id: d2215df95ba8
-    last_write_checksum: sha1:05bccb994f4f69c650e2f87c869ef5771a0acbe6
-    pristine_git_object: 314e0dff8904137a86ecb340e2a53d6b4cea6f49
+    last_write_checksum: sha1:92b905f9e69e629af24e884ba784c243cfe22976
+    pristine_git_object: b0f0b522d00b098fe445f49d41f8459c685280b4
   internal/provider/byokkeys_data_source_sdk.go:
     id: 4114084a8f43
     last_write_checksum: sha1:1bcabef5d21469643e07331af5b90637a52e1900
@@ -1476,8 +1476,8 @@ trackedFiles:
     pristine_git_object: 4caaf2c417f996e8423d8f5645b7446c4d680875
   internal/sdk/models/operations/listbyokkeys.go:
     id: c0c010232a74
-    last_write_checksum: sha1:c6f946962f385f3179db6f4e0d90445d606ba295
-    pristine_git_object: debfb58139d20576b69b45d0a4ee6bc25a8f8bfe
+    last_write_checksum: sha1:99fbfa8e0da4be58db784dee74acb4bb004d6725
+    pristine_git_object: 1f00a0c04fa07aeaa62f6c0c02c3e8677bb7cde9
   internal/sdk/models/operations/listcontainerfiles.go:
     id: 542e401d7b82
     last_write_checksum: sha1:eecbf885eedcba2f1bf0dbc719d5cbf8a915486f
@@ -1944,8 +1944,8 @@ trackedFiles:
     pristine_git_object: b087bcfcbb26f971a9485f557ba9917a7d8ee30c
   internal/sdk/models/shared/byokproviderslug.go:
     id: a789cd5dbc9d
-    last_write_checksum: sha1:37fa323a6e96c5cdb04fb445e7feb3958b96d2b4
-    pristine_git_object: 1ec87d31b3fb511444b3015deb48a96334785730
+    last_write_checksum: sha1:1c9cdbd930859ea99af5e9b93159c2b0b002dd78
+    pristine_git_object: 9e0c7ffd3b7d7d367c2403006df84e975df5952d
   internal/sdk/models/shared/capabilitydescriptor.go:
     id: 2d8ccd64b122
     last_write_checksum: sha1:162b5dc047f984f5ded05cc829e5652d59d18946
@@ -3080,12 +3080,12 @@ trackedFiles:
     pristine_git_object: 8603f8974a13f8dd8ac76c8a6f2724549a5a28ec
   internal/sdk/models/shared/providername.go:
     id: a46a24e9a977
-    last_write_checksum: sha1:003b5c464b1cb6087c172a63fcf0027170aa5072
-    pristine_git_object: c4951cd27fa10535116b3255168a26cf1d3ae7fa
+    last_write_checksum: sha1:39193cc54952223cd78ccd7fd30a984bcfe858eb
+    pristine_git_object: 430bc47754e999fd7114f6148239a47498c6a235
   internal/sdk/models/shared/provideroptions.go:
     id: 08ee62c5beac
-    last_write_checksum: sha1:4ff5937475520a0552499d5e34758ab14000572c
-    pristine_git_object: 1fc39c8a39546a872da5068f4bc7a92410aca2fd
+    last_write_checksum: sha1:ae886b4678eb904a47d06b70d3c288f4d5610e80
+    pristine_git_object: 528bb82def899137d18c6898725036529e444e74
   internal/sdk/models/shared/provideroverloadedresponse.go:
     id: ad4cd9b9c5e0
     last_write_checksum: sha1:a183154a063776d4d77735a52b1251ef160f7da0
@@ -3100,8 +3100,8 @@ trackedFiles:
     pristine_git_object: 25310d4a761ee6a9d6135abb3ec08bea372345c2
   internal/sdk/models/shared/providerresponse.go:
     id: c31039ddf051
-    last_write_checksum: sha1:ca885699c512f0b2f37d7289161a99b077694442
-    pristine_git_object: aa0398a693708ea2f4424112ff6419ac934d867c
+    last_write_checksum: sha1:0cea5b1d0fbd98bedbed049fe74c73b9a26d0f99
+    pristine_git_object: e672803256db24ef9c90ef24b33f6fa33d8b684d
   internal/sdk/models/shared/providersort.go:
     id: fec5372aadc6
     last_write_checksum: sha1:a40d16bca63605076957125d383c65be3ae0b0dc
@@ -3544,8 +3544,8 @@ trackedFiles:
     pristine_git_object: 697cebe1afa2185426fac07de6d9ae50b8b48143
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:bb803dadcb96eee31363eed8dbb5dafef70319d7
-    pristine_git_object: 349eedd26b6970d6cd8bb35a4cf9ae68a014b42b
+    last_write_checksum: sha1:ab1f055d0fd2e75fbb8a1550bacf83c2d2d7c250
+    pristine_git_object: 5b00dd21a1c7bf11a773b6584810980676379df3
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
     last_write_checksum: sha1:c75b8655399ea22961cf791909908dbfce3a2194
@@ -3660,8 +3660,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:07faaf19917a3f23f89df483ab9b96b65bcea157
-    pristine_git_object: 4123dc1d1d23882fa76273f3f3d58b1df7ccd586
+    last_write_checksum: sha1:8a1d7be7581b7a313231c430fe05ab3108b5a327
+    pristine_git_object: 052cc17eea4b27aadb495cd13cabd337a8f865c5
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5581,4 +5581,4 @@ examples:
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(Ollama)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Ollama)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(ollama)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(ollama)` **Added**\n  *  `response.data.provider_slug.enum(ollama)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(ollama)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(ollama)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Ollama)` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Ollama)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Ollama)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.ollama` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.ollama` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Ollama)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Ollama)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Ollama)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.ollama` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(Cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(cosine)` **Added**\n  *  `response.data.provider_slug.enum(cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.cosine` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.cosine` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.cosine` **Added**\n"
