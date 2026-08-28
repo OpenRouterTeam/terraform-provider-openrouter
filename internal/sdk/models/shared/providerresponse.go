@@ -109,6 +109,7 @@ const (
 	ProviderResponseProviderNameNextBit             ProviderResponseProviderName = "NextBit"
 	ProviderResponseProviderNameNovita              ProviderResponseProviderName = "Novita"
 	ProviderResponseProviderNameNvidia              ProviderResponseProviderName = "Nvidia"
+	ProviderResponseProviderNameOllama              ProviderResponseProviderName = "Ollama"
 	ProviderResponseProviderNameOpenAi              ProviderResponseProviderName = "OpenAI"
 	ProviderResponseProviderNameOpenInference       ProviderResponseProviderName = "OpenInference"
 	ProviderResponseProviderNameParasail            ProviderResponseProviderName = "Parasail"
@@ -348,6 +349,8 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 	case "Novita":
 		fallthrough
 	case "Nvidia":
+		fallthrough
+	case "Ollama":
 		fallthrough
 	case "OpenAI":
 		fallthrough
