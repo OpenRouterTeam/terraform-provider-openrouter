@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: b82d3f09a99293849797dc2ab7c10531
+  docChecksum: 4aec4335629e35ab0b1442a4da21726c
   docVersion: 1.0.0
   speakeasyVersion: 1.796.2
   generationVersion: 2.933.0
-  releaseVersion: 0.2.79
-  configChecksum: 3ae7df6516a9728c66410503e88c0813
+  releaseVersion: 0.2.80
+  configChecksum: d91604c5376f6baaf47f34a6ad5c6cf0
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: ca4cd406-95f0-4ce2-82e1-e5cd7f3908c3
-  pristine_commit_hash: 3bac53681f535aa9990f9568ef2eca9adf4dae1d
-  pristine_tree_hash: adf2912571975adffd7421118a626645e71fd86c
+  generation_id: 15999bb3-959c-4396-817b-11947321ddd8
+  pristine_commit_hash: 8f2a5637027a3f4a7a216c708db7cc5a6dc125ef
+  pristine_tree_hash: c62b9d6104426a0ec254d8b46d9bc286f053c096
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:d6d4ebea306e76eb192b4bfac523747a42f09ad8
-    pristine_git_object: 0ffc6e5b700eb91ef7792658ad93f3f9f85f6a71
+    last_write_checksum: sha1:37af9931578042e53f36ee3a2e2aaf24ed508242
+    pristine_git_object: b8d3ce61563178913611fc5e85c55f2a034ed704
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1236,8 +1236,8 @@ trackedFiles:
     pristine_git_object: 19a84be9ece852a3fbc754939a2959c1dc59ce90
   internal/sdk/models.go:
     id: 7b13b8162cf6
-    last_write_checksum: sha1:fe9728ef880a8d772ff1c7b0e24baa103c75b032
-    pristine_git_object: a30cfeb9d64d3fb4a65d3eb70850b62b7e285652
+    last_write_checksum: sha1:7f27213db121e42129e8f0c18d05f0ebe28713a6
+    pristine_git_object: 24cbef366017b3a3bd9629546221d099a77592f8
   internal/sdk/models/errors/apierror.go:
     id: bf281d768352
     last_write_checksum: sha1:48baa200e233c2bfe77fb5b39ab9bbd257e9c36d
@@ -1536,8 +1536,8 @@ trackedFiles:
     pristine_git_object: 3c9b9823fc52ddd31f9e632f0e7481564e3757a5
   internal/sdk/models/operations/listmodelsuser.go:
     id: bcfd5bae44d6
-    last_write_checksum: sha1:1ece1c7149272b2314c3a52c9a1d471d7f61da7b
-    pristine_git_object: 48a0f04ed323c916527788b0bc767e2d9386318c
+    last_write_checksum: sha1:6f6a18cdf4089f5b5c18119113697bb9567e8f60
+    pristine_git_object: 47767f5cbaa9e9b6ad50993db7d17628374661ec
   internal/sdk/models/operations/listobservabilitydestinations.go:
     id: 8789cf32a73e
     last_write_checksum: sha1:dba894a855dc6cb578c66550c06ba2a2e22544c5
@@ -3660,8 +3660,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:8a1d7be7581b7a313231c430fe05ab3108b5a327
-    pristine_git_object: 052cc17eea4b27aadb495cd13cabd337a8f865c5
+    last_write_checksum: sha1:0b786b5a7a0f605190a9920d50a2c8f1719cf89f
+    pristine_git_object: e79f73886fe953382c4e5e5fc661902f2ed3fa33
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -4814,6 +4814,7 @@ examples:
         query:
           offset: 0
           limit: 500
+          output_modalities: "text"
       responses:
         "200":
           application/json: {"data": [{"architecture": {"input_modalities": ["text"], "instruct_type": "chatml", "modality": "text->text", "output_modalities": ["text"], "tokenizer": "GPT"}, "canonical_slug": "openai/gpt-4", "context_length": 8192, "created": 1692901234, "default_parameters": null, "description": "GPT-4 is a large multimodal model that can solve difficult problems with greater accuracy.", "expiration_date": null, "id": "openai/gpt-4", "knowledge_cutoff": null, "links": {"details": "/api/v1/models/openai/gpt-4/endpoints"}, "name": "GPT-4", "per_request_limits": null, "pricing": {"completion": "0.00006", "image": "0", "prompt": "0.00003", "request": "0"}, "supported_parameters": ["temperature", "top_p", "max_tokens", "frequency_penalty", "presence_penalty"], "supported_voices": null, "top_provider": {"context_length": 8192, "is_moderated": true, "max_completion_tokens": 4096}}], "links": {"next": "/api/v1/models?offset=500&limit=500"}, "total_count": 150}
@@ -5581,4 +5582,4 @@ examples:
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(Cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(cosine)` **Added**\n  *  `response.data.provider_slug.enum(cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Cosine)` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.cosine` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.cosine` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Cosine)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.cosine` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Models.listForUser()`: \n  *  `request.output_modalities` **Added**\n"
