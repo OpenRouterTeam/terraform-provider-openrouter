@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 7dafe0f82e6138f02b841b3bab644a6d
+  docChecksum: cfbd0d86b54518147e1644ed772d435f
   docVersion: 1.0.0
   speakeasyVersion: 1.796.1
   generationVersion: 2.933.0
-  releaseVersion: 0.2.76
-  configChecksum: 06391fc225f6c88c7c18f3b6ce5c2380
+  releaseVersion: 0.2.77
+  configChecksum: 4ed72d415a7980373a4ae6c7aaed3d68
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: a02155e8-6942-4d37-9cd5-ebfe27333bc7
-  pristine_commit_hash: ae718636fbadf9ac81071d3c0a115a8cfb8ce29c
-  pristine_tree_hash: 86f83307ff4f03720ef04d4ed6884b39a2f1bd9f
+  generation_id: aeed654d-3a50-4354-be60-dfb8e79f2d7c
+  pristine_commit_hash: 74e0e4e3478f10b4633cdcb9baa39fa860538ea4
+  pristine_tree_hash: 9d1c0b3f3ad013d00311d455cde80a4fe704c3bf
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:917d9f840c71c49e4b8e555b60d3fb47d5c18ba5
-    pristine_git_object: 709d5250843aee69155a902840e98044aec34a6f
+    last_write_checksum: sha1:dd43e3970e947100129a5910bbc76dd11fed3797
+    pristine_git_object: 6e983f486d1d4f9146026bb0b76d22dce24023ba
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3112,8 +3112,8 @@ trackedFiles:
     pristine_git_object: 227a2e7f89cd2d00d571425c94da21ed00146e7f
   internal/sdk/models/shared/publicendpoint.go:
     id: 82c247f78643
-    last_write_checksum: sha1:2a7e5b92daf8dc894cf700cce3975c53ee4bcf50
-    pristine_git_object: 2dc03f95ca7ce15bde467879843ea85c30037a25
+    last_write_checksum: sha1:7a7f76c64b49caec4891aa00008595b4658f1571
+    pristine_git_object: 846ba44bed966793d6a275c80654c2226314f2c7
   internal/sdk/models/shared/publicpricing.go:
     id: f154ccfcc480
     last_write_checksum: sha1:4b936299803c940aace7b56fb79fdbe7b95ec42d
@@ -3422,6 +3422,10 @@ trackedFiles:
     id: 10af5cfacde3
     last_write_checksum: sha1:522eeb2fd9fd5d90ebf4ad51e41f76954991f087
     pristine_git_object: 37d449abad92f916058be7f9fb50677f3e081e6a
+  internal/sdk/models/shared/toolchoicesupport.go:
+    id: 135737b68da3
+    last_write_checksum: sha1:18c282da4aef6e1d5d133cc3b52bde36d1d68229
+    pristine_git_object: 41b286c39633d44699f3942cb241e5f4ccc675ff
   internal/sdk/models/shared/toolsearchservertool.go:
     id: ecf1790ffbbc
     last_write_checksum: sha1:165552e0455c66e88ea6ff120dd920602ce47b7a
@@ -3656,8 +3660,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:68847c99f3c6dc24d0acae282284a889e8e2bf92
-    pristine_git_object: ace772326c6e127ea8ca54e4f2305ad3832ca732
+    last_write_checksum: sha1:327f4931665c7182154ba530b015e49e781cf36e
+    pristine_git_object: 186d4430156bdfbe809f311ce5467cf5cb6b0411
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -4187,7 +4191,7 @@ examples:
     speakeasy-default-list-endpoints-zdr:
       responses:
         "200":
-          application/json: {"data": [{"context_length": 8192, "latency_last_30m": {"p50": 0.25, "p75": 0.35, "p90": 0.48, "p99": 0.85}, "max_completion_tokens": 4096, "max_prompt_tokens": 8192, "model_id": "openai/gpt-4", "model_name": "GPT-4", "name": "OpenAI: GPT-4", "pricing": {"completion": "0.00006", "image": "0", "prompt": "0.00003", "request": "0"}, "provider_name": "OpenAI", "quantization": "fp16", "status": 0, "supported_parameters": ["temperature", "top_p", "max_tokens"], "supports_implicit_caching": true, "supports_voice_cloning": false, "tag": "openai", "throughput_last_30m": {"p50": 45.2, "p75": 38.5, "p90": 28.3, "p99": 15.1}, "uptime_last_1d": 99.8, "uptime_last_30m": 99.5, "uptime_last_5m": 100}]}
+          application/json: {"data": [{"context_length": 8192, "latency_last_30m": {"p50": 0.25, "p75": 0.35, "p90": 0.48, "p99": 0.85}, "max_completion_tokens": 4096, "max_prompt_tokens": 8192, "model_id": "openai/gpt-4", "model_name": "GPT-4", "name": "OpenAI: GPT-4", "pricing": {"completion": "0.00006", "image": "0", "prompt": "0.00003", "request": "0"}, "provider_name": "OpenAI", "quantization": "fp16", "status": 0, "supported_parameters": ["temperature", "top_p", "max_tokens"], "supports_implicit_caching": true, "supports_tool_choice": {"auto": true, "function": true, "none": true, "required": true}, "supports_voice_cloning": false, "tag": "openai", "throughput_last_30m": {"p50": 45.2, "p75": 38.5, "p90": 28.3, "p99": 15.1}, "uptime_last_1d": 99.8, "uptime_last_30m": 99.5, "uptime_last_5m": 100}]}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "403":
@@ -4200,7 +4204,7 @@ examples:
           slug: "gpt-4"
       responses:
         "200":
-          application/json: {"data": {"architecture": {"input_modalities": ["text"], "instruct_type": "chatml", "modality": "text->text", "output_modalities": ["text"], "tokenizer": "GPT"}, "created": 1692901234, "description": "GPT-4 is a large multimodal model that can solve difficult problems with greater accuracy.", "endpoints": [{"context_length": 8192, "latency_last_30m": {"p50": 0.25, "p75": 0.35, "p90": 0.48, "p99": 0.85}, "max_completion_tokens": 4096, "max_prompt_tokens": 8192, "model_id": "openai/gpt-4", "model_name": "GPT-4", "name": "OpenAI: GPT-4", "pricing": {"completion": "0.00006", "image": "0", "prompt": "0.00003", "request": "0"}, "provider_name": "OpenAI", "quantization": "fp16", "status": 0, "supported_parameters": ["temperature", "top_p", "max_tokens"], "supports_implicit_caching": true, "supports_voice_cloning": false, "tag": "openai", "throughput_last_30m": {"p50": 45.2, "p75": 38.5, "p90": 28.3, "p99": 15.1}, "uptime_last_1d": 99.8, "uptime_last_30m": 99.5, "uptime_last_5m": 100}], "id": "openai/gpt-4", "name": "GPT-4"}}
+          application/json: {"data": {"architecture": {"input_modalities": ["text"], "instruct_type": "chatml", "modality": "text->text", "output_modalities": ["text"], "tokenizer": "GPT"}, "created": 1692901234, "description": "GPT-4 is a large multimodal model that can solve difficult problems with greater accuracy.", "endpoints": [{"context_length": 8192, "latency_last_30m": {"p50": 0.25, "p75": 0.35, "p90": 0.48, "p99": 0.85}, "max_completion_tokens": 4096, "max_prompt_tokens": 8192, "model_id": "openai/gpt-4", "model_name": "GPT-4", "name": "OpenAI: GPT-4", "pricing": {"completion": "0.00006", "image": "0", "prompt": "0.00003", "request": "0"}, "provider_name": "OpenAI", "quantization": "fp16", "status": 0, "supported_parameters": ["temperature", "top_p", "max_tokens"], "supports_implicit_caching": true, "supports_tool_choice": {"auto": true, "function": true, "none": true, "required": true}, "supports_voice_cloning": false, "tag": "openai", "throughput_last_30m": {"p50": 45.2, "p75": 38.5, "p90": 28.3, "p99": 15.1}, "uptime_last_1d": 99.8, "uptime_last_30m": 99.5, "uptime_last_5m": 100}], "id": "openai/gpt-4", "name": "GPT-4"}}
         "404":
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
@@ -5577,3 +5581,7 @@ examples:
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Endpoints.listZdr()`:  `response.data[].supports_tool_choice` **Added**
+  * `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].supports_tool_choice` **Added**
