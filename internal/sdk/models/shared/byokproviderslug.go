@@ -80,6 +80,7 @@ const (
 	BYOKProviderSlugNextbit          BYOKProviderSlug = "nextbit"
 	BYOKProviderSlugNovita           BYOKProviderSlug = "novita"
 	BYOKProviderSlugNvidia           BYOKProviderSlug = "nvidia"
+	BYOKProviderSlugOllama           BYOKProviderSlug = "ollama"
 	BYOKProviderSlugOpenInference    BYOKProviderSlug = "open-inference"
 	BYOKProviderSlugOpenai           BYOKProviderSlug = "openai"
 	BYOKProviderSlugParasail         BYOKProviderSlug = "parasail"
@@ -260,6 +261,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "novita":
 		fallthrough
 	case "nvidia":
+		fallthrough
+	case "ollama":
 		fallthrough
 	case "open-inference":
 		fallthrough
