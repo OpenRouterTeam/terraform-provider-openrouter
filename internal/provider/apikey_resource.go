@@ -114,7 +114,7 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 					stringplanmodifier.RequiresReplaceIfConfigured(),
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
-				Description: `Optional ISO 8601 UTC timestamp when the API key should expire. Must be UTC, other timezones will be rejected. Requires replacement if changed.`,
+				Description: `Optional ISO 8601 UTC expiration timestamp. Must include seconds (YYYY-MM-DDTHH:MM:SSZ; fractional seconds allowed); minute-precision timestamps are rejected. Requires replacement if changed.`,
 				Validators: []validator.String{
 					validators.IsRFC3339(),
 				},

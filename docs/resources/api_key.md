@@ -38,7 +38,7 @@ resource "openrouter_api_key" "my_apikey" {
 
 - `creator_user_id` (String) Optional user ID of the key creator. Only meaningful for organization-owned keys where a specific member is creating the key. Requires replacement if changed.
 - `disabled` (Boolean) Whether to disable the API key
-- `expires_at` (String) Optional ISO 8601 UTC timestamp when the API key should expire. Must be UTC, other timezones will be rejected. Requires replacement if changed.
+- `expires_at` (String) Optional ISO 8601 UTC expiration timestamp. Must include seconds (YYYY-MM-DDTHH:MM:SSZ; fractional seconds allowed); minute-precision timestamps are rejected. Requires replacement if changed.
 - `external_api_key` (String) Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret; supplying it with a management key is rejected with 403. Requires replacement if changed.
 - `external_user` (String) Partner's end-user identifier for attribution, between 1 and 512 characters. Accepted only when authenticating with a Connect client secret, where it is required; supplying it with a management key is rejected with 403. Requires replacement if changed.
 - `include_byok_in_limit` (Boolean) Whether to include BYOK usage in the limit

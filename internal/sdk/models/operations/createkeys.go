@@ -45,7 +45,7 @@ func (e *CreateKeysLimitReset) UnmarshalJSON(data []byte) error {
 type CreateKeysRequest struct {
 	// Optional user ID of the key creator. Only meaningful for organization-owned keys where a specific member is creating the key.
 	CreatorUserID *string `json:"creator_user_id,omitzero"`
-	// Optional ISO 8601 UTC timestamp when the API key should expire. Must be UTC, other timezones will be rejected
+	// Optional ISO 8601 UTC expiration timestamp. Must include seconds (YYYY-MM-DDTHH:MM:SSZ; fractional seconds allowed); minute-precision timestamps are rejected.
 	ExpiresAt *time.Time `json:"expires_at,omitzero"`
 	// Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret; supplying it with a management key is rejected with 403.
 	ExternalAPIKey *string `json:"external_api_key,omitzero"`
