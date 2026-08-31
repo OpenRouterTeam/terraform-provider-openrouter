@@ -9,6 +9,35 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+type OutputCustomToolCallItemStatus string
+
+const (
+	OutputCustomToolCallItemStatusInProgress OutputCustomToolCallItemStatus = "in_progress"
+	OutputCustomToolCallItemStatusCompleted  OutputCustomToolCallItemStatus = "completed"
+	OutputCustomToolCallItemStatusIncomplete OutputCustomToolCallItemStatus = "incomplete"
+)
+
+func (e OutputCustomToolCallItemStatus) ToPointer() *OutputCustomToolCallItemStatus {
+	return &e
+}
+func (e *OutputCustomToolCallItemStatus) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "in_progress":
+		fallthrough
+	case "completed":
+		fallthrough
+	case "incomplete":
+		*e = OutputCustomToolCallItemStatus(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for OutputCustomToolCallItemStatus: %v", v)
+	}
+}
+
 type OutputCustomToolCallItemType string
 
 const (
@@ -39,8 +68,9 @@ type OutputCustomToolCallItem struct {
 	Input  string  `json:"input"`
 	Name   string  `json:"name"`
 	// Namespace qualifier for tools registered as part of a namespace tool group (e.g. an MCP server)
-	Namespace *string                      `json:"namespace,omitzero"`
-	Type      OutputCustomToolCallItemType `json:"type"`
+	Namespace *string                         `json:"namespace,omitzero"`
+	Status    *OutputCustomToolCallItemStatus `json:"status,omitzero"`
+	Type      OutputCustomToolCallItemType    `json:"type"`
 }
 
 func (o OutputCustomToolCallItem) MarshalJSON() ([]byte, error) {
@@ -87,6 +117,13 @@ func (o *OutputCustomToolCallItem) GetNamespace() *string {
 		return nil
 	}
 	return o.Namespace
+}
+
+func (o *OutputCustomToolCallItem) GetStatus() *OutputCustomToolCallItemStatus {
+	if o == nil {
+		return nil
+	}
+	return o.Status
 }
 
 func (o *OutputCustomToolCallItem) GetType() OutputCustomToolCallItemType {
