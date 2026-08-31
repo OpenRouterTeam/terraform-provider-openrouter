@@ -5,9 +5,18 @@ package shared
 
 // CostDetails - Breakdown of upstream inference costs
 type CostDetails struct {
+	// Metered server-tool execution cost (for example, shell sandbox time) billed for this request, in USD. Matches the billed checkpoint and settlement amounts exactly.
+	ServerToolCost                   *float64 `json:"server_tool_cost,omitzero"`
 	UpstreamInferenceCompletionsCost float64  `json:"upstream_inference_completions_cost"`
 	UpstreamInferenceCost            *float64 `json:"upstream_inference_cost,omitzero"`
 	UpstreamInferencePromptCost      float64  `json:"upstream_inference_prompt_cost"`
+}
+
+func (c *CostDetails) GetServerToolCost() *float64 {
+	if c == nil {
+		return nil
+	}
+	return c.ServerToolCost
 }
 
 func (c *CostDetails) GetUpstreamInferenceCompletionsCost() float64 {
