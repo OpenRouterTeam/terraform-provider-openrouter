@@ -598,7 +598,7 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			},
 			"output_modalities": schema.StringAttribute{
 				Optional:    true,
-				Description: `Filter models by output modality. Accepts a comma-separated list of modalities (text, image, audio, embeddings) or "all" to include all models. Defaults to "text".`,
+				Description: `Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, speech, transcription) or "all" to include all models. Defaults to "text".`,
 			},
 			"providers": schema.StringAttribute{
 				Optional:    true,
