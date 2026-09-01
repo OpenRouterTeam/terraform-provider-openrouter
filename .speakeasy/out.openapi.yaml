@@ -1196,17 +1196,45 @@ components:
       example:
         expires_at: '2026-04-08T00:00:00Z'
         id: 'ctr_01abc'
+        skills: null
       properties:
         expires_at:
           type: 'string'
         id:
           type: 'string'
+        skills:
+          default: null
+          items:
+            $ref: '#/components/schemas/AnthropicContainerSkill'
+          type:
+            - 'array'
+            - 'null'
       required:
         - 'id'
         - 'expires_at'
       type:
         - 'object'
         - 'null'
+    AnthropicContainerSkill:
+      example:
+        skill_id: 'pdf'
+        type: 'anthropic'
+        version: 'latest'
+      properties:
+        skill_id:
+          type: 'string'
+        type:
+          enum:
+            - 'anthropic'
+            - 'custom'
+          type: 'string'
+        version:
+          type: 'string'
+      required:
+        - 'skill_id'
+        - 'type'
+        - 'version'
+      type: 'object'
     AnthropicContainerUpload:
       example:
         file_id: 'file_01abc'
@@ -1820,6 +1848,7 @@ components:
     AnthropicSystemClearAt:
       enum:
         - 'next_user_message'
+        - 'never'
         - null
       example: 'next_user_message'
       type:
@@ -2104,10 +2133,12 @@ components:
       properties:
         prefix_mismatch_behavior:
           enum:
+            - 'error'
             - 'drop_block'
-          type: 'string'
-      required:
-        - 'prefix_mismatch_behavior'
+            - null
+          type:
+            - 'string'
+            - 'null'
       type:
         - 'object'
         - 'null'
@@ -12943,17 +12974,7 @@ components:
             output_tokens_details:
               $ref: '#/components/schemas/AnthropicOutputTokensDetails'
             server_tool_use:
-              properties:
-                web_fetch_requests:
-                  type: 'integer'
-                web_search_requests:
-                  type: 'integer'
-              required:
-                - 'web_search_requests'
-                - 'web_fetch_requests'
-              type:
-                - 'object'
-                - 'null'
+              $ref: '#/components/schemas/ORAnthropicServerToolUsage'
           required:
             - 'input_tokens'
             - 'output_tokens'
@@ -13773,6 +13794,8 @@ components:
                       items:
                         $ref: '#/components/schemas/AnthropicUsageIteration'
                       type: 'array'
+                    server_tool_use:
+                      $ref: '#/components/schemas/ORAnthropicServerToolUsage'
                     service_tier:
                       type:
                         - 'string'
@@ -18327,6 +18350,27 @@ components:
         - $ref: '#/components/schemas/AnthropicCodeExecution20250825Caller'
         - $ref: '#/components/schemas/AnthropicCodeExecution20260120Caller'
         - type: 'null'
+    ORAnthropicServerToolUsage:
+      example:
+        tool_calls_executed: 1
+        tool_calls_requested: 1
+        web_fetch_requests: 0
+        web_search_requests: 0
+      properties:
+        tool_calls_executed:
+          type: 'integer'
+        tool_calls_requested:
+          type: 'integer'
+        web_fetch_requests:
+          type: 'integer'
+        web_search_requests:
+          type: 'integer'
+      required:
+        - 'web_search_requests'
+        - 'web_fetch_requests'
+      type:
+        - 'object'
+        - 'null'
     ORAnthropicServerToolUseBlock:
       example:
         caller:
