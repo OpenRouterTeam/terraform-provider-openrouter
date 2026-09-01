@@ -1303,8 +1303,28 @@ func (e *MessagesMessageParamRole) UnmarshalJSON(data []byte) error {
 
 // MessagesMessageParam - Anthropic message with OpenRouter extensions
 type MessagesMessageParam struct {
-	Content MessagesMessageParamContentUnion5 `json:"content"`
-	Role    MessagesMessageParamRole          `json:"role"`
+	ClearAt      *AnthropicSystemClearAt           `json:"clear_at,omitzero"`
+	Content      MessagesMessageParamContentUnion5 `json:"content"`
+	OutputConfig *AnthropicMessageOutputConfig     `json:"output_config,omitzero"`
+	Role         MessagesMessageParamRole          `json:"role"`
+}
+
+func (m MessagesMessageParam) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(m, "", false)
+}
+
+func (m *MessagesMessageParam) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &m, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *MessagesMessageParam) GetClearAt() *AnthropicSystemClearAt {
+	if m == nil {
+		return nil
+	}
+	return m.ClearAt
 }
 
 func (m *MessagesMessageParam) GetContent() MessagesMessageParamContentUnion5 {
@@ -1312,6 +1332,13 @@ func (m *MessagesMessageParam) GetContent() MessagesMessageParamContentUnion5 {
 		return MessagesMessageParamContentUnion5{}
 	}
 	return m.Content
+}
+
+func (m *MessagesMessageParam) GetOutputConfig() *AnthropicMessageOutputConfig {
+	if m == nil {
+		return nil
+	}
+	return m.OutputConfig
 }
 
 func (m *MessagesMessageParam) GetRole() MessagesMessageParamRole {
