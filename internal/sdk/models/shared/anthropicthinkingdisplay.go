@@ -13,6 +13,7 @@ type AnthropicThinkingDisplay string
 const (
 	AnthropicThinkingDisplaySummarized AnthropicThinkingDisplay = "summarized"
 	AnthropicThinkingDisplayOmitted    AnthropicThinkingDisplay = "omitted"
+	AnthropicThinkingDisplayUpdates    AnthropicThinkingDisplay = "updates"
 )
 
 func (e AnthropicThinkingDisplay) ToPointer() *AnthropicThinkingDisplay {
@@ -27,6 +28,8 @@ func (e *AnthropicThinkingDisplay) UnmarshalJSON(data []byte) error {
 	case "summarized":
 		fallthrough
 	case "omitted":
+		fallthrough
+	case "updates":
 		*e = AnthropicThinkingDisplay(v)
 		return nil
 	default:

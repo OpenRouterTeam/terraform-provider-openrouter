@@ -1093,7 +1093,8 @@ func (u System) MarshalJSON() ([]byte, error) {
 }
 
 type ThinkingAdaptive struct {
-	Display *AnthropicThinkingDisplay `json:"display,omitzero"`
+	BlockBinding *AnthropicThinkingBlockBinding `json:"block_binding,omitzero"`
+	Display      *AnthropicThinkingDisplay      `json:"display,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"adaptive" json:"type"`
 }
@@ -1107,6 +1108,13 @@ func (t *ThinkingAdaptive) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (t *ThinkingAdaptive) GetBlockBinding() *AnthropicThinkingBlockBinding {
+	if t == nil {
+		return nil
+	}
+	return t.BlockBinding
 }
 
 func (t *ThinkingAdaptive) GetDisplay() *AnthropicThinkingDisplay {
@@ -1141,8 +1149,9 @@ func (t *ThinkingDisabled) GetType() string {
 }
 
 type ThinkingEnabled struct {
-	BudgetTokens int64                     `json:"budget_tokens"`
-	Display      *AnthropicThinkingDisplay `json:"display,omitzero"`
+	BlockBinding *AnthropicThinkingBlockBinding `json:"block_binding,omitzero"`
+	BudgetTokens int64                          `json:"budget_tokens"`
+	Display      *AnthropicThinkingDisplay      `json:"display,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"enabled" json:"type"`
 }
@@ -1156,6 +1165,13 @@ func (t *ThinkingEnabled) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (t *ThinkingEnabled) GetBlockBinding() *AnthropicThinkingBlockBinding {
+	if t == nil {
+		return nil
+	}
+	return t.BlockBinding
 }
 
 func (t *ThinkingEnabled) GetBudgetTokens() int64 {
