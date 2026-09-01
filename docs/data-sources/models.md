@@ -71,7 +71,7 @@ data "openrouter_models" "my_models" {
 - `min_price` (Number) Minimum prompt price in $/M tokens.
 - `min_tool_success_rate` (Number) Minimum tool-calling success rate, as a fraction in [0, 1] (e.g. 0.9 = 90% of requests finishing with a tool_calls finish reason).
 - `model_authors` (String) Filter models by the organization that created the model. Comma-separated list of author slugs.
-- `output_modalities` (String) Filter models by output modality. Accepts a comma-separated list of modalities (text, image, audio, embeddings) or "all" to include all models. Defaults to "text".
+- `output_modalities` (String) Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, speech, transcription) or "all" to include all models. Defaults to "text".
 - `providers` (String) Filter models by hosting provider. Comma-separated list of provider names.
 - `q` (String) Free-text search by model name or slug.
 - `region` (String) Filter to models with endpoints in the given data region ("eu" or "us"). must be one of ["eu", "us"]
