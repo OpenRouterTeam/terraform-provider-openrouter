@@ -113,6 +113,7 @@ const (
 	ProviderTogether         Provider = "together"
 	ProviderUpstage          Provider = "upstage"
 	ProviderVenice           Provider = "venice"
+	ProviderVoyageai         Provider = "voyageai"
 	ProviderWafer            Provider = "wafer"
 	ProviderWandb            Provider = "wandb"
 	ProviderWandbLegacy      Provider = "wandb-legacy"
@@ -325,6 +326,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "upstage":
 		fallthrough
 	case "venice":
+		fallthrough
+	case "voyageai":
 		fallthrough
 	case "wafer":
 		fallthrough

@@ -110,6 +110,7 @@ const (
 	BYOKProviderSlugTogether         BYOKProviderSlug = "together"
 	BYOKProviderSlugUpstage          BYOKProviderSlug = "upstage"
 	BYOKProviderSlugVenice           BYOKProviderSlug = "venice"
+	BYOKProviderSlugVoyageai         BYOKProviderSlug = "voyageai"
 	BYOKProviderSlugWafer            BYOKProviderSlug = "wafer"
 	BYOKProviderSlugWandb            BYOKProviderSlug = "wandb"
 	BYOKProviderSlugWandbLegacy      BYOKProviderSlug = "wandb-legacy"
@@ -322,6 +323,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "upstage":
 		fallthrough
 	case "venice":
+		fallthrough
+	case "voyageai":
 		fallthrough
 	case "wafer":
 		fallthrough
