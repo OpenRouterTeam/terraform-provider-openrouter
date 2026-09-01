@@ -12,6 +12,7 @@ import (
 type PrefixMismatchBehavior string
 
 const (
+	PrefixMismatchBehaviorError     PrefixMismatchBehavior = "error"
 	PrefixMismatchBehaviorDropBlock PrefixMismatchBehavior = "drop_block"
 )
 
@@ -24,6 +25,8 @@ func (e *PrefixMismatchBehavior) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
+	case "error":
+		fallthrough
 	case "drop_block":
 		*e = PrefixMismatchBehavior(v)
 		return nil
@@ -33,7 +36,7 @@ func (e *PrefixMismatchBehavior) UnmarshalJSON(data []byte) error {
 }
 
 type AnthropicThinkingBlockBinding struct {
-	PrefixMismatchBehavior PrefixMismatchBehavior `json:"prefix_mismatch_behavior"`
+	PrefixMismatchBehavior *PrefixMismatchBehavior `json:"prefix_mismatch_behavior,omitzero"`
 }
 
 func (a AnthropicThinkingBlockBinding) MarshalJSON() ([]byte, error) {
@@ -47,9 +50,9 @@ func (a *AnthropicThinkingBlockBinding) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (a *AnthropicThinkingBlockBinding) GetPrefixMismatchBehavior() PrefixMismatchBehavior {
+func (a *AnthropicThinkingBlockBinding) GetPrefixMismatchBehavior() *PrefixMismatchBehavior {
 	if a == nil {
-		return PrefixMismatchBehavior("")
+		return nil
 	}
 	return a.PrefixMismatchBehavior
 }

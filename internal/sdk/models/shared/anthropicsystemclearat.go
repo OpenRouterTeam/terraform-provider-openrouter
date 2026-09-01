@@ -12,6 +12,7 @@ type AnthropicSystemClearAt string
 
 const (
 	AnthropicSystemClearAtNextUserMessage AnthropicSystemClearAt = "next_user_message"
+	AnthropicSystemClearAtNever           AnthropicSystemClearAt = "never"
 )
 
 func (e AnthropicSystemClearAt) ToPointer() *AnthropicSystemClearAt {
@@ -24,6 +25,8 @@ func (e *AnthropicSystemClearAt) UnmarshalJSON(data []byte) error {
 	}
 	switch v {
 	case "next_user_message":
+		fallthrough
+	case "never":
 		*e = AnthropicSystemClearAt(v)
 		return nil
 	default:
