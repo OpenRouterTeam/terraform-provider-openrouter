@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: c69e0b14a65bf907b5f8029012df2a38
+  docChecksum: 3112f0ae634535e982961715f239fc1f
   docVersion: 1.0.0
   speakeasyVersion: 1.796.2
   generationVersion: 2.933.0
-  releaseVersion: 0.2.86
-  configChecksum: 21f3d7b55aa193018285b1f3fca48ef0
+  releaseVersion: 0.2.87
+  configChecksum: 06f1382e52b8ea66f770d97b5d92b990
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 6bf4c810-4ff1-4726-a1e5-6c68b6e4ae66
-  pristine_commit_hash: befc3690ae74cf6be739e5c0afd6471d253b76e2
-  pristine_tree_hash: bdfba474733d84b929ac89c8f3de34c58516708d
+  generation_id: 741a4eeb-bfa3-4c09-b94d-4e9d5bffbd8a
+  pristine_commit_hash: 0444394aff9d817bd5445e980c2c23542b85b48c
+  pristine_tree_hash: 9227fed5e4c00f13ec2396d5e5170af4c3077e66
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:d1c40d2abf6e32a3ca0fa6a6c82b0425a3600340
-    pristine_git_object: 666c0aabd8f9d0380437207d71f29cf513e4573c
+    last_write_checksum: sha1:5d9dbced95d4e08b762aacc1248416a73ac8009c
+    pristine_git_object: e0e3d015342501803933e7475199aec8c4536625
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1742,6 +1742,14 @@ trackedFiles:
     id: 16b76efb2765
     last_write_checksum: sha1:d30177d71dbe78aaff5ce7eeac225f5de3f2de36
     pristine_git_object: 914e92b5c04be0cff88578a7c5b0d6a2b4bd90ed
+  internal/sdk/models/shared/anthropicmessageoutputconfig.go:
+    id: 019f202b76d2
+    last_write_checksum: sha1:d2831564ffebc7a7bcbe8c45364835b599b992a7
+    pristine_git_object: 91e8b2fbfd81e13e60452d666b35fa4e35989d09
+  internal/sdk/models/shared/anthropicoutputeffort.go:
+    id: c80457352ea5
+    last_write_checksum: sha1:9f1d5209dee4106b89c3253759840a1f398eda68
+    pristine_git_object: a5389ea2046112e11e3a05bde5106bc626dfc80e
   internal/sdk/models/shared/anthropicplaintextsource.go:
     id: 9a14a6d3c434
     last_write_checksum: sha1:3b674815acf811cfda70577ede20765e0c6e2748
@@ -1750,14 +1758,22 @@ trackedFiles:
     id: 0c873e811f3c
     last_write_checksum: sha1:d0168fc86cfbca854120b5117ca8c163daa7f47d
     pristine_git_object: 7e7b2242afd5ca6436d69b5ca91ae6842105ac04
+  internal/sdk/models/shared/anthropicsystemclearat.go:
+    id: 63e087e96517
+    last_write_checksum: sha1:37190318b5d44742167e928d54eca1d22b3c3aa2
+    pristine_git_object: 12ca23f02433bfa6430f6c7981d2a33411ad3b5f
   internal/sdk/models/shared/anthropictextblockparam.go:
     id: 57eb8530da75
     last_write_checksum: sha1:4e9197f91aee2e585815e842dc4fab0b52eba93f
     pristine_git_object: d997d3956cd7c7202cf9bca197e4b20e1b9e7f7e
+  internal/sdk/models/shared/anthropicthinkingblockbinding.go:
+    id: c996cb0ca20e
+    last_write_checksum: sha1:d784df1213644befe5ef4ad998ab213ef34f4c8e
+    pristine_git_object: 95a4a7d823719ce9bc4ec926feea247d047733b4
   internal/sdk/models/shared/anthropicthinkingdisplay.go:
     id: e6be4aebac7c
-    last_write_checksum: sha1:cd30223ad19e24d60c57d3f03a1dca42094d209e
-    pristine_git_object: 275f51641040603560575262239d49e888276437
+    last_write_checksum: sha1:a5991a103dfb54a70f531296f4bcdf0d1b1e1b3b
+    pristine_git_object: 6f6f04861025104017a03bb4c6874d0fae97c728
   internal/sdk/models/shared/anthropicthinkingturns.go:
     id: 1937dcac3c27
     last_write_checksum: sha1:62d0b74b9e54f6920c19d3cd7b09e5e7921fe042
@@ -2704,16 +2720,16 @@ trackedFiles:
     pristine_git_object: 36ad3dd1322943d46fe01cf3b3dd402de57304a4
   internal/sdk/models/shared/messagesmessageparam.go:
     id: 31faa887cd9d
-    last_write_checksum: sha1:8c1cbd0cbe94f699f38999b779c982decb80fe82
-    pristine_git_object: ccee95fcca76601228364380c0d1b12869de2455
+    last_write_checksum: sha1:e19cffa047d553c864b9de10207f07ff4e9f7532
+    pristine_git_object: 039fb337ff36a46962c29800d942b93878c6547e
   internal/sdk/models/shared/messagesoutputconfig.go:
     id: 72e2774ee805
     last_write_checksum: sha1:ccded646e2f8df51002beeca0261f17e00acee6e
     pristine_git_object: e078bb85d763df4526014340e797870884811dbb
   internal/sdk/models/shared/messagesrequest.go:
     id: 364162322d0e
-    last_write_checksum: sha1:48b9b590c8b39386b46b71d5f02cdd2a7d2d259d
-    pristine_git_object: e43466475e1fc187168bcefdb47bd0c289db88d9
+    last_write_checksum: sha1:1e34f50efcbd5d3ef1247b61e81f15604611bfb5
+    pristine_git_object: de638ebdfe9e45d9a451cfaac1b2ed57e9922c3d
   internal/sdk/models/shared/messagessearchmodelsservertool.go:
     id: 39a47da803ce
     last_write_checksum: sha1:3651c27699b9428a923a1e0a5278ae3da1a78772
@@ -3660,8 +3676,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:d313b88499a2af90c3d73251e9bfcf6b579da5a5
-    pristine_git_object: ca24378c9b45216b810df3c64cb5527923f1d0fb
+    last_write_checksum: sha1:764c0456b28b7f1672397a3393add1afa6448994
+    pristine_git_object: 30672a6b12d3de01c976fea229020c7a314a09c6
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5582,4 +5598,4 @@ examples:
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(voyageai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(voyageai)` **Added**\n  *  `response.data.provider_slug.enum(voyageai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(voyageai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(voyageai)` **Added** (Breaking ⚠️)\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body` **Changed**\n"
