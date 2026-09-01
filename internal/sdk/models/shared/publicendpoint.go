@@ -7,6 +7,312 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+type Embeddings struct {
+	Latency *PercentileStats `json:"latency"`
+	// Total requests admitted for this workload in the window.
+	RequestCount *int64           `json:"request_count"`
+	Throughput   *PercentileStats `json:"throughput"`
+}
+
+func (e *Embeddings) GetLatency() *PercentileStats {
+	if e == nil {
+		return nil
+	}
+	return e.Latency
+}
+
+func (e *Embeddings) GetRequestCount() *int64 {
+	if e == nil {
+		return nil
+	}
+	return e.RequestCount
+}
+
+func (e *Embeddings) GetThroughput() *PercentileStats {
+	if e == nil {
+		return nil
+	}
+	return e.Throughput
+}
+
+type ImageGeneration struct {
+	Latency *PercentileStats `json:"latency"`
+	// Total requests admitted for this workload in the window.
+	RequestCount *int64           `json:"request_count"`
+	Throughput   *PercentileStats `json:"throughput"`
+}
+
+func (i *ImageGeneration) GetLatency() *PercentileStats {
+	if i == nil {
+		return nil
+	}
+	return i.Latency
+}
+
+func (i *ImageGeneration) GetRequestCount() *int64 {
+	if i == nil {
+		return nil
+	}
+	return i.RequestCount
+}
+
+func (i *ImageGeneration) GetThroughput() *PercentileStats {
+	if i == nil {
+		return nil
+	}
+	return i.Throughput
+}
+
+type Rerank struct {
+	Latency *PercentileStats `json:"latency"`
+	// Total requests admitted for this workload in the window.
+	RequestCount *int64           `json:"request_count"`
+	Throughput   *PercentileStats `json:"throughput"`
+}
+
+func (r *Rerank) GetLatency() *PercentileStats {
+	if r == nil {
+		return nil
+	}
+	return r.Latency
+}
+
+func (r *Rerank) GetRequestCount() *int64 {
+	if r == nil {
+		return nil
+	}
+	return r.RequestCount
+}
+
+func (r *Rerank) GetThroughput() *PercentileStats {
+	if r == nil {
+		return nil
+	}
+	return r.Throughput
+}
+
+type Stt struct {
+	Latency *PercentileStats `json:"latency"`
+	// Total requests admitted for this workload in the window.
+	RequestCount *int64           `json:"request_count"`
+	Throughput   *PercentileStats `json:"throughput"`
+}
+
+func (s *Stt) GetLatency() *PercentileStats {
+	if s == nil {
+		return nil
+	}
+	return s.Latency
+}
+
+func (s *Stt) GetRequestCount() *int64 {
+	if s == nil {
+		return nil
+	}
+	return s.RequestCount
+}
+
+func (s *Stt) GetThroughput() *PercentileStats {
+	if s == nil {
+		return nil
+	}
+	return s.Throughput
+}
+
+type TextGeneration struct {
+	Latency *PercentileStats `json:"latency"`
+	// Total requests admitted for this workload in the window.
+	RequestCount *int64           `json:"request_count"`
+	Throughput   *PercentileStats `json:"throughput"`
+}
+
+func (t *TextGeneration) GetLatency() *PercentileStats {
+	if t == nil {
+		return nil
+	}
+	return t.Latency
+}
+
+func (t *TextGeneration) GetRequestCount() *int64 {
+	if t == nil {
+		return nil
+	}
+	return t.RequestCount
+}
+
+func (t *TextGeneration) GetThroughput() *PercentileStats {
+	if t == nil {
+		return nil
+	}
+	return t.Throughput
+}
+
+type Tts struct {
+	Latency *PercentileStats `json:"latency"`
+	// Total requests admitted for this workload in the window.
+	RequestCount *int64           `json:"request_count"`
+	Throughput   *PercentileStats `json:"throughput"`
+}
+
+func (t *Tts) GetLatency() *PercentileStats {
+	if t == nil {
+		return nil
+	}
+	return t.Latency
+}
+
+func (t *Tts) GetRequestCount() *int64 {
+	if t == nil {
+		return nil
+	}
+	return t.RequestCount
+}
+
+func (t *Tts) GetThroughput() *PercentileStats {
+	if t == nil {
+		return nil
+	}
+	return t.Throughput
+}
+
+type Unknown struct {
+	Latency *PercentileStats `json:"latency"`
+	// Total requests admitted for this workload in the window.
+	RequestCount *int64           `json:"request_count"`
+	Throughput   *PercentileStats `json:"throughput"`
+}
+
+func (u *Unknown) GetLatency() *PercentileStats {
+	if u == nil {
+		return nil
+	}
+	return u.Latency
+}
+
+func (u *Unknown) GetRequestCount() *int64 {
+	if u == nil {
+		return nil
+	}
+	return u.RequestCount
+}
+
+func (u *Unknown) GetThroughput() *PercentileStats {
+	if u == nil {
+		return nil
+	}
+	return u.Throughput
+}
+
+type VideoGeneration struct {
+	Latency *PercentileStats `json:"latency"`
+	// Total requests admitted for this workload in the window.
+	RequestCount *int64           `json:"request_count"`
+	Throughput   *PercentileStats `json:"throughput"`
+}
+
+func (v *VideoGeneration) GetLatency() *PercentileStats {
+	if v == nil {
+		return nil
+	}
+	return v.Latency
+}
+
+func (v *VideoGeneration) GetRequestCount() *int64 {
+	if v == nil {
+		return nil
+	}
+	return v.RequestCount
+}
+
+func (v *VideoGeneration) GetThroughput() *PercentileStats {
+	if v == nil {
+		return nil
+	}
+	return v.Throughput
+}
+
+// PerfLast30mByWorkload - Endpoint performance over the last 30 minutes, keyed by the kind of request served (e.g. `text_generation`, `image_generation`). Additive to the legacy singular latency and throughput fields; image and video generation report end-to-end latency. Only visible when authenticated with an API key or cookie.
+type PerfLast30mByWorkload struct {
+	Embeddings      *Embeddings      `json:"embeddings,omitzero"`
+	ImageGeneration *ImageGeneration `json:"image_generation,omitzero"`
+	Rerank          *Rerank          `json:"rerank,omitzero"`
+	Stt             *Stt             `json:"stt,omitzero"`
+	TextGeneration  *TextGeneration  `json:"text_generation,omitzero"`
+	Tts             *Tts             `json:"tts,omitzero"`
+	Unknown         *Unknown         `json:"unknown,omitzero"`
+	VideoGeneration *VideoGeneration `json:"video_generation,omitzero"`
+}
+
+func (p PerfLast30mByWorkload) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(p, "", false)
+}
+
+func (p *PerfLast30mByWorkload) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &p, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *PerfLast30mByWorkload) GetEmbeddings() *Embeddings {
+	if p == nil {
+		return nil
+	}
+	return p.Embeddings
+}
+
+func (p *PerfLast30mByWorkload) GetImageGeneration() *ImageGeneration {
+	if p == nil {
+		return nil
+	}
+	return p.ImageGeneration
+}
+
+func (p *PerfLast30mByWorkload) GetRerank() *Rerank {
+	if p == nil {
+		return nil
+	}
+	return p.Rerank
+}
+
+func (p *PerfLast30mByWorkload) GetStt() *Stt {
+	if p == nil {
+		return nil
+	}
+	return p.Stt
+}
+
+func (p *PerfLast30mByWorkload) GetTextGeneration() *TextGeneration {
+	if p == nil {
+		return nil
+	}
+	return p.TextGeneration
+}
+
+func (p *PerfLast30mByWorkload) GetTts() *Tts {
+	if p == nil {
+		return nil
+	}
+	return p.Tts
+}
+
+func (p *PerfLast30mByWorkload) GetUnknown() *Unknown {
+	if p == nil {
+		return nil
+	}
+	return p.Unknown
+}
+
+func (p *PerfLast30mByWorkload) GetVideoGeneration() *VideoGeneration {
+	if p == nil {
+		return nil
+	}
+	return p.VideoGeneration
+}
+
+// #region class-body-perflast30mbyworkload
+// #endregion class-body-perflast30mbyworkload
+
 type Pricing struct {
 	// Price in USD per audio input token
 	Audio *string `json:"audio,omitzero"`
@@ -174,15 +480,17 @@ type PublicEndpoint struct {
 	MaxCompletionTokens *int64 `json:"max_completion_tokens"`
 	MaxPromptTokens     *int64 `json:"max_prompt_tokens"`
 	// The unique identifier for the model (permaslug)
-	ModelID                 string          `json:"model_id"`
-	ModelName               string          `json:"model_name"`
-	Name                    string          `json:"name"`
-	Pricing                 Pricing         `json:"pricing"`
-	ProviderName            ProviderName    `json:"provider_name"`
-	Quantization            *Quantization   `json:"quantization"`
-	Status                  *EndpointStatus `json:"status,omitzero"`
-	SupportedParameters     []Parameter     `json:"supported_parameters"`
-	SupportsImplicitCaching bool            `json:"supports_implicit_caching"`
+	ModelID   string `json:"model_id"`
+	ModelName string `json:"model_name"`
+	Name      string `json:"name"`
+	// Endpoint performance over the last 30 minutes, keyed by the kind of request served (e.g. `text_generation`, `image_generation`). Additive to the legacy singular latency and throughput fields; image and video generation report end-to-end latency. Only visible when authenticated with an API key or cookie.
+	PerfLast30mByWorkload   *PerfLast30mByWorkload `json:"perf_last_30m_by_workload,omitzero"`
+	Pricing                 Pricing                `json:"pricing"`
+	ProviderName            ProviderName           `json:"provider_name"`
+	Quantization            *Quantization          `json:"quantization"`
+	Status                  *EndpointStatus        `json:"status,omitzero"`
+	SupportedParameters     []Parameter            `json:"supported_parameters"`
+	SupportsImplicitCaching bool                   `json:"supports_implicit_caching"`
 	// Per-variant `tool_choice` support. `tool_choice` in `supported_parameters` only says the parameter is accepted; these flags say which of its values passed testing.
 	SupportsToolChoice ToolChoiceSupport `json:"supports_tool_choice"`
 	// Whether this TTS endpoint accepts inline reference audio (`input_references`) for stateless voice cloning. Requests carrying reference audio are only routed to endpoints where this is true.
@@ -254,6 +562,13 @@ func (p *PublicEndpoint) GetName() string {
 		return ""
 	}
 	return p.Name
+}
+
+func (p *PublicEndpoint) GetPerfLast30mByWorkload() *PerfLast30mByWorkload {
+	if p == nil {
+		return nil
+	}
+	return p.PerfLast30mByWorkload
 }
 
 func (p *PublicEndpoint) GetPricing() Pricing {
