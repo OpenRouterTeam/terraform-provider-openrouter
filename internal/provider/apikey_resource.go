@@ -44,7 +44,6 @@ type APIKeyResourceModel struct {
 	CreatorUserID      types.String  `tfsdk:"creator_user_id"`
 	Disabled           types.Bool    `tfsdk:"disabled"`
 	ExpiresAt          types.String  `tfsdk:"expires_at"`
-	ExternalAPIKey     types.String  `tfsdk:"external_api_key"`
 	ExternalUser       types.String  `tfsdk:"external_user"`
 	Hash               types.String  `tfsdk:"hash"`
 	IncludeByokInLimit types.Bool    `tfsdk:"include_byok_in_limit"`
@@ -119,27 +118,9 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 					validators.IsRFC3339(),
 				},
 			},
-			"external_api_key": schema.StringAttribute{
-				Optional: true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIfConfigured(),
-				},
-				Description: `Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret; supplying it with a management key is rejected with 403. Requires replacement if changed.`,
-				Validators: []validator.String{
-					stringvalidator.UTF8LengthBetween(1, 512),
-				},
-			},
 			"external_user": schema.StringAttribute{
-				Computed: true,
-				Optional: true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIfConfigured(),
-					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
-				},
-				Description: `Partner's end-user identifier for attribution, between 1 and 512 characters. Accepted only when authenticating with a Connect client secret, where it is required; supplying it with a management key is rejected with 403. Requires replacement if changed.`,
-				Validators: []validator.String{
-					stringvalidator.UTF8LengthBetween(1, 512),
-				},
+				Computed:    true,
+				Description: `Partner's end-user identifier used for attribution.`,
 			},
 			"hash": schema.StringAttribute{
 				Computed:    true,
