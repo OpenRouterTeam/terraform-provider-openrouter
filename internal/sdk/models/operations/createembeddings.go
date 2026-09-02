@@ -895,6 +895,8 @@ type CreateEmbeddingsResponse struct {
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Payment Required - Insufficient credits or quota to complete request
 	PaymentRequiredResponse *shared.PaymentRequiredResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Request Timeout - Operation exceeded time limit
@@ -980,6 +982,13 @@ func (c *CreateEmbeddingsResponse) GetPaymentRequiredResponse() *shared.PaymentR
 		return nil
 	}
 	return c.PaymentRequiredResponse
+}
+
+func (c *CreateEmbeddingsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if c == nil {
+		return nil
+	}
+	return c.ForbiddenResponse
 }
 
 func (c *CreateEmbeddingsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
