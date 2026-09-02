@@ -23,6 +23,16 @@ func (r *GuardrailsDataSourceModel) RefreshFromSharedListGuardrailsResponse(ctx 
 		for _, dataItem := range resp.Data {
 			var data tfTypes.Guardrail
 
+			if dataItem.AllowedDataRegions != nil {
+				if data.AllowedDataRegions == nil {
+					data.AllowedDataRegions = make([]types.String, 0, len(dataItem.AllowedDataRegions))
+				}
+				for _, v := range dataItem.AllowedDataRegions {
+					data.AllowedDataRegions = append(data.AllowedDataRegions, types.StringValue(string(v)))
+				}
+			} else {
+				data.AllowedDataRegions = nil
+			}
 			if dataItem.AllowedModels != nil {
 				if data.AllowedModels == nil {
 					data.AllowedModels = make([]types.String, 0, len(dataItem.AllowedModels))

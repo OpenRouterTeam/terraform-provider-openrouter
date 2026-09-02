@@ -30,6 +30,7 @@ type GuardrailDataSource struct {
 
 // GuardrailDataSourceModel describes the data model.
 type GuardrailDataSourceModel struct {
+	AllowedDataRegions         []types.String                      `tfsdk:"allowed_data_regions"`
 	AllowedModels              []types.String                      `tfsdk:"allowed_models"`
 	AllowedProviders           []types.String                      `tfsdk:"allowed_providers"`
 	ContentFilterBuiltins      []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
@@ -67,6 +68,11 @@ func (r *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaR
 		MarkdownDescription: "Guardrail DataSource",
 
 		Attributes: map[string]schema.Attribute{
+			"allowed_data_regions": schema.ListAttribute{
+				Computed:    true,
+				ElementType: types.StringType,
+				Description: `Data regions through which requests governed by this guardrail must arrive. ` + "`" + `global` + "`" + ` is https://openrouter.ai, ` + "`" + `europe` + "`" + ` is https://eu.openrouter.ai, and ` + "`" + `us` + "`" + ` is https://us.openrouter.ai. Requests arriving through any other region are rejected. ` + "`" + `null` + "`" + ` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value.`,
+			},
 			"allowed_models": schema.ListAttribute{
 				Computed:    true,
 				ElementType: types.StringType,
