@@ -30,6 +30,14 @@ func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponse(ctx con
 func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponseData(ctx context.Context, resp *shared.GetGuardrailResponseData) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	if resp.AllowedDataRegions != nil {
+		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
+		for _, v := range resp.AllowedDataRegions {
+			r.AllowedDataRegions = append(r.AllowedDataRegions, types.StringValue(string(v)))
+		}
+	} else {
+		r.AllowedDataRegions = nil
+	}
 	if resp.AllowedModels != nil {
 		r.AllowedModels = make([]types.String, 0, len(resp.AllowedModels))
 		for _, v := range resp.AllowedModels {

@@ -8,6 +8,7 @@ import (
 )
 
 type Guardrail struct {
+	AllowedDataRegions         []types.String              `tfsdk:"allowed_data_regions"`
 	AllowedModels              []types.String              `tfsdk:"allowed_models"`
 	AllowedProviders           []types.String              `tfsdk:"allowed_providers"`
 	ContentFilterBuiltins      []ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
