@@ -50,6 +50,11 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
+						"allowed_data_regions": schema.ListAttribute{
+							Computed:    true,
+							ElementType: types.StringType,
+							Description: `Data regions through which requests governed by this guardrail must arrive. ` + "`" + `global` + "`" + ` is https://openrouter.ai, ` + "`" + `europe` + "`" + ` is https://eu.openrouter.ai, and ` + "`" + `us` + "`" + ` is https://us.openrouter.ai. Requests arriving through any other region are rejected. ` + "`" + `null` + "`" + ` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value.`,
+						},
 						"allowed_models": schema.ListAttribute{
 							Computed:    true,
 							ElementType: types.StringType,

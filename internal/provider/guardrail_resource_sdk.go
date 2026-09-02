@@ -30,6 +30,14 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponse(ctx co
 func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ctx context.Context, resp *shared.CreateGuardrailResponseData) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	if resp.AllowedDataRegions != nil {
+		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
+		for _, v := range resp.AllowedDataRegions {
+			r.AllowedDataRegions = append(r.AllowedDataRegions, types.StringValue(string(v)))
+		}
+	} else {
+		r.AllowedDataRegions = nil
+	}
 	if resp.AllowedModels != nil {
 		r.AllowedModels = make([]types.String, 0, len(resp.AllowedModels))
 		for _, v := range resp.AllowedModels {
@@ -141,6 +149,14 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponse(ctx conte
 func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx context.Context, resp *shared.GetGuardrailResponseData) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	if resp.AllowedDataRegions != nil {
+		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
+		for _, v := range resp.AllowedDataRegions {
+			r.AllowedDataRegions = append(r.AllowedDataRegions, types.StringValue(string(v)))
+		}
+	} else {
+		r.AllowedDataRegions = nil
+	}
 	if resp.AllowedModels != nil {
 		r.AllowedModels = make([]types.String, 0, len(resp.AllowedModels))
 		for _, v := range resp.AllowedModels {
@@ -252,6 +268,14 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponse(ctx co
 func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ctx context.Context, resp *shared.UpdateGuardrailResponseData) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	if resp.AllowedDataRegions != nil {
+		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
+		for _, v := range resp.AllowedDataRegions {
+			r.AllowedDataRegions = append(r.AllowedDataRegions, types.StringValue(string(v)))
+		}
+	} else {
+		r.AllowedDataRegions = nil
+	}
 	if resp.AllowedModels != nil {
 		r.AllowedModels = make([]types.String, 0, len(resp.AllowedModels))
 		for _, v := range resp.AllowedModels {
@@ -395,6 +419,13 @@ func (r *GuardrailResourceModel) ToOperationsUpdateGuardrailRequest(ctx context.
 func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Context) (*shared.CreateGuardrailRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	var allowedDataRegions []shared.GuardrailDataRegion
+	if r.AllowedDataRegions != nil {
+		allowedDataRegions = make([]shared.GuardrailDataRegion, 0, len(r.AllowedDataRegions))
+		for _, allowedDataRegionsItem := range r.AllowedDataRegions {
+			allowedDataRegions = append(allowedDataRegions, shared.GuardrailDataRegion(allowedDataRegionsItem.ValueString()))
+		}
+	}
 	var allowedModels []string
 	if r.AllowedModels != nil {
 		allowedModels = make([]string, 0, len(r.AllowedModels))
@@ -558,6 +589,7 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 		workspaceID = nil
 	}
 	out := shared.CreateGuardrailRequest{
+		AllowedDataRegions:         allowedDataRegions,
 		AllowedModels:              allowedModels,
 		AllowedProviders:           allowedProviders,
 		ContentFilterBuiltins:      contentFilterBuiltins,
@@ -587,6 +619,13 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Context) (*shared.UpdateGuardrailRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	var allowedDataRegions []shared.GuardrailDataRegion
+	if r.AllowedDataRegions != nil {
+		allowedDataRegions = make([]shared.GuardrailDataRegion, 0, len(r.AllowedDataRegions))
+		for _, allowedDataRegionsItem := range r.AllowedDataRegions {
+			allowedDataRegions = append(allowedDataRegions, shared.GuardrailDataRegion(allowedDataRegionsItem.ValueString()))
+		}
+	}
 	var allowedModels []string
 	if r.AllowedModels != nil {
 		allowedModels = make([]string, 0, len(r.AllowedModels))
@@ -747,6 +786,7 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 		resetInterval = nil
 	}
 	out := shared.UpdateGuardrailRequest{
+		AllowedDataRegions:         allowedDataRegions,
 		AllowedModels:              allowedModels,
 		AllowedProviders:           allowedProviders,
 		ContentFilterBuiltins:      contentFilterBuiltins,

@@ -1,4 +1,7 @@
 resource "openrouter_guardrail" "my_guardrail" {
+  allowed_data_regions = [
+    "europe",
+  ]
   allowed_models = [
     "openai/gpt-5.2",
     "anthropic/claude-4.5-opus-20251124",

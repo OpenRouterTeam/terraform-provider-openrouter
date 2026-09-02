@@ -27,6 +27,7 @@ data "openrouter_guardrail" "my_guardrail" {
 
 ### Read-Only
 
+- `allowed_data_regions` (List of String) Data regions through which requests governed by this guardrail must arrive. `global` is https://openrouter.ai, `europe` is https://eu.openrouter.ai, and `us` is https://us.openrouter.ai. Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value.
 - `allowed_models` (List of String) Array of model canonical_slugs (immutable identifiers)
 - `allowed_providers` (List of String) List of allowed provider IDs
 - `content_filter_builtins` (Attributes List) Builtin content filters applied to requests. Includes PII detectors and the regex-based prompt injection detector. (see [below for nested schema](#nestedatt--content_filter_builtins))

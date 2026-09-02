@@ -14,6 +14,9 @@ Guardrail Resource
 
 ```terraform
 resource "openrouter_guardrail" "my_guardrail" {
+  allowed_data_regions = [
+    "europe",
+  ]
   allowed_models = [
     "openai/gpt-5.2",
     "anthropic/claude-4.5-opus-20251124",
@@ -72,6 +75,7 @@ resource "openrouter_guardrail" "my_guardrail" {
 
 ### Optional
 
+- `allowed_data_regions` (List of String) Data regions through which requests governed by this guardrail must arrive. `global` is https://openrouter.ai, `europe` is https://eu.openrouter.ai, and `us` is https://us.openrouter.ai. Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value. An empty array is rejected.
 - `allowed_models` (List of String) Array of model identifiers (slug or canonical_slug accepted)
 - `allowed_providers` (List of String) List of allowed provider IDs
 - `content_filter_builtins` (Attributes List) Builtin content filters to apply. Every builtin slug supports "block", "redact", and the detect-only "flag" action. (see [below for nested schema](#nestedatt--content_filter_builtins))
