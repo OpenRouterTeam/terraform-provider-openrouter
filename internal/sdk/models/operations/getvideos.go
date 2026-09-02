@@ -31,6 +31,8 @@ type GetVideosResponse struct {
 	VideoGenerationResponse *shared.VideoGenerationResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -81,6 +83,13 @@ func (g *GetVideosResponse) GetUnauthorizedResponse() *shared.UnauthorizedRespon
 		return nil
 	}
 	return g.UnauthorizedResponse
+}
+
+func (g *GetVideosResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetVideosResponse) GetNotFoundResponse() *shared.NotFoundResponse {

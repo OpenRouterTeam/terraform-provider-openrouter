@@ -166,6 +166,8 @@ type CreateAudioTranscriptionsMultipartResponse struct {
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Payment Required - Insufficient credits or quota to complete request
 	PaymentRequiredResponse *shared.PaymentRequiredResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Payload Too Large - Request payload exceeds size limits
@@ -242,6 +244,13 @@ func (c *CreateAudioTranscriptionsMultipartResponse) GetPaymentRequiredResponse(
 		return nil
 	}
 	return c.PaymentRequiredResponse
+}
+
+func (c *CreateAudioTranscriptionsMultipartResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if c == nil {
+		return nil
+	}
+	return c.ForbiddenResponse
 }
 
 func (c *CreateAudioTranscriptionsMultipartResponse) GetNotFoundResponse() *shared.NotFoundResponse {

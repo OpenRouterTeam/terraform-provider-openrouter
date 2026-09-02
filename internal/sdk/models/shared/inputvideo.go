@@ -4,11 +4,42 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+// InputVideoProcessing - Video processing mode. `agentic` enables agentic video processing and `static` forces fixed-rate frame sampling on providers that support it (currently Google Gemini).
+type InputVideoProcessing string
+
+const (
+	InputVideoProcessingAgentic InputVideoProcessing = "agentic"
+	InputVideoProcessingStatic  InputVideoProcessing = "static"
+)
+
+func (e InputVideoProcessing) ToPointer() *InputVideoProcessing {
+	return &e
+}
+func (e *InputVideoProcessing) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "agentic":
+		fallthrough
+	case "static":
+		*e = InputVideoProcessing(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for InputVideoProcessing: %v", v)
+	}
+}
+
 // InputVideo - Video input content item
 type InputVideo struct {
+	// Video processing mode. `agentic` enables agentic video processing and `static` forces fixed-rate frame sampling on providers that support it (currently Google Gemini).
+	Processing *InputVideoProcessing `json:"processing,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"input_video" json:"type"`
 	// A base64 data URL or remote URL that resolves to a video file
@@ -24,6 +55,13 @@ func (i *InputVideo) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (i *InputVideo) GetProcessing() *InputVideoProcessing {
+	if i == nil {
+		return nil
+	}
+	return i.Processing
 }
 
 func (i *InputVideo) GetType() string {

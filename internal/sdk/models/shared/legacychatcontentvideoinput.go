@@ -4,11 +4,42 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+// LegacyChatContentVideoInputProcessing - Video processing mode. `agentic` enables agentic video processing and `static` forces fixed-rate frame sampling on providers that support it (currently Google Gemini).
+type LegacyChatContentVideoInputProcessing string
+
+const (
+	LegacyChatContentVideoInputProcessingAgentic LegacyChatContentVideoInputProcessing = "agentic"
+	LegacyChatContentVideoInputProcessingStatic  LegacyChatContentVideoInputProcessing = "static"
+)
+
+func (e LegacyChatContentVideoInputProcessing) ToPointer() *LegacyChatContentVideoInputProcessing {
+	return &e
+}
+func (e *LegacyChatContentVideoInputProcessing) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "agentic":
+		fallthrough
+	case "static":
+		*e = LegacyChatContentVideoInputProcessing(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for LegacyChatContentVideoInputProcessing: %v", v)
+	}
+}
+
 // LegacyChatContentVideoInput - Video input object
 type LegacyChatContentVideoInput struct {
+	// Video processing mode. `agentic` enables agentic video processing and `static` forces fixed-rate frame sampling on providers that support it (currently Google Gemini).
+	Processing *LegacyChatContentVideoInputProcessing `json:"processing,omitzero"`
 	// URL of the video (data: URLs supported)
 	URL string `json:"url"`
 }
@@ -22,6 +53,13 @@ func (l *LegacyChatContentVideoInput) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (l *LegacyChatContentVideoInput) GetProcessing() *LegacyChatContentVideoInputProcessing {
+	if l == nil {
+		return nil
+	}
+	return l.Processing
 }
 
 func (l *LegacyChatContentVideoInput) GetURL() string {
