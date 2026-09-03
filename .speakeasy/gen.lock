@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: ca2731c9f88855fab0cd54361904b852
+  docChecksum: 90449906b40811cb6183aedf294609da
   docVersion: 1.0.0
   speakeasyVersion: 1.796.4
   generationVersion: 2.935.1
-  releaseVersion: 0.2.97
-  configChecksum: 93a99f617e5d9060baea5509a79daaed
+  releaseVersion: 0.2.98
+  configChecksum: 5b5aa9505b2a147042ad68678cf5e9c5
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 77c3e6b4-9cae-4d86-9333-4a3370600235
-  pristine_commit_hash: b5b50515ee796e6bf8bd69a65c232cf93ef7f73e
-  pristine_tree_hash: c1ba529692d0d32cde52d2367ddf57913b6d3f15
+  generation_id: 59d6454c-e83f-4e72-87d9-38c24d72cd79
+  pristine_commit_hash: 90c7e9bf31f46bc6bfc9391539b31aa11e1d44cc
+  pristine_tree_hash: 95686aa915a92ea220010db1271290677327d557
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:b161266f5c6e6ab2a2dc6ef2fff51e8056ea9535
-    pristine_git_object: 53f802a43f1288606dbb1988be6fe0a8c2b8854a
+    last_write_checksum: sha1:22d39565e837af18338ade4f1b35e521a772dd23
+    pristine_git_object: 618303cc1a9aa4412473f840123475cfdd09ba98
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1172,8 +1172,8 @@ trackedFiles:
     pristine_git_object: aafd5e7b4a794f55efc4a3a804963175c463bf75
   internal/sdk/guardrails.go:
     id: 7acba59507ef
-    last_write_checksum: sha1:42cd0a39cd4b9f892bb1b8f29c908cb1a67bc222
-    pristine_git_object: 9ec3f17d6815f1093e90ee4c3c49aed044520bec
+    last_write_checksum: sha1:50ef82d0aec5e40ef8a42b5d2ec9c8cae9e6def1
+    pristine_git_object: c2789f06135cdc986514e2c0af561f199082511d
   internal/sdk/images.go:
     id: 110b363483e3
     last_write_checksum: sha1:a04358d14e9e825ac528c121ecfe2c0f71fcee98
@@ -1620,8 +1620,8 @@ trackedFiles:
     pristine_git_object: 21ca7fe13eb6b50270f2b95e9ebeb73f6c1ea6e7
   internal/sdk/models/operations/updateguardrail.go:
     id: 8c146d4d139d
-    last_write_checksum: sha1:5d50f45a15b99573a41bbe3ad1554545e081245d
-    pristine_git_object: 8a56732d3171ad6bb5d3a3563e8dea73e4fe04d7
+    last_write_checksum: sha1:53c975efc0da9795eeb2bb9300d9175bf5daaa91
+    pristine_git_object: d51859b7e5a756a177c792552dce214bc5728a41
   internal/sdk/models/operations/updatekeys.go:
     id: 84d161c59f3b
     last_write_checksum: sha1:6e4f06bda04d21c5b9592ae84af13c7022510403
@@ -3708,8 +3708,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:80143cd13c033f75515f543cbd606e1c62694387
-    pristine_git_object: e1467d04d5786e0c9320289f5261e024693b69a4
+    last_write_checksum: sha1:67a2b3b1aeddd8ef81ba4167328e368e21007413
+    pristine_git_object: 7f95c5a1e4bd58003ba129d952326dbbb0c0df1a
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -4542,6 +4542,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
   listGuardrailKeyAssignments:
     speakeasy-default-list-guardrail-key-assignments:
       parameters:
@@ -5664,3 +5666,6 @@ examples:
         "500":
           application/json: {"error": "invalid_grant", "error_description": "The subject token was not accepted."}
 examplesVersion: 1.0.2
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Guardrails.update()`:  `response.status[409]` **Added** (Breaking ⚠️)

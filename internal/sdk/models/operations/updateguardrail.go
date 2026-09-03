@@ -38,12 +38,14 @@ type UpdateGuardrailResponse struct {
 	RawResponse *http.Response
 	// Guardrail updated successfully
 	UpdateGuardrailResponse *shared.UpdateGuardrailResponse
-	// Invalid request, or an attempt to change a workspace default guardrail's name (which is derived from its workspace and not editable).
+	// Invalid request, or an attempt to change a workspace default guardrail's name (which is derived from its workspace and not editable; sending the current name unchanged is accepted).
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Guardrail name conflict — another guardrail in this workspace already uses the requested name.
+	ConflictResponse *shared.ConflictResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 }
@@ -106,6 +108,13 @@ func (u *UpdateGuardrailResponse) GetNotFoundResponse() *shared.NotFoundResponse
 		return nil
 	}
 	return u.NotFoundResponse
+}
+
+func (u *UpdateGuardrailResponse) GetConflictResponse() *shared.ConflictResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ConflictResponse
 }
 
 func (u *UpdateGuardrailResponse) GetInternalServerResponse() *shared.InternalServerResponse {
