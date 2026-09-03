@@ -4990,6 +4990,13 @@ components:
       example:
         url: 'https://example.com/video.mp4'
       properties:
+        processing:
+          description: 'Video processing mode. `agentic` enables agentic video processing and `static` forces fixed-rate frame sampling on providers that support it (currently Google Gemini).'
+          enum:
+            - 'agentic'
+            - 'static'
+          example: 'agentic'
+          type: 'string'
         url:
           description: 'URL of the video (data: URLs supported)'
           type: 'string'
@@ -7129,13 +7136,12 @@ components:
     CostDetails:
       description: 'Breakdown of upstream inference costs'
       example:
-        server_tool_cost: null
         upstream_inference_completions_cost: 0.0004
         upstream_inference_cost: null
         upstream_inference_prompt_cost: 0.0008
       properties:
         server_tool_cost:
-          description: 'Metered server-tool execution cost (for example, shell sandbox time) billed for this request, in USD. Matches the billed checkpoint and settlement amounts exactly.'
+          description: 'Metered server-tool execution cost (for example, shell sandbox time) billed for this request, in USD. Matches the billed checkpoint and settlement amounts exactly. 0 when a metered server tool ran but settled at zero dollars; absent when no metered server tool ran.'
           format: 'double'
           type:
             - 'number'
@@ -7309,6 +7315,16 @@ components:
         name: 'My New Guardrail'
         reset_interval: 'monthly'
       properties:
+        allowed_data_regions:
+          description: 'Data regions through which requests governed by this guardrail must arrive. `global` is https://openrouter.ai, `europe` is https://eu.openrouter.ai, and `us` is https://us.openrouter.ai. Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value. An empty array is rejected.'
+          example:
+            - 'europe'
+          items:
+            $ref: '#/components/schemas/GuardrailDataRegion'
+          minItems: 1
+          type:
+            - 'array'
+            - 'null'
         allowed_models:
           description: 'Array of model identifiers (slug or canonical_slug accepted)'
           example:
@@ -10148,6 +10164,7 @@ components:
       type: 'object'
     Guardrail:
       example:
+        allowed_data_regions: null
         allowed_models: null
         allowed_providers:
           - 'openai'
@@ -10179,6 +10196,15 @@ components:
         updated_at: '2025-08-24T15:45:00Z'
         workspace_id: '0df9e665-d932-5740-b2c7-b52af166bc11'
       properties:
+        allowed_data_regions:
+          description: 'Data regions through which requests governed by this guardrail must arrive. `global` is https://openrouter.ai, `europe` is https://eu.openrouter.ai, and `us` is https://us.openrouter.ai. Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value.'
+          example:
+            - 'europe'
+          items:
+            $ref: '#/components/schemas/GuardrailDataRegion'
+          type:
+            - 'array'
+            - 'null'
         allowed_models:
           description: 'Array of model canonical_slugs (immutable identifiers)'
           example:
@@ -10347,6 +10373,14 @@ components:
         - 'created_at'
         - 'workspace_id'
       type: 'object'
+    GuardrailDataRegion:
+      description: 'An OpenRouter data region: `global` (https://openrouter.ai), `europe` (https://eu.openrouter.ai), or `us` (https://us.openrouter.ai)'
+      enum:
+        - 'global'
+        - 'europe'
+        - 'us'
+      example: 'europe'
+      type: 'string'
     GuardrailInterval:
       description: 'Interval at which the limit resets (daily, weekly, monthly)'
       enum:
@@ -11640,6 +11674,13 @@ components:
         type: 'input_video'
         video_url: 'https://example.com/video.mp4'
       properties:
+        processing:
+          description: 'Video processing mode. `agentic` enables agentic video processing and `static` forces fixed-rate frame sampling on providers that support it (currently Google Gemini).'
+          enum:
+            - 'agentic'
+            - 'static'
+          example: 'agentic'
+          type: 'string'
         type:
           enum:
             - 'input_video'
@@ -11811,6 +11852,13 @@ components:
       example:
         url: 'https://example.com/video.mp4'
       properties:
+        processing:
+          description: 'Video processing mode. `agentic` enables agentic video processing and `static` forces fixed-rate frame sampling on providers that support it (currently Google Gemini).'
+          enum:
+            - 'agentic'
+            - 'static'
+          example: 'agentic'
+          type: 'string'
         url:
           description: 'URL of the video (data: URLs supported)'
           type: 'string'
@@ -14919,6 +14967,82 @@ components:
       required:
         - 'code'
         - 'message'
+      type: 'object'
+    OAuthErrorResponse:
+      description: 'RFC 6749 §5.2 error response.'
+      example:
+        error: 'invalid_grant'
+        error_description: 'The subject token was not accepted.'
+      properties:
+        error:
+          enum:
+            - 'invalid_request'
+            - 'invalid_grant'
+            - 'unsupported_grant_type'
+            - 'invalid_scope'
+            - 'server_error'
+            - 'temporarily_unavailable'
+          type: 'string'
+        error_description:
+          type: 'string'
+      required:
+        - 'error'
+        - 'error_description'
+      type: 'object'
+    OAuthJwks:
+      description: 'RFC 7517 JWK Set of the keys OpenRouter signs access tokens with.'
+      example:
+        keys:
+          - alg: 'ES256'
+            crv: 'P-256'
+            kid: 'or-2026-09'
+            kty: 'EC'
+            use: 'sig'
+            x: 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU'
+            'y': 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0'
+      properties:
+        keys:
+          items:
+            additionalProperties: false
+            properties:
+              alg:
+                enum:
+                  - 'ES256'
+                type: 'string'
+              crv:
+                enum:
+                  - 'P-256'
+                type: 'string'
+              kid:
+                minLength: 1
+                type: 'string'
+              kty:
+                enum:
+                  - 'EC'
+                type: 'string'
+              use:
+                enum:
+                  - 'sig'
+                type: 'string'
+              x:
+                pattern: '^[A-Za-z0-9_-]+$'
+                type: 'string'
+              'y':
+                pattern: '^[A-Za-z0-9_-]+$'
+                type: 'string'
+            required:
+              - 'kty'
+              - 'crv'
+              - 'kid'
+              - 'x'
+              - 'y'
+              - 'alg'
+              - 'use'
+            type: 'object'
+          minItems: 1
+          type: 'array'
+      required:
+        - 'keys'
       type: 'object'
     ObservabilityArizeDestination:
       example:
@@ -18174,6 +18298,7 @@ components:
               provider: 'OpenAI'
               selected: true
           total: 1
+        generation_time: 2016
         is_byok: false
         region: 'iad'
         requested: 'openai/gpt-4o'
@@ -18188,6 +18313,10 @@ components:
           type: 'array'
         endpoints:
           $ref: '#/components/schemas/EndpointsMetadata'
+        generation_time:
+          description: 'Milliseconds measured for the generation, from dispatching the upstream request until its response body ended. Divide the completion token count by this for throughput. Absent when no upstream request was dispatched.'
+          example: 2016
+          type: 'integer'
         is_byok:
           type: 'boolean'
         params:
@@ -24892,6 +25021,92 @@ components:
       example:
         format:
           type: 'text'
+    TokenExchangeRequest:
+      description: 'RFC 8693 token exchange request body (application/x-www-form-urlencoded).'
+      example:
+        federation_policy_id: '4b2f7d1e-8c3a-4e5f-9a6b-1c2d3e4f5a6b'
+        grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange'
+        subject_token: '<jwt from your identity provider>'
+        subject_token_type: 'urn:ietf:params:oauth:token-type:jwt'
+      properties:
+        federation_policy_id:
+          description: 'The federation policy to evaluate, from Settings → Workload identity. Binds the exchange to one organization.'
+          example: '4b2f7d1e-8c3a-4e5f-9a6b-1c2d3e4f5a6b'
+          format: 'uuid'
+          type: 'string'
+        grant_type:
+          description: 'Must be `urn:ietf:params:oauth:grant-type:token-exchange`.'
+          enum:
+            - 'urn:ietf:params:oauth:grant-type:token-exchange'
+          example: 'urn:ietf:params:oauth:grant-type:token-exchange'
+          type: 'string'
+        requested_token_type:
+          description: 'Optional; when present must be `urn:ietf:params:oauth:token-type:access_token`.'
+          enum:
+            - 'urn:ietf:params:oauth:token-type:access_token'
+          example: 'urn:ietf:params:oauth:token-type:access_token'
+          type: 'string'
+        scope:
+          description: 'Optional; only `inference` is available.'
+          enum:
+            - 'inference'
+          example: 'inference'
+          type: 'string'
+        subject_token:
+          description: 'The JWT issued by your identity provider.'
+          example: '<jwt from your identity provider>'
+          maxLength: 16384
+          minLength: 1
+          type: 'string'
+        subject_token_type:
+          description: 'Must be `urn:ietf:params:oauth:token-type:jwt`.'
+          enum:
+            - 'urn:ietf:params:oauth:token-type:jwt'
+          example: 'urn:ietf:params:oauth:token-type:jwt'
+          type: 'string'
+      required:
+        - 'grant_type'
+        - 'subject_token'
+        - 'federation_policy_id'
+        - 'subject_token_type'
+      type: 'object'
+    TokenExchangeResponse:
+      description: 'RFC 8693 token exchange response.'
+      example:
+        access_token: '<short-lived openrouter access token jwt>'
+        expires_in: 900
+        issued_token_type: 'urn:ietf:params:oauth:token-type:access_token'
+        scope: 'inference'
+        token_type: 'Bearer'
+      properties:
+        access_token:
+          description: 'A short-lived JWT to send as `Authorization: Bearer` to the inference API.'
+          example: '<short-lived openrouter access token jwt>'
+          type: 'string'
+        expires_in:
+          description: 'Seconds until the access token expires: at most 15 minutes, and never later than the subject token expires.'
+          example: 900
+          type: 'integer'
+        issued_token_type:
+          enum:
+            - 'urn:ietf:params:oauth:token-type:access_token'
+          example: 'urn:ietf:params:oauth:token-type:access_token'
+          type: 'string'
+        scope:
+          example: 'inference'
+          type: 'string'
+        token_type:
+          enum:
+            - 'Bearer'
+          example: 'Bearer'
+          type: 'string'
+      required:
+        - 'access_token'
+        - 'issued_token_type'
+        - 'token_type'
+        - 'expires_in'
+        - 'scope'
+      type: 'object'
     ToolCallStatus:
       enum:
         - 'in_progress'
@@ -25705,6 +25920,16 @@ components:
         name: 'Updated Guardrail Name'
         reset_interval: 'weekly'
       properties:
+        allowed_data_regions:
+          description: 'Data regions through which requests governed by this guardrail must arrive. `global` is https://openrouter.ai, `europe` is https://eu.openrouter.ai, and `us` is https://us.openrouter.ai. Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value. An empty array is rejected.'
+          example:
+            - 'europe'
+          items:
+            $ref: '#/components/schemas/GuardrailDataRegion'
+          minItems: 1
+          type:
+            - 'array'
+            - 'null'
         allowed_models:
           description: 'Array of model identifiers (slug or canonical_slug accepted)'
           example:
@@ -26168,7 +26393,7 @@ components:
                 cost_details:
                   properties:
                     server_tool_cost:
-                      description: 'Metered server-tool execution cost (for example, shell sandbox time) billed for this request, in USD. Matches the billed checkpoint and settlement amounts exactly.'
+                      description: 'Metered server-tool execution cost (for example, shell sandbox time) billed for this request, in USD. Matches the billed checkpoint and settlement amounts exactly. 0 when a metered server tool ran but settled at zero dollars; absent when no metered server tool ran.'
                       format: 'double'
                       type:
                         - 'number'
@@ -26199,7 +26424,6 @@ components:
       example:
         cost: 0.0012
         cost_details:
-          server_tool_cost: null
           upstream_inference_cost: null
           upstream_inference_input_cost: 0.0008
           upstream_inference_output_cost: 0.0004
@@ -27948,6 +28172,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaymentRequiredResponse'
           description: 'Payment Required - Insufficient credits or quota to complete request'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
         '404':
           content:
             application/json:
@@ -28132,6 +28366,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaymentRequiredResponse'
           description: 'Payment Required - Insufficient credits or quota to complete request'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
         '404':
           content:
             application/json:
@@ -30806,6 +31050,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaymentRequiredResponse'
           description: 'Payment Required - Insufficient credits or quota to complete request'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
         '404':
           content:
             application/json:
@@ -32230,12 +32484,14 @@ paths:
           results: '$.data'
         type: 'offsetLimit'
     post:
-      description: 'Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace''s traffic. To restrict all traffic in a workspace, update the workspace''s default guardrail instead. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      description: 'Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace''s traffic. To restrict all traffic in a workspace, update the workspace''s default guardrail instead. Set `allowed_data_regions` to enforce [In-Region Routing](/docs/guides/features/in-region-routing#enforcing-in-region-routing-with-guardrails): governed requests must arrive through one of the listed OpenRouter domains and are rejected with a 403 otherwise. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'createGuardrail'
       requestBody:
         content:
           application/json:
             example:
+              allowed_data_regions:
+                - 'europe'
               allowed_models: null
               allowed_providers:
                 - 'openai'
@@ -32522,7 +32778,7 @@ paths:
                   message: 'Invalid request parameters'
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
-          description: 'Invalid request, or an attempt to change a workspace default guardrail''s name (which is derived from its workspace and not editable).'
+          description: 'Invalid request, or an attempt to change a workspace default guardrail''s name (which is derived from its workspace and not editable; sending the current name unchanged is accepted).'
         '401':
           content:
             application/json:
@@ -32543,6 +32799,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: 'Not Found - Resource does not exist'
+        '409':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 409
+                  message: 'Resource conflict. Please try again later.'
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+          description: 'Guardrail name conflict — another guardrail in this workspace already uses the requested name.'
         '500':
           content:
             application/json:
@@ -34036,7 +34302,7 @@ paths:
         - 'API Keys'
       x-speakeasy-name-override: 'list'
     post:
-      description: 'Create a new API key for the authenticated user. The plaintext `key` is returned only in this response. Treat it as a write-only, sensitive value; it cannot be retrieved later. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys), or with a Connect client secret. `external_user` and `external_api_key` are accepted only with a client secret, and `external_user` is required there; supplying either field with a management key is rejected with 403.'
+      description: 'Create a new API key for the authenticated user. The plaintext `key` is returned only in this response. Treat it as a write-only, sensitive value; it cannot be retrieved later. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys). The optional `external` object associates the key with a partner-defined user and lookup key.'
       operationId: 'createKeys'
       requestBody:
         content:
@@ -34069,16 +34335,23 @@ paths:
                   type:
                     - 'string'
                     - 'null'
-                external_api_key:
-                  description: 'Optional partner-supplied API key. Stored as a SHA-256 hash and never returned. Accepted only when authenticating with a Connect client secret; supplying it with a management key is rejected with 403.'
-                  maxLength: 512
-                  minLength: 1
-                  type: 'string'
-                external_user:
-                  description: 'Partner''s end-user identifier for attribution, between 1 and 512 characters. Accepted only when authenticating with a Connect client secret, where it is required; supplying it with a management key is rejected with 403.'
-                  maxLength: 512
-                  minLength: 1
-                  type: 'string'
+                external:
+                  description: 'Optional partner-defined identity associated with the created API key.'
+                  properties:
+                    api_key:
+                      description: 'Optional partner-supplied API key with a minimum length of 32 characters and sufficient entropy. Stored as a SHA-256 hash and never returned.'
+                      maxLength: 512
+                      minLength: 32
+                      type: 'string'
+                    user:
+                      description: 'Partner''s end-user identifier for attribution.'
+                      example: 'partner-user-123'
+                      maxLength: 512
+                      minLength: 1
+                      type: 'string'
+                  required:
+                    - 'user'
+                  type: 'object'
                 include_byok_in_limit:
                   description: 'Whether to include BYOK usage in the limit'
                   example: true
@@ -34398,7 +34671,7 @@ paths:
       x-speakeasy-name-override: 'create'
   /keys/{hash}:
     delete:
-      description: 'Delete an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys), or with a Connect client secret. A client secret reaches only the keys that same client created; any other key responds as if it does not exist.'
+      description: 'Delete an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys).'
       operationId: 'deleteKeys'
       parameters:
         - description: 'The hash identifier of the API key to delete'
@@ -34748,7 +35021,7 @@ paths:
         - 'API Keys'
       x-speakeasy-name-override: 'get'
     patch:
-      description: 'Update an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys), or with a Connect client secret. A client secret reaches only the keys that same client created; any other key responds as if it does not exist.'
+      description: 'Update an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys).'
       operationId: 'updateKeys'
       parameters:
         - description: 'The hash identifier of the API key to update'
@@ -36115,6 +36388,70 @@ paths:
         outputs:
           results: '$.data'
         type: 'offsetLimit'
+  /oauth/jwks:
+    get:
+      description: 'RFC 7517 JWK Set containing the public keys OpenRouter signs access tokens with.'
+      operationId: 'listOauthJwks'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthJwks'
+          description: 'JWK Set'
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerResponse'
+          description: 'Signing keys are not configured'
+      summary: 'OpenRouter access token signing keys'
+      tags:
+        - 'OAuth'
+  /oauth/token:
+    post:
+      description: 'RFC 8693 token exchange. Presents a JWT from an issuer your organization trusts (Settings → Workload identity) and receives a short-lived OpenRouter access token that acts as the API key the matching federation policy targets.'
+      operationId: 'createOauthToken'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenExchangeRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenExchangeResponse'
+          description: 'Access token issued'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthErrorResponse'
+          description: 'Malformed request, unsupported grant, or the subject token was not accepted'
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthErrorResponse'
+          description: 'Rate limited'
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthErrorResponse'
+          description: 'The token could not be issued'
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthErrorResponse'
+          description: 'The issuer’s discovery document or JWKS could not be fetched'
+      summary: 'Exchange a workload identity token'
+      tags:
+        - 'OAuth'
   /observability/destinations:
     get:
       description: 'List the observability destinations configured for the authenticated entity''s default workspace. Use the `workspace_id` query parameter to scope the result to a different workspace. Only destinations with stable release status are surfaced — destinations of other types are excluded. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -38258,6 +38595,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaymentRequiredResponse'
           description: 'Payment Required - Insufficient credits or quota to complete request'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
         '404':
           content:
             application/json:
@@ -38683,7 +39030,7 @@ paths:
           results: '$.data'
         type: 'offsetLimit'
     post:
-      description: 'Create a SCIM group-to-workspace role mapping. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      description: 'Create a SCIM group-to-workspace role mapping. Creating a mapping that already exists with the same role succeeds and re-applies the mapping to the group members. Requesting a different role for an existing mapping returns 409. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'createScimGroupMapping'
       requestBody:
         content:
@@ -39083,6 +39430,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaymentRequiredResponse'
           description: 'Payment Required - Insufficient credits or quota to complete request'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
         '404':
           content:
             application/json:
@@ -39165,6 +39522,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
           description: 'Unauthorized - Authentication required or invalid credentials'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
         '404':
           content:
             application/json:
@@ -39240,6 +39607,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
           description: 'Unauthorized - Authentication required or invalid credentials'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
         '404':
           content:
             application/json:
