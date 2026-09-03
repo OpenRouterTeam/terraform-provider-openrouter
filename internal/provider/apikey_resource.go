@@ -7,12 +7,14 @@ import (
 	"context"
 	"fmt"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
+	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -36,29 +38,30 @@ type APIKeyResource struct {
 
 // APIKeyResourceModel describes the resource data model.
 type APIKeyResourceModel struct {
-	ByokUsage          types.Float64 `tfsdk:"byok_usage"`
-	ByokUsageDaily     types.Float64 `tfsdk:"byok_usage_daily"`
-	ByokUsageMonthly   types.Float64 `tfsdk:"byok_usage_monthly"`
-	ByokUsageWeekly    types.Float64 `tfsdk:"byok_usage_weekly"`
-	CreatedAt          types.String  `tfsdk:"created_at"`
-	CreatorUserID      types.String  `tfsdk:"creator_user_id"`
-	Disabled           types.Bool    `tfsdk:"disabled"`
-	ExpiresAt          types.String  `tfsdk:"expires_at"`
-	ExternalUser       types.String  `tfsdk:"external_user"`
-	Hash               types.String  `tfsdk:"hash"`
-	IncludeByokInLimit types.Bool    `tfsdk:"include_byok_in_limit"`
-	Key                types.String  `tfsdk:"key"`
-	Label              types.String  `tfsdk:"label"`
-	Limit              types.Float64 `tfsdk:"limit"`
-	LimitRemaining     types.Float64 `tfsdk:"limit_remaining"`
-	LimitReset         types.String  `tfsdk:"limit_reset"`
-	Name               types.String  `tfsdk:"name"`
-	UpdatedAt          types.String  `tfsdk:"updated_at"`
-	Usage              types.Float64 `tfsdk:"usage"`
-	UsageDaily         types.Float64 `tfsdk:"usage_daily"`
-	UsageMonthly       types.Float64 `tfsdk:"usage_monthly"`
-	UsageWeekly        types.Float64 `tfsdk:"usage_weekly"`
-	WorkspaceID        types.String  `tfsdk:"workspace_id"`
+	ByokUsage          types.Float64     `tfsdk:"byok_usage"`
+	ByokUsageDaily     types.Float64     `tfsdk:"byok_usage_daily"`
+	ByokUsageMonthly   types.Float64     `tfsdk:"byok_usage_monthly"`
+	ByokUsageWeekly    types.Float64     `tfsdk:"byok_usage_weekly"`
+	CreatedAt          types.String      `tfsdk:"created_at"`
+	CreatorUserID      types.String      `tfsdk:"creator_user_id"`
+	Disabled           types.Bool        `tfsdk:"disabled"`
+	ExpiresAt          types.String      `tfsdk:"expires_at"`
+	External           *tfTypes.External `tfsdk:"external"`
+	ExternalUser       types.String      `tfsdk:"external_user"`
+	Hash               types.String      `tfsdk:"hash"`
+	IncludeByokInLimit types.Bool        `tfsdk:"include_byok_in_limit"`
+	Key                types.String      `tfsdk:"key"`
+	Label              types.String      `tfsdk:"label"`
+	Limit              types.Float64     `tfsdk:"limit"`
+	LimitRemaining     types.Float64     `tfsdk:"limit_remaining"`
+	LimitReset         types.String      `tfsdk:"limit_reset"`
+	Name               types.String      `tfsdk:"name"`
+	UpdatedAt          types.String      `tfsdk:"updated_at"`
+	Usage              types.Float64     `tfsdk:"usage"`
+	UsageDaily         types.Float64     `tfsdk:"usage_daily"`
+	UsageMonthly       types.Float64     `tfsdk:"usage_monthly"`
+	UsageWeekly        types.Float64     `tfsdk:"usage_weekly"`
+	WorkspaceID        types.String      `tfsdk:"workspace_id"`
 }
 
 func (r *APIKeyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -117,6 +120,35 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Validators: []validator.String{
 					validators.IsRFC3339(),
 				},
+			},
+			"external": schema.SingleNestedAttribute{
+				Optional: true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplaceIfConfigured(),
+				},
+				Attributes: map[string]schema.Attribute{
+					"api_key": schema.StringAttribute{
+						Optional: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplaceIfConfigured(),
+						},
+						Description: `Optional partner-supplied API key with a minimum length of 32 characters and sufficient entropy. Stored as a SHA-256 hash and never returned. Requires replacement if changed.`,
+						Validators: []validator.String{
+							stringvalidator.UTF8LengthBetween(32, 512),
+						},
+					},
+					"user": schema.StringAttribute{
+						Required: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplaceIfConfigured(),
+						},
+						Description: `Partner's end-user identifier for attribution. Requires replacement if changed.`,
+						Validators: []validator.String{
+							stringvalidator.UTF8LengthBetween(1, 512),
+						},
+					},
+				},
+				Description: `Optional partner-defined identity associated with the created API key. Requires replacement if changed.`,
 			},
 			"external_user": schema.StringAttribute{
 				Computed:    true,
