@@ -12,6 +12,28 @@ import (
 	"time"
 )
 
+// External - Optional partner-defined identity associated with the created API key.
+type External struct {
+	// Optional partner-supplied API key with a minimum length of 32 characters and sufficient entropy. Stored as a SHA-256 hash and never returned.
+	APIKey *string `json:"api_key,omitzero"`
+	// Partner's end-user identifier for attribution.
+	User string `json:"user"`
+}
+
+func (e *External) GetAPIKey() *string {
+	if e == nil {
+		return nil
+	}
+	return e.APIKey
+}
+
+func (e *External) GetUser() string {
+	if e == nil {
+		return ""
+	}
+	return e.User
+}
+
 // CreateKeysLimitReset - Type of limit reset for the API key (daily, weekly, monthly, or null for no reset). Resets happen automatically at midnight UTC, and weeks are Monday through Sunday.
 type CreateKeysLimitReset string
 
@@ -47,6 +69,8 @@ type CreateKeysRequest struct {
 	CreatorUserID *string `json:"creator_user_id,omitzero"`
 	// Optional ISO 8601 UTC expiration timestamp. Must include seconds (YYYY-MM-DDTHH:MM:SSZ; fractional seconds allowed); minute-precision timestamps are rejected.
 	ExpiresAt *time.Time `json:"expires_at,omitzero"`
+	// Optional partner-defined identity associated with the created API key.
+	External *External `json:"external,omitzero"`
 	// Whether to include BYOK usage in the limit
 	IncludeByokInLimit *bool `json:"include_byok_in_limit,omitzero"`
 	// Optional spending limit for the API key in USD
@@ -82,6 +106,13 @@ func (c *CreateKeysRequest) GetExpiresAt() *time.Time {
 		return nil
 	}
 	return c.ExpiresAt
+}
+
+func (c *CreateKeysRequest) GetExternal() *External {
+	if c == nil {
+		return nil
+	}
+	return c.External
 }
 
 func (c *CreateKeysRequest) GetIncludeByokInLimit() *bool {

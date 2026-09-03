@@ -563,7 +563,7 @@ func (s *APIKeys) List(ctx context.Context, request operations.ListRequest, opts
 }
 
 // Create a new API key
-// Create a new API key for the authenticated user. The plaintext `key` is returned only in this response. Treat it as a write-only, sensitive value; it cannot be retrieved later. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys), or with a Connect client secret.
+// Create a new API key for the authenticated user. The plaintext `key` is returned only in this response. Treat it as a write-only, sensitive value; it cannot be retrieved later. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys). The optional `external` object associates the key with a partner-defined user and lookup key.
 func (s *APIKeys) Create(ctx context.Context, request operations.CreateKeysRequest, opts ...operations.Option) (*operations.CreateKeysResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -874,7 +874,7 @@ func (s *APIKeys) Create(ctx context.Context, request operations.CreateKeysReque
 }
 
 // Delete an API key
-// Delete an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys), or with a Connect client secret. A client secret reaches only the keys that same client created; any other key responds as if it does not exist.
+// Delete an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys).
 func (s *APIKeys) Delete(ctx context.Context, request operations.DeleteKeysRequest, opts ...operations.Option) (*operations.DeleteKeysResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -1440,7 +1440,7 @@ func (s *APIKeys) GetByHash(ctx context.Context, request operations.GetKeyReques
 }
 
 // Update an API key
-// Update an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys), or with a Connect client secret. A client secret reaches only the keys that same client created; any other key responds as if it does not exist.
+// Update an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys).
 func (s *APIKeys) Update(ctx context.Context, request operations.UpdateKeysRequest, opts ...operations.Option) (*operations.UpdateKeysResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
