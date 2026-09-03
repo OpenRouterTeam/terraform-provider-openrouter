@@ -74,6 +74,7 @@ func (s *Workspaces) List(ctx context.Context, request operations.ListWorkspaces
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -243,7 +244,7 @@ func (s *Workspaces) List(ctx context.Context, request operations.ListWorkspaces
 		request.Offset = &nOS
 
 		return s.List(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
@@ -2656,6 +2657,7 @@ func (s *Workspaces) ListMembers(ctx context.Context, request operations.ListWor
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -2825,7 +2827,7 @@ func (s *Workspaces) ListMembers(ctx context.Context, request operations.ListWor
 		request.Offset = &nOS
 
 		return s.ListMembers(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)

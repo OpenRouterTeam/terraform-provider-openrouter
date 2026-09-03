@@ -80,7 +80,14 @@ func CreateFileSearchServerToolValue1Number(number float64) FileSearchServerTool
 	}
 }
 
-func (u *FileSearchServerToolValue1) UnmarshalJSON(data []byte) error {
+func (u *FileSearchServerToolValue1) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = FileSearchServerToolValue1{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -191,7 +198,14 @@ func CreateFileSearchServerToolValue2ArrayOfFileSearchServerToolValue1(arrayOfFi
 	}
 }
 
-func (u *FileSearchServerToolValue2) UnmarshalJSON(data []byte) error {
+func (u *FileSearchServerToolValue2) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = FileSearchServerToolValue2{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -432,7 +446,14 @@ func CreateFiltersUnionOr(or CompoundFilter) FiltersUnion {
 	}
 }
 
-func (u *FiltersUnion) UnmarshalJSON(data []byte) error {
+func (u *FiltersUnion) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = FiltersUnion{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`

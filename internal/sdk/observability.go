@@ -74,6 +74,7 @@ func (s *Observability) ListDestinations(ctx context.Context, request operations
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -243,7 +244,7 @@ func (s *Observability) ListDestinations(ctx context.Context, request operations
 		request.Offset = &nOS
 
 		return s.ListDestinations(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)

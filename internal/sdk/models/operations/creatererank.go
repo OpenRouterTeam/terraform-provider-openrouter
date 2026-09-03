@@ -77,7 +77,14 @@ func CreateDocumentDocumentRequest(documentRequest DocumentRequest) Document {
 	}
 }
 
-func (u *Document) UnmarshalJSON(data []byte) error {
+func (u *Document) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Document{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 

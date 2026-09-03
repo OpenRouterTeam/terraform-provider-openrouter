@@ -54,7 +54,14 @@ func CreateFileListResponseOpenrouter(openrouter OpenRouterFileList) FileListRes
 	}
 }
 
-func (u *FileListResponse) UnmarshalJSON(data []byte) error {
+func (u *FileListResponse) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = FileListResponse{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Shape string `json:"_shape"`

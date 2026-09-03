@@ -175,7 +175,14 @@ func CreateMessagesMessageParamContentUnion3ContentWebSearchToolResultError(cont
 	}
 }
 
-func (u *MessagesMessageParamContentUnion3) UnmarshalJSON(data []byte) error {
+func (u *MessagesMessageParamContentUnion3) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = MessagesMessageParamContentUnion3{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -487,7 +494,14 @@ func CreateMessagesMessageParamContentUnion1Document(document AnthropicDocumentB
 	}
 }
 
-func (u *MessagesMessageParamContentUnion1) UnmarshalJSON(data []byte) error {
+func (u *MessagesMessageParamContentUnion1) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = MessagesMessageParamContentUnion1{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -605,7 +619,14 @@ func CreateMessagesMessageParamContentUnion2ArrayOfMessagesMessageParamContentUn
 	}
 }
 
-func (u *MessagesMessageParamContentUnion2) UnmarshalJSON(data []byte) error {
+func (u *MessagesMessageParamContentUnion2) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = MessagesMessageParamContentUnion2{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -954,7 +975,14 @@ func CreateMessagesMessageParamContentUnion4OpenrouterBashToolResult(openrouterB
 	}
 }
 
-func (u *MessagesMessageParamContentUnion4) UnmarshalJSON(data []byte) error {
+func (u *MessagesMessageParamContentUnion4) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = MessagesMessageParamContentUnion4{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -1215,7 +1243,14 @@ func CreateMessagesMessageParamContentUnion5ArrayOfMessagesMessageParamContentUn
 	}
 }
 
-func (u *MessagesMessageParamContentUnion5) UnmarshalJSON(data []byte) error {
+func (u *MessagesMessageParamContentUnion5) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = MessagesMessageParamContentUnion5{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
