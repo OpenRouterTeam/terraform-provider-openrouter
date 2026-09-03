@@ -74,6 +74,7 @@ func (s *Guardrails) List(ctx context.Context, request operations.ListGuardrails
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -243,7 +244,7 @@ func (s *Guardrails) List(ctx context.Context, request operations.ListGuardrails
 		request.Offset = &nOS
 
 		return s.List(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
@@ -349,7 +350,7 @@ func (s *Guardrails) List(ctx context.Context, request operations.ListGuardrails
 }
 
 // Create a guardrail
-// Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace's traffic. To restrict all traffic in a workspace, update the workspace's default guardrail instead. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace's traffic. To restrict all traffic in a workspace, update the workspace's default guardrail instead. Set `allowed_data_regions` to enforce [In-Region Routing](/docs/guides/features/in-region-routing#enforcing-in-region-routing-with-guardrails): governed requests must arrive through one of the listed OpenRouter domains and are rejected with a 403 otherwise. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) Create(ctx context.Context, request shared.CreateGuardrailRequest, opts ...operations.Option) (*operations.CreateGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -1492,6 +1493,7 @@ func (s *Guardrails) ListKeyAssignments(ctx context.Context, request operations.
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -1661,7 +1663,7 @@ func (s *Guardrails) ListKeyAssignments(ctx context.Context, request operations.
 		request.Offset = &nOS
 
 		return s.ListKeyAssignments(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
@@ -2384,6 +2386,7 @@ func (s *Guardrails) ListMemberAssignmentsByGuardrail(ctx context.Context, reque
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -2553,7 +2556,7 @@ func (s *Guardrails) ListMemberAssignmentsByGuardrail(ctx context.Context, reque
 		request.Offset = &nOS
 
 		return s.ListMemberAssignmentsByGuardrail(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
@@ -3276,6 +3279,7 @@ func (s *Guardrails) ListAPIKeyAssignments(ctx context.Context, request operatio
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -3445,7 +3449,7 @@ func (s *Guardrails) ListAPIKeyAssignments(ctx context.Context, request operatio
 		request.Offset = &nOS
 
 		return s.ListAPIKeyAssignments(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
@@ -3569,6 +3573,7 @@ func (s *Guardrails) ListMemberAssignments(ctx context.Context, request operatio
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -3738,7 +3743,7 @@ func (s *Guardrails) ListMemberAssignments(ctx context.Context, request operatio
 		request.Offset = &nOS
 
 		return s.ListMemberAssignments(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)

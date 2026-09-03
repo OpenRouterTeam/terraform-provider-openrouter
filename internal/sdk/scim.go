@@ -74,6 +74,7 @@ func (s *Scim) ListMappings(ctx context.Context, request operations.ListScimGrou
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -243,7 +244,7 @@ func (s *Scim) ListMappings(ctx context.Context, request operations.ListScimGrou
 		request.Offset = &nOS
 
 		return s.ListMappings(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
@@ -1536,6 +1537,7 @@ func (s *Scim) ListGroups(ctx context.Context, request operations.ListScimGroups
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -1705,7 +1707,7 @@ func (s *Scim) ListGroups(ctx context.Context, request operations.ListScimGroups
 		request.Offset = &nOS
 
 		return s.ListGroups(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)

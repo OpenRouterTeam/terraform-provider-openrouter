@@ -83,7 +83,14 @@ func CreateParameters2Boolean(boolean bool) Parameters2 {
 	}
 }
 
-func (u *Parameters2) UnmarshalJSON(data []byte) error {
+func (u *Parameters2) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Parameters2{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -198,7 +205,14 @@ func CreateParameters1Boolean(boolean bool) Parameters1 {
 	}
 }
 
-func (u *Parameters1) UnmarshalJSON(data []byte) error {
+func (u *Parameters1) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Parameters1{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -335,7 +349,14 @@ func CreateParameters3MapOfParameters2(mapOfParameters2 map[string]*Parameters2)
 	}
 }
 
-func (u *Parameters3) UnmarshalJSON(data []byte) error {
+func (u *Parameters3) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Parameters3{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 

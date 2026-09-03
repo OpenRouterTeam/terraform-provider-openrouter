@@ -144,7 +144,14 @@ func CreateInputMessageItemContentUnionInputVideo(inputVideo InputVideo) InputMe
 	}
 }
 
-func (u *InputMessageItemContentUnion) UnmarshalJSON(data []byte) error {
+func (u *InputMessageItemContentUnion) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputMessageItemContentUnion{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -342,7 +349,14 @@ func CreateInputMessageItemRoleUnionInputMessageItemRoleDeveloper(inputMessageIt
 	}
 }
 
-func (u *InputMessageItemRoleUnion) UnmarshalJSON(data []byte) error {
+func (u *InputMessageItemRoleUnion) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputMessageItemRoleUnion{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 

@@ -122,7 +122,14 @@ func CreateInputsStatusUnion2InputsStatusInProgress2(inputsStatusInProgress2 Inp
 	}
 }
 
-func (u *InputsStatusUnion2) UnmarshalJSON(data []byte) error {
+func (u *InputsStatusUnion2) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputsStatusUnion2{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -329,7 +336,14 @@ func CreateInputsContent1Refusal(refusal OpenAIResponsesRefusalContent) InputsCo
 	}
 }
 
-func (u *InputsContent1) UnmarshalJSON(data []byte) error {
+func (u *InputsContent1) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputsContent1{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -408,7 +422,14 @@ func CreateInputsContent2Str(str string) InputsContent2 {
 	}
 }
 
-func (u *InputsContent2) UnmarshalJSON(data []byte) error {
+func (u *InputsContent2) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputsContent2{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -544,7 +565,14 @@ func CreateInputsPhaseUnionInputsPhaseFinalAnswer(inputsPhaseFinalAnswer InputsP
 	}
 }
 
-func (u *InputsPhaseUnion) UnmarshalJSON(data []byte) error {
+func (u *InputsPhaseUnion) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputsPhaseUnion{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -736,7 +764,14 @@ func CreateInputsStatusUnion1InputsStatusInProgress1(inputsStatusInProgress1 Inp
 	}
 }
 
-func (u *InputsStatusUnion1) UnmarshalJSON(data []byte) error {
+func (u *InputsStatusUnion1) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputsStatusUnion1{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -1455,7 +1490,14 @@ func CreateInputsUnion1AgentMessageItem(agentMessageItem AgentMessageItem) Input
 	}
 }
 
-func (u *InputsUnion1) UnmarshalJSON(data []byte) error {
+func (u *InputsUnion1) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputsUnion1{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -2265,7 +2307,14 @@ func CreateInputsUnionArrayOfInputsUnion1(arrayOfInputsUnion1 []InputsUnion1) In
 	}
 }
 
-func (u *InputsUnion) UnmarshalJSON(data []byte) error {
+func (u *InputsUnion) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputsUnion{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 

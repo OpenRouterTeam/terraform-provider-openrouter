@@ -3586,7 +3586,14 @@ func CreateObservabilityDestinationWebhook(webhook ObservabilityDestinationObser
 	}
 }
 
-func (u *ObservabilityDestination) UnmarshalJSON(data []byte) error {
+func (u *ObservabilityDestination) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = ObservabilityDestination{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`

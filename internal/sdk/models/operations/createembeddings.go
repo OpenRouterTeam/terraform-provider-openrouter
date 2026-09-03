@@ -182,7 +182,14 @@ func CreateContentInputFile(inputFile shared.ContentPartInputFile) Content {
 	}
 }
 
-func (u *Content) UnmarshalJSON(data []byte) error {
+func (u *Content) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Content{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -356,7 +363,14 @@ func CreateInputUnionArrayOfInput(arrayOfInput []Input) InputUnion {
 	}
 }
 
-func (u *InputUnion) UnmarshalJSON(data []byte) error {
+func (u *InputUnion) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = InputUnion{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 
@@ -568,7 +582,14 @@ func CreateEmbeddingStr(str string) Embedding {
 	}
 }
 
-func (u *Embedding) UnmarshalJSON(data []byte) error {
+func (u *Embedding) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Embedding{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 

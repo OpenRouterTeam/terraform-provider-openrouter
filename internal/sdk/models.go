@@ -336,6 +336,7 @@ func (s *Models) List(ctx context.Context, request operations.GetModelsRequest, 
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -510,7 +511,7 @@ func (s *Models) List(ctx context.Context, request operations.GetModelsRequest, 
 		request.Offset = &nOS
 
 		return s.List(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
@@ -928,6 +929,7 @@ func (s *Models) ListForUser(ctx context.Context, request operations.ListModelsU
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -1097,7 +1099,7 @@ func (s *Models) ListForUser(ctx context.Context, request operations.ListModelsU
 		request.Offset = &nOS
 
 		return s.ListForUser(
-			ctx,
+			paginationCtx,
 			request,
 			security,
 			opts...,
