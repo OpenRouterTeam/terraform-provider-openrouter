@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 28b9c30451b255ddea41c51b8a9b84f3
+  docChecksum: db42192be76fe40269a118420117119e
   docVersion: 1.0.0
   speakeasyVersion: 1.796.3
   generationVersion: 2.934.1
-  releaseVersion: 0.2.94
-  configChecksum: 48e3d0251fb681128f75a7bb0d214c91
+  releaseVersion: 0.2.95
+  configChecksum: e5f7678ac8b2f19647f25264322cc155
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: ec913f0d-66f6-4602-b4ad-1c3cfd748d32
-  pristine_commit_hash: 69ab4ecfc926fc55ae879bd9ca7289b054d459ae
-  pristine_tree_hash: 72a383cd90011a7a1b0dccca92d728e138641aaf
+  generation_id: fee7b7ed-c904-4dba-92dc-0205035083f2
+  pristine_commit_hash: 29409a654ba5b10922fe98ea50a556a73f2f77f8
+  pristine_tree_hash: 3ed2ea026e399b63c5e526643d5f4dd28af7b698
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:86aacac512ad99a0ef80ea70e372baadfdc1cea3
-    pristine_git_object: 8a4aba1603339090dd596b6490f0f482cd1524d0
+    last_write_checksum: sha1:10694fdad432c1d4ee5fd5d596aabc5501d1413a
+    pristine_git_object: 7a3de85f8f4f02e22ee4881739db48e808c6f37a
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1298,6 +1298,10 @@ trackedFiles:
     id: a7eab078e836
     last_write_checksum: sha1:afa8acb7b00555d1a070a9b72385300c5d3abade
     pristine_git_object: 4b4f1e0af5afab7156eecdb2efb71365e28d27f4
+  internal/sdk/models/operations/createoauthtoken.go:
+    id: 563ec2136726
+    last_write_checksum: sha1:defd699b7dad42513464ab1ace00a15bae2bc623
+    pristine_git_object: 6f3a900d1027d8ef1b656df4454cf2f2ac98c827
   internal/sdk/models/operations/createobservabilitydestination.go:
     id: 83f6f1865e7c
     last_write_checksum: sha1:7843edd407704f0c8ee8e6e28373ec1883cb15b3
@@ -1538,6 +1542,10 @@ trackedFiles:
     id: bcfd5bae44d6
     last_write_checksum: sha1:2945c377cce74da4188ad7778ed97bc103729b04
     pristine_git_object: 1eba4f6675ab544df7c5ed7e1e2ee45ca5ee8138
+  internal/sdk/models/operations/listoauthjwks.go:
+    id: c0159b2826ec
+    last_write_checksum: sha1:13e566fb25dd021138ec0d34f049023c8c151f32
+    pristine_git_object: 3e9c0e2d8beb203b28944025b3883b7a68a632f1
   internal/sdk/models/operations/listobservabilitydestinations.go:
     id: 8789cf32a73e
     last_write_checksum: sha1:dba894a855dc6cb578c66550c06ba2a2e22544c5
@@ -2814,6 +2822,14 @@ trackedFiles:
     id: 6f972f263ff1
     last_write_checksum: sha1:de27da87d39b785ce77c57c5f77fe644e6768b74
     pristine_git_object: 1ee5ce6063df361e387379a59c6ba08ab345be6c
+  internal/sdk/models/shared/oautherrorresponse.go:
+    id: d673d2bb10d1
+    last_write_checksum: sha1:f37765d9f5b760f646aaa717ac6587d7ed82d418
+    pristine_git_object: 0cff92da2a3d82ba5dc61f63ca885f5bef9d3242
+  internal/sdk/models/shared/oauthjwks.go:
+    id: 129a23efe6f3
+    last_write_checksum: sha1:cc5b84a88fefd2e5cbb28073e8c60de926c6de9f
+    pristine_git_object: fff5a3d32cd1ef1236f29fb62aaca323bf0fe9f6
   internal/sdk/models/shared/observabilitydestination.go:
     id: 00d7e6574534
     last_write_checksum: sha1:4a6bfeb5c05810d791831b67332184c20f7a0d4b
@@ -3434,6 +3450,14 @@ trackedFiles:
     id: 89423b9c99e3
     last_write_checksum: sha1:c4fe0fa7ba6531dcb0781584ec0fb66769708971
     pristine_git_object: 4f9c24b6f6746d5fe8df84f214b40c6559f578e3
+  internal/sdk/models/shared/tokenexchangerequest.go:
+    id: 1aff6ddf745f
+    last_write_checksum: sha1:281da87a1c733fd7ad18150d09f00309cacac1c2
+    pristine_git_object: 080322ee56deee080cc21d3e49bd3729a8f29da2
+  internal/sdk/models/shared/tokenexchangeresponse.go:
+    id: 8e53a584498a
+    last_write_checksum: sha1:c72255e957678bec561302d32a0b00895a7ecb47
+    pristine_git_object: 6988ed731b540d491a1d89a699e3af265b65b949
   internal/sdk/models/shared/toolcallstatus.go:
     id: 54cb3608f56f
     last_write_checksum: sha1:4d2fa44faeb4e782f8b3511f5704020fb196041d
@@ -3668,8 +3692,8 @@ trackedFiles:
     pristine_git_object: 3678de30b5365283e2fdfbe35e333bcb5021aff5
   internal/sdk/oauth1.go:
     id: 7815026b4b31
-    last_write_checksum: sha1:4f5190376075105d422821ecff207476b1d9f555
-    pristine_git_object: a9daa6ac92f5343faf05aea53164a2cfc9b415c5
+    last_write_checksum: sha1:095f958c3231a64423f000f9c7621a0a2bd07223
+    pristine_git_object: 8c8860bef8c635d77ae7d62edb6461065d6bc46c
   internal/sdk/oauth2.go:
     id: 880bc29e3f1f
     last_write_checksum: sha1:62961c39d2bbd9fa1b1ea399874250c11750bcc2
@@ -3680,8 +3704,8 @@ trackedFiles:
     pristine_git_object: 2ba232f3ba2a2ec5f85286fc4e4b2fb88e251673
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:12f39644ceb009e36bd85d99219f62ad3f0ca559
-    pristine_git_object: e15c076c45c218f65e215710ca1e94cc34283b42
+    last_write_checksum: sha1:a16a5c8e28c40719db963aa52a1c0c413c8eb998
+    pristine_git_object: 2f29aa223cf7cdbecf411797d313e240a80b1de3
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5617,5 +5641,26 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+  listOauthJwks:
+    speakeasy-default-list-oauth-jwks:
+      responses:
+        "200":
+          application/json: {"keys": [{"alg": "ES256", "crv": "P-256", "kid": "or-2026-09", "kty": "EC", "use": "sig", "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU", "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0"}]}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  createOauthToken:
+    speakeasy-default-create-oauth-token:
+      requestBody:
+        application/x-www-form-urlencoded: {"federation_policy_id": "4b2f7d1e-8c3a-4e5f-9a6b-1c2d3e4f5a6b", "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange", "subject_token": "<jwt from your identity provider>", "subject_token_type": "urn:ietf:params:oauth:token-type:jwt"}
+      responses:
+        "200":
+          application/json: {"access_token": "<short-lived openrouter access token jwt>", "expires_in": 900, "issued_token_type": "urn:ietf:params:oauth:token-type:access_token", "scope": "inference", "token_type": "Bearer"}
+        "400":
+          application/json: {"error": "invalid_grant", "error_description": "The subject token was not accepted."}
+        "500":
+          application/json: {"error": "invalid_grant", "error_description": "The subject token was not accepted."}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Guardrails.list()`:  `response.data[].allowed_data_regions` **Added**\n* `OpenRouter.Guardrails.create()`: \n  *  `request.allowed_data_regions` **Added**\n  *  `response.data.allowed_data_regions` **Added**\n* `OpenRouter.Guardrails.getGuardrail()`:  `response.data.allowed_data_regions` **Added**\n* `OpenRouter.Guardrails.update()`: \n  *  `request.body.allowed_data_regions` **Added**\n  *  `response.data.allowed_data_regions` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.OAuth.listOauthJwks()`: **Added**
+  * `OpenRouter.OAuth.createOauthToken()`: **Added**
