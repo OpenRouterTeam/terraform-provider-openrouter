@@ -172,6 +172,22 @@ func (r *APIKeyResourceModel) ToOperationsCreateKeysRequest(ctx context.Context)
 	} else {
 		expiresAt = nil
 	}
+	var external *operations.External
+	if r.External != nil {
+		apiKey := new(string)
+		if !r.External.APIKey.IsUnknown() && !r.External.APIKey.IsNull() {
+			*apiKey = r.External.APIKey.ValueString()
+		} else {
+			apiKey = nil
+		}
+		var user string
+		user = r.External.User.ValueString()
+
+		external = &operations.External{
+			APIKey: apiKey,
+			User:   user,
+		}
+	}
 	includeByokInLimit := new(bool)
 	if !r.IncludeByokInLimit.IsUnknown() && !r.IncludeByokInLimit.IsNull() {
 		*includeByokInLimit = r.IncludeByokInLimit.ValueBool()
@@ -202,6 +218,7 @@ func (r *APIKeyResourceModel) ToOperationsCreateKeysRequest(ctx context.Context)
 	out := operations.CreateKeysRequest{
 		CreatorUserID:      creatorUserID,
 		ExpiresAt:          expiresAt,
+		External:           external,
 		IncludeByokInLimit: includeByokInLimit,
 		Limit:              limit,
 		LimitReset:         limitReset,

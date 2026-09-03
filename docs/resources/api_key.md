@@ -14,9 +14,13 @@ APIKey Resource
 
 ```terraform
 resource "openrouter_api_key" "my_apikey" {
-  creator_user_id       = "user_2dHFtVWx2n56w6HkM0000000000"
-  disabled              = false
-  expires_at            = "2027-12-31T23:59:59Z"
+  creator_user_id = "user_2dHFtVWx2n56w6HkM0000000000"
+  disabled        = false
+  expires_at      = "2027-12-31T23:59:59Z"
+  external = {
+    api_key = "...my_api_key..."
+    user    = "partner-user-123"
+  }
   include_byok_in_limit = true
   limit                 = 50
   limit_reset           = "monthly"
@@ -37,6 +41,7 @@ resource "openrouter_api_key" "my_apikey" {
 - `creator_user_id` (String) Optional user ID of the key creator. Only meaningful for organization-owned keys where a specific member is creating the key. Requires replacement if changed.
 - `disabled` (Boolean) Whether to disable the API key
 - `expires_at` (String) Optional ISO 8601 UTC expiration timestamp. Must include seconds (YYYY-MM-DDTHH:MM:SSZ; fractional seconds allowed); minute-precision timestamps are rejected. Requires replacement if changed.
+- `external` (Attributes) Optional partner-defined identity associated with the created API key. Requires replacement if changed. (see [below for nested schema](#nestedatt--external))
 - `include_byok_in_limit` (Boolean) Whether to include BYOK usage in the limit
 - `limit` (Number) New spending limit for the API key in USD
 - `limit_reset` (String) New limit reset type for the API key (daily, weekly, monthly, or null for no reset). Resets happen automatically at midnight UTC, and weeks are Monday through Sunday. must be one of ["daily", "weekly", "monthly"]
@@ -59,6 +64,17 @@ resource "openrouter_api_key" "my_apikey" {
 - `usage_daily` (Number) OpenRouter credit usage (in USD) for the current UTC day
 - `usage_monthly` (Number) OpenRouter credit usage (in USD) for the current UTC month
 - `usage_weekly` (Number) OpenRouter credit usage (in USD) for the current UTC week (Monday-Sunday)
+
+<a id="nestedatt--external"></a>
+### Nested Schema for `external`
+
+Required:
+
+- `user` (String) Partner's end-user identifier for attribution. Requires replacement if changed.
+
+Optional:
+
+- `api_key` (String) Optional partner-supplied API key with a minimum length of 32 characters and sufficient entropy. Stored as a SHA-256 hash and never returned. Requires replacement if changed.
 
 ## Import
 
