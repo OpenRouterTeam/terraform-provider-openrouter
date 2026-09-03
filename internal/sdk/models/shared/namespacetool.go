@@ -45,7 +45,14 @@ func CreateNamespaceToolToolCustom(custom CustomTool) NamespaceToolTool {
 	}
 }
 
-func (u *NamespaceToolTool) UnmarshalJSON(data []byte) error {
+func (u *NamespaceToolTool) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = NamespaceToolTool{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`

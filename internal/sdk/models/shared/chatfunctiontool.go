@@ -311,7 +311,14 @@ func CreateChatFunctionToolWebSearch20250826(webSearch20250826 ChatWebSearchShor
 	}
 }
 
-func (u *ChatFunctionTool) UnmarshalJSON(data []byte) error {
+func (u *ChatFunctionTool) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = ChatFunctionTool{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`

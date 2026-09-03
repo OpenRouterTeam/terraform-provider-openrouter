@@ -161,7 +161,14 @@ func CreateActionFindInPage(findInPage ActionFindInPage) Action {
 	}
 }
 
-func (u *Action) UnmarshalJSON(data []byte) error {
+func (u *Action) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Action{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	type discriminator struct {
 		Type string `json:"type"`

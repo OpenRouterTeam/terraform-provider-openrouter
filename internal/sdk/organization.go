@@ -74,6 +74,7 @@ func (s *Organization) ListMembers(ctx context.Context, request operations.ListO
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -243,7 +244,7 @@ func (s *Organization) ListMembers(ctx context.Context, request operations.ListO
 		request.Offset = &nOS
 
 		return s.ListMembers(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)

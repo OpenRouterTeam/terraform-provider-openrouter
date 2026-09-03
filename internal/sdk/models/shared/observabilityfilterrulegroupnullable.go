@@ -183,7 +183,14 @@ func CreateObservabilityFilterRuleGroupNullableValueNumber(number float64) Obser
 	}
 }
 
-func (u *ObservabilityFilterRuleGroupNullableValue) UnmarshalJSON(data []byte) error {
+func (u *ObservabilityFilterRuleGroupNullableValue) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = ObservabilityFilterRuleGroupNullableValue{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
 
 	var candidates []utils.UnionCandidate
 

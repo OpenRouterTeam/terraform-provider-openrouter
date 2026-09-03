@@ -73,6 +73,7 @@ func (s *Byok) List(ctx context.Context, request operations.ListBYOKKeysRequest,
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -242,7 +243,7 @@ func (s *Byok) List(ctx context.Context, request operations.ListBYOKKeysRequest,
 		request.Offset = &nOS
 
 		return s.List(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)

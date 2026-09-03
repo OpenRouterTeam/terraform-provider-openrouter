@@ -32,7 +32,7 @@ generation:
     generateNewTests: true
     skipResponseBodyAssertions: false
 terraform:
-  version: 0.2.96
+  version: 0.2.97
   additionalActions: []
   additionalDataSources: []
   additionalDependencies:
@@ -64,4 +64,5 @@ terraform:
   providerTypeNameOverride: ""
   respectRequiredFields: false
   respectTitlesForPrimitiveUnionMembers: true
+  serverVariableProviderAttributes: {}
   unionStrategy: populated-fields

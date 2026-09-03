@@ -98,6 +98,7 @@ func (s *Datasets) GetAppRankings(ctx context.Context, request operations.GetApp
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -267,7 +268,7 @@ func (s *Datasets) GetAppRankings(ctx context.Context, request operations.GetApp
 		request.Offset = &nOS
 
 		return s.GetAppRankings(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
@@ -753,6 +754,7 @@ func (s *Datasets) GetSessionCost(ctx context.Context, request operations.GetSes
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
+	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -922,7 +924,7 @@ func (s *Datasets) GetSessionCost(ctx context.Context, request operations.GetSes
 		request.Offset = &nOS
 
 		return s.GetSessionCost(
-			ctx,
+			paginationCtx,
 			request,
 			opts...,
 		)
