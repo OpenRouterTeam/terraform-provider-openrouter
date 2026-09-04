@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 0caf6ff47a12fe9195cee237c8c45297
+  docChecksum: 776b61d042df23f4f1e13dcd4fc6af36
   docVersion: 1.0.0
   speakeasyVersion: 1.796.4
   generationVersion: 2.935.1
-  releaseVersion: 0.2.99
-  configChecksum: e582a260e504bab4b32e03abbe336bb6
+  releaseVersion: 0.2.100
+  configChecksum: 65f7f844ff4da067b78d2e3e75b6e3d4
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 6d2363f7-c001-4d4c-9b9d-48f76bad4b5d
-  pristine_commit_hash: a246aeae5e7c9f89c31a3f233ac6635bcdfe2353
-  pristine_tree_hash: 7df1cd3680bb1ecad2460a9f58c977c3470ca0c8
+  generation_id: b537a38d-6cdf-47fb-8f96-d582e1488e37
+  pristine_commit_hash: 27fc76fc8f0a0a0ce5a911ed6b1b7f64f50a28b2
+  pristine_tree_hash: 28f05e906de0ff72a54db5cd9471f9c650f0b446
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:d548a264bc33c3fd4746f4d0a0e5b8cab55fa670
-    pristine_git_object: a0463a5d259467f596c57e51bb73bf0aabecace1
+    last_write_checksum: sha1:6fac9a006567744179b8ff82bd273a58b77adf86
+    pristine_git_object: 62da68f950165792ffd84347170044cdc014ec54
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1330,6 +1330,10 @@ trackedFiles:
     id: a5aaab3e9eb4
     last_write_checksum: sha1:64efb495b57444304cb2e5409e54c429d29a48be
     pristine_git_object: 6feb5e6698e4cb95803b05a998a8a5e26af2c806
+  internal/sdk/models/operations/createscimsyncjob.go:
+    id: 7fa97bf38f3d
+    last_write_checksum: sha1:aa1e55b5f5816c7a30ee3235c1cf2441eb7b7a7b
+    pristine_git_object: 374d7cee91c970be1f4e529a0b3f18061381c789
   internal/sdk/models/operations/createvideos.go:
     id: 96b0d234f584
     last_write_checksum: sha1:83a3746750265b6cad6e1a8c27c23ef2cb79f3cf
@@ -1454,6 +1458,10 @@ trackedFiles:
     id: dfe1dc058037
     last_write_checksum: sha1:1308e77df493f9e2447e3637aafe50eee0ee694b
     pristine_git_object: 87f3035cae320f9ac8f152e491df6d4993fc8103
+  internal/sdk/models/operations/getscimsyncjob.go:
+    id: 37f077c01bec
+    last_write_checksum: sha1:bd3315267853faf37bfbc43e4f76232285d633fd
+    pristine_git_object: b86f76c9a2f38273f3a9b9ff7deef81ac2673ec1
   internal/sdk/models/operations/getsessioncost.go:
     id: c3454d681426
     last_write_checksum: sha1:e8b4153a883520180db4de8a76b2771c3c15881b
@@ -2270,6 +2278,10 @@ trackedFiles:
     id: 7bcd4ba5b7b6
     last_write_checksum: sha1:afaa16877fed9e49d2f1d6c2ab1098e4f2a5f1f3
     pristine_git_object: ca68f7a853b27f7b4b8087a78d20ec2551754837
+  internal/sdk/models/shared/createscimsyncjobresponse.go:
+    id: a82cd921f0bb
+    last_write_checksum: sha1:ce092f512fbd120aeac60012cf4cefa2778e714b
+    pristine_git_object: 2598e1fe8cbe1ee7a17a7bbb55e9a633eff30c90
   internal/sdk/models/shared/createworkspacerequest.go:
     id: a2adda010c27
     last_write_checksum: sha1:caef7f9248c1a353b9d8f5146fdfd1b1690df484
@@ -2494,6 +2506,10 @@ trackedFiles:
     id: b1d06956a3d9
     last_write_checksum: sha1:526364a8a192e2044f0151920da6f384fed586df
     pristine_git_object: bf44a06fc062c50f37b61053908bf10ff8f5dcbc
+  internal/sdk/models/shared/getscimsyncjobresponse.go:
+    id: fabe992913ec
+    last_write_checksum: sha1:5d16de0663db149af10fb4f0df06c35fe45273e0
+    pristine_git_object: 29decce36977a8213b09baeac6d0f939c004adf1
   internal/sdk/models/shared/getworkspacebudgetresponse.go:
     id: "016379285622"
     last_write_checksum: sha1:4ae86aaf27dd6e1ab404df2bc4cbe7ceaefef73b
@@ -3262,6 +3278,10 @@ trackedFiles:
     id: 8c0d9f526c36
     last_write_checksum: sha1:d64ed181873c7fe2aa2c101999dca5fe88276bc9
     pristine_git_object: 4a0fe945bea32cdce640595290e0ac0c5aa34c17
+  internal/sdk/models/shared/scimsyncjob.go:
+    id: cfd6190f293c
+    last_write_checksum: sha1:d73766bd4d7aa0cd3ca3db24b851a80af0424c91
+    pristine_git_object: 627a7393ced0eaf76c0d96378115d4d6de0e117d
   internal/sdk/models/shared/searchcontextsizeenum.go:
     id: 9345bd647720
     last_write_checksum: sha1:499014263018b7269917dd9dab00f713dde8360a
@@ -3708,8 +3728,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:5e172dfd6c0fc2de7b3e886ac3d510c74648d5a7
-    pristine_git_object: 892fd2046ae10deec7e7596ff04bb197e3757da1
+    last_write_checksum: sha1:b2fcc2dd3040625e0e3357a252852f1bf7c1d07b
+    pristine_git_object: 1e447256d616469fbea1112faab9e529956bca82
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -3740,8 +3760,8 @@ trackedFiles:
     pristine_git_object: 225f89fa83232afd070195744a60dbcf308996a7
   internal/sdk/scim.go:
     id: 45a1658f564e
-    last_write_checksum: sha1:6331a6590b1341268518ead24b14533f692263e9
-    pristine_git_object: d0f186463aaabe00f4bedd1486e937504775d46d
+    last_write_checksum: sha1:54eabf0fef9a1b1de893f7e3e562bad8b65e3bee
+    pristine_git_object: 2c35a7ec6982b0523c5fe1a81965767b578e6a88
   internal/sdk/stt.go:
     id: 85bb5759fa65
     last_write_checksum: sha1:e918815d64cf2d04ae6b702234340aab54a25cbf
@@ -5665,5 +5685,33 @@ examples:
           application/json: {"error": "invalid_grant", "error_description": "The subject token was not accepted."}
         "500":
           application/json: {"error": "invalid_grant", "error_description": "The subject token was not accepted."}
+  createScimSyncJob:
+    speakeasy-default-create-scim-sync-job:
+      responses:
+        "202":
+          application/json: {"data": {"created_at": "1712777141098", "deleted_groups": 182193, "error_message": null, "finished_at": "<value>", "id": "7d10512f-6c8e-413d-b6f9-117bd47a1c48", "started_at": "<value>", "status": "succeeded", "synced_groups": 985942}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getScimSyncJob:
+    speakeasy-default-get-scim-sync-job:
+      parameters:
+        path:
+          id: "11506961-3c26-4184-a388-53273cc64c83"
+      responses:
+        "200":
+          application/json: {"data": {"created_at": "1709974767907", "deleted_groups": 892856, "error_message": "<value>", "finished_at": "<value>", "id": "07b0436b-79eb-4e01-940e-aa9d5306e4c4", "started_at": "<value>", "status": "queued", "synced_groups": 824296}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(PrimeIntellect)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(PrimeIntellect)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(prime-intellect)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(prime-intellect)` **Added**\n  *  `response.data.provider_slug.enum(prime-intellect)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(prime-intellect)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(prime-intellect)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(PrimeIntellect)` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(PrimeIntellect)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(PrimeIntellect)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.prime-intellect` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.prime-intellect` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(PrimeIntellect)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(PrimeIntellect)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(PrimeIntellect)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.prime-intellect` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.SCIM.createSyncJob()`: **Added**
+  * `OpenRouter.SCIM.getSyncJob()`: **Added**
