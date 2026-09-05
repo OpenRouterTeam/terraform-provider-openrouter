@@ -26,8 +26,11 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
       }
     ]
   }
-  name          = "Production Langfuse"
-  privacy_mode  = false
+  name         = "Production Langfuse"
+  privacy_mode = false
+  regions = [
+    "global",
+  ]
   sampling_rate = 1
   type          = "langfuse"
   workspace_id  = "550e8400-e29b-41d4-a716-446655440000"

@@ -179,6 +179,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -295,6 +300,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 					"privacy_mode": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
+					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
 					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
@@ -432,6 +442,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -556,6 +571,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -676,6 +696,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 					"privacy_mode": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
+					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
 					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
@@ -799,6 +824,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -921,6 +951,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -1039,6 +1074,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -1156,6 +1196,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -1265,6 +1310,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 					"privacy_mode": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
+					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
 					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
@@ -1379,6 +1429,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 					"privacy_mode": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
+					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
 					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
@@ -1498,6 +1553,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 					"privacy_mode": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
+					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
 					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
@@ -1635,6 +1695,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -1752,6 +1817,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 					"privacy_mode": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
+					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
 					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
@@ -1879,6 +1949,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -2003,6 +2078,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
 					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
+					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,
 						Description: `Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).`,
@@ -2114,6 +2194,11 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 					"privacy_mode": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, request/response bodies are not forwarded to this destination — only metadata.`,
+					},
+					"regions": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.`,
 					},
 					"sampling_rate": schema.Float64Attribute{
 						Computed:    true,

@@ -19,6 +19,7 @@ type GetObservabilityDestinationResponseObservabilitySnowflakeDestination struct
 	ID                                types.String                                        `tfsdk:"id"`
 	Name                              types.String                                        `tfsdk:"name"`
 	PrivacyMode                       types.Bool                                          `tfsdk:"privacy_mode"`
+	Regions                           []types.String                                      `tfsdk:"regions"`
 	SamplingRate                      types.Float64                                       `tfsdk:"sampling_rate"`
 	UpdatedAt                         types.String                                        `tfsdk:"updated_at"`
 	WorkspaceID                       types.String                                        `tfsdk:"workspace_id"`

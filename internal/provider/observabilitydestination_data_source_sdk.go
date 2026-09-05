@@ -105,6 +105,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Arize.Name
 		r.Arize.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.PrivacyMode)
 		r.PrivacyMode = r.Arize.PrivacyMode
+		r.Arize.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Regions {
+			r.Arize.Regions = append(r.Arize.Regions, types.StringValue(string(v)))
+		}
 		r.Arize.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.SamplingRate)
 		r.SamplingRate = r.Arize.SamplingRate
 		r.Arize.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.UpdatedAt)
@@ -186,6 +190,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Braintrust.Name
 		r.Braintrust.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.PrivacyMode)
 		r.PrivacyMode = r.Braintrust.PrivacyMode
+		r.Braintrust.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Regions {
+			r.Braintrust.Regions = append(r.Braintrust.Regions, types.StringValue(string(v)))
+		}
 		r.Braintrust.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.SamplingRate)
 		r.SamplingRate = r.Braintrust.SamplingRate
 		r.Braintrust.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.UpdatedAt)
@@ -269,6 +277,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Clickhouse.Name
 		r.Clickhouse.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.PrivacyMode)
 		r.PrivacyMode = r.Clickhouse.PrivacyMode
+		r.Clickhouse.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Regions {
+			r.Clickhouse.Regions = append(r.Clickhouse.Regions, types.StringValue(string(v)))
+		}
 		r.Clickhouse.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.SamplingRate)
 		r.SamplingRate = r.Clickhouse.SamplingRate
 		r.Clickhouse.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.UpdatedAt)
@@ -350,6 +362,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Datadog.Name
 		r.Datadog.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.PrivacyMode)
 		r.PrivacyMode = r.Datadog.PrivacyMode
+		r.Datadog.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Regions {
+			r.Datadog.Regions = append(r.Datadog.Regions, types.StringValue(string(v)))
+		}
 		r.Datadog.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.SamplingRate)
 		r.SamplingRate = r.Datadog.SamplingRate
 		r.Datadog.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.UpdatedAt)
@@ -431,6 +447,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Grafana.Name
 		r.Grafana.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.PrivacyMode)
 		r.PrivacyMode = r.Grafana.PrivacyMode
+		r.Grafana.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Regions {
+			r.Grafana.Regions = append(r.Grafana.Regions, types.StringValue(string(v)))
+		}
 		r.Grafana.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.SamplingRate)
 		r.SamplingRate = r.Grafana.SamplingRate
 		r.Grafana.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.UpdatedAt)
@@ -512,6 +532,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Langfuse.Name
 		r.Langfuse.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.PrivacyMode)
 		r.PrivacyMode = r.Langfuse.PrivacyMode
+		r.Langfuse.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Regions {
+			r.Langfuse.Regions = append(r.Langfuse.Regions, types.StringValue(string(v)))
+		}
 		r.Langfuse.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.SamplingRate)
 		r.SamplingRate = r.Langfuse.SamplingRate
 		r.Langfuse.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.UpdatedAt)
@@ -594,6 +618,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Langsmith.Name
 		r.Langsmith.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.PrivacyMode)
 		r.PrivacyMode = r.Langsmith.PrivacyMode
+		r.Langsmith.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Regions {
+			r.Langsmith.Regions = append(r.Langsmith.Regions, types.StringValue(string(v)))
+		}
 		r.Langsmith.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.SamplingRate)
 		r.SamplingRate = r.Langsmith.SamplingRate
 		r.Langsmith.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.UpdatedAt)
@@ -678,6 +706,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Newrelic.Name
 		r.Newrelic.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.PrivacyMode)
 		r.PrivacyMode = r.Newrelic.PrivacyMode
+		r.Newrelic.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Regions {
+			r.Newrelic.Regions = append(r.Newrelic.Regions, types.StringValue(string(v)))
+		}
 		r.Newrelic.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.SamplingRate)
 		r.SamplingRate = r.Newrelic.SamplingRate
 		r.Newrelic.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.UpdatedAt)
@@ -759,6 +791,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Opik.Name
 		r.Opik.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.PrivacyMode)
 		r.PrivacyMode = r.Opik.PrivacyMode
+		r.Opik.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Regions {
+			r.Opik.Regions = append(r.Opik.Regions, types.StringValue(string(v)))
+		}
 		r.Opik.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.SamplingRate)
 		r.SamplingRate = r.Opik.SamplingRate
 		r.Opik.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.UpdatedAt)
@@ -838,6 +874,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.OtelCollector.Name
 		r.OtelCollector.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.PrivacyMode)
 		r.PrivacyMode = r.OtelCollector.PrivacyMode
+		r.OtelCollector.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Regions {
+			r.OtelCollector.Regions = append(r.OtelCollector.Regions, types.StringValue(string(v)))
+		}
 		r.OtelCollector.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.SamplingRate)
 		r.SamplingRate = r.OtelCollector.SamplingRate
 		r.OtelCollector.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.UpdatedAt)
@@ -918,6 +958,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Posthog.Name
 		r.Posthog.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.PrivacyMode)
 		r.PrivacyMode = r.Posthog.PrivacyMode
+		r.Posthog.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Regions {
+			r.Posthog.Regions = append(r.Posthog.Regions, types.StringValue(string(v)))
+		}
 		r.Posthog.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.SamplingRate)
 		r.SamplingRate = r.Posthog.SamplingRate
 		r.Posthog.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.UpdatedAt)
@@ -998,6 +1042,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Ramp.Name
 		r.Ramp.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.PrivacyMode)
 		r.PrivacyMode = r.Ramp.PrivacyMode
+		r.Ramp.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityRampDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityRampDestination.Regions {
+			r.Ramp.Regions = append(r.Ramp.Regions, types.StringValue(string(v)))
+		}
 		r.Ramp.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityRampDestination.SamplingRate)
 		r.SamplingRate = r.Ramp.SamplingRate
 		r.Ramp.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.UpdatedAt)
@@ -1084,6 +1132,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.S3.Name
 		r.S3.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.PrivacyMode)
 		r.PrivacyMode = r.S3.PrivacyMode
+		r.S3.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityS3Destination.Regions {
+			r.S3.Regions = append(r.S3.Regions, types.StringValue(string(v)))
+		}
 		r.S3.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityS3Destination.SamplingRate)
 		r.SamplingRate = r.S3.SamplingRate
 		r.S3.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.UpdatedAt)
@@ -1164,6 +1216,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Sentry.Name
 		r.Sentry.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.PrivacyMode)
 		r.PrivacyMode = r.Sentry.PrivacyMode
+		r.Sentry.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Regions {
+			r.Sentry.Regions = append(r.Sentry.Regions, types.StringValue(string(v)))
+		}
 		r.Sentry.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.SamplingRate)
 		r.SamplingRate = r.Sentry.SamplingRate
 		r.Sentry.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.UpdatedAt)
@@ -1248,6 +1304,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Snowflake.Name
 		r.Snowflake.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.PrivacyMode)
 		r.PrivacyMode = r.Snowflake.PrivacyMode
+		r.Snowflake.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Regions {
+			r.Snowflake.Regions = append(r.Snowflake.Regions, types.StringValue(string(v)))
+		}
 		r.Snowflake.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.SamplingRate)
 		r.SamplingRate = r.Snowflake.SamplingRate
 		r.Snowflake.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.UpdatedAt)
@@ -1330,6 +1390,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Weave.Name
 		r.Weave.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.PrivacyMode)
 		r.PrivacyMode = r.Weave.PrivacyMode
+		r.Weave.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Regions {
+			r.Weave.Regions = append(r.Weave.Regions, types.StringValue(string(v)))
+		}
 		r.Weave.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.SamplingRate)
 		r.SamplingRate = r.Weave.SamplingRate
 		r.Weave.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.UpdatedAt)
@@ -1414,6 +1478,10 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		r.Name = r.Webhook.Name
 		r.Webhook.PrivacyMode = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.PrivacyMode)
 		r.PrivacyMode = r.Webhook.PrivacyMode
+		r.Webhook.Regions = make([]types.String, 0, len(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Regions))
+		for _, v := range resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Regions {
+			r.Webhook.Regions = append(r.Webhook.Regions, types.StringValue(string(v)))
+		}
 		r.Webhook.SamplingRate = types.Float64Value(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.SamplingRate)
 		r.SamplingRate = r.Webhook.SamplingRate
 		r.Webhook.UpdatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.UpdatedAt)
