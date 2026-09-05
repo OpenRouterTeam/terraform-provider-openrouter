@@ -69,6 +69,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -139,6 +140,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -208,6 +210,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -279,6 +282,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -348,6 +352,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -417,6 +422,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -486,6 +492,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -556,6 +563,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -624,6 +632,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -693,6 +702,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -760,6 +770,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -828,6 +839,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -896,6 +908,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -970,6 +983,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -1038,6 +1052,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -1110,6 +1125,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.
@@ -1180,6 +1196,7 @@ Read-Only:
 - `id` (String) Stable public identifier for this destination.
 - `name` (String) Human-readable name for the destination.
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded to this destination — only metadata.
+- `regions` (List of String) Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
 - `sampling_rate` (Number) Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 - `updated_at` (String) ISO timestamp of when the destination was last updated.
 - `workspace_id` (String) ID of the workspace this destination belongs to.

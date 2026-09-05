@@ -96,6 +96,8 @@ type UpdateObservabilityDestinationResponseObservabilityWebhookDestination struc
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -192,6 +194,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityWebhookDestination) 
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilityWebhookDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilityWebhookDestination) GetSamplingRate() float64 {
@@ -296,6 +305,8 @@ type UpdateObservabilityDestinationResponseObservabilityWeaveDestination struct 
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -392,6 +403,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityWeaveDestination) Ge
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilityWeaveDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilityWeaveDestination) GetSamplingRate() float64 {
@@ -512,6 +530,8 @@ type UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination str
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -610,6 +630,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination
 	return u.PrivacyMode
 }
 
+func (u *UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
+}
+
 func (u *UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination) GetSamplingRate() float64 {
 	if u == nil {
 		return 0.0
@@ -696,6 +723,8 @@ type UpdateObservabilityDestinationResponseObservabilitySentryDestination struct
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -792,6 +821,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilitySentryDestination) G
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilitySentryDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilitySentryDestination) GetSamplingRate() float64 {
@@ -933,6 +969,8 @@ type UpdateObservabilityDestinationResponseObservabilityS3Destination struct {
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -1031,6 +1069,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityS3Destination) GetPr
 	return u.PrivacyMode
 }
 
+func (u *UpdateObservabilityDestinationResponseObservabilityS3Destination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
+}
+
 func (u *UpdateObservabilityDestinationResponseObservabilityS3Destination) GetSamplingRate() float64 {
 	if u == nil {
 		return 0.0
@@ -1121,6 +1166,8 @@ type UpdateObservabilityDestinationResponseObservabilityRampDestination struct {
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -1219,6 +1266,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityRampDestination) Get
 	return u.PrivacyMode
 }
 
+func (u *UpdateObservabilityDestinationResponseObservabilityRampDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
+}
+
 func (u *UpdateObservabilityDestinationResponseObservabilityRampDestination) GetSamplingRate() float64 {
 	if u == nil {
 		return 0.0
@@ -1305,6 +1359,8 @@ type UpdateObservabilityDestinationResponseObservabilityPosthogDestination struc
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -1403,6 +1459,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityPosthogDestination) 
 	return u.PrivacyMode
 }
 
+func (u *UpdateObservabilityDestinationResponseObservabilityPosthogDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
+}
+
 func (u *UpdateObservabilityDestinationResponseObservabilityPosthogDestination) GetSamplingRate() float64 {
 	if u == nil {
 		return 0.0
@@ -1481,6 +1544,8 @@ type UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -1579,6 +1644,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestina
 	return u.PrivacyMode
 }
 
+func (u *UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
+}
+
 func (u *UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination) GetSamplingRate() float64 {
 	if u == nil {
 		return 0.0
@@ -1673,6 +1745,8 @@ type UpdateObservabilityDestinationResponseObservabilityOpikDestination struct {
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -1769,6 +1843,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityOpikDestination) Get
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilityOpikDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilityOpikDestination) GetSamplingRate() float64 {
@@ -1883,6 +1964,8 @@ type UpdateObservabilityDestinationResponseObservabilityNewrelicDestination stru
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -1979,6 +2062,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityNewrelicDestination)
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilityNewrelicDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilityNewrelicDestination) GetSamplingRate() float64 {
@@ -2085,6 +2175,8 @@ type UpdateObservabilityDestinationResponseObservabilityLangsmithDestination str
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -2183,6 +2275,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityLangsmithDestination
 	return u.PrivacyMode
 }
 
+func (u *UpdateObservabilityDestinationResponseObservabilityLangsmithDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
+}
+
 func (u *UpdateObservabilityDestinationResponseObservabilityLangsmithDestination) GetSamplingRate() float64 {
 	if u == nil {
 		return 0.0
@@ -2277,6 +2376,8 @@ type UpdateObservabilityDestinationResponseObservabilityLangfuseDestination stru
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -2375,6 +2476,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityLangfuseDestination)
 	return u.PrivacyMode
 }
 
+func (u *UpdateObservabilityDestinationResponseObservabilityLangfuseDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
+}
+
 func (u *UpdateObservabilityDestinationResponseObservabilityLangfuseDestination) GetSamplingRate() float64 {
 	if u == nil {
 		return 0.0
@@ -2469,6 +2577,8 @@ type UpdateObservabilityDestinationResponseObservabilityGrafanaDestination struc
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -2565,6 +2675,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityGrafanaDestination) 
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilityGrafanaDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilityGrafanaDestination) GetSamplingRate() float64 {
@@ -2664,6 +2781,8 @@ type UpdateObservabilityDestinationResponseObservabilityDatadogDestination struc
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -2760,6 +2879,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityDatadogDestination) 
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilityDatadogDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilityDatadogDestination) GetSamplingRate() float64 {
@@ -2873,6 +2999,8 @@ type UpdateObservabilityDestinationResponseObservabilityClickhouseDestination st
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -2971,6 +3099,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityClickhouseDestinatio
 	return u.PrivacyMode
 }
 
+func (u *UpdateObservabilityDestinationResponseObservabilityClickhouseDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
+}
+
 func (u *UpdateObservabilityDestinationResponseObservabilityClickhouseDestination) GetSamplingRate() float64 {
 	if u == nil {
 		return 0.0
@@ -3065,6 +3200,8 @@ type UpdateObservabilityDestinationResponseObservabilityBraintrustDestination st
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -3161,6 +3298,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityBraintrustDestinatio
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilityBraintrustDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilityBraintrustDestination) GetSamplingRate() float64 {
@@ -3266,6 +3410,8 @@ type UpdateObservabilityDestinationResponseObservabilityArizeDestination struct 
 	Name *string `json:"name"`
 	// When true, request/response bodies are not forwarded to this destination — only metadata.
 	PrivacyMode bool `json:"privacy_mode"`
+	// Data regions this destination applies to. Requests served in a region only fan out to destinations that include that region.
+	Regions []ObservabilityDataRegion `json:"regions"`
 	// Sampling rate for events sent to this destination, between 0.0001 and 1 (1 = 100%).
 	SamplingRate float64 `json:"sampling_rate"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -3362,6 +3508,13 @@ func (u *UpdateObservabilityDestinationResponseObservabilityArizeDestination) Ge
 		return false
 	}
 	return u.PrivacyMode
+}
+
+func (u *UpdateObservabilityDestinationResponseObservabilityArizeDestination) GetRegions() []ObservabilityDataRegion {
+	if u == nil {
+		return []ObservabilityDataRegion{}
+	}
+	return u.Regions
 }
 
 func (u *UpdateObservabilityDestinationResponseObservabilityArizeDestination) GetSamplingRate() float64 {

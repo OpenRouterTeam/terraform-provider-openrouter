@@ -96,6 +96,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Arize.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.ID)
 				data.Arize.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.Name)
 				data.Arize.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.PrivacyMode)
+				if data.Arize.Regions == nil {
+					data.Arize.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityArizeDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityArizeDestination.Regions {
+					data.Arize.Regions = append(data.Arize.Regions, types.StringValue(string(v)))
+				}
 				data.Arize.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityArizeDestination.SamplingRate)
 				data.Arize.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.UpdatedAt)
 				data.Arize.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.WorkspaceID)
@@ -172,6 +178,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Braintrust.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.ID)
 				data.Braintrust.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Name)
 				data.Braintrust.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.PrivacyMode)
+				if data.Braintrust.Regions == nil {
+					data.Braintrust.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Regions {
+					data.Braintrust.Regions = append(data.Braintrust.Regions, types.StringValue(string(v)))
+				}
 				data.Braintrust.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.SamplingRate)
 				data.Braintrust.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.UpdatedAt)
 				data.Braintrust.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.WorkspaceID)
@@ -250,6 +262,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Clickhouse.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.ID)
 				data.Clickhouse.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Name)
 				data.Clickhouse.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.PrivacyMode)
+				if data.Clickhouse.Regions == nil {
+					data.Clickhouse.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Regions {
+					data.Clickhouse.Regions = append(data.Clickhouse.Regions, types.StringValue(string(v)))
+				}
 				data.Clickhouse.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.SamplingRate)
 				data.Clickhouse.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.UpdatedAt)
 				data.Clickhouse.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.WorkspaceID)
@@ -326,6 +344,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Datadog.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.ID)
 				data.Datadog.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Name)
 				data.Datadog.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.PrivacyMode)
+				if data.Datadog.Regions == nil {
+					data.Datadog.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityDatadogDestination.Regions {
+					data.Datadog.Regions = append(data.Datadog.Regions, types.StringValue(string(v)))
+				}
 				data.Datadog.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityDatadogDestination.SamplingRate)
 				data.Datadog.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.UpdatedAt)
 				data.Datadog.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.WorkspaceID)
@@ -402,6 +426,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Grafana.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.ID)
 				data.Grafana.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Name)
 				data.Grafana.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.PrivacyMode)
+				if data.Grafana.Regions == nil {
+					data.Grafana.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Regions {
+					data.Grafana.Regions = append(data.Grafana.Regions, types.StringValue(string(v)))
+				}
 				data.Grafana.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.SamplingRate)
 				data.Grafana.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.UpdatedAt)
 				data.Grafana.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.WorkspaceID)
@@ -478,6 +508,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Langfuse.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.ID)
 				data.Langfuse.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Name)
 				data.Langfuse.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.PrivacyMode)
+				if data.Langfuse.Regions == nil {
+					data.Langfuse.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Regions {
+					data.Langfuse.Regions = append(data.Langfuse.Regions, types.StringValue(string(v)))
+				}
 				data.Langfuse.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.SamplingRate)
 				data.Langfuse.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.UpdatedAt)
 				data.Langfuse.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.WorkspaceID)
@@ -555,6 +591,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Langsmith.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.ID)
 				data.Langsmith.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Name)
 				data.Langsmith.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.PrivacyMode)
+				if data.Langsmith.Regions == nil {
+					data.Langsmith.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Regions {
+					data.Langsmith.Regions = append(data.Langsmith.Regions, types.StringValue(string(v)))
+				}
 				data.Langsmith.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.SamplingRate)
 				data.Langsmith.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.UpdatedAt)
 				data.Langsmith.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.WorkspaceID)
@@ -634,6 +676,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Newrelic.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.ID)
 				data.Newrelic.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Name)
 				data.Newrelic.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.PrivacyMode)
+				if data.Newrelic.Regions == nil {
+					data.Newrelic.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Regions {
+					data.Newrelic.Regions = append(data.Newrelic.Regions, types.StringValue(string(v)))
+				}
 				data.Newrelic.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.SamplingRate)
 				data.Newrelic.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.UpdatedAt)
 				data.Newrelic.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.WorkspaceID)
@@ -710,6 +758,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Opik.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.ID)
 				data.Opik.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.Name)
 				data.Opik.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.PrivacyMode)
+				if data.Opik.Regions == nil {
+					data.Opik.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityOpikDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityOpikDestination.Regions {
+					data.Opik.Regions = append(data.Opik.Regions, types.StringValue(string(v)))
+				}
 				data.Opik.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityOpikDestination.SamplingRate)
 				data.Opik.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.UpdatedAt)
 				data.Opik.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.WorkspaceID)
@@ -784,6 +838,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.OtelCollector.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.ID)
 				data.OtelCollector.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Name)
 				data.OtelCollector.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.PrivacyMode)
+				if data.OtelCollector.Regions == nil {
+					data.OtelCollector.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Regions {
+					data.OtelCollector.Regions = append(data.OtelCollector.Regions, types.StringValue(string(v)))
+				}
 				data.OtelCollector.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.SamplingRate)
 				data.OtelCollector.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.UpdatedAt)
 				data.OtelCollector.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.WorkspaceID)
@@ -859,6 +919,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Posthog.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.ID)
 				data.Posthog.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Name)
 				data.Posthog.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.PrivacyMode)
+				if data.Posthog.Regions == nil {
+					data.Posthog.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityPosthogDestination.Regions {
+					data.Posthog.Regions = append(data.Posthog.Regions, types.StringValue(string(v)))
+				}
 				data.Posthog.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityPosthogDestination.SamplingRate)
 				data.Posthog.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.UpdatedAt)
 				data.Posthog.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.WorkspaceID)
@@ -934,6 +1000,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Ramp.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityRampDestination.ID)
 				data.Ramp.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityRampDestination.Name)
 				data.Ramp.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityRampDestination.PrivacyMode)
+				if data.Ramp.Regions == nil {
+					data.Ramp.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityRampDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityRampDestination.Regions {
+					data.Ramp.Regions = append(data.Ramp.Regions, types.StringValue(string(v)))
+				}
 				data.Ramp.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityRampDestination.SamplingRate)
 				data.Ramp.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityRampDestination.UpdatedAt)
 				data.Ramp.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityRampDestination.WorkspaceID)
@@ -1015,6 +1087,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.S3.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.ID)
 				data.S3.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Name)
 				data.S3.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.PrivacyMode)
+				if data.S3.Regions == nil {
+					data.S3.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityS3Destination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityS3Destination.Regions {
+					data.S3.Regions = append(data.S3.Regions, types.StringValue(string(v)))
+				}
 				data.S3.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityS3Destination.SamplingRate)
 				data.S3.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.UpdatedAt)
 				data.S3.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.WorkspaceID)
@@ -1090,6 +1168,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Sentry.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.ID)
 				data.Sentry.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.Name)
 				data.Sentry.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.PrivacyMode)
+				if data.Sentry.Regions == nil {
+					data.Sentry.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilitySentryDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilitySentryDestination.Regions {
+					data.Sentry.Regions = append(data.Sentry.Regions, types.StringValue(string(v)))
+				}
 				data.Sentry.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilitySentryDestination.SamplingRate)
 				data.Sentry.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.UpdatedAt)
 				data.Sentry.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.WorkspaceID)
@@ -1169,6 +1253,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Snowflake.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.ID)
 				data.Snowflake.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Name)
 				data.Snowflake.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.PrivacyMode)
+				if data.Snowflake.Regions == nil {
+					data.Snowflake.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Regions {
+					data.Snowflake.Regions = append(data.Snowflake.Regions, types.StringValue(string(v)))
+				}
 				data.Snowflake.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.SamplingRate)
 				data.Snowflake.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.UpdatedAt)
 				data.Snowflake.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.WorkspaceID)
@@ -1246,6 +1336,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Weave.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.ID)
 				data.Weave.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Name)
 				data.Weave.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.PrivacyMode)
+				if data.Weave.Regions == nil {
+					data.Weave.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityWeaveDestination.Regions {
+					data.Weave.Regions = append(data.Weave.Regions, types.StringValue(string(v)))
+				}
 				data.Weave.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityWeaveDestination.SamplingRate)
 				data.Weave.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.UpdatedAt)
 				data.Weave.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.WorkspaceID)
@@ -1325,6 +1421,12 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Webhook.ID = types.StringValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.ID)
 				data.Webhook.Name = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.Name)
 				data.Webhook.PrivacyMode = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.PrivacyMode)
+				if data.Webhook.Regions == nil {
+					data.Webhook.Regions = make([]types.String, 0, len(dataItem.ObservabilityDestinationObservabilityWebhookDestination.Regions))
+				}
+				for _, v := range dataItem.ObservabilityDestinationObservabilityWebhookDestination.Regions {
+					data.Webhook.Regions = append(data.Webhook.Regions, types.StringValue(string(v)))
+				}
 				data.Webhook.SamplingRate = types.Float64Value(dataItem.ObservabilityDestinationObservabilityWebhookDestination.SamplingRate)
 				data.Webhook.UpdatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.UpdatedAt)
 				data.Webhook.WorkspaceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.WorkspaceID)
