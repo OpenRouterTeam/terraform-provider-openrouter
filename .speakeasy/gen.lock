@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 59a780714fc97ae29b8a541b49c568a5
+  docChecksum: b121845a17fbd5b46bd36af82c989731
   docVersion: 1.0.0
   speakeasyVersion: 1.796.4
   generationVersion: 2.935.1
-  releaseVersion: 0.2.107
-  configChecksum: d2068a001e64b24fc4b4b7b6a49929de
+  releaseVersion: 0.2.108
+  configChecksum: 69edcdb09db2223fa67ba7cb2d69392c
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: e12d73fc-1173-4720-bf79-204244325cdc
-  pristine_commit_hash: 3568d0bd47feefb520cf3abef6a7e07b9eeec878
-  pristine_tree_hash: 31a642552f97704b8285c619c87ab64ef184ba83
+  generation_id: bd2bd9af-039e-48c2-bdf9-1ded9887000f
+  pristine_commit_hash: 8605e4f2cf11a30c835c76a28f91418b3c98ec9f
+  pristine_tree_hash: 690431240e73f3c3433f90842567ca2b896ffa24
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:1ab6d47b3631163ecaa592c89e044fda8e9027f3
-    pristine_git_object: a8d3811e847d121a7c9118959cfe1b066ecd445f
+    last_write_checksum: sha1:7d72bcf86f09c565598a480648db1b929d3cfd41
+    pristine_git_object: f8a5e4db03d2b32f258f9ea20d2d55a508375a63
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -400,16 +400,16 @@ trackedFiles:
     pristine_git_object: eeef0664bd2b319d490a6ec7d88c02ee1b9ddd78
   internal/provider/byokkey_resource.go:
     id: 7c3b6c42a696
-    last_write_checksum: sha1:3169a1a115565e7d141adab13b9dc25a2902bbab
-    pristine_git_object: a5d8014e6d45169840813227ee0cca1452f6dca9
+    last_write_checksum: sha1:99a4ac4e2ad48e4c60178ce2cc5d74f4004f8765
+    pristine_git_object: 750621b07f0f8c0f9357d83afca9c149c1c55442
   internal/provider/byokkey_resource_sdk.go:
     id: f02d4f42598a
     last_write_checksum: sha1:7238612235176bcb439e31f622ac14276157dc90
     pristine_git_object: 28a5ba84b9105f1fa4905e6eb2a54b99d711cc42
   internal/provider/byokkeys_data_source.go:
     id: d2215df95ba8
-    last_write_checksum: sha1:3e47f8cbef0ffe683a15a7a15d10057a3ac8107a
-    pristine_git_object: 180d0c45a017b52375c74b3036b72244cec26416
+    last_write_checksum: sha1:98ca50650d3a742c2ea83886504f2a79d8c6bfd6
+    pristine_git_object: a6696edf139037ff7a3617df7a2c1042864b0dd3
   internal/provider/byokkeys_data_source_sdk.go:
     id: 4114084a8f43
     last_write_checksum: sha1:1bcabef5d21469643e07331af5b90637a52e1900
@@ -1492,8 +1492,8 @@ trackedFiles:
     pristine_git_object: 4caaf2c417f996e8423d8f5645b7446c4d680875
   internal/sdk/models/operations/listbyokkeys.go:
     id: c0c010232a74
-    last_write_checksum: sha1:4daa3416da0a9e2aa22bdd5c7e0e694075efa8eb
-    pristine_git_object: 32b47d703c25e7e5ba2e82f4c9d09b7ed05a7e2f
+    last_write_checksum: sha1:74487f1e9a8473c14b47771c620374d07d52f101
+    pristine_git_object: f6307294d838a98c3716bb708d7de781af8436c6
   internal/sdk/models/operations/listcontainerfiles.go:
     id: 542e401d7b82
     last_write_checksum: sha1:eecbf885eedcba2f1bf0dbc719d5cbf8a915486f
@@ -1980,8 +1980,8 @@ trackedFiles:
     pristine_git_object: b087bcfcbb26f971a9485f557ba9917a7d8ee30c
   internal/sdk/models/shared/byokproviderslug.go:
     id: a789cd5dbc9d
-    last_write_checksum: sha1:729d5b45ee0162b89a72f6a2e7f0bc18a870b7f3
-    pristine_git_object: 5fc7b985f04320d6f88a2f4ede4fc1424b58bf8a
+    last_write_checksum: sha1:979d8d9d110dc753a803633ec8925733318f3045
+    pristine_git_object: 6d0a85c00ff606689b031cadd61017f8f0e60c5b
   internal/sdk/models/shared/capabilitydescriptor.go:
     id: 2d8ccd64b122
     last_write_checksum: sha1:5840c1d078c3e202e674755a877a1a0fdbdda806
@@ -3172,8 +3172,8 @@ trackedFiles:
     pristine_git_object: 2a9f12ebfb026773347219f85b2bbd4785ab5ab5
   internal/sdk/models/shared/provideroptions.go:
     id: 08ee62c5beac
-    last_write_checksum: sha1:54e9b8b96a756cf515fd9f28cfc03cc605de80a8
-    pristine_git_object: b85ae74fd798a6a725daf5e9f9503af42ce08a39
+    last_write_checksum: sha1:cc8224cb6dff63dda688f441aa0622cdbc14bb00
+    pristine_git_object: a792f69a6cd88775b73b01002adc522b1e5493f5
   internal/sdk/models/shared/provideroverloadedresponse.go:
     id: ad4cd9b9c5e0
     last_write_checksum: sha1:a183154a063776d4d77735a52b1251ef160f7da0
@@ -3644,8 +3644,8 @@ trackedFiles:
     pristine_git_object: 697cebe1afa2185426fac07de6d9ae50b8b48143
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:0ae49d966885f3afa26d9f825577fbe15963d92e
-    pristine_git_object: 73aec90574c9157832339a98da9112e66f4bc1b1
+    last_write_checksum: sha1:a2b0bfd38eb9fdaf16e31d5d2ddf2c05031674f8
+    pristine_git_object: 9851a100aad301c28686c74a76c1cd1c18f1eff1
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
     last_write_checksum: sha1:c75b8655399ea22961cf791909908dbfce3a2194
@@ -3760,8 +3760,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:4974c168624a18099d8785b6085c150332ca8fdc
-    pristine_git_object: 50c0f6dddae19aec836281e9394f37bb839a1b45
+    last_write_checksum: sha1:ccf0a4b4d4fdde37fa032e7a53c67a96dc551989
+    pristine_git_object: c118d103b51d76359c65ec14eeeeafcded15e4eb
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5743,4 +5743,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed** (Breaking ⚠️)\n  *  `response.data[].provider_slug.enum(ncompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(ncompass)` **Removed** (Breaking ⚠️)\n  *  `response.data.provider_slug.enum(ncompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(ncompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(ncompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(NCompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(NCompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(NCompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(NCompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(NCompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(NCompass)` **Removed** (Breaking ⚠️)\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(NCompass)` **Removed** (Breaking ⚠️)\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options` **Changed** (Breaking ⚠️)\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed** (Breaking ⚠️)\n  *  `response.data[].provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug` **Changed** (Breaking ⚠️)\n  *  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options` **Changed** (Breaking ⚠️)\n"
