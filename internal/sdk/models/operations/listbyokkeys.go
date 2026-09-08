@@ -78,7 +78,6 @@ const (
 	ProviderModular          Provider = "modular"
 	ProviderMoonshotai       Provider = "moonshotai"
 	ProviderMorph            Provider = "morph"
-	ProviderNcompass         Provider = "ncompass"
 	ProviderNebius           Provider = "nebius"
 	ProviderNexAgi           Provider = "nex-agi"
 	ProviderNextbit          Provider = "nextbit"
@@ -257,8 +256,6 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "moonshotai":
 		fallthrough
 	case "morph":
-		fallthrough
-	case "ncompass":
 		fallthrough
 	case "nebius":
 		fallthrough
