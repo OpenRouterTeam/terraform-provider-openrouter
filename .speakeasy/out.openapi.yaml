@@ -10805,6 +10805,8 @@ components:
             - 'low'
             - 'medium'
             - 'high'
+            - 'xhigh'
+            - 'max'
           example: 'high'
           type: 'string'
         resolution:
