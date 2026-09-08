@@ -9,24 +9,24 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// ConfigurationUpdate - OpenRouter extension. Changes reasoning effort from this point in the conversation onward without invalidating the prompt cache for the preceding turns. Place it on a content-less system message (`content: ""`) directly before the user message it should apply to, and keep it at that position in later requests. Equivalent to the OpenAI Responses `configuration_update` input item and the Anthropic Messages per-message `output_config.effort`.
-type ConfigurationUpdate struct {
+// ChatSystemMessageConfigurationUpdate - OpenRouter extension. Changes reasoning effort from this point in the conversation onward without invalidating the prompt cache for the preceding turns. Place it on a content-less system message (`content: ""`) directly before the user message it should apply to, and keep it at that position in later requests. Equivalent to the OpenAI Responses `configuration_update` input item and the Anthropic Messages per-message `output_config.effort`.
+type ChatSystemMessageConfigurationUpdate struct {
 	// Reasoning settings applied from this point in the conversation onward
 	Reasoning ConfigurationUpdateReasoning `json:"reasoning"`
 }
 
-func (c ConfigurationUpdate) MarshalJSON() ([]byte, error) {
+func (c ChatSystemMessageConfigurationUpdate) MarshalJSON() ([]byte, error) {
 	return utils.MarshalJSON(c, "", false)
 }
 
-func (c *ConfigurationUpdate) UnmarshalJSON(data []byte) error {
+func (c *ChatSystemMessageConfigurationUpdate) UnmarshalJSON(data []byte) error {
 	if err := utils.UnmarshalJSON(data, &c, "", false, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *ConfigurationUpdate) GetReasoning() ConfigurationUpdateReasoning {
+func (c *ChatSystemMessageConfigurationUpdate) GetReasoning() ConfigurationUpdateReasoning {
 	if c == nil {
 		return ConfigurationUpdateReasoning{}
 	}
@@ -133,7 +133,7 @@ func (u ChatSystemMessageContent) MarshalJSON() ([]byte, error) {
 // ChatSystemMessage - System message for setting behavior
 type ChatSystemMessage struct {
 	// OpenRouter extension. Changes reasoning effort from this point in the conversation onward without invalidating the prompt cache for the preceding turns. Place it on a content-less system message (`content: ""`) directly before the user message it should apply to, and keep it at that position in later requests. Equivalent to the OpenAI Responses `configuration_update` input item and the Anthropic Messages per-message `output_config.effort`.
-	ConfigurationUpdate *ConfigurationUpdate `json:"configuration_update,omitzero"`
+	ConfigurationUpdate *ChatSystemMessageConfigurationUpdate `json:"configuration_update,omitzero"`
 	// System message content
 	Content ChatSystemMessageContent `json:"content"`
 	// Optional name for the system message
@@ -153,7 +153,7 @@ func (c *ChatSystemMessage) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (c *ChatSystemMessage) GetConfigurationUpdate() *ConfigurationUpdate {
+func (c *ChatSystemMessage) GetConfigurationUpdate() *ChatSystemMessageConfigurationUpdate {
 	if c == nil {
 		return nil
 	}
