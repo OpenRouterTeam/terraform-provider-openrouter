@@ -9,6 +9,30 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+// ChatDeveloperMessageConfigurationUpdate - OpenRouter extension. Same as the system message `configuration_update`: changes reasoning effort from this point in the conversation onward without invalidating the prompt cache for the preceding turns.
+type ChatDeveloperMessageConfigurationUpdate struct {
+	// Reasoning settings applied from this point in the conversation onward
+	Reasoning ConfigurationUpdateReasoning `json:"reasoning"`
+}
+
+func (c ChatDeveloperMessageConfigurationUpdate) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(c, "", false)
+}
+
+func (c *ChatDeveloperMessageConfigurationUpdate) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &c, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *ChatDeveloperMessageConfigurationUpdate) GetReasoning() ConfigurationUpdateReasoning {
+	if c == nil {
+		return ConfigurationUpdateReasoning{}
+	}
+	return c.Reasoning
+}
+
 type ChatDeveloperMessageContentType string
 
 const (
@@ -108,6 +132,8 @@ func (u ChatDeveloperMessageContent) MarshalJSON() ([]byte, error) {
 
 // ChatDeveloperMessage - Developer message
 type ChatDeveloperMessage struct {
+	// OpenRouter extension. Same as the system message `configuration_update`: changes reasoning effort from this point in the conversation onward without invalidating the prompt cache for the preceding turns.
+	ConfigurationUpdate *ChatDeveloperMessageConfigurationUpdate `json:"configuration_update,omitzero"`
 	// Developer message content
 	Content ChatDeveloperMessageContent `json:"content"`
 	// Optional name for the developer message
@@ -125,6 +151,13 @@ func (c *ChatDeveloperMessage) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (c *ChatDeveloperMessage) GetConfigurationUpdate() *ChatDeveloperMessageConfigurationUpdate {
+	if c == nil {
+		return nil
+	}
+	return c.ConfigurationUpdate
 }
 
 func (c *ChatDeveloperMessage) GetContent() ChatDeveloperMessageContent {
