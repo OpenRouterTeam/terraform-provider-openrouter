@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 0f5c18020be26c68de1a5791a17affc1
+  docChecksum: 82ed40385984ef40f739469d664931ae
   docVersion: 1.0.0
   speakeasyVersion: 1.796.4
   generationVersion: 2.935.1
-  releaseVersion: 0.2.105
-  configChecksum: b2fa5a6007df94489da0f28afe07c2cd
+  releaseVersion: 0.2.106
+  configChecksum: ecc0c72768e43ed2133696817cd3acf1
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 8cd8a31a-c6a9-410a-8bf2-0da52731e6c8
-  pristine_commit_hash: dc7f4bacc8f2724d258a5c5795d1b55c9b634545
-  pristine_tree_hash: 6b9310297a27d8f112617d1e236307d5fc7a53fa
+  generation_id: 8c4b7579-de37-4f13-bb0d-2b691c70e17f
+  pristine_commit_hash: 5821698344406e4c7a3460c47c8ab35a71a5f011
+  pristine_tree_hash: 5eedc3abe13cfc7a9baf09a24c5916d741b8b6d8
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:f8d4764524b23fbf5f59a14ddb90b463cca87fac
-    pristine_git_object: 11db3dd0b1038b272fc589f7e84bfa30cb38fc1d
+    last_write_checksum: sha1:e16aae851290b54e64e8a111a2ce7473b34bed75
+    pristine_git_object: d992a224f5e59289c77f99b92c1bba91b2837041
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1912,8 +1912,8 @@ trackedFiles:
     pristine_git_object: 06effff66fd64c8f6d97d17f0ced47a7501541fd
   internal/sdk/models/shared/bashservertoolconfig.go:
     id: 05c2d7fd2b6c
-    last_write_checksum: sha1:3b8405ab8cfd449e8bc9cfb4f6084d54be6b9645
-    pristine_git_object: 74646f9c82a609045bf2fcb7004e52bbd0320121
+    last_write_checksum: sha1:665b83155fc9de9c605885bfc6b8822752e30353
+    pristine_git_object: 8f738303c8ac2a311d766a6315f29f9b45e303a6
   internal/sdk/models/shared/bashservertoolengine.go:
     id: e8344c954c82
     last_write_checksum: sha1:ad75677b765b6c3a7569cb5ecb05eaf7f487d1bf
@@ -3372,8 +3372,8 @@ trackedFiles:
     pristine_git_object: f47a2a5ee85a3aff232dd588b6f4a7bda0ebc254
   internal/sdk/models/shared/shellservertoolconfig.go:
     id: 4a71932185ee
-    last_write_checksum: sha1:2a2662af5035aba278bcfc4c196bce24a875311d
-    pristine_git_object: bf29eb5e742ae616614b2d583a5532f52838acc6
+    last_write_checksum: sha1:4833dea52ca8cec639ac41049894ce31e0b102f3
+    pristine_git_object: 4b62a781d1bd7b3a2576c42f70cbff32ae7daf88
   internal/sdk/models/shared/shellservertoolengine.go:
     id: 5258a9177bef
     last_write_checksum: sha1:e218bb4a108f22b21e91c04f63f4e48038755ad3
@@ -3760,8 +3760,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:45d13986bc37d156c8f0853a5a738e5a0fe3cd80
-    pristine_git_object: 36781f9cb957f2cf741a76c6b267bdf05d27faa2
+    last_write_checksum: sha1:50b69f5245162a69924f6167a1f63e1ee2483e61
+    pristine_git_object: 942f240d33dfa678c4e8527266dbf60ff7540810
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5743,4 +5743,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.messages[].union(developer).configuration_update` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.tools[].union(openrouter:bash).parameters.sleep_after_seconds` **Removed** (Breaking ⚠️)\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.tools[]` **Changed** (Breaking ⚠️)\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[].union(AdditionalToolsItem).tools[]` **Changed** (Breaking ⚠️)\n"
