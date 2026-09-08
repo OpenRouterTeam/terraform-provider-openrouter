@@ -29,6 +29,7 @@ const (
 	ProviderResponseProviderNameLynn                ProviderResponseProviderName = "Lynn"
 	ProviderResponseProviderNameMancer              ProviderResponseProviderName = "Mancer"
 	ProviderResponseProviderNameModal               ProviderResponseProviderName = "Modal"
+	ProviderResponseProviderNameNCompass            ProviderResponseProviderName = "NCompass"
 	ProviderResponseProviderNameNineteen            ProviderResponseProviderName = "Nineteen"
 	ProviderResponseProviderNameOctoAi              ProviderResponseProviderName = "OctoAI"
 	ProviderResponseProviderNameRecursal            ProviderResponseProviderName = "Recursal"
@@ -104,7 +105,6 @@ const (
 	ProviderResponseProviderNameMoonshotAi          ProviderResponseProviderName = "Moonshot AI"
 	ProviderResponseProviderNameMorph               ProviderResponseProviderName = "Morph"
 	ProviderResponseProviderNameVoyageAiByMongoDb   ProviderResponseProviderName = "VoyageAI by MongoDB"
-	ProviderResponseProviderNameNCompass            ProviderResponseProviderName = "NCompass"
 	ProviderResponseProviderNameNebius              ProviderResponseProviderName = "Nebius"
 	ProviderResponseProviderNameNexAgi              ProviderResponseProviderName = "Nex AGI"
 	ProviderResponseProviderNameNextBit             ProviderResponseProviderName = "NextBit"
@@ -191,6 +191,8 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 	case "Mancer":
 		fallthrough
 	case "Modal":
+		fallthrough
+	case "NCompass":
 		fallthrough
 	case "Nineteen":
 		fallthrough
@@ -341,8 +343,6 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 	case "Morph":
 		fallthrough
 	case "VoyageAI by MongoDB":
-		fallthrough
-	case "NCompass":
 		fallthrough
 	case "Nebius":
 		fallthrough
