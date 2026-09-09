@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: ac328ac8947fa66f817d8181d5b64f98
+  docChecksum: dc09ed3db2ad0a4828fbcc5d91a54f18
   docVersion: 1.0.0
   speakeasyVersion: 1.796.4
   generationVersion: 2.935.1
-  releaseVersion: 0.2.111
-  configChecksum: 75c1697b65437ae9da2930d344d869bd
+  releaseVersion: 0.2.112
+  configChecksum: 7409d5560adaff756fe32b5d517db98c
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: b3283736-504e-4d98-8387-c7a73a440253
-  pristine_commit_hash: 69c419ce5880470653d38c0d5de367a68166bae1
-  pristine_tree_hash: 795ab52b6b3d231fd58403be982e543992b16d91
+  generation_id: a122bd18-aafa-4176-b37e-6c2c46e402c1
+  pristine_commit_hash: 7e39dcac6f00b6a3282f8b39abb78eaf542e75e9
+  pristine_tree_hash: 0e08ee0fd39d95272c5443e443a62d7e4bc44d52
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:493262a6179534fae9947f90047e4c7138586006
-    pristine_git_object: 54c5849adf2c5c0de12942fe09626131e9ef7422
+    last_write_checksum: sha1:a2b4821de7b13922ee6710dc4cdd2eaa1903a121
+    pristine_git_object: 45e48af041e16b1b0c5b067f5a425b2061a8d97b
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1788,8 +1788,8 @@ trackedFiles:
     pristine_git_object: a0cfbe56355b55a65bc5af8215a407a515980dfe
   internal/sdk/models/shared/anthropicthinkingblockbinding.go:
     id: c996cb0ca20e
-    last_write_checksum: sha1:045d386c4eabeb5ce3dd711cbd6ba744f2603501
-    pristine_git_object: 47b2eb07026a8a5382b10cae604e495abc066043
+    last_write_checksum: sha1:eb1b3d498b342d57d87ed2ff798023f1b9e798af
+    pristine_git_object: d65916c9b995243acf99b84d20d9948a4d874028
   internal/sdk/models/shared/anthropicthinkingdisplay.go:
     id: e6be4aebac7c
     last_write_checksum: sha1:a5991a103dfb54a70f531296f4bcdf0d1b1e1b3b
@@ -3760,8 +3760,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:a54d2b674a21d9dd581ffe0739b24646414d81dc
-    pristine_git_object: 47fc82e5c2702370fb867427382ff49782de8f3a
+    last_write_checksum: sha1:53f29683ff89d517d6db502a4fab3f71f3d060ef
+    pristine_git_object: 4e07f25733f932b3f0ce5d0523c8971a7f59ad58
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5743,4 +5743,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(Near AI)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Near AI)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(near-ai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(near-ai)` **Added**\n  *  `response.data.provider_slug.enum(near-ai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(near-ai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(near-ai)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Near AI)` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Near AI)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Near AI)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.near-ai` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.near-ai` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Near AI)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Near AI)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Near AI)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.near-ai` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.thinking.union(adaptive).block_binding.mismatch_behavior` **Added**\n"
