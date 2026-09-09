@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 696702493e52552cfb4c1b20db96e6cd
+  docChecksum: db9c03646f1999a4520947ff45d000af
   docVersion: 1.0.0
   speakeasyVersion: 1.796.4
   generationVersion: 2.935.1
-  releaseVersion: 0.2.109
-  configChecksum: 23aef69fc5a2b5d8159a94368856d7b1
+  releaseVersion: 0.2.110
+  configChecksum: 4e25eaa33e8b081cd51d50e8c7367328
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: f7d396b8-07a1-461a-aa49-f1d1cc1edcd3
-  pristine_commit_hash: a74465c9237a377cca81a7a59ab174475bd90c40
-  pristine_tree_hash: c5481b2cae91ef56de0d72aaeb12cf08e5e74e7a
+  generation_id: 6f35b510-4b59-4937-bfae-8f6c8ca2b8d5
+  pristine_commit_hash: 6f1f65862ba9aeebb48308772ab38c2bd840f170
+  pristine_tree_hash: 8acec6e588cd41cc76dd0f1214c9bdd0d8edec7c
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:d9406396a8523b3f430e02b75d05c1290ff701a6
-    pristine_git_object: 02af53f5b116378f808b46aa62457a6aad31b035
+    last_write_checksum: sha1:63dec021e651b87bef46b62ebb845a4fd54056e8
+    pristine_git_object: 35e541254c178bef2abb067e8032139c20ffcaa2
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -160,8 +160,8 @@ trackedFiles:
     pristine_git_object: a7f700325db8da823494cfc19c4863a36b660f54
   examples/resources/openrouter_byok_key/resource.tf:
     id: a1edcb5b9077
-    last_write_checksum: sha1:86d874d134b9f35af544359ca524693c74d556f7
-    pristine_git_object: a013c3d989b17590497963cedb534c95cd571cad
+    last_write_checksum: sha1:cb7d18eae1209755c924810c60f3ced96aec989a
+    pristine_git_object: 719f8a754f0a8911c1ac6ee0de8a795a902d70c7
   examples/resources/openrouter_guardrail/import-by-string-id.tf:
     id: ea4a95059bde
     last_write_checksum: sha1:33a145720858b1e36fc767bb1f13177bced68439
@@ -392,28 +392,28 @@ trackedFiles:
     pristine_git_object: 7f71d472bf0aa6f56848533eb83fc51b6e307d8f
   internal/provider/byokkey_data_source.go:
     id: dabd268011ce
-    last_write_checksum: sha1:b3678eaf4e2a7bd4d580c61acf213a07ec763a5f
-    pristine_git_object: b016aca8822b5c6493b0ebc41216b86d1d9627ae
+    last_write_checksum: sha1:ba5f2930c869d0f882ce253a63c62a2dc0a3f8a8
+    pristine_git_object: c7e0175ee198375b97bb3fbf254af2c78c07341d
   internal/provider/byokkey_data_source_sdk.go:
     id: 0fdc8486ab84
-    last_write_checksum: sha1:43b30eb5e29e52ddc00070d7457f0cc44578aa1c
-    pristine_git_object: eeef0664bd2b319d490a6ec7d88c02ee1b9ddd78
+    last_write_checksum: sha1:18cdf21ae1801a5f5e8cfa88a56f2270e91b0341
+    pristine_git_object: 6c7777cdbca9ff9750c80dea6c58c36a30e21be1
   internal/provider/byokkey_resource.go:
     id: 7c3b6c42a696
-    last_write_checksum: sha1:99a4ac4e2ad48e4c60178ce2cc5d74f4004f8765
-    pristine_git_object: 750621b07f0f8c0f9357d83afca9c149c1c55442
+    last_write_checksum: sha1:bffdad77417530a9043f6a2fd268f169f8743e30
+    pristine_git_object: 3fccffb8565d38d4bfd8ea31e19014eaadaf462f
   internal/provider/byokkey_resource_sdk.go:
     id: f02d4f42598a
-    last_write_checksum: sha1:7238612235176bcb439e31f622ac14276157dc90
-    pristine_git_object: 28a5ba84b9105f1fa4905e6eb2a54b99d711cc42
+    last_write_checksum: sha1:44518e77f0752c696afa79ca5e379644b7a6a7f2
+    pristine_git_object: 07ec7334a66349d397767e8696906fd3ece372a0
   internal/provider/byokkeys_data_source.go:
     id: d2215df95ba8
-    last_write_checksum: sha1:98ca50650d3a742c2ea83886504f2a79d8c6bfd6
-    pristine_git_object: a6696edf139037ff7a3617df7a2c1042864b0dd3
+    last_write_checksum: sha1:d32792ac47964b0f367365586f79abc794200f72
+    pristine_git_object: a79d59d8cc3c147e77417ab65cd49e3b82aeb673
   internal/provider/byokkeys_data_source_sdk.go:
     id: 4114084a8f43
-    last_write_checksum: sha1:1bcabef5d21469643e07331af5b90637a52e1900
-    pristine_git_object: a8f1f69028f2e093627aa7060880190ba57ac77d
+    last_write_checksum: sha1:77002d2698874d5af3e3806660298761fdf252d3
+    pristine_git_object: d884c80a40f8e26d157ddb21cd1df1d409ba540b
   internal/provider/credits_data_source.go:
     id: 302a3a7200eb
     last_write_checksum: sha1:4a15dad083552b52c5f845dc6dd80036f15ab746
@@ -628,8 +628,8 @@ trackedFiles:
     pristine_git_object: 2ea047edb3569e7b60da79ce6a59fa127ca244a8
   internal/provider/types/byok_key.go:
     id: e37efd1e91a3
-    last_write_checksum: sha1:476e99299ec4d58f33d4b7d4ea00386828e975db
-    pristine_git_object: 5f989d72bd0dba260a3299d36d75ee711e53ff25
+    last_write_checksum: sha1:aeb7c6d89f9419724f1c0f8c815266e6127f1fb6
+    pristine_git_object: 42522a755e9367c5676f2c6cbe2dc988d94c9a52
   internal/provider/types/content_filter_builtin_entry.go:
     id: 1aa8b11c2762
     last_write_checksum: sha1:0575ee688f2659541efd8cc5eac2e11324998b60
@@ -1976,8 +1976,8 @@ trackedFiles:
     pristine_git_object: 768531b602899f2e5328b74b512923e42c526251
   internal/sdk/models/shared/byokkey.go:
     id: dbf776e89c61
-    last_write_checksum: sha1:4a6465538cbae46530305dac74594d03fbb47981
-    pristine_git_object: b087bcfcbb26f971a9485f557ba9917a7d8ee30c
+    last_write_checksum: sha1:e6e8fd81d5fe9d42791f22abe25a63c65b4807e9
+    pristine_git_object: fa7e62edd12931035827675ba9451e5f3554ab9a
   internal/sdk/models/shared/byokproviderslug.go:
     id: a789cd5dbc9d
     last_write_checksum: sha1:979d8d9d110dc753a803633ec8925733318f3045
@@ -2252,12 +2252,12 @@ trackedFiles:
     pristine_git_object: 43f1de750b1c5b451aad5fbed9d317c2c6363fdd
   internal/sdk/models/shared/createbyokkeyrequest.go:
     id: b383a6491a6e
-    last_write_checksum: sha1:a0e1bfaa782c1fe7b0da18f8f39684625a216690
-    pristine_git_object: b6f5057854e9a361b2c1d1465e8ef41ad03ef98e
+    last_write_checksum: sha1:54d383bfdeb7817d45519dea24a20cfe57ded3e3
+    pristine_git_object: 47e29afbcf100c711d46129bcb9659a6bffab4a9
   internal/sdk/models/shared/createbyokkeyresponse.go:
     id: 6a451307488e
-    last_write_checksum: sha1:f3106a9e43bd551ec3832757ce1ff3ca0e6ea045
-    pristine_git_object: 5199e065e9aebb5639aff33123f3d33af88518fe
+    last_write_checksum: sha1:dddd76459d7fd61c1d14a7e16af9b88b4b8908dd
+    pristine_git_object: 0cb030de1b74d7aa874997c88858ddef902bccf5
   internal/sdk/models/shared/createguardrailrequest.go:
     id: 2e2b73e39da3
     last_write_checksum: sha1:952ad4d2c084a90a3ee1b2664fc08003c14c689a
@@ -2492,8 +2492,8 @@ trackedFiles:
     pristine_git_object: 89fb4eb00abb16a41cf65fdd24759b18ceb173bc
   internal/sdk/models/shared/getbyokkeyresponse.go:
     id: 4f2a5d8663e9
-    last_write_checksum: sha1:3763ae621572af1d2633a99cfbdfe386d7d80340
-    pristine_git_object: edbaf64be4cc31d5517f6506a83d80e12b616331
+    last_write_checksum: sha1:ce5fec58e9ca7d95430f1395ef37f1c06db245f1
+    pristine_git_object: ea43b182c6ae83610304cf3100867c33a2f4f2bf
   internal/sdk/models/shared/getguardrailresponse.go:
     id: 7b5980eb9eb8
     last_write_checksum: sha1:3da68a2fc8cbe696f7a5791ed2bba8e85d75d029
@@ -3592,12 +3592,12 @@ trackedFiles:
     pristine_git_object: e9c75430555c19c29a4e2571a17393695f9e1fa4
   internal/sdk/models/shared/updatebyokkeyrequest.go:
     id: 29b6739eb989
-    last_write_checksum: sha1:4dc304ffb756c01dbf9c992a6a96236856020a3f
-    pristine_git_object: eff1adc043ff5e68054e8355be2669a886328359
+    last_write_checksum: sha1:2cef3fc794d34a8c83552bcbc1bb8d64c1974319
+    pristine_git_object: d6a9b26ad67fdea4d33afe81b12abf6a582751fa
   internal/sdk/models/shared/updatebyokkeyresponse.go:
     id: df2491818c60
-    last_write_checksum: sha1:a3e8ddf1d2f614d9b90dfcfa3426478bf945a488
-    pristine_git_object: f7f00f01c926f810ca1bdfc3267ee4e88e1e5532
+    last_write_checksum: sha1:fff7b434b76c515f6df3cc9757aadd71534348c0
+    pristine_git_object: cd8fdfe2a6c84b0ebc14287eeaf622f0f8c7af52
   internal/sdk/models/shared/updateguardrailrequest.go:
     id: 3148e778e2ae
     last_write_checksum: sha1:896eb2a2af14859e6fa963f762b83785a86b9b03
@@ -3760,8 +3760,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:91e5bec3cc4fcf575171243d67975614d06d3092
-    pristine_git_object: 330f32bdc7445627bdb90316c64854742b311b40
+    last_write_checksum: sha1:48516c62f4ffada5db4722e8153e73e887357cae
+    pristine_git_object: 315184a8bd9b5e27357dfb1ca90b5de6a8b98b49
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -4109,7 +4109,7 @@ examples:
           provider: "openai"
       responses:
         "200":
-          application/json: {"data": [{"allowed_api_key_hashes": null, "allowed_models": null, "allowed_user_ids": null, "created_at": "2025-08-24T10:30:00Z", "disabled": false, "id": "11111111-2222-3333-4444-555555555555", "is_fallback": false, "label": "sk-...AbCd", "name": "Production OpenAI Key", "provider": "openai", "sort_order": 0, "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}], "total_count": 1}
+          application/json: {"data": [{"allowed_api_key_hashes": null, "allowed_models": null, "allowed_user_ids": null, "created_at": "2025-08-24T10:30:00Z", "disabled": false, "id": "11111111-2222-3333-4444-555555555555", "is_byok_only": false, "is_fallback": false, "is_required": false, "label": "sk-...AbCd", "name": "Production OpenAI Key", "provider": "openai", "sort_order": 0, "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}], "total_count": 1}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
@@ -4122,7 +4122,7 @@ examples:
         application/json: {"key": "sk-proj-abc123...", "name": "Production OpenAI Key", "provider": "openai"}
       responses:
         "201":
-          application/json: {"data": {"allowed_api_key_hashes": null, "allowed_models": null, "allowed_user_ids": null, "created_at": "2025-08-24T10:30:00Z", "disabled": false, "id": "11111111-2222-3333-4444-555555555555", "is_fallback": false, "label": "sk-...AbCd", "name": "Production OpenAI Key", "provider": "openai", "sort_order": 0, "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}}
+          application/json: {"data": {"allowed_api_key_hashes": null, "allowed_models": null, "allowed_user_ids": null, "created_at": "2025-08-24T10:30:00Z", "disabled": false, "id": "11111111-2222-3333-4444-555555555555", "is_byok_only": false, "is_fallback": false, "is_required": false, "label": "sk-...AbCd", "name": "Production OpenAI Key", "provider": "openai", "sort_order": 0, "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -4152,7 +4152,7 @@ examples:
           id: "11111111-2222-3333-4444-555555555555"
       responses:
         "200":
-          application/json: {"data": {"allowed_api_key_hashes": null, "allowed_models": null, "allowed_user_ids": null, "created_at": "2025-08-24T10:30:00Z", "disabled": false, "id": "11111111-2222-3333-4444-555555555555", "is_fallback": false, "label": "sk-...AbCd", "name": "Production OpenAI Key", "provider": "openai", "sort_order": 0, "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}}
+          application/json: {"data": {"allowed_api_key_hashes": null, "allowed_models": null, "allowed_user_ids": null, "created_at": "2025-08-24T10:30:00Z", "disabled": false, "id": "11111111-2222-3333-4444-555555555555", "is_byok_only": false, "is_fallback": false, "is_required": false, "label": "sk-...AbCd", "name": "Production OpenAI Key", "provider": "openai", "sort_order": 0, "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "404":
@@ -4168,7 +4168,7 @@ examples:
         application/json: {"disabled": false, "name": "Updated OpenAI Key"}
       responses:
         "200":
-          application/json: {"data": {"allowed_api_key_hashes": null, "allowed_models": null, "allowed_user_ids": null, "created_at": "2025-08-24T10:30:00Z", "disabled": false, "id": "11111111-2222-3333-4444-555555555555", "is_fallback": false, "label": "sk-...AbCd", "name": "Updated OpenAI Key", "provider": "openai", "sort_order": 0, "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}}
+          application/json: {"data": {"allowed_api_key_hashes": null, "allowed_models": null, "allowed_user_ids": null, "created_at": "2025-08-24T10:30:00Z", "disabled": false, "id": "11111111-2222-3333-4444-555555555555", "is_byok_only": false, "is_fallback": false, "is_required": false, "label": "sk-...AbCd", "name": "Updated OpenAI Key", "provider": "openai", "sort_order": 0, "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -5743,3 +5743,4 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.byok.list()`:  `response.data[]` **Changed**\n* `OpenRouter.byok.create()`: \n  *  `request` **Changed**\n  *  `response.data` **Changed**\n* `OpenRouter.byok.get()`:  `response.data` **Changed**\n* `OpenRouter.byok.update()`: \n  *  `request.body` **Changed**\n  *  `response.data` **Changed**\n"
