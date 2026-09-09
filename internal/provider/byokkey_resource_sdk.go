@@ -56,7 +56,9 @@ func (r *ByokKeyResourceModel) RefreshFromSharedCreateBYOKKeyResponseData(ctx co
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
+	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
 	r.IsFallback = types.BoolValue(resp.IsFallback)
+	r.IsRequired = types.BoolValue(resp.IsRequired)
 	r.Label = types.StringValue(resp.Label)
 	r.Name = types.StringPointerValue(resp.Name)
 	r.ProviderSlug = types.StringValue(string(resp.ProviderSlug))
@@ -111,7 +113,9 @@ func (r *ByokKeyResourceModel) RefreshFromSharedGetBYOKKeyResponseData(ctx conte
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
+	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
 	r.IsFallback = types.BoolValue(resp.IsFallback)
+	r.IsRequired = types.BoolValue(resp.IsRequired)
 	r.Label = types.StringValue(resp.Label)
 	r.Name = types.StringPointerValue(resp.Name)
 	r.ProviderSlug = types.StringValue(string(resp.ProviderSlug))
@@ -166,7 +170,9 @@ func (r *ByokKeyResourceModel) RefreshFromSharedUpdateBYOKKeyResponseData(ctx co
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
+	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
 	r.IsFallback = types.BoolValue(resp.IsFallback)
+	r.IsRequired = types.BoolValue(resp.IsRequired)
 	r.Label = types.StringValue(resp.Label)
 	r.Name = types.StringPointerValue(resp.Name)
 	r.ProviderSlug = types.StringValue(string(resp.ProviderSlug))
@@ -253,11 +259,23 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 	} else {
 		disabled = nil
 	}
+	isByokOnly := new(bool)
+	if !r.IsByokOnly.IsUnknown() && !r.IsByokOnly.IsNull() {
+		*isByokOnly = r.IsByokOnly.ValueBool()
+	} else {
+		isByokOnly = nil
+	}
 	isFallback := new(bool)
 	if !r.IsFallback.IsUnknown() && !r.IsFallback.IsNull() {
 		*isFallback = r.IsFallback.ValueBool()
 	} else {
 		isFallback = nil
+	}
+	isRequired := new(bool)
+	if !r.IsRequired.IsUnknown() && !r.IsRequired.IsNull() {
+		*isRequired = r.IsRequired.ValueBool()
+	} else {
+		isRequired = nil
 	}
 	var key string
 	key = r.Key.ValueString()
@@ -280,7 +298,9 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 		AllowedModels:       allowedModels,
 		AllowedUserIds:      allowedUserIds,
 		Disabled:            disabled,
+		IsByokOnly:          isByokOnly,
 		IsFallback:          isFallback,
+		IsRequired:          isRequired,
 		Key:                 key,
 		Name:                name,
 		ProviderSlug:        providerSlug,
@@ -320,11 +340,23 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 	} else {
 		disabled = nil
 	}
+	isByokOnly := new(bool)
+	if !r.IsByokOnly.IsUnknown() && !r.IsByokOnly.IsNull() {
+		*isByokOnly = r.IsByokOnly.ValueBool()
+	} else {
+		isByokOnly = nil
+	}
 	isFallback := new(bool)
 	if !r.IsFallback.IsUnknown() && !r.IsFallback.IsNull() {
 		*isFallback = r.IsFallback.ValueBool()
 	} else {
 		isFallback = nil
+	}
+	isRequired := new(bool)
+	if !r.IsRequired.IsUnknown() && !r.IsRequired.IsNull() {
+		*isRequired = r.IsRequired.ValueBool()
+	} else {
+		isRequired = nil
 	}
 	key := new(string)
 	if !r.Key.IsUnknown() && !r.Key.IsNull() {
@@ -343,7 +375,9 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 		AllowedModels:       allowedModels,
 		AllowedUserIds:      allowedUserIds,
 		Disabled:            disabled,
+		IsByokOnly:          isByokOnly,
 		IsFallback:          isFallback,
+		IsRequired:          isRequired,
 		Key:                 key,
 		Name:                name,
 	}

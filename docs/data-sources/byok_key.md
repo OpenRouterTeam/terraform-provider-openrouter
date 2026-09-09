@@ -32,7 +32,9 @@ data "openrouter_byok_key" "my_byokkey" {
 - `allowed_user_ids` (List of String) Optional allowlist of user IDs that may use this credential. `null` means no restriction.
 - `created_at` (String) ISO timestamp of when the credential was created.
 - `disabled` (Boolean) Whether this credential is currently disabled.
-- `is_fallback` (Boolean) Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried.
+- `is_byok_only` (Boolean) Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside `allowed_models` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials.
+- `is_fallback` (Boolean) Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried. Cannot be combined with `is_byok_only`.
+- `is_required` (Boolean) Whether OpenRouter's shared endpoints on this provider are removed for the models this credential applies to (its `allowed_models`, or every model when `null`). Requests for those models run only on your keys; models outside the allowlist may still fall back to shared capacity on this provider.
 - `label` (String) Short masked snippet of the key (e.g. the first/last few characters) used to identify it in the UI.
 - `name` (String) Optional human-readable name for the credential.
 - `provider_slug` (String) The upstream provider this credential authenticates against, as a lowercase slug (e.g. `openai`, `anthropic`, `amazon-bedrock`).

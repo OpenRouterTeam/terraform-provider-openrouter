@@ -35,7 +35,9 @@ type ByokKeyDataSourceModel struct {
 	CreatedAt           types.String   `tfsdk:"created_at"`
 	Disabled            types.Bool     `tfsdk:"disabled"`
 	ID                  types.String   `tfsdk:"id"`
+	IsByokOnly          types.Bool     `tfsdk:"is_byok_only"`
 	IsFallback          types.Bool     `tfsdk:"is_fallback"`
+	IsRequired          types.Bool     `tfsdk:"is_required"`
 	Label               types.String   `tfsdk:"label"`
 	Name                types.String   `tfsdk:"name"`
 	ProviderSlug        types.String   `tfsdk:"provider_slug"`
@@ -81,9 +83,17 @@ func (r *ByokKeyDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 				Required:    true,
 				Description: `Stable public identifier for this BYOK credential.`,
 			},
+			"is_byok_only": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside ` + "`" + `allowed_models` + "`" + ` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials.`,
+			},
 			"is_fallback": schema.BoolAttribute{
 				Computed:    true,
-				Description: `Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried.`,
+				Description: `Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried. Cannot be combined with ` + "`" + `is_byok_only` + "`" + `.`,
+			},
+			"is_required": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether OpenRouter's shared endpoints on this provider are removed for the models this credential applies to (its ` + "`" + `allowed_models` + "`" + `, or every model when ` + "`" + `null` + "`" + `). Requests for those models run only on your keys; models outside the allowlist may still fall back to shared capacity on this provider.`,
 			},
 			"label": schema.StringAttribute{
 				Computed:    true,

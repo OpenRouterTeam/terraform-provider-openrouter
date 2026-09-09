@@ -24,7 +24,9 @@ resource "openrouter_byok_key" "my_byokkey" {
     "..."
   ]
   disabled      = false
+  is_byok_only  = false
   is_fallback   = false
+  is_required   = false
   key           = "sk-proj-abc123..."
   name          = "Production OpenAI Key"
   provider_slug = "openai"
@@ -46,7 +48,9 @@ resource "openrouter_byok_key" "my_byokkey" {
 - `allowed_models` (List of String) Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
 - `allowed_user_ids` (List of String) Optional allowlist of user IDs that may use this credential. `null` means no restriction.
 - `disabled` (Boolean) Whether this credential should be created in a disabled state.
-- `is_fallback` (Boolean) Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried.
+- `is_byok_only` (Boolean) Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside `allowed_models` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials. Defaults to `false`.
+- `is_fallback` (Boolean) Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried. Cannot be combined with `is_byok_only`.
+- `is_required` (Boolean) Whether OpenRouter's shared endpoints on this provider are removed for the models this credential applies to (its `allowed_models`, or every model when `null`). Requests for those models run only on your keys; models outside the allowlist may still fall back to shared capacity on this provider. Defaults to `false`.
 - `name` (String) Optional human-readable name for the credential.
 - `workspace_id` (String) Optional workspace ID to scope the credential to. When omitted, the credential is created in the account's default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly. Requires replacement if changed.
 

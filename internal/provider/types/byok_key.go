@@ -14,7 +14,9 @@ type BYOKKey struct {
 	CreatedAt           types.String   `tfsdk:"created_at"`
 	Disabled            types.Bool     `tfsdk:"disabled"`
 	ID                  types.String   `tfsdk:"id"`
+	IsByokOnly          types.Bool     `tfsdk:"is_byok_only"`
 	IsFallback          types.Bool     `tfsdk:"is_fallback"`
+	IsRequired          types.Bool     `tfsdk:"is_required"`
 	Label               types.String   `tfsdk:"label"`
 	Name                types.String   `tfsdk:"name"`
 	ProviderSlug        types.String   `tfsdk:"provider_slug"`

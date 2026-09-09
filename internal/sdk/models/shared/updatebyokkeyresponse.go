@@ -17,8 +17,12 @@ type UpdateBYOKKeyResponseData struct {
 	Disabled bool `json:"disabled"`
 	// Stable public identifier for this BYOK credential.
 	ID string `json:"id"`
-	// Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried.
+	// Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside `allowed_models` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials.
+	IsByokOnly bool `json:"is_byok_only"`
+	// Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried. Cannot be combined with `is_byok_only`.
 	IsFallback bool `json:"is_fallback"`
+	// Whether OpenRouter's shared endpoints on this provider are removed for the models this credential applies to (its `allowed_models`, or every model when `null`). Requests for those models run only on your keys; models outside the allowlist may still fall back to shared capacity on this provider.
+	IsRequired bool `json:"is_required"`
 	// Short masked snippet of the key (e.g. the first/last few characters) used to identify it in the UI.
 	Label string `json:"label"`
 	// Optional human-readable name for the credential.
@@ -73,11 +77,25 @@ func (u *UpdateBYOKKeyResponseData) GetID() string {
 	return u.ID
 }
 
+func (u *UpdateBYOKKeyResponseData) GetIsByokOnly() bool {
+	if u == nil {
+		return false
+	}
+	return u.IsByokOnly
+}
+
 func (u *UpdateBYOKKeyResponseData) GetIsFallback() bool {
 	if u == nil {
 		return false
 	}
 	return u.IsFallback
+}
+
+func (u *UpdateBYOKKeyResponseData) GetIsRequired() bool {
+	if u == nil {
+		return false
+	}
+	return u.IsRequired
 }
 
 func (u *UpdateBYOKKeyResponseData) GetLabel() string {
