@@ -75,6 +75,7 @@ const (
 	BYOKProviderSlugModular          BYOKProviderSlug = "modular"
 	BYOKProviderSlugMoonshotai       BYOKProviderSlug = "moonshotai"
 	BYOKProviderSlugMorph            BYOKProviderSlug = "morph"
+	BYOKProviderSlugNearAi           BYOKProviderSlug = "near-ai"
 	BYOKProviderSlugNebius           BYOKProviderSlug = "nebius"
 	BYOKProviderSlugNexAgi           BYOKProviderSlug = "nex-agi"
 	BYOKProviderSlugNextbit          BYOKProviderSlug = "nextbit"
@@ -253,6 +254,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "moonshotai":
 		fallthrough
 	case "morph":
+		fallthrough
+	case "near-ai":
 		fallthrough
 	case "nebius":
 		fallthrough

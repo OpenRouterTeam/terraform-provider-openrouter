@@ -76,6 +76,7 @@ const (
 	ProviderNameMoonshotAi          ProviderName = "Moonshot AI"
 	ProviderNameMorph               ProviderName = "Morph"
 	ProviderNameVoyageAiByMongoDb   ProviderName = "VoyageAI by MongoDB"
+	ProviderNameNearAi              ProviderName = "Near AI"
 	ProviderNameNebius              ProviderName = "Nebius"
 	ProviderNameNexAgi              ProviderName = "Nex AGI"
 	ProviderNameNextBit             ProviderName = "NextBit"
@@ -258,6 +259,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "Morph":
 		fallthrough
 	case "VoyageAI by MongoDB":
+		fallthrough
+	case "Near AI":
 		fallthrough
 	case "Nebius":
 		fallthrough
