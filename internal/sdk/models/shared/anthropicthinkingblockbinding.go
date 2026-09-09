@@ -9,6 +9,35 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+// MismatchBehavior - Deprecated: legacy alias of prefix_mismatch_behavior. Send only one of the two.
+//
+// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
+type MismatchBehavior string
+
+const (
+	MismatchBehaviorError     MismatchBehavior = "error"
+	MismatchBehaviorDropBlock MismatchBehavior = "drop_block"
+)
+
+func (e MismatchBehavior) ToPointer() *MismatchBehavior {
+	return &e
+}
+func (e *MismatchBehavior) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "error":
+		fallthrough
+	case "drop_block":
+		*e = MismatchBehavior(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for MismatchBehavior: %v", v)
+	}
+}
+
 type PrefixMismatchBehavior string
 
 const (
@@ -36,6 +65,10 @@ func (e *PrefixMismatchBehavior) UnmarshalJSON(data []byte) error {
 }
 
 type AnthropicThinkingBlockBinding struct {
+	// Deprecated: legacy alias of prefix_mismatch_behavior. Send only one of the two.
+	//
+	// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
+	MismatchBehavior       *MismatchBehavior       `json:"mismatch_behavior,omitzero"`
 	PrefixMismatchBehavior *PrefixMismatchBehavior `json:"prefix_mismatch_behavior,omitzero"`
 }
 
@@ -48,6 +81,13 @@ func (a *AnthropicThinkingBlockBinding) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (a *AnthropicThinkingBlockBinding) GetMismatchBehavior() *MismatchBehavior {
+	if a == nil {
+		return nil
+	}
+	return a.MismatchBehavior
 }
 
 func (a *AnthropicThinkingBlockBinding) GetPrefixMismatchBehavior() *PrefixMismatchBehavior {
