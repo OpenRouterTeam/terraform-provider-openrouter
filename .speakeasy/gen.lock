@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: dc09ed3db2ad0a4828fbcc5d91a54f18
+  docChecksum: fea876c02e670a458a2189dfd9330517
   docVersion: 1.0.0
   speakeasyVersion: 1.796.4
   generationVersion: 2.935.1
-  releaseVersion: 0.2.112
-  configChecksum: 7409d5560adaff756fe32b5d517db98c
+  releaseVersion: 0.2.113
+  configChecksum: 5f90c39f4510472d47337d32f9b25380
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: a122bd18-aafa-4176-b37e-6c2c46e402c1
-  pristine_commit_hash: 7e39dcac6f00b6a3282f8b39abb78eaf542e75e9
-  pristine_tree_hash: 0e08ee0fd39d95272c5443e443a62d7e4bc44d52
+  generation_id: bac9afca-6b48-41c4-aa8a-c6b008588f3e
+  pristine_commit_hash: ab8e3a1d682469a7dd2a9edc135c2b2c356aa270
+  pristine_tree_hash: 143cb81ccf5f1374b8f2be997a5c2c8e33d5cfe5
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -120,12 +120,12 @@ trackedFiles:
     pristine_git_object: 0695e75206efcbc1e025f5f8ed0de54f11d503ad
   examples/data-sources/openrouter_workspace_budget/data-source.tf:
     id: ad6b3af2f129
-    last_write_checksum: sha1:b306820c077bb81c1d721f487df6994f8a7bb908
-    pristine_git_object: 79fddcdf4323ea8275f53292cb159464e195a164
+    last_write_checksum: sha1:44ff1279a88b63946e8fc98192a77add59960ec7
+    pristine_git_object: a00f7ef37ff2b1e6e376b20d667e2bbca40c3e9a
   examples/data-sources/openrouter_workspace_budgets/data-source.tf:
     id: ba3a1e6a83ee
-    last_write_checksum: sha1:89b284c46e35853bf9534ae70f2d336d59b302f4
-    pristine_git_object: cf5ab366b8b557252c327b75b6eca59ac0ce4ce2
+    last_write_checksum: sha1:5b6cb918ff64e72c2982ab37741718f30c3fff04
+    pristine_git_object: 7c02585fa3e02f1c062788a62875ba2d645739d2
   examples/data-sources/openrouter_workspace_members/data-source.tf:
     id: fbca15debc45
     last_write_checksum: sha1:e83e33cc18268215ea160e5ed820be6b19f7332b
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:a2b4821de7b13922ee6710dc4cdd2eaa1903a121
-    pristine_git_object: 45e48af041e16b1b0c5b067f5a425b2061a8d97b
+    last_write_checksum: sha1:533ebdf00dbd4766e52ba60244b14faa29dae309
+    pristine_git_object: 64eb8b941d84c970a6a8b05bb44bbb4a1e7ea03e
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -212,16 +212,16 @@ trackedFiles:
     pristine_git_object: 2fc4b9047bc57910cc2a7dc4b6532aad9e69b711
   examples/resources/openrouter_workspace_budget/import-by-string-id.tf:
     id: 5d0b9183a816
-    last_write_checksum: sha1:6e922255ad5684269e1076b4a571231310869e97
-    pristine_git_object: 2daa77d64f42e7abc011a0db319f8b8d3524796d
+    last_write_checksum: sha1:c2af4c461f5981b5e5783449434ad2bc09af4788
+    pristine_git_object: d0669bbd0336520fedd5ae8e5feb12bf508f2253
   examples/resources/openrouter_workspace_budget/import.sh:
     id: b177cb713712
-    last_write_checksum: sha1:c9d072d12308207ea3ef0f574bebe14f15d6bddf
-    pristine_git_object: 98b53f5e204a65746fea96bf5609c125c70ebfab
+    last_write_checksum: sha1:79d71cdb2c0aa4503cdc6d00322d09ed8d5fd384
+    pristine_git_object: 712f3bf686a5095f0fe596434750264cafb6d591
   examples/resources/openrouter_workspace_budget/resource.tf:
     id: 0f9ed266ae68
-    last_write_checksum: sha1:efd6b02154c08356072f14e746ef28d21c9e65c9
-    pristine_git_object: 19631a5550a3d11b15c9cf568796a561b8a4a3c0
+    last_write_checksum: sha1:e4fe703fcd4de6688e2316ed48cc083d40f2852a
+    pristine_git_object: b97ff2ffeff454ededad08f3e0f08373e7b7d156
   go.mod:
     id: c47645c391ad
     last_write_checksum: sha1:b38132d274ad9f9a423c9c082e9fd5cfc6b9880b
@@ -1076,28 +1076,28 @@ trackedFiles:
     pristine_git_object: ad5c1f944a2122b1b476d8110a75e73c2e80c977
   internal/provider/workspacebudget_data_source.go:
     id: 7e375470340b
-    last_write_checksum: sha1:6b66c454ab11ba439e1fcf9916b08131c8510b54
-    pristine_git_object: 82350e6cf2204b53f5ffbace3826003ef718dad1
+    last_write_checksum: sha1:1dff5c1634995a960711d23dab8db71a335f5db7
+    pristine_git_object: 8943eb5206c670bae7f2af4d0fda5c6060ea50d1
   internal/provider/workspacebudget_data_source_sdk.go:
     id: a627c21510cb
-    last_write_checksum: sha1:bf4dae4d1cc839853cc21b835ecb7e75fc933672
-    pristine_git_object: 39cf25b485df2d846510875aac0293b641eb0894
+    last_write_checksum: sha1:0a5c2a6c3230e980a082bbefae86c65c22256bf1
+    pristine_git_object: 57622c5d6fd9239978d60e9516f4a4d49b47622b
   internal/provider/workspacebudget_resource.go:
     id: 6efdd55d07d8
-    last_write_checksum: sha1:cfee9d7e981459352c63b81d23983e52008d16cd
-    pristine_git_object: 176483314e0dd051a476e7621a64cf2a818bbd91
+    last_write_checksum: sha1:d32f621ba604ad9a17515e0d646da9b500e4c662
+    pristine_git_object: 94411899bb68eda0fae47b4a71d3104d249915ad
   internal/provider/workspacebudget_resource_sdk.go:
     id: a67e578c9e16
-    last_write_checksum: sha1:9b7eb8e2f7805652f07c5a6d52357ef6d84f4a7f
-    pristine_git_object: c68f6d8982bbb7196b886178bd40c5cc94aa23cf
+    last_write_checksum: sha1:88014009bc70f6810ca53f4ef09d4beb441ede47
+    pristine_git_object: 5938a0a445f2c8b1ae94262befb6aa2e83e4e31d
   internal/provider/workspacebudgets_data_source.go:
     id: 178a2d3b8780
-    last_write_checksum: sha1:15b17cb103e4f76178208f891f9ba8656dc8f68e
-    pristine_git_object: ef92036442b05c2525ae2ca2e9c4a8f5bf54702d
+    last_write_checksum: sha1:bdb727474735057bbd5621d47d5d5d13bafdde20
+    pristine_git_object: c6efd770772cdd26bdd8898643a00998b24a59dd
   internal/provider/workspacebudgets_data_source_sdk.go:
     id: f0c40d5abd5c
-    last_write_checksum: sha1:6bc445a3308ca1332d93668a70f1bf1902684417
-    pristine_git_object: 8f7a6ddf8ad990639e703c4cba298bce439e8bfa
+    last_write_checksum: sha1:dba1de05b902cc1d82f7e8a1e35ea8985ba654e7
+    pristine_git_object: cb7f67f58facff79d6dc0ed1ab06273bf6359aae
   internal/provider/workspacemembers_data_source.go:
     id: 960bfaea22ce
     last_write_checksum: sha1:b7de28033a476b771163fc9add0b5f7e35ca566a
@@ -1372,8 +1372,8 @@ trackedFiles:
     pristine_git_object: 384bc05dd80a4c1b1b22b771a144d077388a88d3
   internal/sdk/models/operations/deleteworkspacebudget.go:
     id: ea9d87457232
-    last_write_checksum: sha1:f398c61e63682b455d169041dbeadd4ddad1a56f
-    pristine_git_object: f7548a11b994a19589aa4aef85313722eaa78fd8
+    last_write_checksum: sha1:6b7772665c5bbcabc97eef0adeae67f6cc5c00a5
+    pristine_git_object: 0bf862259d4c27acd9578375dbba483c73819094
   internal/sdk/models/operations/downloadcontainerfilecontent.go:
     id: 667c48f59c5d
     last_write_checksum: sha1:ef08f3a1ca82fc1c1a66547d569c89c82041f9bf
@@ -1484,8 +1484,8 @@ trackedFiles:
     pristine_git_object: 09e0cf6e8fa643c87e7bfa05b76bb4a5c830e536
   internal/sdk/models/operations/getworkspacebudget.go:
     id: "379085110652"
-    last_write_checksum: sha1:797c9842135e5e2c64aaa07ff90baaae2723f85c
-    pristine_git_object: dfdffac467c0009c42eae118ab0d160c2fd44447
+    last_write_checksum: sha1:9d6b462626797c933f98e621ed78e41a8f0c4fcb
+    pristine_git_object: baa889d4f4fe8c4a4c38916b7a3488e02acb528f
   internal/sdk/models/operations/list.go:
     id: ee2c967ce632
     last_write_checksum: sha1:41144613ee65f106d170fc62509364a24c8d3db5
@@ -1596,8 +1596,8 @@ trackedFiles:
     pristine_git_object: ee8f2b479f8b400e997230b6913cd903805f4781
   internal/sdk/models/operations/listworkspacebudgets.go:
     id: e72be74766d9
-    last_write_checksum: sha1:208ee26e47ab9dd980b3ebc69d6e3068fb38706a
-    pristine_git_object: cd8b83c90f96068b69e7b72315ea8020b9be6bc3
+    last_write_checksum: sha1:6030c348b01e6413c6d862661a38b923f9f9666b
+    pristine_git_object: 1433f6d1b4e3db286252ffd6effe32d658ccdabb
   internal/sdk/models/operations/listworkspacemembers.go:
     id: 7cc441f94e59
     last_write_checksum: sha1:e08c750c53ac4ea60c4b96cf7e9cff640d68e3c0
@@ -1652,8 +1652,8 @@ trackedFiles:
     pristine_git_object: 72543f0af505a9f38e4cc001d1a5aae064325a5e
   internal/sdk/models/operations/upsertworkspacebudget.go:
     id: 68b410528b30
-    last_write_checksum: sha1:330a95b6319b4c7f6e9bd33d75f5c5e2f691204c
-    pristine_git_object: 8581e05bec176de9feaec64e94ed2d6739b944c3
+    last_write_checksum: sha1:e3bffa2f9796e9b90d7822b3ca8533f3c5b94e95
+    pristine_git_object: 6d87e4bdc5cc7495a1dbdad80b77a3b6636418b0
   internal/sdk/models/shared/aabenchmarkentry.go:
     id: 219e22db6e08
     last_write_checksum: sha1:7bbde49aa25b72fc96a36ea56672053c88bb63df
@@ -3760,8 +3760,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:53f29683ff89d517d6db502a4fab3f71f3d060ef
-    pristine_git_object: 4e07f25733f932b3f0ce5d0523c8971a7f59ad58
+    last_write_checksum: sha1:506b47dd23abcfdd241f63dc514a6b9e360098f8
+    pristine_git_object: 7030588d5b4e0f9a66a521e4b842261533bc6f69
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -3828,8 +3828,8 @@ trackedFiles:
     pristine_git_object: 4b01dbc226c382c2e910ee42a22e9d5f77d1f782
   internal/sdk/workspaces.go:
     id: 436a1d832809
-    last_write_checksum: sha1:ed7229443b792656784f4329f5d727acd8dbf8d4
-    pristine_git_object: c71bd1cb307adf8536ec4c5f69075ceeb1b65a83
+    last_write_checksum: sha1:2ff8645479e16ae158cb67518b09bc02866198ef
+    pristine_git_object: 3c352612ee116838a1d941c81865d2cce8c78856
   internal/validators/DateValidator.go:
     id: 4fdfa187ab97
     last_write_checksum: sha1:9c33faf7117e16c25ed6076126919212b1d388a3
@@ -5364,6 +5364,7 @@ examples:
       parameters:
         path:
           id: "production"
+          workspace_ref: "production"
       responses:
         "200":
           application/json: {"data": [{"created_at": "2025-08-24T10:30:00Z", "id": "770e8400-e29b-41d4-a716-446655440000", "limit_usd": 100, "reset_interval": "monthly", "updated_at": "2025-08-24T15:45:00Z", "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}], "include_byok_in_budgets": false}
@@ -5379,6 +5380,7 @@ examples:
         path:
           id: "production"
           interval: "monthly"
+          workspace_ref: "production"
       responses:
         "200":
           application/json: {"deleted": true}
@@ -5396,6 +5398,7 @@ examples:
         path:
           id: "production"
           interval: "monthly"
+          workspace_ref: "production"
       requestBody:
         application/json: {"include_byok_in_budgets": true, "limit_usd": 100}
       responses:
@@ -5571,6 +5574,7 @@ examples:
         path:
           id: "production"
           interval: "monthly"
+          workspace_ref: "production"
       responses:
         "200":
           application/json: {"data": {"created_at": "2025-08-24T10:30:00Z", "id": "770e8400-e29b-41d4-a716-446655440000", "limit_usd": 100, "reset_interval": "monthly", "updated_at": "2025-08-24T15:45:00Z", "workspace_id": "550e8400-e29b-41d4-a716-446655440000"}, "include_byok_in_budgets": true}
@@ -5743,4 +5747,9 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.thinking.union(adaptive).block_binding.mismatch_behavior` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.Workspaces.listBudgets()`:  `request` **Changed** (Breaking ⚠️)
+  * `OpenRouter.Workspaces.deleteBudget()`:  `request` **Changed** (Breaking ⚠️)
+  * `OpenRouter.Workspaces.getBudget()`:  `request` **Changed** (Breaking ⚠️)
+  * `OpenRouter.Workspaces.setBudget()`:  `request` **Changed** (Breaking ⚠️)
