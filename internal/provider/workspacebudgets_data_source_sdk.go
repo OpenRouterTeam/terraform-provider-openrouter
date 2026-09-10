@@ -43,11 +43,11 @@ func (r *WorkspaceBudgetsDataSourceModel) RefreshFromSharedListWorkspaceBudgetsR
 func (r *WorkspaceBudgetsDataSourceModel) ToOperationsListWorkspaceBudgetsRequest(ctx context.Context) (*operations.ListWorkspaceBudgetsRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var id string
-	id = r.ID.ValueString()
+	var workspaceRef string
+	workspaceRef = r.WorkspaceRef.ValueString()
 
 	out := operations.ListWorkspaceBudgetsRequest{
-		ID: id,
+		WorkspaceRef: workspaceRef,
 	}
 
 	return &out, diags

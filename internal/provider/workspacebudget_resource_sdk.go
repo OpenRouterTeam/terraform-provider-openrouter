@@ -21,6 +21,8 @@ func (r *WorkspaceBudgetResourceModel) RefreshFromSharedGetWorkspaceBudgetRespon
 			return diags
 		}
 
+		// BYOK is workspace-wide metadata returned alongside data, not inside it.
+		r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
 	}
 
 	return diags
@@ -53,6 +55,7 @@ func (r *WorkspaceBudgetResourceModel) RefreshFromSharedUpsertWorkspaceBudgetRes
 			return diags
 		}
 
+		r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
 	}
 
 	return diags
@@ -78,13 +81,13 @@ func (r *WorkspaceBudgetResourceModel) RefreshFromSharedUpsertWorkspaceBudgetRes
 func (r *WorkspaceBudgetResourceModel) ToOperationsDeleteWorkspaceBudgetRequest(ctx context.Context) (*operations.DeleteWorkspaceBudgetRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var id string
-	id = r.ID.ValueString()
+	var workspaceRef string
+	workspaceRef = r.WorkspaceRef.ValueString()
 
 	interval := shared.WorkspaceBudgetInterval(r.Interval.ValueString())
 	out := operations.DeleteWorkspaceBudgetRequest{
-		ID:       id,
-		Interval: interval,
+		WorkspaceRef: workspaceRef,
+		Interval:     interval,
 	}
 
 	return &out, diags
@@ -93,13 +96,13 @@ func (r *WorkspaceBudgetResourceModel) ToOperationsDeleteWorkspaceBudgetRequest(
 func (r *WorkspaceBudgetResourceModel) ToOperationsGetWorkspaceBudgetRequest(ctx context.Context) (*operations.GetWorkspaceBudgetRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var id string
-	id = r.ID.ValueString()
+	var workspaceRef string
+	workspaceRef = r.WorkspaceRef.ValueString()
 
 	interval := shared.WorkspaceBudgetInterval(r.Interval.ValueString())
 	out := operations.GetWorkspaceBudgetRequest{
-		ID:       id,
-		Interval: interval,
+		WorkspaceRef: workspaceRef,
+		Interval:     interval,
 	}
 
 	return &out, diags
@@ -108,8 +111,8 @@ func (r *WorkspaceBudgetResourceModel) ToOperationsGetWorkspaceBudgetRequest(ctx
 func (r *WorkspaceBudgetResourceModel) ToOperationsUpsertWorkspaceBudgetRequest(ctx context.Context) (*operations.UpsertWorkspaceBudgetRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var id string
-	id = r.ID.ValueString()
+	var workspaceRef string
+	workspaceRef = r.WorkspaceRef.ValueString()
 
 	interval := shared.WorkspaceBudgetInterval(r.Interval.ValueString())
 	body, bodyDiags := r.ToSharedUpsertWorkspaceBudgetRequest(ctx)
@@ -120,9 +123,9 @@ func (r *WorkspaceBudgetResourceModel) ToOperationsUpsertWorkspaceBudgetRequest(
 	}
 
 	out := operations.UpsertWorkspaceBudgetRequest{
-		ID:       id,
-		Interval: interval,
-		Body:     *body,
+		WorkspaceRef: workspaceRef,
+		Interval:     interval,
+		Body:         *body,
 	}
 
 	return &out, diags

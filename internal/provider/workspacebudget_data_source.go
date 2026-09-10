@@ -39,6 +39,7 @@ type WorkspaceBudgetDataSourceModel struct {
 	ResetInterval        types.String  `tfsdk:"reset_interval"`
 	UpdatedAt            types.String  `tfsdk:"updated_at"`
 	WorkspaceID          types.String  `tfsdk:"workspace_id"`
+	WorkspaceRef         types.String  `tfsdk:"workspace_ref"`
 }
 
 // Metadata returns the data source type name.
@@ -57,11 +58,8 @@ func (r *WorkspaceBudgetDataSource) Schema(ctx context.Context, req datasource.S
 				Description: `ISO 8601 timestamp of when the budget was created`,
 			},
 			"id": schema.StringAttribute{
-				Required:    true,
+				Computed:    true,
 				Description: `Unique identifier for the budget`,
-				Validators: []validator.String{
-					stringvalidator.UTF8LengthAtLeast(1),
-				},
 			},
 			"include_byok_in_budgets": schema.BoolAttribute{
 				Computed:    true,
@@ -94,6 +92,13 @@ func (r *WorkspaceBudgetDataSource) Schema(ctx context.Context, req datasource.S
 			"workspace_id": schema.StringAttribute{
 				Computed:    true,
 				Description: `ID of the workspace the budget belongs to`,
+			},
+			"workspace_ref": schema.StringAttribute{
+				Required:    true,
+				Description: `The workspace ID (UUID) or slug`,
+				Validators: []validator.String{
+					stringvalidator.UTF8LengthAtLeast(1),
+				},
 			},
 		},
 	}

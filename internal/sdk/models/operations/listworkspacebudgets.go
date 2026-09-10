@@ -11,14 +11,14 @@ import (
 
 type ListWorkspaceBudgetsRequest struct {
 	// The workspace ID (UUID) or slug
-	ID string `pathParam:"style=simple,explode=false,name=id"`
+	WorkspaceRef string `pathParam:"style=simple,explode=false,name=workspace_ref"`
 }
 
-func (l *ListWorkspaceBudgetsRequest) GetID() string {
+func (l *ListWorkspaceBudgetsRequest) GetWorkspaceRef() string {
 	if l == nil {
 		return ""
 	}
-	return l.ID
+	return l.WorkspaceRef
 }
 
 type ListWorkspaceBudgetsResponse struct {
