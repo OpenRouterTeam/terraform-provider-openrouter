@@ -14,8 +14,8 @@ WorkspaceBudget DataSource
 
 ```terraform
 data "openrouter_workspace_budget" "my_workspacebudget" {
-  id       = "production"
-  interval = "monthly"
+  interval      = "monthly"
+  workspace_ref = "production"
 }
 ```
 
@@ -24,12 +24,13 @@ data "openrouter_workspace_budget" "my_workspacebudget" {
 
 ### Required
 
-- `id` (String) Unique identifier for the budget
 - `interval` (String) Budget reset interval. Use "lifetime" for a one-time budget that never resets. must be one of ["daily", "weekly", "monthly", "lifetime"]
+- `workspace_ref` (String) The workspace ID (UUID) or slug
 
 ### Read-Only
 
 - `created_at` (String) ISO 8601 timestamp of when the budget was created
+- `id` (String) Unique identifier for the budget
 - `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) spend is included when enforcing the workspace's budgets. This is a workspace-wide setting that applies to all budget intervals (daily, weekly, monthly, and lifetime).
 - `limit_usd` (Number) Spending limit in USD for this interval
 - `reset_interval` (String) Interval at which spend resets. Null means a lifetime (one-time) budget.

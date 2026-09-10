@@ -194,7 +194,7 @@ actions:
       x-speakeasy-entity-operation: OrganizationMembers#read
   # Plural list data source. The singular WorkspaceBudget managed resource is
   # annotated at the end of this file (DEV-1073).
-  - target: $["paths"]["/workspaces/{id}/budgets"]["get"]
+  - target: $["paths"]["/workspaces/{workspace_ref}/budgets"]["get"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudgets#read
   - target: $["paths"]["/models"]["get"]
@@ -340,7 +340,7 @@ actions:
       x-speakeasy-entity-operation: ScimGroupMapping#delete
 
   # ---------------------------------------------------------------------------
-  # WorkspaceBudget  (PUT/GET/DELETE /workspaces/{id}/budgets/{interval})
+  # WorkspaceBudget  (PUT/GET/DELETE /workspaces/{workspace_ref}/budgets/{interval})
   # Component-based, mirroring Guardrail: annotate the WorkspaceBudget model
   # plus the upsert request schema. The singular response envelopes reach the
   # model through `allOf: [$ref WorkspaceBudget, {description}]`, so reads
@@ -349,6 +349,9 @@ actions:
   # PUT is an upsert, so one operation serves both create and update -- the
   # same list form the ApiKey PATCH uses above. Identity is the (workspace,
   # interval) path-param pair; there is no standalone budget id in the route.
+  # workspace_ref accepts a UUID or slug and must not collide with the response's
+  # budget id or canonical workspace_id. Merge these selectors and the list
+  # selector above with the input-spec update from openrouter-web#37149.
   #
   # Unblocked by DEV-1074 (acceptance org granted the workspace_budgets
   # entitlement); the API's singular GET shipped 2026-08-04. DEV-1073.
@@ -360,15 +363,15 @@ actions:
     update:
       x-speakeasy-entity: WorkspaceBudget
 
-  - target: $["paths"]["/workspaces/{id}/budgets/{interval}"]["put"]
+  - target: $["paths"]["/workspaces/{workspace_ref}/budgets/{interval}"]["put"]
     update:
       x-speakeasy-entity-operation:
         - WorkspaceBudget#create
         - WorkspaceBudget#update
-  - target: $["paths"]["/workspaces/{id}/budgets/{interval}"]["get"]
+  - target: $["paths"]["/workspaces/{workspace_ref}/budgets/{interval}"]["get"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudget#read
-  - target: $["paths"]["/workspaces/{id}/budgets/{interval}"]["delete"]
+  - target: $["paths"]["/workspaces/{workspace_ref}/budgets/{interval}"]["delete"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudget#delete
   # DEV-856: drop doc-only `default` values from destination config schemas.

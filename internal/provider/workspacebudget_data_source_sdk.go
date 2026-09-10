@@ -47,13 +47,13 @@ func (r *WorkspaceBudgetDataSourceModel) RefreshFromSharedGetWorkspaceBudgetResp
 func (r *WorkspaceBudgetDataSourceModel) ToOperationsGetWorkspaceBudgetRequest(ctx context.Context) (*operations.GetWorkspaceBudgetRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var id string
-	id = r.ID.ValueString()
+	var workspaceRef string
+	workspaceRef = r.WorkspaceRef.ValueString()
 
 	interval := shared.WorkspaceBudgetInterval(r.Interval.ValueString())
 	out := operations.GetWorkspaceBudgetRequest{
-		ID:       id,
-		Interval: interval,
+		WorkspaceRef: workspaceRef,
+		Interval:     interval,
 	}
 
 	return &out, diags

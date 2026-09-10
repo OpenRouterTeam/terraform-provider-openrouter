@@ -1,7 +1,7 @@
 name: Generate (spec change merged)
 # Fires when the monorepo's SDK-release flow (openrouter-web
 # sdk-release-prs.yaml) merges a spec update to .speakeasy/in.openapi.yaml,
-# or when local generation inputs (overlays, workflow/gen config) change.
+# or when local generation inputs (overlays, patches, workflow/gen config) change.
 permissions:
   checks: write
   contents: write
@@ -28,6 +28,7 @@ permissions:
       - .speakeasy/gen.yaml
       - .speakeasy/speakeasy-modifications-overlay.yaml
       - .speakeasy/terraform-entities-overlay.yaml
+      - .speakeasy/patches/**
 
 concurrency:
   group: speakeasy-generate-spec-change

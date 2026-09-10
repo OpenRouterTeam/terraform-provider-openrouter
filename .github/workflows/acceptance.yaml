@@ -83,8 +83,8 @@ jobs:
           path: acceptance.log
           retention-days: 14
 
-  # Unit-mode smoke on the same schedule: proves the module still builds and
-  # that acceptance tests skip cleanly without TF_ACC (the PR-safe path).
+  # Local API regressions run without credentials; live acceptance tests remain
+  # gated by TF_ACC in the separate acceptance job above.
   unit:
     runs-on: ubuntu-latest
     steps:
@@ -93,7 +93,10 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
       - name: Build
         run: go build ./...
-      - name: Test (acceptance skipped without TF_ACC)
+      - name: Test local regressions (live acceptance skipped without TF_ACC)
         run: go test ./internal/acceptance/... -v -timeout 5m

@@ -43,6 +43,7 @@ type WorkspaceBudgetResourceModel struct {
 	ResetInterval        types.String  `tfsdk:"reset_interval"`
 	UpdatedAt            types.String  `tfsdk:"updated_at"`
 	WorkspaceID          types.String  `tfsdk:"workspace_id"`
+	WorkspaceRef         types.String  `tfsdk:"workspace_ref"`
 }
 
 func (r *WorkspaceBudgetResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -58,11 +59,8 @@ func (r *WorkspaceBudgetResource) Schema(ctx context.Context, req resource.Schem
 				Description: `ISO 8601 timestamp of when the budget was created`,
 			},
 			"id": schema.StringAttribute{
-				Required:    true,
-				Description: `The workspace ID (UUID) or slug`,
-				Validators: []validator.String{
-					stringvalidator.UTF8LengthAtLeast(1),
-				},
+				Computed:    true,
+				Description: `Unique identifier for the budget`,
 			},
 			"include_byok_in_budgets": schema.BoolAttribute{
 				Computed:    true,
@@ -96,6 +94,13 @@ func (r *WorkspaceBudgetResource) Schema(ctx context.Context, req resource.Schem
 			"workspace_id": schema.StringAttribute{
 				Computed:    true,
 				Description: `ID of the workspace the budget belongs to`,
+			},
+			"workspace_ref": schema.StringAttribute{
+				Required:    true,
+				Description: `The workspace ID (UUID) or slug`,
+				Validators: []validator.String{
+					stringvalidator.UTF8LengthAtLeast(1),
+				},
 			},
 		},
 	}
@@ -345,19 +350,19 @@ func (r *WorkspaceBudgetResource) ImportState(ctx context.Context, req resource.
 	dec := json.NewDecoder(bytes.NewReader([]byte(req.ID)))
 	dec.DisallowUnknownFields()
 	var data struct {
-		ID       string                         `json:"id"`
-		Interval shared.WorkspaceBudgetInterval `json:"interval"`
+		Interval     shared.WorkspaceBudgetInterval `json:"interval"`
+		WorkspaceRef string                         `json:"workspace_ref"`
 	}
 
 	if err := dec.Decode(&data); err != nil {
-		resp.Diagnostics.AddError("Invalid ID", `The import ID is not valid. It is expected to be a JSON object string with the format: '{"id": "production", "interval": "monthly"}': `+err.Error())
+		resp.Diagnostics.AddError("Invalid ID", `The import ID is not valid. It is expected to be a JSON object string with the format: '{"interval": "monthly", "workspace_ref": "production"}': `+err.Error())
 		return
 	}
 
-	if len(data.ID) == 0 {
-		resp.Diagnostics.AddError("Missing required field", `The field id is required but was not found in the json encoded ID. It's expected to be a value alike '"production"'`)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("interval"), data.Interval)...)
+	if len(data.WorkspaceRef) == 0 {
+		resp.Diagnostics.AddError("Missing required field", `The field workspace_ref is required but was not found in the json encoded ID. It's expected to be a value alike '"production"'`)
 		return
 	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), data.ID)...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("interval"), data.Interval)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("workspace_ref"), data.WorkspaceRef)...)
 }

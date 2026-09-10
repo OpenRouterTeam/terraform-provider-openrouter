@@ -14,10 +14,10 @@ WorkspaceBudget Resource
 
 ```terraform
 resource "openrouter_workspace_budget" "my_workspacebudget" {
-  id                      = "production"
   include_byok_in_budgets = true
   interval                = "monthly"
   limit_usd               = 100
+  workspace_ref           = "production"
 }
 ```
 
@@ -26,9 +26,9 @@ resource "openrouter_workspace_budget" "my_workspacebudget" {
 
 ### Required
 
-- `id` (String) The workspace ID (UUID) or slug
 - `interval` (String) Budget reset interval. Use "lifetime" for a one-time budget that never resets. must be one of ["daily", "weekly", "monthly", "lifetime"]
 - `limit_usd` (Number) Spending limit in USD. Must be greater than 0.
+- `workspace_ref` (String) The workspace ID (UUID) or slug
 
 ### Optional
 
@@ -37,6 +37,7 @@ resource "openrouter_workspace_budget" "my_workspacebudget" {
 ### Read-Only
 
 - `created_at` (String) ISO 8601 timestamp of when the budget was created
+- `id` (String) Unique identifier for the budget
 - `reset_interval` (String) Interval at which spend resets. Null means a lifetime (one-time) budget.
 - `updated_at` (String) ISO 8601 timestamp of when the budget was last updated
 - `workspace_id` (String) ID of the workspace the budget belongs to
@@ -51,8 +52,8 @@ In Terraform v1.5.0 and later, the [`import` block](https://developer.hashicorp.
 import {
   to = openrouter_workspace_budget.my_openrouter_workspace_budget
   id = jsonencode({
-    id       = "production"
-    interval = "monthly"
+    interval      = "monthly"
+    workspace_ref = "production"
   })
 }
 ```
@@ -60,5 +61,5 @@ import {
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-terraform import openrouter_workspace_budget.my_openrouter_workspace_budget '{"id": "production", "interval": "monthly"}'
+terraform import openrouter_workspace_budget.my_openrouter_workspace_budget '{"interval": "monthly", "workspace_ref": "production"}'
 ```

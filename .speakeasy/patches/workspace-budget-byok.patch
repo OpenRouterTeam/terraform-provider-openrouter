@@ -1,0 +1,40 @@
+diff --git a/internal/provider/workspacebudget_resource_sdk.go b/internal/provider/workspacebudget_resource_sdk.go
+--- a/internal/provider/workspacebudget_resource_sdk.go
++++ b/internal/provider/workspacebudget_resource_sdk.go
+@@ -15,16 +15,18 @@
+ 
+ 	if resp != nil {
+ 		diags.Append(r.RefreshFromSharedGetWorkspaceBudgetResponseData(ctx, &resp.Data)...)
+ 
+ 		if diags.HasError() {
+ 			return diags
+ 		}
+ 
++		// BYOK is workspace-wide metadata returned alongside data, not inside it.
++		r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
+ 	}
+ 
+ 	return diags
+ }
+ 
+ func (r *WorkspaceBudgetResourceModel) RefreshFromSharedGetWorkspaceBudgetResponseData(ctx context.Context, resp *shared.GetWorkspaceBudgetResponseData) diag.Diagnostics {
+ 	var diags diag.Diagnostics
+ 
+@@ -47,16 +49,17 @@
+ 
+ 	if resp != nil {
+ 		diags.Append(r.RefreshFromSharedUpsertWorkspaceBudgetResponseData(ctx, &resp.Data)...)
+ 
+ 		if diags.HasError() {
+ 			return diags
+ 		}
+ 
++		r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
+ 	}
+ 
+ 	return diags
+ }
+ 
+ func (r *WorkspaceBudgetResourceModel) RefreshFromSharedUpsertWorkspaceBudgetResponseData(ctx context.Context, resp *shared.UpsertWorkspaceBudgetResponseData) diag.Diagnostics {
+ 	var diags diag.Diagnostics
+ 
