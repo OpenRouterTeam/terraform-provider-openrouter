@@ -14,7 +14,7 @@ WorkspaceBudgets DataSource
 
 ```terraform
 data "openrouter_workspace_budgets" "my_workspacebudgets" {
-  id = "production"
+  workspace_ref = "production"
 }
 ```
 
@@ -23,7 +23,7 @@ data "openrouter_workspace_budgets" "my_workspacebudgets" {
 
 ### Required
 
-- `id` (String) The workspace ID (UUID) or slug
+- `workspace_ref` (String) The workspace ID (UUID) or slug
 
 ### Read-Only
 
