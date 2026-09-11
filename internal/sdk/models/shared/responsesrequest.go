@@ -389,6 +389,8 @@ type ResponsesRequestToolFunction struct {
 	Strict      *bool          `json:"strict,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"function" json:"type"`
+	// Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.
+	Async *bool `json:"async,omitzero"`
 	// Withhold this tool from the model until `openrouter:tool_search` finds it. Requires the tool search server tool; at least one tool must remain non-deferred.
 	DeferLoading *bool `json:"defer_loading,omitzero"`
 }
@@ -434,6 +436,13 @@ func (r *ResponsesRequestToolFunction) GetStrict() *bool {
 
 func (r *ResponsesRequestToolFunction) GetType() string {
 	return "function"
+}
+
+func (r *ResponsesRequestToolFunction) GetAsync() *bool {
+	if r == nil {
+		return nil
+	}
+	return r.Async
 }
 
 func (r *ResponsesRequestToolFunction) GetDeferLoading() *bool {
