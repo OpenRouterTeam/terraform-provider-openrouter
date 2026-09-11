@@ -169,6 +169,10 @@ components:
               - allOf:
                   - $ref: '#/components/schemas/FunctionTool'
                   - properties:
+                      async:
+                        description: 'Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.'
+                        example: true
+                        type: 'boolean'
                       defer_loading:
                         description: 'Withhold this tool from the model until `openrouter:tool_search` finds it. Requires the tool search server tool; at least one tool must remain non-deferred.'
                         example: true
@@ -4103,6 +4107,10 @@ components:
               - allOf:
                   - $ref: '#/components/schemas/FunctionTool'
                   - properties:
+                      async:
+                        description: 'Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.'
+                        example: true
+                        type: 'boolean'
                       defer_loading:
                         description: 'Withhold this tool from the model until `openrouter:tool_search` finds it. Requires the tool search server tool; at least one tool must remain non-deferred.'
                         example: true
@@ -7940,6 +7948,10 @@ components:
         name: 'my_tool'
         type: 'custom'
       properties:
+        async:
+          description: 'Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.'
+          example: true
+          type: 'boolean'
         description:
           type: 'string'
         format:
@@ -9313,17 +9325,17 @@ components:
       example:
         analysis_models:
           - '~anthropic/claude-opus-latest'
-          - '~openai/gpt-latest'
+          - '~openai/gpt-sol-latest'
           - '~google/gemini-pro-latest'
         enabled: true
         id: 'fusion'
         model: '~anthropic/claude-opus-latest'
       properties:
         analysis_models:
-          description: 'For a Fusion run started by the `openrouter/fusion` model slug or `openrouter:fusion` server tool, slugs of models to run in parallel as the "expert panel" the analyst analyzes. Each model receives the same user prompt with web_search + web_fetch enabled. Capped at 8 models to bound cost amplification. When omitted, defaults to the Quality preset from the /labs/fusion UI (~anthropic/claude-opus-latest, ~openai/gpt-latest, ~google/gemini-pro-latest).'
+          description: 'For a Fusion run started by the `openrouter/fusion` model slug or `openrouter:fusion` server tool, slugs of models to run in parallel as the "expert panel" the analyst analyzes. Each model receives the same user prompt with web_search + web_fetch enabled. Capped at 8 models to bound cost amplification. When omitted, defaults to the Quality preset from the /labs/fusion UI (~anthropic/claude-opus-latest, ~openai/gpt-sol-latest, ~google/gemini-pro-latest).'
           example:
             - '~anthropic/claude-opus-latest'
-            - '~openai/gpt-latest'
+            - '~openai/gpt-sol-latest'
             - '~google/gemini-pro-latest'
           items:
             type: 'string'
@@ -9411,7 +9423,7 @@ components:
         parameters:
           analysis_models:
             - '~anthropic/claude-opus-latest'
-            - '~openai/gpt-latest'
+            - '~openai/gpt-sol-latest'
         type: 'openrouter:fusion'
       properties:
         parameters:
@@ -9428,14 +9440,14 @@ components:
       example:
         analysis_models:
           - '~anthropic/claude-opus-latest'
-          - '~openai/gpt-latest'
+          - '~openai/gpt-sol-latest'
           - '~google/gemini-pro-latest'
       properties:
         analysis_models:
           description: 'Slugs of models to run in parallel as the analysis panel. Each model receives the user prompt with openrouter:web_search and openrouter:web_fetch enabled, then an analyst model summarizes the collective output into structured analysis JSON. Capped at 8 models to bound cost amplification. Defaults to the Quality preset from /labs/fusion.'
           example:
             - '~anthropic/claude-opus-latest'
-            - '~openai/gpt-latest'
+            - '~openai/gpt-sol-latest'
             - '~google/gemini-pro-latest'
           items:
             type: 'string'
@@ -15083,6 +15095,10 @@ components:
           type:
             - 'array'
             - 'null'
+        async:
+          description: 'Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.'
+          example: true
+          type: 'boolean'
         defer_loading:
           type: 'boolean'
         description:
@@ -17825,6 +17841,10 @@ components:
         name: 'apply_patch'
         type: 'custom_tool_call'
       properties:
+        async:
+          description: 'True when the model called a tool declared with `async: true` and may continue its turn before the output is returned. Return the result in a later request as a `function_call_output` with this `call_id`.'
+          example: true
+          type: 'boolean'
         call_id:
           type: 'string'
         id:
@@ -17891,6 +17911,10 @@ components:
       properties:
         arguments:
           type: 'string'
+        async:
+          description: 'True when the model called a tool declared with `async: true` and may continue its turn before the output is returned. Return the result in a later request as a `function_call_output` with this `call_id`.'
+          example: true
+          type: 'boolean'
         call_id:
           type: 'string'
         id:
@@ -19299,6 +19323,10 @@ components:
         status: 'completed'
         type: 'custom_tool_call'
       properties:
+        async:
+          description: 'True when the model called a tool declared with `async: true` and may continue its turn before the output is returned. Return the result in a later request as a `function_call_output` with this `call_id`.'
+          example: true
+          type: 'boolean'
         call_id:
           type: 'string'
         id:
@@ -19729,6 +19757,10 @@ components:
         status: 'completed'
         type: 'custom_tool_call'
       properties:
+        async:
+          description: 'True when the model called a tool declared with `async: true` and may continue its turn before the output is returned. Return the result in a later request as a `function_call_output` with this `call_id`.'
+          example: true
+          type: 'boolean'
         call_id:
           type: 'string'
         id:
@@ -19846,6 +19878,10 @@ components:
       properties:
         arguments:
           type: 'string'
+        async:
+          description: 'True when the model called a tool declared with `async: true` and may continue its turn before the output is returned. Return the result in a later request as a `function_call_output` with this `call_id`.'
+          example: true
+          type: 'boolean'
         call_id:
           type: 'string'
         id:
@@ -23408,6 +23444,7 @@ components:
             - 'failed_to_download_image'
             - 'image_file_not_found'
             - 'bio_policy'
+            - 'cyber_policy'
             - 'misalignment_policy_violation'
             - 'data_residency_mismatch'
           type: 'string'
@@ -23593,6 +23630,10 @@ components:
               - allOf:
                   - $ref: '#/components/schemas/FunctionTool'
                   - properties:
+                      async:
+                        description: 'Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.'
+                        example: true
+                        type: 'boolean'
                       defer_loading:
                         description: 'Withhold this tool from the model until `openrouter:tool_search` finds it. Requires the tool search server tool; at least one tool must remain non-deferred.'
                         example: true
