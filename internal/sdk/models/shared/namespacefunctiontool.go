@@ -38,12 +38,14 @@ func (e *AllowedCaller) UnmarshalJSON(data []byte) error {
 // NamespaceFunctionTool - A function tool grouped inside a namespace tool
 type NamespaceFunctionTool struct {
 	AllowedCallers []AllowedCaller `json:"allowed_callers,omitzero"`
-	DeferLoading   *bool           `json:"defer_loading,omitzero"`
-	Description    *string         `json:"description,omitzero"`
-	Name           string          `json:"name"`
-	OutputSchema   map[string]any  `json:"output_schema,omitzero"`
-	Parameters     map[string]any  `json:"parameters,omitzero"`
-	Strict         *bool           `json:"strict,omitzero"`
+	// Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.
+	Async        *bool          `json:"async,omitzero"`
+	DeferLoading *bool          `json:"defer_loading,omitzero"`
+	Description  *string        `json:"description,omitzero"`
+	Name         string         `json:"name"`
+	OutputSchema map[string]any `json:"output_schema,omitzero"`
+	Parameters   map[string]any `json:"parameters,omitzero"`
+	Strict       *bool          `json:"strict,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"function" json:"type"`
 }
@@ -64,6 +66,13 @@ func (n *NamespaceFunctionTool) GetAllowedCallers() []AllowedCaller {
 		return nil
 	}
 	return n.AllowedCallers
+}
+
+func (n *NamespaceFunctionTool) GetAsync() *bool {
+	if n == nil {
+		return nil
+	}
+	return n.Async
 }
 
 func (n *NamespaceFunctionTool) GetDeferLoading() *bool {
