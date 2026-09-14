@@ -101,7 +101,7 @@ type OpenRouter struct {
 	Providers *Providers
 	// Rerank endpoints
 	Rerank *Rerank
-	// SCIM endpoints
+	// Management endpoints for SCIM group-to-workspace mappings, authenticated with a management key. These are not the SCIM 2.0 connector endpoints for your identity provider. In your identity provider, enter the SCIM endpoint URL shown when you enable provisioning under Settings > Members > SCIM Mappings. See https://openrouter.ai/docs/guides/features/scim-mappings#set-up-provisioning.
 	Scim            *Scim
 	VideoGeneration *VideoGeneration
 	Videos          *Videos
@@ -183,10 +183,10 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.2.116",
+		SDKVersion: "0.2.117",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.2.116 2.935.1 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
-			SDKVersion:        "0.2.116",
+			UserAgent:         "speakeasy-sdk/terraform 0.2.117 2.935.1 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			SDKVersion:        "0.2.117",
 			GenVersion:        "2.935.1",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
