@@ -22,6 +22,7 @@ const (
 	ProviderNameAmazonNova          ProviderName = "Amazon Nova"
 	ProviderNameAnthropic           ProviderName = "Anthropic"
 	ProviderNameArceeAi             ProviderName = "Arcee AI"
+	ProviderNameAssemblyAi          ProviderName = "AssemblyAI"
 	ProviderNameAtlasCloud          ProviderName = "AtlasCloud"
 	ProviderNameAvian               ProviderName = "Avian"
 	ProviderNameAzure               ProviderName = "Azure"
@@ -151,6 +152,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "Anthropic":
 		fallthrough
 	case "Arcee AI":
+		fallthrough
+	case "AssemblyAI":
 		fallthrough
 	case "AtlasCloud":
 		fallthrough

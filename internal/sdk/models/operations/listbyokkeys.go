@@ -26,6 +26,7 @@ const (
 	ProviderAnthropic                Provider = "anthropic"
 	ProviderAnthropic2               Provider = "anthropic/2"
 	ProviderArceeAi                  Provider = "arcee-ai"
+	ProviderAssemblyai               Provider = "assemblyai"
 	ProviderAtlasCloud               Provider = "atlas-cloud"
 	ProviderAvian                    Provider = "avian"
 	ProviderAzure                    Provider = "azure"
@@ -156,6 +157,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "anthropic/2":
 		fallthrough
 	case "arcee-ai":
+		fallthrough
+	case "assemblyai":
 		fallthrough
 	case "atlas-cloud":
 		fallthrough
