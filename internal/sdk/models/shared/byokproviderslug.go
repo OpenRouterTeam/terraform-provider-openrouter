@@ -23,6 +23,7 @@ const (
 	BYOKProviderSlugAnthropic                BYOKProviderSlug = "anthropic"
 	BYOKProviderSlugAnthropic2               BYOKProviderSlug = "anthropic/2"
 	BYOKProviderSlugArceeAi                  BYOKProviderSlug = "arcee-ai"
+	BYOKProviderSlugAssemblyai               BYOKProviderSlug = "assemblyai"
 	BYOKProviderSlugAtlasCloud               BYOKProviderSlug = "atlas-cloud"
 	BYOKProviderSlugAvian                    BYOKProviderSlug = "avian"
 	BYOKProviderSlugAzure                    BYOKProviderSlug = "azure"
@@ -153,6 +154,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "anthropic/2":
 		fallthrough
 	case "arcee-ai":
+		fallthrough
+	case "assemblyai":
 		fallthrough
 	case "atlas-cloud":
 		fallthrough
