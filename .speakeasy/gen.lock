@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 73851e6c8bafc0470c1625b080b54e4c
+  docChecksum: e296d0d0134df27c48b4b443d097f189
   docVersion: 1.0.0
   speakeasyVersion: 1.796.4
   generationVersion: 2.935.1
-  releaseVersion: 0.2.115
-  configChecksum: c77aad094fa1487984209977a251cf8d
+  releaseVersion: 0.2.116
+  configChecksum: 1deb58db61445a691cf16418e6ca0a60
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 3092f057-e826-4ff5-a61a-52c97e72eafd
-  pristine_commit_hash: 0334f0173b9df69ce02ca2b79c15eab5ebb69393
-  pristine_tree_hash: 2071dd1a926f5cb0326affb2a8f9927589568d63
+  generation_id: 5b4b2c9e-1065-4fe1-87ec-edb6fc1102f5
+  pristine_commit_hash: f1b531731bac2101d96289561c67d53cdd27d7ea
+  pristine_tree_hash: 16ba5cf3035c6b1e2ea236df16b9142686f38374
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:a9b6d42ed2f469dd585616230d2f6ad2d18ae19e
-    pristine_git_object: eff41a69ed45a42df91f555bdff086ad0a0d659e
+    last_write_checksum: sha1:441465b5c63a3c9c4f68ca2ef51a151817142e80
+    pristine_git_object: 3c5e9b2c68a3b1d95bc87c252625ad816f09ee57
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1588,8 +1588,8 @@ trackedFiles:
     pristine_git_object: 213f41b80ce155312492cb4d3ca59a7212992de2
   internal/sdk/models/operations/listvideoscontent.go:
     id: 6cbe469c23e6
-    last_write_checksum: sha1:f2fbe2255638961a585b0a30ace7f99eaa91c903
-    pristine_git_object: 99359b6443f9f621c7d38f97f8af0ca06d20d470
+    last_write_checksum: sha1:2cacafb77c40835079326b5941104b443a61bfde
+    pristine_git_object: 60a23a73ce5f7a64390a9069b37a8792cb6c779b
   internal/sdk/models/operations/listvideosmodels.go:
     id: e064a78745bf
     last_write_checksum: sha1:a5b46cdf6a5366f473520014b5f5ec89a7bcca49
@@ -2526,6 +2526,14 @@ trackedFiles:
     id: 954c597bc3ff
     last_write_checksum: sha1:647446bcce9b7fa2da548e0253620b84bd54ec10
     pristine_git_object: be6c5b9e26a9fcef25dd66eefd0bb5af18a94fc9
+  internal/sdk/models/shared/goneresponse.go:
+    id: 81f6f63c03f1
+    last_write_checksum: sha1:ef26cb526d16a564156dabbad9e8026333b4b2e3
+    pristine_git_object: 2f81143e17a38dae78e7430cc708c149cb7604a0
+  internal/sdk/models/shared/goneresponseerrordata.go:
+    id: 12b99b295653
+    last_write_checksum: sha1:46634371d4b9be9791ad68e6038c425e9664a2c7
+    pristine_git_object: 8c2821b0ab2b65a3952b2e80ad314639db2d63a8
   internal/sdk/models/shared/guardrail.go:
     id: c670d7f3d067
     last_write_checksum: sha1:0b3729612a5b500cadf4877ea006ceec77b49452
@@ -3760,8 +3768,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:f39e87560fdde91b5a6dbe83f4eecb0e04ab4de2
-    pristine_git_object: a2b194c0bd63ad0980afa37e2fd43db5e58c396c
+    last_write_checksum: sha1:38779a9de76653288b89f6f2d23f50880068c34f
+    pristine_git_object: 36f0bc438d3708a1597eafb26118d3375fa08a73
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -3820,8 +3828,8 @@ trackedFiles:
     pristine_git_object: 86e71b1c243584ac30f4b897d54367f831a07aa6
   internal/sdk/videogeneration.go:
     id: ef76c19a17c2
-    last_write_checksum: sha1:911dc6c0eed6335307022721e31c656a43c8bdb9
-    pristine_git_object: ee140373bb8f24fb4a8e3d6ac82014229ed4a0fb
+    last_write_checksum: sha1:0e66953fa8aab30653970162b5be8f01e3eef200
+    pristine_git_object: c6371265bf1ac9f321cde118e064c2863b18e702
   internal/sdk/videos.go:
     id: 1628317e94bf
     last_write_checksum: sha1:7c55475bd4d6a9d5211c7832a8536dd8f7dc62bf
@@ -5267,6 +5275,10 @@ examples:
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
         "403":
           application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "410":
+          application/json: {"error": {"code": 410, "message": "The Coinbase APIs used by this endpoint have been deprecated, so the Coinbase Commerce credits API has been removed. Use the web credits purchase flow instead."}}
   listVideosModels:
     speakeasy-default-list-videos-models:
       responses:
@@ -5747,4 +5759,6 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.videoGeneration.downloadContent()`:  `response` **Changed** (Breaking ⚠️)
