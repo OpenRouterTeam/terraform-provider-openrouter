@@ -56,6 +56,10 @@ type ListVideosContentResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Conflict - Resource conflict or concurrent modification
+	ConflictResponse *shared.ConflictResponse
+	// Gone - Endpoint has been permanently removed or deprecated
+	GoneResponse *shared.GoneResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 	// Bad Gateway - Provider/upstream API failure
@@ -127,6 +131,20 @@ func (l *ListVideosContentResponse) GetNotFoundResponse() *shared.NotFoundRespon
 		return nil
 	}
 	return l.NotFoundResponse
+}
+
+func (l *ListVideosContentResponse) GetConflictResponse() *shared.ConflictResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ConflictResponse
+}
+
+func (l *ListVideosContentResponse) GetGoneResponse() *shared.GoneResponse {
+	if l == nil {
+		return nil
+	}
+	return l.GoneResponse
 }
 
 func (l *ListVideosContentResponse) GetInternalServerResponse() *shared.InternalServerResponse {
