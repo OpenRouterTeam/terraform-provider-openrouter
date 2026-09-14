@@ -4632,6 +4632,7 @@ components:
         - 'anthropic'
         - 'anthropic/2'
         - 'arcee-ai'
+        - 'assemblyai'
         - 'atlas-cloud'
         - 'avian'
         - 'azure'
@@ -14261,6 +14262,7 @@ components:
                 - 'Amazon Nova'
                 - 'Anthropic'
                 - 'Arcee AI'
+                - 'AssemblyAI'
                 - 'AtlasCloud'
                 - 'Avian'
                 - 'Azure'
@@ -21462,6 +21464,7 @@ components:
         - 'Amazon Nova'
         - 'Anthropic'
         - 'Arcee AI'
+        - 'AssemblyAI'
         - 'AtlasCloud'
         - 'Avian'
         - 'Azure'
@@ -21604,6 +21607,9 @@ components:
           additionalProperties: {}
           type: 'object'
         arcee-ai:
+          additionalProperties: {}
+          type: 'object'
+        assemblyai:
           additionalProperties: {}
           type: 'object'
         atlas-cloud:
@@ -22216,6 +22222,7 @@ components:
             - 'Amazon Nova'
             - 'Anthropic'
             - 'Arcee AI'
+            - 'AssemblyAI'
             - 'AtlasCloud'
             - 'Avian'
             - 'Azure'
@@ -29593,6 +29600,7 @@ paths:
               - 'anthropic'
               - 'anthropic/2'
               - 'arcee-ai'
+              - 'assemblyai'
               - 'atlas-cloud'
               - 'avian'
               - 'azure'
