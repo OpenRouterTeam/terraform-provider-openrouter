@@ -22,7 +22,7 @@ type CreateGuardrailResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
-	// Forbidden - Authentication successful but insufficient permissions
+	// The workspace is not owned by this account, or the guardrail would give a HIPAA-enabled workspace a person-name or address sensitive-info filter, which is not available there.
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse

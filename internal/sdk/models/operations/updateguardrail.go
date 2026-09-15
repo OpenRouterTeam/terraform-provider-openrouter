@@ -42,6 +42,8 @@ type UpdateGuardrailResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// The update would give a HIPAA-enabled workspace a person-name or address sensitive-info filter, which is not available there.
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Guardrail name conflict — another guardrail in this workspace already uses the requested name.
@@ -101,6 +103,13 @@ func (u *UpdateGuardrailResponse) GetUnauthorizedResponse() *shared.Unauthorized
 		return nil
 	}
 	return u.UnauthorizedResponse
+}
+
+func (u *UpdateGuardrailResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ForbiddenResponse
 }
 
 func (u *UpdateGuardrailResponse) GetNotFoundResponse() *shared.NotFoundResponse {
