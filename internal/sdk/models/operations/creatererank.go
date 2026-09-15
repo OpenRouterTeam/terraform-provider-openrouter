@@ -152,6 +152,8 @@ type CreateRerankRequest struct {
 	Query string `json:"query"`
 	// Number of most relevant documents to return
 	TopN *int64 `json:"top_n,omitzero"`
+	// Metadata for observability and tracing. Known keys (trace_id, trace_name, span_name, generation_name, parent_span_id) have special handling. Additional keys are passed through as custom metadata to configured broadcast destinations.
+	Trace *shared.TraceConfig `json:"trace,omitzero"`
 	// A unique identifier representing your end-user. Forwarded to Broadcast and private logging as the end-user id; never sent to the provider.
 	User *string `json:"user,omitzero"`
 }
@@ -200,6 +202,13 @@ func (c *CreateRerankRequest) GetTopN() *int64 {
 		return nil
 	}
 	return c.TopN
+}
+
+func (c *CreateRerankRequest) GetTrace() *shared.TraceConfig {
+	if c == nil {
+		return nil
+	}
+	return c.Trace
 }
 
 func (c *CreateRerankRequest) GetUser() *string {
