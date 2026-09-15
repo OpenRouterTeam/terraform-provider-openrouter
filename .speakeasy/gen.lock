@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 7d506bb9c5bb67f05a57fc3fe000aee2
+  docChecksum: 19fcadd3bf45670d9e548e1b7b456938
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.118
-  configChecksum: 52f035579d3e55fcfc1dc5afe05ab77f
+  releaseVersion: 0.2.119
+  configChecksum: 8cecd5ccb79fc9a39eff35185768e45c
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 7ae3fba1-12f4-4ef8-a59a-a591bf60a878
-  pristine_commit_hash: 859ce59a169b018c0acc5ae002597ab6c77af24b
-  pristine_tree_hash: ea1700869ee3764f109e83299c1c9e8be12d1d3b
+  generation_id: 8006af78-13ed-413a-8524-f124be309936
+  pristine_commit_hash: 296cbb21beef9fe2303a73ee435e52d426cda0d2
+  pristine_tree_hash: 9a3160f698bf0bb5715fa57cf125da31f77b9820
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:a832b8b41ceb7d7d70188ea015e5b75cbc691704
-    pristine_git_object: b257560d1e7223dd7c2d725bdd61629b0f74673e
+    last_write_checksum: sha1:12b9c02e039e34489fb4a410f2a86a7e0f0faf56
+    pristine_git_object: 7294b610b9e384beafffbe7697505d5df2a4e3a8
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3768,8 +3768,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:52ed06e387723a93322d228e248825335bde41e6
-    pristine_git_object: bc7ffa50e95bec8c8467ebe5267ac526acbfff6e
+    last_write_checksum: sha1:e3aec46b8756a05dfcf4bdb6d502af5946e6e7b3
+    pristine_git_object: 1e7ab38eb2cfa8103b9db794948f4f6fb2a3ff90
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5759,4 +5759,3 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(AssemblyAI)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(AssemblyAI)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(assemblyai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(assemblyai)` **Added**\n  *  `response.data.provider_slug.enum(assemblyai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(assemblyai)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(assemblyai)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(AssemblyAI)` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(AssemblyAI)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(AssemblyAI)` **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.assemblyai` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.assemblyai` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(AssemblyAI)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(AssemblyAI)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(AssemblyAI)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.assemblyai` **Added**\n"
