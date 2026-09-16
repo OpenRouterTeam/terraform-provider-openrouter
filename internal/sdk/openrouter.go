@@ -102,7 +102,9 @@ type OpenRouter struct {
 	// Rerank endpoints
 	Rerank *Rerank
 	// Management endpoints for SCIM group-to-workspace mappings, authenticated with a management key. These are not the SCIM 2.0 connector endpoints for your identity provider. In your identity provider, enter the SCIM endpoint URL shown when you enable provisioning under Settings > Members > SCIM Mappings. See https://openrouter.ai/docs/guides/features/scim-mappings#set-up-provisioning.
-	Scim            *Scim
+	Scim *Scim
+	// Store host-bound secrets for a workspace or for one intern. Scope is selected by the API key. Responses return metadata only, never secret values. See https://openrouter.ai/docs/guides/ori/vault.
+	Vault           *Vault
 	VideoGeneration *VideoGeneration
 	Videos          *Videos
 	// Workspaces endpoints
@@ -183,10 +185,10 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.2.124",
+		SDKVersion: "0.2.125",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.2.124 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
-			SDKVersion:        "0.2.124",
+			UserAgent:         "speakeasy-sdk/terraform 0.2.125 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			SDKVersion:        "0.2.125",
 			GenVersion:        "2.937.18",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
@@ -234,6 +236,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Providers = newProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Rerank = newRerank(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Scim = newScim(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.Vault = newVault(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.VideoGeneration = newVideoGeneration(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Videos = newVideos(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Workspaces = newWorkspaces(sdk, sdk.sdkConfiguration, sdk.hooks)

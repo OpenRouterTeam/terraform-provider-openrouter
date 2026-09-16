@@ -4,11 +4,42 @@
 package operations
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"net/http"
 	"time"
 )
+
+type AllowedDataRegion string
+
+const (
+	AllowedDataRegionGlobal AllowedDataRegion = "global"
+	AllowedDataRegionEurope AllowedDataRegion = "europe"
+	AllowedDataRegionUs     AllowedDataRegion = "us"
+)
+
+func (e AllowedDataRegion) ToPointer() *AllowedDataRegion {
+	return &e
+}
+func (e *AllowedDataRegion) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "global":
+		fallthrough
+	case "europe":
+		fallthrough
+	case "us":
+		*e = AllowedDataRegion(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for AllowedDataRegion: %v", v)
+	}
+}
 
 // RateLimit - Legacy rate limit information about a key. Will always return -1.
 //
@@ -45,6 +76,8 @@ func (r *RateLimit) GetRequests() int64 {
 
 // GetCurrentKeyData - Current API key information
 type GetCurrentKeyData struct {
+	// Data regions permitted for this API key by the guardrail policies on the key and the account regional-routing entitlement. Empty when no region is permitted. Reflects region policy only: other key restrictions, such as management keys being blocked from inference, still apply.
+	AllowedDataRegions []AllowedDataRegion `json:"allowed_data_regions"`
 	// Total external BYOK usage (in USD) for the API key
 	ByokUsage float64 `json:"byok_usage"`
 	// External BYOK usage (in USD) for the current UTC day
@@ -100,6 +133,13 @@ func (g *GetCurrentKeyData) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (g *GetCurrentKeyData) GetAllowedDataRegions() []AllowedDataRegion {
+	if g == nil {
+		return []AllowedDataRegion{}
+	}
+	return g.AllowedDataRegions
 }
 
 func (g *GetCurrentKeyData) GetByokUsage() float64 {
