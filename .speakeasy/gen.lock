@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: a64f640e8fd43358b0d5336a325626fa
+  docChecksum: e8bf92663c8c04d9a7412726aaf936eb
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.122
-  configChecksum: c0a989031cd896e35d5cd989fba1f988
+  releaseVersion: 0.2.123
+  configChecksum: 4db4f3f3c5aa652ec1ff81befaa5507a
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: f111323b-5a63-420f-aa54-fbbba6d7d8bd
-  pristine_commit_hash: 792b170a9b4a673fde9e73771234d60acdfff60c
-  pristine_tree_hash: 856da9c34fde56a1fc0679bdb01dada95d6a5dba
+  generation_id: fa6c7b39-73cb-437e-9328-9f8dec896954
+  pristine_commit_hash: 2ccfca2464926b53f6291f62c8e3a0d21b17b3fd
+  pristine_tree_hash: d717e4c3dfca9d0eb0939c0ede19bd6d1b7291ee
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:e95c4169770bb24e6d78d8d3ce44b966aa280529
-    pristine_git_object: 792abd2b87cf0e0c89c4490e33929393fe65ffc0
+    last_write_checksum: sha1:0473719aa1c7a4d516b3c29940576aa8954e1e8d
+    pristine_git_object: f70f9244d871a38509cdfb538c4bd9dc8062fe6a
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1412,8 +1412,8 @@ trackedFiles:
     pristine_git_object: 53b5058a4d29f29c14bfc816ed5f21eda9727346
   internal/sdk/models/operations/getcurrentkey.go:
     id: ded0c468ef31
-    last_write_checksum: sha1:98e858c6340b1e1a4b0da4f2af462d9677bfddfa
-    pristine_git_object: 049803ad040567e01868f310a1fba31aeb6af61e
+    last_write_checksum: sha1:f23c35d3ebe2ab37dad8e92cba1341344c99c351
+    pristine_git_object: 8939dbfb643bfab8025fb4a6cd5650ef65d2b4a1
   internal/sdk/models/operations/getfilemetadata.go:
     id: 641963d1ac41
     last_write_checksum: sha1:965fbbb9ab7332203a8d167d2981b89cf1376da2
@@ -2442,6 +2442,10 @@ trackedFiles:
     id: 60c06ed6a8e3
     last_write_checksum: sha1:2f427f357a8232439586fd8dc359c9d4730f2fa7
     pristine_git_object: 3edc90473e0b3a5a927f2a0f6a9fc317ce98c956
+  internal/sdk/models/shared/freemodeldailyrequests.go:
+    id: 1a507e31a251
+    last_write_checksum: sha1:2fba77b66e6170428daf13727734a34745fe6a9e
+    pristine_git_object: c586f5c755a87bb48ec7f4071c607ca3458acf66
   internal/sdk/models/shared/functioncallitem.go:
     id: 41c84342ac69
     last_write_checksum: sha1:ce7bbdb02f0cf02dd09dd8a93f0457d14dd6a000
@@ -3768,8 +3772,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:b9eb6dd18e56fd9db9a6292e40c8afdaa00ea462
-    pristine_git_object: ca495b633421f861abe1586763e8b8a6c21ff8d6
+    last_write_checksum: sha1:9a3b32d329660774480603d78866dfc9a6031bb3
+    pristine_git_object: 5164d9761bcb9ef3a95efd7df68919e7b07a16e3
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -4764,7 +4768,7 @@ examples:
     speakeasy-default-get-current-key:
       responses:
         "200":
-          application/json: {"data": {"byok_usage": 17.38, "byok_usage_daily": 17.38, "byok_usage_monthly": 17.38, "byok_usage_weekly": 17.38, "creator_user_id": "user_2dHFtVWx2n56w6HkM0000000000", "expires_at": "2027-12-31T23:59:59Z", "include_byok_in_limit": false, "is_free_tier": false, "is_management_key": false, "is_provisioning_key": false, "label": "sk-or-v1-au7...890", "limit": 100, "limit_remaining": 74.5, "limit_reset": "monthly", "rate_limit": {"interval": "1h", "note": "This field is deprecated and safe to ignore.", "requests": 1000}, "usage": 25.5, "usage_daily": 25.5, "usage_monthly": 25.5, "usage_weekly": 25.5}}
+          application/json: {"data": {"byok_usage": 17.38, "byok_usage_daily": 17.38, "byok_usage_monthly": 17.38, "byok_usage_weekly": 17.38, "creator_user_id": "user_2dHFtVWx2n56w6HkM0000000000", "expires_at": "2027-12-31T23:59:59Z", "free_model_daily_requests": {"limit": 50, "remaining": 38, "used": 12}, "include_byok_in_limit": false, "is_free_tier": false, "is_management_key": false, "is_provisioning_key": false, "label": "sk-or-v1-au7...890", "limit": 100, "limit_remaining": 74.5, "limit_reset": "monthly", "rate_limit": {"interval": "1h", "note": "This field is deprecated and safe to ignore.", "requests": 1000}, "usage": 25.5, "usage_daily": 25.5, "usage_monthly": 25.5, "usage_weekly": 25.5}}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
@@ -5763,4 +5767,6 @@ examples:
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.trace` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.trace` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.trace` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.trace` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.trace` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.apiKeys.getCurrent()`:  `response.data.free_model_daily_requests` **Added**
