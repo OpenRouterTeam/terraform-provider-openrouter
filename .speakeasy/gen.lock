@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 8cf66605176df52dc45994ed2ff572e8
+  docChecksum: 3328568bec9bef0e9597ecc633c6a505
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.125
-  configChecksum: f84bd271301bfedf29ddd24b1b8e62e7
+  releaseVersion: 0.2.126
+  configChecksum: c59f2549702ce87d559149cf7ccce04c
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: eef8bb2c-2b07-4d91-8419-1f8441553044
-  pristine_commit_hash: e6e5a055094a9db7a36468ca941124d71e427902
-  pristine_tree_hash: aeea57b815a203a6ce4104cb2df0e9ef63df3ecf
+  generation_id: 79e83f50-0388-4e3b-bf62-0d6a5c50cbf2
+  pristine_commit_hash: d0fc4e746e1988220515e1262b2662470d9bcc33
+  pristine_tree_hash: c0ff44ad0d7a1859381572ef1373c456fe604e46
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:89dd5676cb58679d57228cbcd64f37668bdaa9fa
-    pristine_git_object: bc36eac24c4d9d63dfaa63307caf2d97d5774fc5
+    last_write_checksum: sha1:e1e7b888337b8f852cebfd832001bcc76bc091c8
+    pristine_git_object: 8321f77007db7bdd9451f82b2031a98593241059
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1284,8 +1284,8 @@ trackedFiles:
     pristine_git_object: 18d0d451a56130377c6cf62e823b1ac856525a1a
   internal/sdk/models/operations/createaudiotranscriptionsmultipart.go:
     id: f321067bf190
-    last_write_checksum: sha1:69b9a118fb9ca9f4faf93090ac3fb69ed9337a24
-    pristine_git_object: 8502f225790e25f8cd483dc3e47d2a1294543816
+    last_write_checksum: sha1:9e6792fefa2a22be7240e3d3dd3aad82436ec20f
+    pristine_git_object: c987c9e917743bd08759610b67bf295b8d768bf5
   internal/sdk/models/operations/createauthkeyscode.go:
     id: 63e25db3089b
     last_write_checksum: sha1:955a21d2f60af52f7d65e03b8b2935ed75969ec4
@@ -3832,8 +3832,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:d188d64ab2f335e69726f1e1b0ce2aeb2db023b2
-    pristine_git_object: 0dc59a4554773d5b03948c6236f8944a9a295505
+    last_write_checksum: sha1:df87ae3d3ffb28a4bf4de6a0bd4eb5c631b1e40d
+    pristine_git_object: 6d7e2e820a97b32902fa5fbb08099d34582f16e4
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -6950,4 +6950,6 @@ examples:
         "504":
           application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Vault.listInternVaultSecrets()`: **Added**\n* `OpenRouter.Vault.deleteInternVaultSecret()`: **Added**\n* `OpenRouter.Vault.storeInternVaultSecret()`: **Added**\n* `OpenRouter.Vault.copyVaultSecretsToIntern()`: **Added**\n* `OpenRouter.Vault.listVaultSecrets()`: **Added**\n* `OpenRouter.Vault.deleteVaultSecret()`: **Added**\n* `OpenRouter.Vault.storeVaultSecret()`: **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.session_id` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.session_id` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.session_id` **Added**\n* `OpenRouter.apiKeys.getCurrent()`:  `response.data.allowed_data_regions` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[]` **Changed**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.session_id` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.session_id` **Added**\n"
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.stt.createTranscription_multipart()`:  `request` **Changed**
