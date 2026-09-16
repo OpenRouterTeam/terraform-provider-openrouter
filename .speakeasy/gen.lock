@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 1f6f13aa3d7b647c03e7f02a68afa8c0
+  docChecksum: 8cf66605176df52dc45994ed2ff572e8
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.124
-  configChecksum: 7462e5a182e05827e7fa9182bbc4e10c
+  releaseVersion: 0.2.125
+  configChecksum: f84bd271301bfedf29ddd24b1b8e62e7
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 43ba425f-7d01-48ac-ac5a-b0447e1a21ba
-  pristine_commit_hash: d2ff3ac1fa798fd4da25c84f61a5eb1f2dbd51a0
-  pristine_tree_hash: 2a8e48bd7759c1a0f2f708b975e8223618196354
+  generation_id: eef8bb2c-2b07-4d91-8419-1f8441553044
+  pristine_commit_hash: e6e5a055094a9db7a36468ca941124d71e427902
+  pristine_tree_hash: aeea57b815a203a6ce4104cb2df0e9ef63df3ecf
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:5b294b39ebed66162dbcaee99fbee073bdd00171
-    pristine_git_object: 7e52a56561c5cfd800d6d74e7c05f8133bfb46f5
+    last_write_checksum: sha1:89dd5676cb58679d57228cbcd64f37668bdaa9fa
+    pristine_git_object: bc36eac24c4d9d63dfaa63307caf2d97d5774fc5
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1270,6 +1270,10 @@ trackedFiles:
     id: 251a5b79a86d
     last_write_checksum: sha1:2ba1b8b9accf3e0ccbcd367438a26b7fa7cea5ac
     pristine_git_object: a34ae37330446a1ebc473cb64f76f3a0b7d7dd23
+  internal/sdk/models/operations/copyvaultsecretstointern.go:
+    id: "825687208688"
+    last_write_checksum: sha1:d2fff3e439edb6dd849413b6a9eb4d8a4ef149d5
+    pristine_git_object: 2f574e3b0c74c38d0c15a08aa8fe76ea3b818abb
   internal/sdk/models/operations/createaudiospeech.go:
     id: c5e82a3ae572
     last_write_checksum: sha1:c19a5ac8aa17782ee94d3a03f6602fd3a1b6d700
@@ -1292,8 +1296,8 @@ trackedFiles:
     pristine_git_object: d6d73d6f4fe6147ce705987667fb663f976afb6e
   internal/sdk/models/operations/createembeddings.go:
     id: db494cf871a8
-    last_write_checksum: sha1:12def269f6b226f434cd1b0d616e4fef5029c744
-    pristine_git_object: 2460466920364738d89f58202e2973e97f3a40cc
+    last_write_checksum: sha1:c1ec2fb263e352c1856f6525828aa13c7dcd9ad0
+    pristine_git_object: 6d4a1fcb53cc5ee5a37af32828251b82efc0d98e
   internal/sdk/models/operations/createguardrail.go:
     id: ceff42af9379
     last_write_checksum: sha1:417b4484cba6d8499f1b10cde55fe31f3c0cac9c
@@ -1324,8 +1328,8 @@ trackedFiles:
     pristine_git_object: 313edcef01ad826ee20c4aed910c9a897e722255
   internal/sdk/models/operations/creatererank.go:
     id: fda06b3cd6fe
-    last_write_checksum: sha1:9e58c9ea93055dde847b44646515b3d79688cf74
-    pristine_git_object: ba53fd2c7e1cb9d006e2e949d4ea93328f5dff90
+    last_write_checksum: sha1:3530ac9f52a422bc1dbf5ec3db4a3a01aa1e721c
+    pristine_git_object: cd1bf5493bd8197f817897cd6f779ce72d3d962e
   internal/sdk/models/operations/createscimgroupmapping.go:
     id: a5aaab3e9eb4
     last_write_checksum: sha1:64efb495b57444304cb2e5409e54c429d29a48be
@@ -1354,6 +1358,10 @@ trackedFiles:
     id: 1c1fe9640317
     last_write_checksum: sha1:2fdf4a940a58c8c65b6d13a16d5cf4f6191ef0dd
     pristine_git_object: 0b0b59198ce910c8c4b53266713561e53ac59dc3
+  internal/sdk/models/operations/deleteinternvaultsecret.go:
+    id: 5f734c67eb50
+    last_write_checksum: sha1:52c1c2edf5eb987c7ea860e71bbe6af1fc4f36bc
+    pristine_git_object: 81a447215b367a43708fcdd3950472f5e3f1a3d4
   internal/sdk/models/operations/deletekeys.go:
     id: 2140a482f41c
     last_write_checksum: sha1:669a820993459da9465e3c1cdaff9f81cc9d842c
@@ -1366,6 +1374,10 @@ trackedFiles:
     id: bc7adc2e526f
     last_write_checksum: sha1:1133d71c45c2d620372de8d9ae8ad25e023422fd
     pristine_git_object: 7900545edfd444a7d0cbc3932228d851a9fff29e
+  internal/sdk/models/operations/deletevaultsecret.go:
+    id: b5ebcbc44597
+    last_write_checksum: sha1:e0490d93c50fc38bf9006fe52ce4160d5d7a189c
+    pristine_git_object: ecad20a07e1f7ab9ac68f14425a454ad30f4dc47
   internal/sdk/models/operations/deleteworkspace.go:
     id: 1193e004e5cc
     last_write_checksum: sha1:c25b001da935ebf1c9cb6d7de11b9b2e0a863587
@@ -1412,8 +1424,8 @@ trackedFiles:
     pristine_git_object: 53b5058a4d29f29c14bfc816ed5f21eda9727346
   internal/sdk/models/operations/getcurrentkey.go:
     id: ded0c468ef31
-    last_write_checksum: sha1:f23c35d3ebe2ab37dad8e92cba1341344c99c351
-    pristine_git_object: 8939dbfb643bfab8025fb4a6cd5650ef65d2b4a1
+    last_write_checksum: sha1:3ccd77a346e26731473479431b7c119923e29cc4
+    pristine_git_object: 2b3602220ad61be971af4300706d41b9a1fc8ba1
   internal/sdk/models/operations/getfilemetadata.go:
     id: 641963d1ac41
     last_write_checksum: sha1:965fbbb9ab7332203a8d167d2981b89cf1376da2
@@ -1538,6 +1550,10 @@ trackedFiles:
     id: 3ab6b60137de
     last_write_checksum: sha1:e674d92b1b63fcf71f868ad4cb4be66ead8b3253
     pristine_git_object: f2c412b82645a9170c63561bfc13b9d0d6d53fa3
+  internal/sdk/models/operations/listinternvaultsecrets.go:
+    id: a6e3d7c77c58
+    last_write_checksum: sha1:93b050941aeaf1243d6de28e18f879107ad902ae
+    pristine_git_object: f729ee1898c42eb9e188b04bf099f8f6f8b70be0
   internal/sdk/models/operations/listkeyassignments.go:
     id: a34b7d64becb
     last_write_checksum: sha1:ad9c39718a35d84fa5ef134295ea1209327bff59
@@ -1586,6 +1602,10 @@ trackedFiles:
     id: b1ec793ad518
     last_write_checksum: sha1:5d37c959ccef65a8d80c800572d44e1981c7b936
     pristine_git_object: 213f41b80ce155312492cb4d3ca59a7212992de2
+  internal/sdk/models/operations/listvaultsecrets.go:
+    id: 909c957c1fb6
+    last_write_checksum: sha1:1e53c2e6233e146c852c97cd3b8ba89ba63525d5
+    pristine_git_object: 87a6b6b154cbc6758840649861cb5cdd603b6866
   internal/sdk/models/operations/listvideoscontent.go:
     id: 6cbe469c23e6
     last_write_checksum: sha1:2cacafb77c40835079326b5941104b443a61bfde
@@ -1618,6 +1638,14 @@ trackedFiles:
     id: 8220db2e9ee1
     last_write_checksum: sha1:0c9ec65be37e84381e6dac5bc96d2f10af75b3fe
     pristine_git_object: 52c915fc58f0a4f0298d582c31a082489adfac73
+  internal/sdk/models/operations/storeinternvaultsecret.go:
+    id: cc9b945040bf
+    last_write_checksum: sha1:de8124c65ad108fd98029733418164f61d10fb22
+    pristine_git_object: 28319ab7b9491d8aa81351bd6bfe23ebc3d524b5
+  internal/sdk/models/operations/storevaultsecret.go:
+    id: f276475c1a71
+    last_write_checksum: sha1:13fa1a9d834de4d4d81f2ce89b55864a2d6c262d
+    pristine_git_object: 31bdb667d3d0ccfd44d287b74585a6314fbb9cfc
   internal/sdk/models/operations/submitgenerationfeedback.go:
     id: c967413fefe5
     last_write_checksum: sha1:a17a4a10f3e899fe4b75d8771fb7884c8eebc49d
@@ -2976,8 +3004,8 @@ trackedFiles:
     pristine_git_object: 4aa7c92ef443fe17e1e4bcd6f297e5ee30df4144
   internal/sdk/models/shared/outputbashservertoolitem.go:
     id: 7e89b5fc903e
-    last_write_checksum: sha1:a335a06a15956e3932c07d254b7e69142f90abf6
-    pristine_git_object: f110dfcfebb70bca0f70547f8587917acf099502
+    last_write_checksum: sha1:f085e1f59d1c0bc07cff835605061b369bae6f5b
+    pristine_git_object: a6d157f79433997338118bea5300ad25ac6fa961
   internal/sdk/models/shared/outputbrowseruseservertoolitem.go:
     id: ed2ae185a485
     last_write_checksum: sha1:782faeead0ade4b24fd98e77cac8a9fa316259f4
@@ -3052,8 +3080,8 @@ trackedFiles:
     pristine_git_object: 5847a6dcaa2f94c854a0f0de38d091f19f63a60a
   internal/sdk/models/shared/outputshellservertoolitem.go:
     id: 7446a499473b
-    last_write_checksum: sha1:1e48dc4ac516ce046a664c633ff8ea14f62bf1b3
-    pristine_git_object: 0e630d11c82a61a7d3d6c46c138db1d20f763255
+    last_write_checksum: sha1:4dd638ce99a0abb6245df9312cb1617ba254d167
+    pristine_git_object: efc1408a4c4f6d950cc9db04622add2ab13f31c0
   internal/sdk/models/shared/outputsubagentservertoolitem.go:
     id: 44a188c961dd
     last_write_checksum: sha1:3356790b937ab03163455daa872a5ba69b503160
@@ -3384,8 +3412,8 @@ trackedFiles:
     pristine_git_object: 526657f5ddc259278143251644560e5b15870259
   internal/sdk/models/shared/shellcalloutputitem.go:
     id: a08190de43ac
-    last_write_checksum: sha1:f3e1ee8ba473b7512eba31c05ee3b9596a55b14d
-    pristine_git_object: 2cb93444de6288b7f2adf4033b85a217b8b6dfd0
+    last_write_checksum: sha1:7af49b2e81a1d3c70962977fbbfeb2b3d11739c5
+    pristine_git_object: 7c5c44ade8744ed2df7fc6ebe8c5ae19c89ebceb
   internal/sdk/models/shared/shellservertool.go:
     id: 0a35a19dbd86
     last_write_checksum: sha1:cc0516672c72ceb68bfdb6befea2aa2c7d1e28b4
@@ -3424,8 +3452,8 @@ trackedFiles:
     pristine_git_object: 6adb7afe508c31e89484f2b57d8f72c5ac8b4939
   internal/sdk/models/shared/speechrequest.go:
     id: 62ae2098c4e4
-    last_write_checksum: sha1:b6255c032d168efac88ecb8c216f0aa03ba1ba2e
-    pristine_git_object: c062038eb916c8178af6d57950d2f08237e7df44
+    last_write_checksum: sha1:a8e0e72a9fd2160b051036f445388a7d56d32819
+    pristine_git_object: 5f909fe56d1475c16b3209fff15b474d1c1a8cbf
   internal/sdk/models/shared/stopservertoolswhencondition.go:
     id: f62633a24387
     last_write_checksum: sha1:313661c9374869f9dae15fad352d69a914aa4b46
@@ -3460,8 +3488,8 @@ trackedFiles:
     pristine_git_object: 9c5cf022a60c50803b8e434d2222b59377786960
   internal/sdk/models/shared/sttrequest.go:
     id: 1295718b033b
-    last_write_checksum: sha1:4cf73bad4f173cc3836d5759a4b2467cf978b83d
-    pristine_git_object: 5161298d0b09ca8497caed7dd4296ea8e0868a50
+    last_write_checksum: sha1:842a42459bcbe8aa2c8d2fc14f4fe5561cbc7e29
+    pristine_git_object: 5d3d4f8df41bfe41dc98b8af7396d5bf3f12fe6c
   internal/sdk/models/shared/sttresponse.go:
     id: 1464bf39683e
     last_write_checksum: sha1:5b3f878ebb90ec3c0238aff83db1dc554750c0e9
@@ -3662,10 +3690,34 @@ trackedFiles:
     id: 7e3744a9c2b4
     last_write_checksum: sha1:c927907ef3be7d0dac4c0358da8631931d965020
     pristine_git_object: 697cebe1afa2185426fac07de6d9ae50b8b48143
+  internal/sdk/models/shared/vaultsecret.go:
+    id: 1d01c08cf8b5
+    last_write_checksum: sha1:db1bacc18d8a14330b7443e1672a564986cf2f62
+    pristine_git_object: 1ac69fb4d674068105a35fbf01693df159f95a0a
+  internal/sdk/models/shared/vaultsecretcopyrequest.go:
+    id: ae4213b189b0
+    last_write_checksum: sha1:ea19bff33c383e6ef38545b094aa8130d9ac6737
+    pristine_git_object: 2e4c74d3c5677cb16767e0eaf724b15a9ab4dd0e
+  internal/sdk/models/shared/vaultsecretcopyresponse.go:
+    id: 7fee2278de86
+    last_write_checksum: sha1:01f99b830a1f9bc7855bba0e8eb45412527e1527
+    pristine_git_object: 5777529849343aed6471158e279a7f67b415a0bf
+  internal/sdk/models/shared/vaultsecretlistresponse.go:
+    id: d96e09d1e39d
+    last_write_checksum: sha1:b2041208e6ab56e32c8b8cc811bf3a0dea2d17a0
+    pristine_git_object: 5a24e69238490a9685cf07ee168d8a5f4462b008
+  internal/sdk/models/shared/vaultsecretresponse.go:
+    id: ce26d8026226
+    last_write_checksum: sha1:80cf5c0e16eb706906cd5ab68b13daaa04e6aa83
+    pristine_git_object: a0f1a25d572e061f457a87a7c5552f42aeb3de77
+  internal/sdk/models/shared/vaultsecretwriterequest.go:
+    id: 225076162f32
+    last_write_checksum: sha1:30a74e3adc6835183502a4664ca9ddee59388c29
+    pristine_git_object: 15c97a71b701ec05a349aad99622e73b24815d89
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:fc5796c8aed45a19c00158fddba31dd491fe2f86
-    pristine_git_object: f094993316f043e5df833e1b118b5d7be10a0425
+    last_write_checksum: sha1:034c51dfb11a0a69643f83e926015aedd2a44ed0
+    pristine_git_object: c7557b780c845adc5a883418a7115a8a7c0989cd
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
     last_write_checksum: sha1:c75b8655399ea22961cf791909908dbfce3a2194
@@ -3780,8 +3832,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:7a3f595512c01dbc64997e64b73d34e43e91fa02
-    pristine_git_object: 87c7a944dc471aeb30ff13e562b5df30c69926d6
+    last_write_checksum: sha1:d188d64ab2f335e69726f1e1b0ce2aeb2db023b2
+    pristine_git_object: 0dc59a4554773d5b03948c6236f8944a9a295505
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -3838,6 +3890,10 @@ trackedFiles:
     id: 2f3f971639f6
     last_write_checksum: sha1:0b2a8d99ec8d96e48378b85a644d695e6638be0f
     pristine_git_object: 86e71b1c243584ac30f4b897d54367f831a07aa6
+  internal/sdk/vault.go:
+    id: 387005ba9449
+    last_write_checksum: sha1:f718e21060bc0f2b19adcbf3913256c9e3915972
+    pristine_git_object: afee5998043cc58923ce529e740280ea60323f40
   internal/sdk/videogeneration.go:
     id: ef76c19a17c2
     last_write_checksum: sha1:0e66953fa8aab30653970162b5be8f01e3eef200
@@ -4780,7 +4836,7 @@ examples:
     speakeasy-default-get-current-key:
       responses:
         "200":
-          application/json: {"data": {"byok_usage": 17.38, "byok_usage_daily": 17.38, "byok_usage_monthly": 17.38, "byok_usage_weekly": 17.38, "creator_user_id": "user_2dHFtVWx2n56w6HkM0000000000", "expires_at": "2027-12-31T23:59:59Z", "free_model_daily_requests": {"limit": 50, "remaining": 38, "used": 12}, "include_byok_in_limit": false, "is_free_tier": false, "is_management_key": false, "is_provisioning_key": false, "label": "sk-or-v1-au7...890", "limit": 100, "limit_remaining": 74.5, "limit_reset": "monthly", "rate_limit": {"interval": "1h", "note": "This field is deprecated and safe to ignore.", "requests": 1000}, "usage": 25.5, "usage_daily": 25.5, "usage_monthly": 25.5, "usage_weekly": 25.5}}
+          application/json: {"data": {"allowed_data_regions": ["global", "europe", "us"], "byok_usage": 17.38, "byok_usage_daily": 17.38, "byok_usage_monthly": 17.38, "byok_usage_weekly": 17.38, "creator_user_id": "user_2dHFtVWx2n56w6HkM0000000000", "expires_at": "2027-12-31T23:59:59Z", "free_model_daily_requests": {"limit": 50, "remaining": 38, "used": 12}, "include_byok_in_limit": false, "is_free_tier": false, "is_management_key": false, "is_provisioning_key": false, "label": "sk-or-v1-au7...890", "limit": 100, "limit_remaining": 74.5, "limit_reset": "monthly", "rate_limit": {"interval": "1h", "note": "This field is deprecated and safe to ignore.", "requests": 1000}, "usage": 25.5, "usage_daily": 25.5, "usage_monthly": 25.5, "usage_weekly": 25.5}}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
@@ -5778,8 +5834,1120 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  listInternVaultSecrets:
+    speakeasy-default-list-intern-vault-secrets:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "200":
+          application/json: {"data": [{"created_at": "2026-09-15T17:44:00.000Z", "fingerprint": "sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "hosts": ["api.github.com"], "name": "github_token"}, {"created_at": "2026-08-01T09:30:00.000Z", "fingerprint": null, "hosts": null, "name": "legacy_token"}], "has_more": false}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+    invalid-vault-request:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid vault request"}}
+    invalid-or-missing-api-key:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "401":
+          application/json: {"error": {"code": 401, "message": "Invalid or missing API key"}}
+    regional-hostname:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "The Intern API does not support regional data residency yet. Please use the global endpoint at openrouter.ai."}}
+    workspace-scope-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "Vault scope is unavailable"}}
+    not-found:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "404":
+          application/json: {"error": {"code": 404, "message": "Not found"}}
+    body-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Request body timed out"}}
+    route-deadline:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Vault request timed out"}}
+    rate-limited:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "429":
+          application/json: {"error": {"code": 429, "message": "Too many vault requests"}}
+    internal-error:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+    invalid-vault-response:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Invalid vault response"}}
+    vault-request-failed:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Vault request failed"}}
+    vault-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault service is unavailable"}}
+    writes-disabled:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault writes are not enabled"}}
+    vault-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "504":
+          application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
+  deleteInternVaultSecret:
+    invalid-vault-request:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid vault request"}}
+    invalid-or-missing-api-key:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "401":
+          application/json: {"error": {"code": 401, "message": "Invalid or missing API key"}}
+    regional-hostname:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "The Intern API does not support regional data residency yet. Please use the global endpoint at openrouter.ai."}}
+    workspace-scope-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "Vault scope is unavailable"}}
+    not-found:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "404":
+          application/json: {"error": {"code": 404, "message": "Not found"}}
+    body-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Request body timed out"}}
+    route-deadline:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Vault request timed out"}}
+    rate-limited:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "429":
+          application/json: {"error": {"code": 429, "message": "Too many vault requests"}}
+    internal-error:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+    invalid-vault-response:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Invalid vault response"}}
+    vault-request-failed:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Vault request failed"}}
+    vault-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault service is unavailable"}}
+    writes-disabled:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault writes are not enabled"}}
+    vault-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "504":
+          application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
+    speakeasy-default-delete-intern-vault-secret:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+  storeInternVaultSecret:
+    speakeasy-default-store-intern-vault-secret:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "200":
+          application/json: {"data": {"created_at": "2026-09-15T17:44:00.000Z", "fingerprint": "sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "hosts": ["api.github.com"], "name": "github_token"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request payload too large"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+    invalid-vault-request:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid vault request"}}
+    invalid-or-missing-api-key:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "401":
+          application/json: {"error": {"code": 401, "message": "Invalid or missing API key"}}
+    regional-hostname:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "The Intern API does not support regional data residency yet. Please use the global endpoint at openrouter.ai."}}
+    workspace-scope-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "Vault scope is unavailable"}}
+    not-found:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "404":
+          application/json: {"error": {"code": 404, "message": "Not found"}}
+    body-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Request body timed out"}}
+    route-deadline:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Vault request timed out"}}
+    transfer-in-progress:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "409":
+          application/json: {"error": {"code": 409, "message": "Vault request conflicts with existing secrets"}}
+    body-too-large:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request body too large"}}
+    rate-limited:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "429":
+          application/json: {"error": {"code": 429, "message": "Too many vault requests"}}
+    internal-error:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+    invalid-vault-response:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Invalid vault response"}}
+    vault-request-failed:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Vault request failed"}}
+    vault-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault service is unavailable"}}
+    writes-disabled:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault writes are not enabled"}}
+    vault-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "504":
+          application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
+  copyVaultSecretsToIntern:
+    speakeasy-default-copy-vault-secrets-to-intern:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "200":
+          application/json: {"data": [{"created_at": "2026-09-15T17:44:00.000Z", "fingerprint": "sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "hosts": ["api.github.com"], "name": "github_token"}]}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request payload too large"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+    invalid-vault-request:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid vault request"}}
+    invalid-or-missing-api-key:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "401":
+          application/json: {"error": {"code": 401, "message": "Invalid or missing API key"}}
+    regional-hostname:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "The Intern API does not support regional data residency yet. Please use the global endpoint at openrouter.ai."}}
+    workspace-scope-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "Vault scope is unavailable"}}
+    not-found:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "404":
+          application/json: {"error": {"code": 404, "message": "Not found"}}
+    body-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Request body timed out"}}
+    route-deadline:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Vault request timed out"}}
+    copy-conflict:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "409":
+          application/json: {"error": {"code": 409, "message": "Vault request conflicts with existing secrets"}}
+    body-too-large:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request body too large"}}
+    rate-limited:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "429":
+          application/json: {"error": {"code": 429, "message": "Too many vault requests"}}
+    internal-error:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+    invalid-vault-response:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Invalid vault response"}}
+    vault-request-failed:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Vault request failed"}}
+    vault-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault service is unavailable"}}
+    writes-disabled:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault writes are not enabled"}}
+    vault-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"names": ["github_token"]}
+      responses:
+        "504":
+          application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
+  listVaultSecrets:
+    speakeasy-default-list-vault-secrets:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "200":
+          application/json: {"data": [{"created_at": "2026-09-15T17:44:00.000Z", "fingerprint": "sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "hosts": ["api.github.com"], "name": "github_token"}, {"created_at": "2026-08-01T09:30:00.000Z", "fingerprint": null, "hosts": null, "name": "legacy_token"}], "has_more": false}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+    invalid-vault-request:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid vault request"}}
+    invalid-or-missing-api-key:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "401":
+          application/json: {"error": {"code": 401, "message": "Invalid or missing API key"}}
+    regional-hostname:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "The Intern API does not support regional data residency yet. Please use the global endpoint at openrouter.ai."}}
+    workspace-scope-unavailable:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "Vault scope is unavailable"}}
+    not-found:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "404":
+          application/json: {"error": {"code": 404, "message": "Not found"}}
+    body-timed-out:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Request body timed out"}}
+    route-deadline:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Vault request timed out"}}
+    rate-limited:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "429":
+          application/json: {"error": {"code": 429, "message": "Too many vault requests"}}
+    internal-error:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+    invalid-vault-response:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Invalid vault response"}}
+    vault-request-failed:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Vault request failed"}}
+    vault-unavailable:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault service is unavailable"}}
+    writes-disabled:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault writes are not enabled"}}
+    vault-timed-out:
+      parameters:
+        query:
+          limit: 50
+          offset: 0
+      responses:
+        "504":
+          application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
+  deleteVaultSecret:
+    invalid-vault-request:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid vault request"}}
+    invalid-or-missing-api-key:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "401":
+          application/json: {"error": {"code": 401, "message": "Invalid or missing API key"}}
+    regional-hostname:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "The Intern API does not support regional data residency yet. Please use the global endpoint at openrouter.ai."}}
+    workspace-scope-unavailable:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "Vault scope is unavailable"}}
+    not-found:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "404":
+          application/json: {"error": {"code": 404, "message": "Not found"}}
+    body-timed-out:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Request body timed out"}}
+    route-deadline:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Vault request timed out"}}
+    rate-limited:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "429":
+          application/json: {"error": {"code": 429, "message": "Too many vault requests"}}
+    internal-error:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+    invalid-vault-response:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Invalid vault response"}}
+    vault-request-failed:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Vault request failed"}}
+    vault-unavailable:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault service is unavailable"}}
+    writes-disabled:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault writes are not enabled"}}
+    vault-timed-out:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "504":
+          application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
+    speakeasy-default-delete-vault-secret:
+      parameters:
+        path:
+          name: "github_token"
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+  storeVaultSecret:
+    speakeasy-default-store-vault-secret:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "200":
+          application/json: {"data": {"created_at": "2026-09-15T17:44:00.000Z", "fingerprint": "sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "hosts": ["api.github.com"], "name": "github_token"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request payload too large"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+    invalid-vault-request:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid vault request"}}
+    invalid-or-missing-api-key:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "401":
+          application/json: {"error": {"code": 401, "message": "Invalid or missing API key"}}
+    regional-hostname:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "The Intern API does not support regional data residency yet. Please use the global endpoint at openrouter.ai."}}
+    workspace-scope-unavailable:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "Vault scope is unavailable"}}
+    not-found:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "404":
+          application/json: {"error": {"code": 404, "message": "Not found"}}
+    body-timed-out:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Request body timed out"}}
+    route-deadline:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Vault request timed out"}}
+    body-too-large:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request body too large"}}
+    rate-limited:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "429":
+          application/json: {"error": {"code": 429, "message": "Too many vault requests"}}
+    internal-error:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+    invalid-vault-response:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Invalid vault response"}}
+    vault-request-failed:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Vault request failed"}}
+    vault-unavailable:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault service is unavailable"}}
+    writes-disabled:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault writes are not enabled"}}
+    vault-timed-out:
+      parameters:
+        path:
+          name: "github_token"
+      requestBody:
+        application/json: {"hosts": ["api.github.com"], "value": "ghp_exampleTokenValue"}
+      responses:
+        "504":
+          application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.stt.createTranscription()`:  `response.status[504]` **Added** (Breaking ⚠️)
-  * `OpenRouter.stt.createTranscription_multipart()`:  `response.status[504]` **Added** (Breaking ⚠️)
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Vault.listInternVaultSecrets()`: **Added**\n* `OpenRouter.Vault.deleteInternVaultSecret()`: **Added**\n* `OpenRouter.Vault.storeInternVaultSecret()`: **Added**\n* `OpenRouter.Vault.copyVaultSecretsToIntern()`: **Added**\n* `OpenRouter.Vault.listVaultSecrets()`: **Added**\n* `OpenRouter.Vault.deleteVaultSecret()`: **Added**\n* `OpenRouter.Vault.storeVaultSecret()`: **Added**\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.session_id` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.session_id` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.session_id` **Added**\n* `OpenRouter.apiKeys.getCurrent()`:  `response.data.allowed_data_regions` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.input.union(Array<>)[]` **Changed**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.session_id` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.session_id` **Added**\n"
