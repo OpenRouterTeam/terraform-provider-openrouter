@@ -57,6 +57,8 @@ type GetCurrentKeyData struct {
 	CreatorUserID *string `json:"creator_user_id"`
 	// ISO 8601 UTC timestamp when the API key expires, or null if no expiration
 	ExpiresAt *time.Time `json:"expires_at,omitzero"`
+	// Free-model (`:free` variant) daily request quota for the account that owns the key. Reports the same counter and tier limit that free-model enforcement reads for accounts subject to the free-model limits; the counter resets at UTC midnight. Accounts and endpoints exempt from free-model limits, and BYOK requests, are not gated by it, so `remaining` is the tier policy rather than an enforced ceiling for them.
+	FreeModelDailyRequests shared.FreeModelDailyRequests `json:"free_model_daily_requests"`
 	// Whether to include external BYOK usage in the credit limit
 	IncludeByokInLimit bool `json:"include_byok_in_limit"`
 	// Whether this is a free tier API key
@@ -140,6 +142,13 @@ func (g *GetCurrentKeyData) GetExpiresAt() *time.Time {
 		return nil
 	}
 	return g.ExpiresAt
+}
+
+func (g *GetCurrentKeyData) GetFreeModelDailyRequests() shared.FreeModelDailyRequests {
+	if g == nil {
+		return shared.FreeModelDailyRequests{}
+	}
+	return g.FreeModelDailyRequests
 }
 
 func (g *GetCurrentKeyData) GetIncludeByokInLimit() bool {
