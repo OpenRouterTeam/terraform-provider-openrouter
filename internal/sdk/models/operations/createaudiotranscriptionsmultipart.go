@@ -180,6 +180,8 @@ type CreateAudioTranscriptionsMultipartResponse struct {
 	BadGatewayResponse *shared.BadGatewayResponse
 	// Service Unavailable - Service temporarily unavailable
 	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
+	// Gateway Timeout - Provider did not respond before the upstream deadline
+	GatewayTimeoutResponse *shared.GatewayTimeoutResponse
 	// Infrastructure Timeout - Provider request timed out at edge network
 	EdgeNetworkTimeoutResponse *shared.EdgeNetworkTimeoutResponse
 	// Provider Overloaded - Provider is temporarily overloaded
@@ -293,6 +295,13 @@ func (c *CreateAudioTranscriptionsMultipartResponse) GetServiceUnavailableRespon
 		return nil
 	}
 	return c.ServiceUnavailableResponse
+}
+
+func (c *CreateAudioTranscriptionsMultipartResponse) GetGatewayTimeoutResponse() *shared.GatewayTimeoutResponse {
+	if c == nil {
+		return nil
+	}
+	return c.GatewayTimeoutResponse
 }
 
 func (c *CreateAudioTranscriptionsMultipartResponse) GetEdgeNetworkTimeoutResponse() *shared.EdgeNetworkTimeoutResponse {

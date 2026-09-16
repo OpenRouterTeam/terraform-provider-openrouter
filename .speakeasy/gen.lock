@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: e8bf92663c8c04d9a7412726aaf936eb
+  docChecksum: 1f6f13aa3d7b647c03e7f02a68afa8c0
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.123
-  configChecksum: 4db4f3f3c5aa652ec1ff81befaa5507a
+  releaseVersion: 0.2.124
+  configChecksum: 7462e5a182e05827e7fa9182bbc4e10c
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: fa6c7b39-73cb-437e-9328-9f8dec896954
-  pristine_commit_hash: 2ccfca2464926b53f6291f62c8e3a0d21b17b3fd
-  pristine_tree_hash: d717e4c3dfca9d0eb0939c0ede19bd6d1b7291ee
+  generation_id: 43ba425f-7d01-48ac-ac5a-b0447e1a21ba
+  pristine_commit_hash: d2ff3ac1fa798fd4da25c84f61a5eb1f2dbd51a0
+  pristine_tree_hash: 2a8e48bd7759c1a0f2f708b975e8223618196354
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:0473719aa1c7a4d516b3c29940576aa8954e1e8d
-    pristine_git_object: f70f9244d871a38509cdfb538c4bd9dc8062fe6a
+    last_write_checksum: sha1:5b294b39ebed66162dbcaee99fbee073bdd00171
+    pristine_git_object: 7e52a56561c5cfd800d6d74e7c05f8133bfb46f5
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1276,12 +1276,12 @@ trackedFiles:
     pristine_git_object: e07ae00436a1aa6827200e67537c1deaa8b53625
   internal/sdk/models/operations/createaudiotranscriptions.go:
     id: 4a958a7c881d
-    last_write_checksum: sha1:c40d6b16a2c8423c02ef5cc80f133400faf8d0e9
-    pristine_git_object: 0d4c3f6336bdab789dce9ec549ec102f2bcd7ebe
+    last_write_checksum: sha1:1e757a10fb4d6ee4748200851d3dd7bb32a14a78
+    pristine_git_object: 18d0d451a56130377c6cf62e823b1ac856525a1a
   internal/sdk/models/operations/createaudiotranscriptionsmultipart.go:
     id: f321067bf190
-    last_write_checksum: sha1:4a7cdff125d44ad68fc457116395d619e137c273
-    pristine_git_object: cbc06693c73c0f094567927222f5eee078b95d21
+    last_write_checksum: sha1:69b9a118fb9ca9f4faf93090ac3fb69ed9337a24
+    pristine_git_object: 8502f225790e25f8cd483dc3e47d2a1294543816
   internal/sdk/models/operations/createauthkeyscode.go:
     id: 63e25db3089b
     last_write_checksum: sha1:955a21d2f60af52f7d65e03b8b2935ed75969ec4
@@ -2474,6 +2474,14 @@ trackedFiles:
     id: eeb269386ac8
     last_write_checksum: sha1:d2e456f3142f48f42c9356ee31e71825cda403fa
     pristine_git_object: 12e11c53066efe17faea58fb04b2a3cf0b912668
+  internal/sdk/models/shared/gatewaytimeoutresponse.go:
+    id: 254d7205ff01
+    last_write_checksum: sha1:8ecdaa268cdc72aac8091077a4ba34ee4978d4b8
+    pristine_git_object: 68f49c39073b6a1844f84ccd4c7e32288b60fdd0
+  internal/sdk/models/shared/gatewaytimeoutresponseerrordata.go:
+    id: c2ac1f1ce8fe
+    last_write_checksum: sha1:b2848440998fb841a05c10495da14a178b5c818a
+    pristine_git_object: e49c011d8a3a84d7d8df9705ad6b9ae02e34542f
   internal/sdk/models/shared/generationcontentdata.go:
     id: e568bed573f7
     last_write_checksum: sha1:2dc354106ddf66a94aab958e277852a491cab19c
@@ -3772,8 +3780,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:9a3b32d329660774480603d78866dfc9a6031bb3
-    pristine_git_object: 5164d9761bcb9ef3a95efd7df68919e7b07a16e3
+    last_write_checksum: sha1:7a3f595512c01dbc64997e64b73d34e43e91fa02
+    pristine_git_object: 87c7a944dc471aeb30ff13e562b5df30c69926d6
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -3808,8 +3816,8 @@ trackedFiles:
     pristine_git_object: b1c32e8f9abbac214c867743e486f8a8977b8402
   internal/sdk/stt.go:
     id: 85bb5759fa65
-    last_write_checksum: sha1:e918815d64cf2d04ae6b702234340aab54a25cbf
-    pristine_git_object: d1185366d11789f6b82283d9df9bcff144c33f69
+    last_write_checksum: sha1:211740af8c86c59a0af9cac7852c317778e5ca1b
+    pristine_git_object: 916b612fae40e591e22c28d5ae300b362db9304a
   internal/sdk/tts.go:
     id: ff4f349de02d
     last_write_checksum: sha1:e8bc616a3fa7f702aec7d3049af04f2924720d9b
@@ -4027,6 +4035,8 @@ examples:
           application/json: {"error": {"code": 413, "message": "Request payload too large"}}
         "403":
           application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
     speakeasy-default-create-audio-transcriptions-multipart:
       requestBody:
         multipart/form-data: {"file": "x-file: example.file", "model": "Escalade"}
@@ -4057,6 +4067,8 @@ examples:
           application/json: {"error": {"code": 413, "message": "Request payload too large"}}
         "403":
           application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
   exchangeAuthCodeForAPIKey:
     speakeasy-default-exchange-auth-code-for-API-key:
       requestBody:
@@ -5769,4 +5781,5 @@ examples:
 examplesVersion: 1.0.2
 releaseNotes: |
   ## Terraform SDK Changes:
-  * `OpenRouter.apiKeys.getCurrent()`:  `response.data.free_model_daily_requests` **Added**
+  * `OpenRouter.stt.createTranscription()`:  `response.status[504]` **Added** (Breaking ⚠️)
+  * `OpenRouter.stt.createTranscription_multipart()`:  `response.status[504]` **Added** (Breaking ⚠️)
