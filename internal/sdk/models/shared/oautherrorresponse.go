@@ -8,21 +8,21 @@ import (
 	"fmt"
 )
 
-type Error string
+type ErrorEnum string
 
 const (
-	ErrorInvalidRequest         Error = "invalid_request"
-	ErrorInvalidGrant           Error = "invalid_grant"
-	ErrorUnsupportedGrantType   Error = "unsupported_grant_type"
-	ErrorInvalidScope           Error = "invalid_scope"
-	ErrorServerError            Error = "server_error"
-	ErrorTemporarilyUnavailable Error = "temporarily_unavailable"
+	ErrorEnumInvalidRequest         ErrorEnum = "invalid_request"
+	ErrorEnumInvalidGrant           ErrorEnum = "invalid_grant"
+	ErrorEnumUnsupportedGrantType   ErrorEnum = "unsupported_grant_type"
+	ErrorEnumInvalidScope           ErrorEnum = "invalid_scope"
+	ErrorEnumServerError            ErrorEnum = "server_error"
+	ErrorEnumTemporarilyUnavailable ErrorEnum = "temporarily_unavailable"
 )
 
-func (e Error) ToPointer() *Error {
+func (e ErrorEnum) ToPointer() *ErrorEnum {
 	return &e
 }
-func (e *Error) UnmarshalJSON(data []byte) error {
+func (e *ErrorEnum) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -39,22 +39,22 @@ func (e *Error) UnmarshalJSON(data []byte) error {
 	case "server_error":
 		fallthrough
 	case "temporarily_unavailable":
-		*e = Error(v)
+		*e = ErrorEnum(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for Error: %v", v)
+		return fmt.Errorf("invalid value for ErrorEnum: %v", v)
 	}
 }
 
 // OAuthErrorResponse - RFC 6749 §5.2 error response.
 type OAuthErrorResponse struct {
-	Error            Error  `json:"error"`
-	ErrorDescription string `json:"error_description"`
+	Error            ErrorEnum `json:"error"`
+	ErrorDescription string    `json:"error_description"`
 }
 
-func (o *OAuthErrorResponse) GetError() Error {
+func (o *OAuthErrorResponse) GetError() ErrorEnum {
 	if o == nil {
-		return Error("")
+		return ErrorEnum("")
 	}
 	return o.Error
 }
