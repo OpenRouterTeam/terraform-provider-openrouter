@@ -87,7 +87,9 @@ type OpenRouter struct {
 	// Guardrails endpoints
 	Guardrails *Guardrails
 	// Images endpoints
-	Images  *Images
+	Images *Images
+	// Create, inspect, update, provision, suspend and delete OpenRouter interns through an API key.
+	Interns *Interns
 	APIKeys *APIKeys
 	// Model information endpoints
 	Models *Models
@@ -185,10 +187,10 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.2.127",
+		SDKVersion: "0.2.128",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.2.127 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
-			SDKVersion:        "0.2.127",
+			UserAgent:         "speakeasy-sdk/terraform 0.2.128 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			SDKVersion:        "0.2.128",
 			GenVersion:        "2.937.18",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
@@ -228,6 +230,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Generations = newGenerations(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Guardrails = newGuardrails(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Images = newImages(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.Interns = newInterns(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.APIKeys = newAPIKeys(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Models = newModels(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Observability = newObservability(sdk, sdk.sdkConfiguration, sdk.hooks)
