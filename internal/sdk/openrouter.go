@@ -60,6 +60,8 @@ type OpenRouter struct {
 	SDKVersion string
 	// Analytics and usage endpoints
 	Analytics *Analytics
+	// Decisions endpoints
+	Decisions *Decisions
 	Tts       *Tts
 	Stt       *Stt
 	// OAuth authentication endpoints
@@ -187,10 +189,10 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.2.132",
+		SDKVersion: "0.2.133",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.2.132 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
-			SDKVersion:        "0.2.132",
+			UserAgent:         "speakeasy-sdk/terraform 0.2.133 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			SDKVersion:        "0.2.133",
 			GenVersion:        "2.937.18",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
@@ -214,6 +216,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	}
 
 	sdk.Analytics = newAnalytics(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.Decisions = newDecisions(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Tts = newTts(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Stt = newStt(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.OAuth = newOAuth1(sdk, sdk.sdkConfiguration, sdk.hooks)
