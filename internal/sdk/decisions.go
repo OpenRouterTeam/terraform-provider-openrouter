@@ -33,9 +33,9 @@ func newDecisions(rootSDK *OpenRouter, sdkConfig config.SDKConfiguration, hooks 
 	}
 }
 
-// Decisions - Submit a Decisions (questions and answers) request
+// Create - Submit a Decisions (questions and answers) request
 // Submits a Decisions request to the Decisions router
-func (s *Decisions) Decisions(ctx context.Context, request shared.DecisionsRequest, opts ...operations.Option) (*operations.CreateAPIAlphaDecisionsResponse, error) {
+func (s *Decisions) Create(ctx context.Context, request shared.DecisionsRequest, opts ...operations.Option) (*operations.CreateAPIAlphaDecisionsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
 		operations.SupportedOptionRetries,
