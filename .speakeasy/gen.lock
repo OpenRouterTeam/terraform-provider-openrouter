@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 3328568bec9bef0e9597ecc633c6a505
+  docChecksum: 72c1bdc5128ace487553a27d7439c11f
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.126
-  configChecksum: c59f2549702ce87d559149cf7ccce04c
+  releaseVersion: 0.2.127
+  configChecksum: fcd7a4e5648764211b62fd932866b8ec
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 79e83f50-0388-4e3b-bf62-0d6a5c50cbf2
-  pristine_commit_hash: d0fc4e746e1988220515e1262b2662470d9bcc33
-  pristine_tree_hash: c0ff44ad0d7a1859381572ef1373c456fe604e46
+  generation_id: 5b6db458-5981-4a8e-8a5e-9a895c547ad5
+  pristine_commit_hash: 36d0594999f8b015bb6a4da89a9d9d397af87ed0
+  pristine_tree_hash: c4f844fca9c5703ce6e03f55ca7d1700a948c732
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:e1e7b888337b8f852cebfd832001bcc76bc091c8
-    pristine_git_object: 8321f77007db7bdd9451f82b2031a98593241059
+    last_write_checksum: sha1:cb1d50b728f81c450e1842ff66f7a7040545c022
+    pristine_git_object: 2799b50a7f1de4c9e21663b1d0d9d5361ede8083
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1776,8 +1776,8 @@ trackedFiles:
     pristine_git_object: 4d0c135651c2c8a371b2ed367c1b578a72d8615a
   internal/sdk/models/shared/anthropicimageblockparam.go:
     id: 36c022ab5aa4
-    last_write_checksum: sha1:dc85e54f1884482f884d53b9df4137d4341ad759
-    pristine_git_object: 3cd9491724eea487a3b0132809fad7bdc14f8f23
+    last_write_checksum: sha1:33b573c3da0b5ad744439d907eea739210b9e189
+    pristine_git_object: f26535166a3ff7d97065a3ba67e08f9601dbff97
   internal/sdk/models/shared/anthropicimagemimetype.go:
     id: 19f96c7bb7bd
     last_write_checksum: sha1:74dbab20600b808de5494641549e95cb36c5ffed
@@ -3832,8 +3832,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:df87ae3d3ffb28a4bf4de6a0bd4eb5c631b1e40d
-    pristine_git_object: 6d7e2e820a97b32902fa5fbb08099d34582f16e4
+    last_write_checksum: sha1:c7239542abc5c1208c4eb09f20958e6b6d047a39
+    pristine_git_object: 7065e3c385be37dac722d9bc75e109411caa3f8a
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -6950,6 +6950,4 @@ examples:
         "504":
           application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.stt.createTranscription_multipart()`:  `request` **Changed**
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.messages[].content.union(Array<>)[].union(document).source.union(content).content.union(Array<>)[].union(image).source.union(file)` **Added**\n"
