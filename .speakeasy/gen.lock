@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 2ea63058e998af32ff97c12d91b1e28d
+  docChecksum: e21e3241cea4595b923b74e450833bbc
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.128
-  configChecksum: b2dfdf233db2c936269d64b0b6973807
+  releaseVersion: 0.2.129
+  configChecksum: 0a475369953e20fbf4ed45f01e43f995
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 06be3263-a4d7-47c7-bc52-c53473b862ba
-  pristine_commit_hash: 4d99c13250f743790b1c3c92e6fc771f509f6bc1
-  pristine_tree_hash: 02d28e52a65c5a50b98e4884ce5a04efe3aaf74a
+  generation_id: 387eac42-b30b-4cf0-8ce5-4769c309fdcd
+  pristine_commit_hash: 94fd0c3adf4afc2459fee67134e936b37bc94cd2
+  pristine_tree_hash: 158c980bac7f4537583a6d460b203c934605f02b
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:3388ef0d7effdece597101e5c044958bf1348605
-    pristine_git_object: ef2791db73b0fb245dcbc1e5d0686baa89bde927
+    last_write_checksum: sha1:3c6e33a319a72eab28fbd753d2085dea6e9422b4
+    pristine_git_object: fb4cdac06633a5d0fab29632560c3c50fb4c5a9b
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1140,8 +1140,8 @@ trackedFiles:
     pristine_git_object: a1b37fc8fc36ad19008b1313a7eb4f9dcc48335b
   internal/sdk/containers.go:
     id: 1ae2e9899498
-    last_write_checksum: sha1:dbc576eed8bfa57cfe443d8e7f76fc0221aea5b6
-    pristine_git_object: 6816db8cc9319a10a06331fe9d5b1a7a07fd4880
+    last_write_checksum: sha1:854c1e636ab970526159e93a5befcec980c898af
+    pristine_git_object: c7f912ea75ccdf83c82acd7ee64490819aba528f
   internal/sdk/credits.go:
     id: 5a044e5f0348
     last_write_checksum: sha1:f10b331791293c125ae078f2cf2d54c18e6d33e8
@@ -1524,8 +1524,8 @@ trackedFiles:
     pristine_git_object: 7325ea3fb9a56c649a254d595c7762a1956b796d
   internal/sdk/models/operations/listcontainerfiles.go:
     id: 542e401d7b82
-    last_write_checksum: sha1:eecbf885eedcba2f1bf0dbc719d5cbf8a915486f
-    pristine_git_object: c54dfce4bf9b5cec5dba8b68251dbdc7e2236f12
+    last_write_checksum: sha1:83c90fe9fbdd9f8a732a05fe70fb4fa56d315d52
+    pristine_git_object: d53b657c9b8ef35b9f324615c344772fec92a6d3
   internal/sdk/models/operations/listembeddingsmodels.go:
     id: 16455d611795
     last_write_checksum: sha1:e2d28ffb0139db97c0f004b993e42c38793b350d
@@ -2236,8 +2236,8 @@ trackedFiles:
     pristine_git_object: b483c7e7f042f655de0ebb4692ccd8986adf5214
   internal/sdk/models/shared/containerfilelistresponse.go:
     id: 40c554f78a07
-    last_write_checksum: sha1:c7c62117e97eeaa612ceac85a42c37891acb16eb
-    pristine_git_object: 7c87b48bacac02e8916e5e0c2232deb7e41ec9ae
+    last_write_checksum: sha1:ce98e7353eb97f5e705231e384533d308f2cc64f
+    pristine_git_object: 9b0d3e096e91ff42d7e200d8316698ffe33d5056
   internal/sdk/models/shared/containernetworkpolicy.go:
     id: 15416b12e430
     last_write_checksum: sha1:6dad4dc83d5a637483ac468384ad2a6d6c596ddf
@@ -3896,8 +3896,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:137c080d5f084177939a1e0dd5fdf5ef0d302fe4
-    pristine_git_object: e210f100fb73b36bbb6028a68e345a7415505fb3
+    last_write_checksum: sha1:20ffc5b9c2bebcfe2ce89be62550b04c0735d5dd
+    pristine_git_object: 002615746bd45d96e84ca06be80bd2a0ce9e4a40
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -7104,12 +7104,3 @@ examples:
         "500":
           application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.Interns.listInterns()`: **Added**
-  * `OpenRouter.Interns.createIntern()`: **Added**
-  * `OpenRouter.Interns.deleteIntern()`: **Added**
-  * `OpenRouter.Interns.getIntern()`: **Added**
-  * `OpenRouter.Interns.updateIntern()`: **Added**
-  * `OpenRouter.Interns.provisionIntern()`: **Added**
-  * `OpenRouter.Interns.suspendIntern()`: **Added**
