@@ -88,7 +88,7 @@ type OpenRouter struct {
 	Guardrails *Guardrails
 	// Images endpoints
 	Images *Images
-	// Create, inspect, update, provision, suspend and delete OpenRouter interns through an API key.
+	// Create, inspect, update, provision, suspend and delete OpenRouter interns through an API key, and talk to them: the chat route streams OpenAI-compatible completions from one intern, pausing as an `openrouter.provide_input` tool call when the intern needs your permission or an answer. Available to interns programme members; other callers receive 404. See https://openrouter.ai/docs/guides/ori/intern-chat.
 	Interns *Interns
 	APIKeys *APIKeys
 	// Model information endpoints
@@ -187,10 +187,10 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.2.129",
+		SDKVersion: "0.2.130",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.2.129 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
-			SDKVersion:        "0.2.129",
+			UserAgent:         "speakeasy-sdk/terraform 0.2.130 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			SDKVersion:        "0.2.130",
 			GenVersion:        "2.937.18",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
