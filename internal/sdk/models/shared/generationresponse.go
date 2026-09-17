@@ -19,6 +19,7 @@ const (
 	APITypeStt         APIType = "stt"
 	APITypeVideo       APIType = "video"
 	APITypeImage       APIType = "image"
+	APITypeDecisions   APIType = "decisions"
 )
 
 func (e APIType) ToPointer() *APIType {
@@ -43,6 +44,8 @@ func (e *APIType) UnmarshalJSON(data []byte) error {
 	case "video":
 		fallthrough
 	case "image":
+		fallthrough
+	case "decisions":
 		*e = APIType(v)
 		return nil
 	default:
