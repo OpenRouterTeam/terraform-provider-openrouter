@@ -4725,6 +4725,7 @@ components:
         - 'thinkingmachines'
         - 'together'
         - 'typesafe'
+        - 'unbiased'
         - 'upstage'
         - 'venice'
         - 'voyageai'
@@ -15352,6 +15353,7 @@ components:
                 - 'Tenstorrent'
                 - 'Thinking Machines'
                 - 'Together'
+                - 'Unbiased'
                 - 'Upstage'
                 - 'Venice'
                 - 'Wafer'
@@ -22565,6 +22567,7 @@ components:
         - 'Tenstorrent'
         - 'Thinking Machines'
         - 'Together'
+        - 'Unbiased'
         - 'Upstage'
         - 'Venice'
         - 'Wafer'
@@ -22983,6 +22986,9 @@ components:
         ubicloud:
           additionalProperties: {}
           type: 'object'
+        unbiased:
+          additionalProperties: {}
+          type: 'object'
         upstage:
           additionalProperties: {}
           type: 'object'
@@ -23327,6 +23333,7 @@ components:
             - 'Tenstorrent'
             - 'Thinking Machines'
             - 'Together'
+            - 'Unbiased'
             - 'Upstage'
             - 'Venice'
             - 'Wafer'
@@ -31123,6 +31130,7 @@ paths:
               - 'thinkingmachines'
               - 'together'
               - 'typesafe'
+              - 'unbiased'
               - 'upstage'
               - 'venice'
               - 'voyageai'
