@@ -64,9 +64,10 @@ func (e *InputImageTypeEnum) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// InputImage - Image input content item
+// InputImage - Image input content item. Provide either an image_url (a URL or a base64 data URL) or the file_id of an uploaded image.
 type InputImage struct {
 	Detail   InputImageDetail   `json:"detail"`
+	FileID   *string            `json:"file_id,omitzero"`
 	ImageURL *string            `json:"image_url,omitzero"`
 	Type     InputImageTypeEnum `json:"type"`
 }
@@ -87,6 +88,13 @@ func (i *InputImage) GetDetail() InputImageDetail {
 		return InputImageDetail("")
 	}
 	return i.Detail
+}
+
+func (i *InputImage) GetFileID() *string {
+	if i == nil {
+		return nil
+	}
+	return i.FileID
 }
 
 func (i *InputImage) GetImageURL() *string {

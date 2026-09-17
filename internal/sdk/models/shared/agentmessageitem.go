@@ -108,9 +108,10 @@ func (e *AgentMessageItemDetail) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// AgentMessageItemContentInputImage - Image input content item
+// AgentMessageItemContentInputImage - Image input content item. Provide either an image_url (a URL or a base64 data URL) or the file_id of an uploaded image.
 type AgentMessageItemContentInputImage struct {
 	Detail   AgentMessageItemDetail `json:"detail"`
+	FileID   *string                `json:"file_id,omitzero"`
 	ImageURL *string                `json:"image_url,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"input_image" json:"type"`
@@ -132,6 +133,13 @@ func (a *AgentMessageItemContentInputImage) GetDetail() AgentMessageItemDetail {
 		return AgentMessageItemDetail("")
 	}
 	return a.Detail
+}
+
+func (a *AgentMessageItemContentInputImage) GetFileID() *string {
+	if a == nil {
+		return nil
+	}
+	return a.FileID
 }
 
 func (a *AgentMessageItemContentInputImage) GetImageURL() *string {

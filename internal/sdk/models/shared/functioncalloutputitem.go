@@ -42,9 +42,10 @@ func (e *FunctionCallOutputItemDetail) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// FunctionCallOutputItemOutputInputImage - Image input content item
+// FunctionCallOutputItemOutputInputImage - Image input content item. Provide either an image_url (a URL or a base64 data URL) or the file_id of an uploaded image.
 type FunctionCallOutputItemOutputInputImage struct {
 	Detail   FunctionCallOutputItemDetail `json:"detail"`
+	FileID   *string                      `json:"file_id,omitzero"`
 	ImageURL *string                      `json:"image_url,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"input_image" json:"type"`
@@ -66,6 +67,13 @@ func (f *FunctionCallOutputItemOutputInputImage) GetDetail() FunctionCallOutputI
 		return FunctionCallOutputItemDetail("")
 	}
 	return f.Detail
+}
+
+func (f *FunctionCallOutputItemOutputInputImage) GetFileID() *string {
+	if f == nil {
+		return nil
+	}
+	return f.FileID
 }
 
 func (f *FunctionCallOutputItemOutputInputImage) GetImageURL() *string {
