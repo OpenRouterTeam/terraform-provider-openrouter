@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 34403118cf8a7067e9cfcb5435efa25a
+  docChecksum: 5e6bb7ec58dc2f967a78b977497a6725
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.134
-  configChecksum: aeb0c314bf6beb7a1a60b528c448189e
+  releaseVersion: 0.2.135
+  configChecksum: 6d457b5b138df6edb2a2c216f3bf6db7
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 271704a8-0762-4370-938a-221ff0395cbb
-  pristine_commit_hash: 7bbbe0c5b1072c1f9de8fdeaa7bf449c8369174f
-  pristine_tree_hash: 8aa5f5f1aa0919bcf509d9c1eb511f3b126bacc8
+  generation_id: cfbc96d8-a081-492c-98ff-d19261aefe3a
+  pristine_commit_hash: a622081944b4bc80282d8ef87d5aec0a7b2e7e33
+  pristine_tree_hash: cb1d1e4eb1905bcd51e7e841342bfca3f2deb92f
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:1a627ffea3c091b2d321bca61027b05002600f27
-    pristine_git_object: 4e268ec5380188b40a7f2f7ace559bf76a18e779
+    last_write_checksum: sha1:140f294702a9d05e3965a262218b7f61744ced5d
+    pristine_git_object: 8d4a20294b204b216971de99aa21d323d9be00b9
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3820,12 +3820,12 @@ trackedFiles:
     pristine_git_object: 15c97a71b701ec05a349aad99622e73b24815d89
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:083c6676f2e5b977010e066138eaac6aa2f55744
-    pristine_git_object: 6cfca4283d3c017ab7a8a857550c5b51d14ab058
+    last_write_checksum: sha1:ec943c3b75e7ccf0d949f148017f73b774bc6c79
+    pristine_git_object: 063cb64ca273ac756628f8fd7bec7df9dc7846ef
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
-    last_write_checksum: sha1:c75b8655399ea22961cf791909908dbfce3a2194
-    pristine_git_object: d1dd713514483beb13c3a7a0d4b6dd8b765b2297
+    last_write_checksum: sha1:8e148000cc53e8acc283ced55dd5effa19b0286a
+    pristine_git_object: d35e294a89aab4aaebcbab5880b7332ea490cc96
   internal/sdk/models/shared/videogenerationusage.go:
     id: e3cd6881bbad
     last_write_checksum: sha1:11db8eca95a5baf37ee2c8fe5b2683f7b78ce9ab
@@ -3936,8 +3936,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:6cb6d65bdcbb3ab133024d3b7c01a16338610b2c
-    pristine_git_object: f1ff51ccea187086f59ddb87a318c5a71c63d72e
+    last_write_checksum: sha1:7fc2d79492ead2b05a2dea0040785410c4f830b0
+    pristine_git_object: cc30f1538953b28c0b5073904b0598e7795967e6
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5400,7 +5400,7 @@ examples:
         application/json: {"aspect_ratio": "16:9", "duration": 8, "model": "google/veo-3.1", "prompt": "A serene mountain landscape at sunset", "resolution": "720p"}
       responses:
         "202":
-          application/json: {"generation_id": "gen-xyz789", "id": "job-abc123", "polling_url": "/api/v1/videos/job-abc123", "status": "pending"}
+          application/json: {"generation_id": "gen-vid-1789480874-Ab3dEf9hIjKlMnOpQrSt", "id": "gen-vid-1789480874-Ab3dEf9hIjKlMnOpQrSt", "polling_url": "/api/v1/videos/gen-vid-1789480874-Ab3dEf9hIjKlMnOpQrSt", "status": "pending"}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -5424,7 +5424,7 @@ examples:
           jobId: "job-abc123"
       responses:
         "200":
-          application/json: {"generation_id": "gen-xyz789", "id": "job-abc123", "polling_url": "/api/v1/videos/job-abc123", "status": "pending"}
+          application/json: {"generation_id": "gen-vid-1789480874-Ab3dEf9hIjKlMnOpQrSt", "id": "gen-vid-1789480874-Ab3dEf9hIjKlMnOpQrSt", "polling_url": "/api/v1/videos/gen-vid-1789480874-Ab3dEf9hIjKlMnOpQrSt", "status": "pending"}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "404":
@@ -7175,7 +7175,4 @@ examples:
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.Decisions.create()`: **Added**
-  * `OpenRouter.Decisions.decisions()`: **Removed** (Breaking ⚠️)
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.previous_job_id` **Added**\n"
