@@ -116,6 +116,7 @@ const (
 	ProviderTenstorrent              Provider = "tenstorrent"
 	ProviderThinkingmachines         Provider = "thinkingmachines"
 	ProviderTogether                 Provider = "together"
+	ProviderTypesafe                 Provider = "typesafe"
 	ProviderUpstage                  Provider = "upstage"
 	ProviderVenice                   Provider = "venice"
 	ProviderVoyageai                 Provider = "voyageai"
@@ -337,6 +338,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "thinkingmachines":
 		fallthrough
 	case "together":
+		fallthrough
+	case "typesafe":
 		fallthrough
 	case "upstage":
 		fallthrough

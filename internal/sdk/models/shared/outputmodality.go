@@ -17,6 +17,7 @@ const (
 	OutputModalityAudio         OutputModality = "audio"
 	OutputModalityVideo         OutputModality = "video"
 	OutputModalityRerank        OutputModality = "rerank"
+	OutputModalityDecisions     OutputModality = "decisions"
 	OutputModalitySpeech        OutputModality = "speech"
 	OutputModalityTranscription OutputModality = "transcription"
 )
@@ -41,6 +42,8 @@ func (e *OutputModality) UnmarshalJSON(data []byte) error {
 	case "video":
 		fallthrough
 	case "rerank":
+		fallthrough
+	case "decisions":
 		fallthrough
 	case "speech":
 		fallthrough
