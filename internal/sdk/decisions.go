@@ -48,12 +48,11 @@ func (s *Decisions) Create(ctx context.Context, request shared.DecisionsRequest,
 		}
 	}
 
-	var baseURL string
-	if o.ServerURL == nil {
-		baseURL = utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	} else {
+	baseURL := utils.ReplaceParameters(operations.CreateAPIAlphaDecisionsServerList[0], map[string]string{})
+	if o.ServerURL != nil {
 		baseURL = *o.ServerURL
 	}
+
 	opURL, err := url.JoinPath(baseURL, "/api/alpha/decisions")
 	if err != nil {
 		return nil, fmt.Errorf("error generating URL: %w", err)
