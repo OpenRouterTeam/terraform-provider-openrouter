@@ -9,6 +9,10 @@ import (
 	"net/http"
 )
 
+var CreateAPIAlphaDecisionsServerList = []string{
+	"https://openrouter.ai",
+}
+
 type CreateAPIAlphaDecisionsResponse struct {
 	// HTTP response content type for this operation
 	ContentType string
