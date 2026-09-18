@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 117a15c2a51008d739c0e255388633cb
+  docChecksum: cf67bdc999c3bb9b0bc8a030294790a2
   docVersion: 1.0.0
   speakeasyVersion: 1.797.0
   generationVersion: 2.937.18
-  releaseVersion: 0.2.136
-  configChecksum: 81fec059fb832827a9dc690b61ad6120
+  releaseVersion: 0.2.137
+  configChecksum: aba927383119ed13e2d08c8547fd811e
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: b662fac7-3f6d-4e3a-a35a-01990aedb1f3
-  pristine_commit_hash: fc0fa82d34cfcdca9f7b1e715e651afbcfceaa96
-  pristine_tree_hash: 64201ec20b7a25084a7ae3587d8e27b64e1685d5
+  generation_id: 7c180747-67a3-4bc4-ac78-36cfe9fe8735
+  pristine_commit_hash: 4e70012f7f0d988de16df6c3bd4bb3bbba7fafe0
+  pristine_tree_hash: 79bb74782d4747dbd53efe81444dc6561d307557
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:18bba397b278c9176635baef8d7da6201342e4ee
-    pristine_git_object: 0950f14c0e864c628342982b153e6a4554eb9597
+    last_write_checksum: sha1:2c2fc32542974a7e41052790010464e702addfbe
+    pristine_git_object: 0f03a0b0e0c80a19f6bcd8f4afe7836060f8c7c0
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3936,8 +3936,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:7f791e0dd0cb76ffa85bd58cd406a0d6af5905ff
-    pristine_git_object: 9f2a15afe59c6081e3c376ed37edaa5088949331
+    last_write_checksum: sha1:20377d3eb16a971d245b6eddf410c356d4391c48
+    pristine_git_object: 2981bf6e1814592445a941dac22f27ca40547a3f
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -7175,4 +7175,3 @@ examples:
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[].provider_name.enum(Unbiased)` **Added** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[].provider_name.enum(Unbiased)` **Added** (Breaking ⚠️)\n* `OpenRouter.Generations.get()`:  `response.data.provider_responses[].provider_name.enum(Unbiased)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug.enum(unbiased)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug.enum(unbiased)` **Added**\n  *  `response.data.provider_slug.enum(unbiased)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug.enum(unbiased)` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug.enum(unbiased)` **Added** (Breaking ⚠️)\n* `OpenRouter.tts.createSpeech()`: \n  *  `request.provider.options.unbiased` **Added**\n* `OpenRouter.Decisions.create()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Unbiased)` **Added**\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Unbiased)` **Added**\n* `OpenRouter.stt.createTranscription()`: \n  *  `request.provider.options.unbiased` **Added**\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Unbiased)` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Unbiased)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.provider.ignore[].union(ProviderName).enum(Unbiased)` **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider.ignore[].union(ProviderName).enum(Unbiased)` **Added**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options.unbiased` **Added**\n"

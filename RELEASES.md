@@ -1899,3 +1899,13 @@ Based on:
 - [terraform v0.2.136] .
 ### Releases
 - [Terraform v0.2.136] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.2.136 - .
+
+## 2026-09-18 00:33:48
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.797.0 (2.937.18) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.2.137] .
+### Releases
+- [Terraform v0.2.137] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.2.137 - .
