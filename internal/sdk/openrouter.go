@@ -3,7 +3,7 @@
 
 package sdk
 
-// Generated from OpenAPI doc version 1.0.0 and generator version 2.937.18
+// Generated from OpenAPI doc version 1.0.0 and generator version 2.938.0
 
 import (
 	"context"
@@ -188,11 +188,11 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.2.139",
+		SDKVersion: "0.2.140",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.2.139 2.937.18 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
-			SDKVersion:        "0.2.139",
-			GenVersion:        "2.937.18",
+			UserAgent:         "speakeasy-sdk/terraform 0.2.140 2.938.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			SDKVersion:        "0.2.140",
+			GenVersion:        "2.938.0",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
 		},
