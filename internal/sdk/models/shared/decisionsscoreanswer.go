@@ -4,12 +4,137 @@
 package shared
 
 import (
+	"errors"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+type LegendType string
+
+const (
+	LegendTypeStr        LegendType = "str"
+	LegendTypeMapOfAny   LegendType = "mapOfAny"
+	LegendTypeArrayOfAny LegendType = "arrayOfAny"
+)
+
+// Legend - A plain string, or a JSON object or array of structured guidance.
+type Legend struct {
+	Str        *string        `queryParam:"inline" union:"member"`
+	MapOfAny   map[string]any `queryParam:"inline" union:"member"`
+	ArrayOfAny []any          `queryParam:"inline" union:"member"`
+
+	Type LegendType
+}
+
+func CreateLegendStr(str string) Legend {
+	typ := LegendTypeStr
+
+	return Legend{
+		Str:  &str,
+		Type: typ,
+	}
+}
+
+func CreateLegendMapOfAny(mapOfAny map[string]any) Legend {
+	typ := LegendTypeMapOfAny
+
+	return Legend{
+		MapOfAny: mapOfAny,
+		Type:     typ,
+	}
+}
+
+func CreateLegendArrayOfAny(arrayOfAny []any) Legend {
+	typ := LegendTypeArrayOfAny
+
+	return Legend{
+		ArrayOfAny: arrayOfAny,
+		Type:       typ,
+	}
+}
+
+func (u *Legend) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Legend{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
+
+	var candidates []utils.UnionCandidate
+
+	// Collect all valid candidates
+	var str string = ""
+	if err := utils.UnmarshalJSON(data, &str, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  LegendTypeStr,
+			Value: &str,
+		})
+	}
+
+	var mapOfAny map[string]any = map[string]any{}
+	if err := utils.UnmarshalJSON(data, &mapOfAny, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  LegendTypeMapOfAny,
+			Value: mapOfAny,
+		})
+	}
+
+	var arrayOfAny []any = []any{}
+	if err := utils.UnmarshalJSON(data, &arrayOfAny, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  LegendTypeArrayOfAny,
+			Value: arrayOfAny,
+		})
+	}
+
+	if len(candidates) == 0 {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for Legend", string(data))
+	}
+
+	// Pick the best candidate using multi-stage filtering
+	best := utils.PickBestUnionCandidate(candidates, data)
+	if best == nil {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for Legend", string(data))
+	}
+
+	// Set the union type and value based on the best candidate
+	u.Type = best.Type.(LegendType)
+	switch best.Type {
+	case LegendTypeStr:
+		u.Str = best.Value.(*string)
+		return nil
+	case LegendTypeMapOfAny:
+		u.MapOfAny = best.Value.(map[string]any)
+		return nil
+	case LegendTypeArrayOfAny:
+		u.ArrayOfAny = best.Value.([]any)
+		return nil
+	}
+
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for Legend", string(data))
+}
+
+func (u Legend) MarshalJSON() ([]byte, error) {
+	if u.Str != nil {
+		return utils.MarshalJSON(u.Str, "", true)
+	}
+
+	if u.MapOfAny != nil {
+		return utils.MarshalJSON(u.MapOfAny, "", true)
+	}
+
+	if u.ArrayOfAny != nil {
+		return utils.MarshalJSON(u.ArrayOfAny, "", true)
+	}
+
+	return nil, errors.New("could not marshal union type Legend: all fields are null")
+}
+
 type DecisionsScoreAnswer struct {
 	Confidence    *float64           `json:"confidence,omitzero"`
-	Legend        map[string]string  `json:"legend,omitzero"`
+	Legend        map[string]Legend  `json:"legend,omitzero"`
 	Probabilities map[string]float64 `json:"probabilities,omitzero"`
 	Score         float64            `json:"score"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
@@ -34,7 +159,7 @@ func (d *DecisionsScoreAnswer) GetConfidence() *float64 {
 	return d.Confidence
 }
 
-func (d *DecisionsScoreAnswer) GetLegend() map[string]string {
+func (d *DecisionsScoreAnswer) GetLegend() map[string]Legend {
 	if d == nil {
 		return nil
 	}
