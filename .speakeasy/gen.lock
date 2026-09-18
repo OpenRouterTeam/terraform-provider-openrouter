@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: de1d1aaab38e78cef2e1fa99f9fc5667
+  docChecksum: c63e2659b71a84c6691b23f13e519696
   docVersion: 1.0.0
   speakeasyVersion: 1.798.0
   generationVersion: 2.938.0
-  releaseVersion: 0.2.141
-  configChecksum: 60ca9b32640bcfe27507254956a3fb53
+  releaseVersion: 0.2.142
+  configChecksum: d57e45f6e8b63f28c0509da659d2a807
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: d30c0af8-c2a4-4105-a184-f8d21a718629
-  pristine_commit_hash: 41bf253db87237dfe8d027520aa2806135d359ad
-  pristine_tree_hash: 01be0996f649e8e3eb1d54d9af874fd7be5a014c
+  generation_id: d677f613-7f76-4a04-9851-cad97a34f61f
+  pristine_commit_hash: e1449d0f932987a0994fa4ffdbbd623ffcb782ba
+  pristine_tree_hash: cdeb94a44b3628306aef8ee23e31b70dab171926
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -136,8 +136,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:5b11d6c061fa3fe8ee2589ceedba91518c66524b
-    pristine_git_object: 500649b2a5b567cc7c8a92bb540d4763fab60f51
+    last_write_checksum: sha1:e332be1756d2e779ac2d99eeca3c1d2831971fc1
+    pristine_git_object: c25d712c9558a22d4da65a13400aa7c99559bcf0
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3800,8 +3800,8 @@ trackedFiles:
     pristine_git_object: 697cebe1afa2185426fac07de6d9ae50b8b48143
   internal/sdk/models/shared/vaultsecret.go:
     id: 1d01c08cf8b5
-    last_write_checksum: sha1:db1bacc18d8a14330b7443e1672a564986cf2f62
-    pristine_git_object: 1ac69fb4d674068105a35fbf01693df159f95a0a
+    last_write_checksum: sha1:d58d032376efbc7ededbf7629d44e7840a907865
+    pristine_git_object: 1b5f89e9a03fc886ac13488966b2514ddb21f26d
   internal/sdk/models/shared/vaultsecretcopyrequest.go:
     id: ae4213b189b0
     last_write_checksum: sha1:ea19bff33c383e6ef38545b094aa8130d9ac6737
@@ -3816,8 +3816,8 @@ trackedFiles:
     pristine_git_object: 5a24e69238490a9685cf07ee168d8a5f4462b008
   internal/sdk/models/shared/vaultsecretresponse.go:
     id: ce26d8026226
-    last_write_checksum: sha1:80cf5c0e16eb706906cd5ab68b13daaa04e6aa83
-    pristine_git_object: a0f1a25d572e061f457a87a7c5552f42aeb3de77
+    last_write_checksum: sha1:94bdc55a9b0c5e1d9cdc8ff47db66dbe818f5e4f
+    pristine_git_object: 3723b906a2d4da59eb46a0f5d98b31a990aa9291
   internal/sdk/models/shared/vaultsecretwriterequest.go:
     id: 225076162f32
     last_write_checksum: sha1:30a74e3adc6835183502a4664ca9ddee59388c29
@@ -3940,8 +3940,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:9bd5799d3f2464d2f00d9787cf5094bf9122e576
-    pristine_git_object: 276b833f14423107f2ad5e241b2fb4a9e0e98fea
+    last_write_checksum: sha1:6c0cbced391fcc24315cc5217ef6ecb9765cab6e
+    pristine_git_object: f4cec132444e8f9428c32ba55e7a730ede5a90ef
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -7179,9 +7179,3 @@ examples:
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.Interns.listInterns()`:  `response.data[]` **Changed** (Breaking ⚠️)
-  * `OpenRouter.Interns.createIntern()`:  `response` **Changed** (Breaking ⚠️)
-  * `OpenRouter.Interns.getIntern()`:  `response` **Changed** (Breaking ⚠️)
-  * `OpenRouter.Interns.updateIntern()`:  `response` **Changed** (Breaking ⚠️)
