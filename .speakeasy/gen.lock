@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 6ac4e7a840da2981a06dcb9b9aadea1b
+  docChecksum: 0a8e0ac7861ec787ddd07e54c4e9fa6e
   docVersion: 1.0.0
   speakeasyVersion: 1.798.0
   generationVersion: 2.938.0
-  releaseVersion: 0.3.0
-  configChecksum: bb350f32f5e3664aed4230579bc152fb
+  releaseVersion: 0.3.1
+  configChecksum: 89dbc6d5570fddb87ddd5bc12936bb0a
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 5991a487-253e-40f2-b9f6-4e396f0b39ba
-  pristine_commit_hash: f5ec9a39dceea01130b9a2f4315103e6bd6d5d22
-  pristine_tree_hash: 29d0ebdc878b8e05f22f73865d3cf4794ab2bd31
+  generation_id: 0bf7f1bf-c82c-424d-8d53-3e039d9e038a
+  pristine_commit_hash: 668e4dd4f6f90447500d2604425876f2d5e3dc4e
+  pristine_tree_hash: 086dfc95586371f471dab026d7d91c0460589180
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -137,8 +137,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:baf6685780bb222d8d2ea1d5e708ddeec6c05795
-    pristine_git_object: 60fae7a6bd808cf0a4ed80ffb020393dbe78044d
+    last_write_checksum: sha1:7b7c2c79a2df424e056841ab862244e27ed10883
+    pristine_git_object: 8d2fb86187c9ffa201f73001efe5d707da244498
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1449,8 +1449,8 @@ trackedFiles:
     pristine_git_object: 53b5058a4d29f29c14bfc816ed5f21eda9727346
   internal/sdk/models/operations/getcurrentkey.go:
     id: ded0c468ef31
-    last_write_checksum: sha1:3ccd77a346e26731473479431b7c119923e29cc4
-    pristine_git_object: 2b3602220ad61be971af4300706d41b9a1fc8ba1
+    last_write_checksum: sha1:7d8dae2585d78ed98e0488b83d37c3a2e9873b4d
+    pristine_git_object: 1069ed95650ed0d21484ae4ee471375e61f70f7c
   internal/sdk/models/operations/getfilemetadata.go:
     id: 641963d1ac41
     last_write_checksum: sha1:965fbbb9ab7332203a8d167d2981b89cf1376da2
@@ -3941,8 +3941,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:be6ca808457d8838939276d0ecfe65e0ba3912d7
-    pristine_git_object: 0b53801aa50765f810d671938303a3c5a11e9047
+    last_write_checksum: sha1:04b9ca6a6cf733c32c7adec252311ac86bb31d90
+    pristine_git_object: b961d7793288e8f6442a431929eb0ac1e6b234f4
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -4945,7 +4945,7 @@ examples:
     speakeasy-default-get-current-key:
       responses:
         "200":
-          application/json: {"data": {"allowed_data_regions": ["global", "europe", "us"], "byok_usage": 17.38, "byok_usage_daily": 17.38, "byok_usage_monthly": 17.38, "byok_usage_weekly": 17.38, "creator_user_id": "user_2dHFtVWx2n56w6HkM0000000000", "expires_at": "2027-12-31T23:59:59Z", "free_model_daily_requests": {"limit": 50, "remaining": 38, "used": 12}, "include_byok_in_limit": false, "is_free_tier": false, "is_management_key": false, "is_provisioning_key": false, "label": "sk-or-v1-au7...890", "limit": 100, "limit_remaining": 74.5, "limit_reset": "monthly", "rate_limit": {"interval": "1h", "note": "This field is deprecated and safe to ignore.", "requests": 1000}, "usage": 25.5, "usage_daily": 25.5, "usage_monthly": 25.5, "usage_weekly": 25.5}}
+          application/json: {"data": {"allowed_data_regions": ["global", "europe", "us"], "byok_usage": 17.38, "byok_usage_daily": 17.38, "byok_usage_monthly": 17.38, "byok_usage_weekly": 17.38, "creator_user_id": "user_2dHFtVWx2n56w6HkM0000000000", "expires_at": "2027-12-31T23:59:59Z", "free_model_daily_requests": {"limit": 50, "remaining": 38, "used": 12}, "include_byok_in_limit": false, "is_free_tier": false, "is_management_key": false, "is_provisioning_key": false, "label": "sk-or-v1-au7...890", "limit": 100, "limit_remaining": 74.5, "limit_reset": "monthly", "organization_id": null, "rate_limit": {"interval": "1h", "note": "This field is deprecated and safe to ignore.", "requests": 1000}, "usage": 25.5, "usage_daily": 25.5, "usage_monthly": 25.5, "usage_weekly": 25.5, "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
@@ -7180,3 +7180,6 @@ examples:
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.apiKeys.getCurrent()`:  `response.data` **Changed**
