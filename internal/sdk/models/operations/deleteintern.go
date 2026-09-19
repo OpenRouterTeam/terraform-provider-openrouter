@@ -11,7 +11,8 @@ import (
 
 type DeleteInternRequest struct {
 	// ID of an intern visible to the authenticated API key.
-	InternID string `pathParam:"style=simple,explode=false,name=internId"`
+	InternID string                     `pathParam:"style=simple,explode=false,name=internId"`
+	Body     shared.DeleteInternRequest `request:"mediaType=application/json"`
 }
 
 func (d *DeleteInternRequest) GetInternID() string {
@@ -19,6 +20,13 @@ func (d *DeleteInternRequest) GetInternID() string {
 		return ""
 	}
 	return d.InternID
+}
+
+func (d *DeleteInternRequest) GetBody() shared.DeleteInternRequest {
+	if d == nil {
+		return shared.DeleteInternRequest{}
+	}
+	return d.Body
 }
 
 type DeleteInternResponse struct {
@@ -30,7 +38,7 @@ type DeleteInternResponse struct {
 	RawResponse *http.Response
 	// The operation was accepted.
 	DeleteInternResponse *shared.DeleteInternResponse
-	// Missing, unknown or provisioning API key.
+	// The request body is invalid.
 	InternLifecycleError *shared.InternLifecycleError
 }
 
