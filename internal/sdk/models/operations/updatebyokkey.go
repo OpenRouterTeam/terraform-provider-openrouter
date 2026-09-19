@@ -42,6 +42,8 @@ type UpdateBYOKKeyResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -99,6 +101,13 @@ func (u *UpdateBYOKKeyResponse) GetUnauthorizedResponse() *shared.UnauthorizedRe
 		return nil
 	}
 	return u.UnauthorizedResponse
+}
+
+func (u *UpdateBYOKKeyResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ForbiddenResponse
 }
 
 func (u *UpdateBYOKKeyResponse) GetNotFoundResponse() *shared.NotFoundResponse {
