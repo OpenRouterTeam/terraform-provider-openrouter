@@ -42,7 +42,7 @@ type UpdateObservabilityDestinationResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
-	// Privacy settings are locked
+	// Forbidden - Authentication successful but insufficient permissions
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
