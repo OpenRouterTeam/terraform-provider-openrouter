@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 0a8e0ac7861ec787ddd07e54c4e9fa6e
+  docChecksum: 3acc9fcadc3e0170ca27475a2fbd2de7
   docVersion: 1.0.0
   speakeasyVersion: 1.798.0
   generationVersion: 2.938.0
-  releaseVersion: 0.3.1
-  configChecksum: 89dbc6d5570fddb87ddd5bc12936bb0a
+  releaseVersion: 0.3.2
+  configChecksum: a4fa6fa6ec943c68238f8d79d917bcad
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 0bf7f1bf-c82c-424d-8d53-3e039d9e038a
-  pristine_commit_hash: 668e4dd4f6f90447500d2604425876f2d5e3dc4e
-  pristine_tree_hash: 086dfc95586371f471dab026d7d91c0460589180
+  generation_id: aec2c67e-90cc-4a79-b8b9-ec96189718dc
+  pristine_commit_hash: b7724f4e13d85db4254c8bf5b4af12054adc1bc9
+  pristine_tree_hash: 3ae7549de59cfc76d453d9b97bff734dd9f954c4
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -137,8 +137,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:7b7c2c79a2df424e056841ab862244e27ed10883
-    pristine_git_object: 8d2fb86187c9ffa201f73001efe5d707da244498
+    last_write_checksum: sha1:4d5b3cdce4041c32789dd918424aac2ceae5451a
+    pristine_git_object: fb8084b1bf25f5fa71e22535f0844c0f5c8f0d7f
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3941,8 +3941,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:04b9ca6a6cf733c32c7adec252311ac86bb31d90
-    pristine_git_object: b961d7793288e8f6442a431929eb0ac1e6b234f4
+    last_write_checksum: sha1:9db1e1c9c5b41ce4a5d97941277911c7f38f6c2d
+    pristine_git_object: cb07935c2d3658abda0bb9d2d299cdb034ac3157
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -7180,6 +7180,3 @@ examples:
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.apiKeys.getCurrent()`:  `response.data` **Changed**
