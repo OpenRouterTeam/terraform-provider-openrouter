@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: e12d1fbcac6bafcbaa98bb10e162b2c8
+  docChecksum: e79e11ccd05153cf999a750de1a292b6
   docVersion: 1.0.0
   speakeasyVersion: 1.798.0
   generationVersion: 2.938.0
-  releaseVersion: 0.3.7
-  configChecksum: 7adfee253cd728748692fd907d7e7e78
+  releaseVersion: 0.3.8
+  configChecksum: a7e1ffc40ae3cee88641d755b4396434
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: b648e2f4-5245-43d4-a24e-eccf17aa8bb8
-  pristine_commit_hash: 13dc3eed731763847816de11793bef85ed637b37
-  pristine_tree_hash: 1fe3c15095b2d9c5bb29d9cb4eeca7ed80e6d25b
+  generation_id: 44ce2507-7b4c-468e-b465-496bcac72c44
+  pristine_commit_hash: 82f5fb8d514717a6928c3d25b0206c02f56a2e5f
+  pristine_tree_hash: faf1eb1aac0c72b430b9b30407b4503f42883b26
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -137,8 +137,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:13b4ddc076838f2296c0ed31229d71d877c10372
-    pristine_git_object: aae020609f3f967ca7e71cb680f9fa923111659b
+    last_write_checksum: sha1:c7e0b2557aa3270d118dffd3be0f29f5c4ffd7fe
+    pristine_git_object: 62efae23fbe251a98edc342604d57105b45c57df
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1359,6 +1359,10 @@ trackedFiles:
     id: 7fa97bf38f3d
     last_write_checksum: sha1:aa1e55b5f5816c7a30ee3235c1cf2441eb7b7a7b
     pristine_git_object: 374d7cee91c970be1f4e529a0b3f18061381c789
+  internal/sdk/models/operations/createsystemone.go:
+    id: 531887d020de
+    last_write_checksum: sha1:c90836779c422b2f26bec1672a0c01b3f7bd449b
+    pristine_git_object: bf4eac4a64a94f48caa3f48d24c21ee8e8f7953c
   internal/sdk/models/operations/createvideos.go:
     id: 96b0d234f584
     last_write_checksum: sha1:83a3746750265b6cad6e1a8c27c23ef2cb79f3cf
@@ -3945,8 +3949,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:a3cae4efb2e183e8878289c37855382a204fe4cf
-    pristine_git_object: 0ec443fe474fc0d38abec167e9f96f657de95daa
+    last_write_checksum: sha1:a697bc51c5c9f8ade403ffe2e54262afb614810b
+    pristine_git_object: ac12bba20b7db46d7969e57f6213189b3551c400
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -3983,6 +3987,10 @@ trackedFiles:
     id: 85bb5759fa65
     last_write_checksum: sha1:211740af8c86c59a0af9cac7852c317778e5ca1b
     pristine_git_object: 916b612fae40e591e22c28d5ae300b362db9304a
+  internal/sdk/systemone.go:
+    id: 98f48d18c2e3
+    last_write_checksum: sha1:77c5038b26074f5b88c0ae94fb029eb5fbf3b8c4
+    pristine_git_object: 8758bc64210ab3ab042dffd507f6b138b3883ad1
   internal/sdk/tts.go:
     id: ff4f349de02d
     last_write_checksum: sha1:e8bc616a3fa7f702aec7d3049af04f2924720d9b
@@ -7190,4 +7198,38 @@ examples:
           application/json: {"error": {"code": 524, "message": "Request timed out. Please try again later."}}
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
+  createSystemone:
+    speakeasy-default-create-systemone:
+      requestBody:
+        application/json: {"model": "Taurus", "provider": {"allow_fallbacks": true}, "questions": {}, "session_id": "session-1234", "state": {"key": "Utah", "key1": "Alaska", "key2": "Ohio"}, "trace": {"trace_id": "trace-abc123", "trace_name": "my-app-trace"}}
+      responses:
+        "200":
+          application/json: {"answers": {"key": {"score": 9690, "type": "score"}}, "model": "Model Y", "usage": {"input_tokens": 514823, "output_tokens": 883118}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "402":
+          application/json: {"error": {"code": 402, "message": "Insufficient credits. Add more using https://openrouter.ai/credits"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "413":
+          application/json: {"error": {"code": 413, "message": "Request payload too large"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "524":
+          application/json: {"error": {"code": 524, "message": "Request timed out. Please try again later."}}
+        "529":
+          application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
+releaseNotes: |
+  ## Terraform SDK Changes:
+  * `OpenRouter.SystemOne.create()`: **Added**
