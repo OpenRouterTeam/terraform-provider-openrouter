@@ -1243,6 +1243,7 @@ func (v *VideoGenerationRequestProvider) GetOptions() *VideoGenerationRequestOpt
 type VideoGenerationRequestResolution string
 
 const (
+	VideoGenerationRequestResolutionThreeHundredAndSixtyp      VideoGenerationRequestResolution = "360p"
 	VideoGenerationRequestResolutionFourHundredAndEightyp      VideoGenerationRequestResolution = "480p"
 	VideoGenerationRequestResolutionSevenHundredAndTwentyp     VideoGenerationRequestResolution = "720p"
 	VideoGenerationRequestResolutionSevenHundredAndSixtyEightp VideoGenerationRequestResolution = "768p"
@@ -1261,6 +1262,8 @@ func (e *VideoGenerationRequestResolution) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
+	case "360p":
+		fallthrough
 	case "480p":
 		fallthrough
 	case "720p":
