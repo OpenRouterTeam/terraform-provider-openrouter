@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: e79e11ccd05153cf999a750de1a292b6
+  docChecksum: 564f2a125cea4f9d8f799073e8958fd7
   docVersion: 1.0.0
   speakeasyVersion: 1.798.0
   generationVersion: 2.938.0
-  releaseVersion: 0.3.8
-  configChecksum: a7e1ffc40ae3cee88641d755b4396434
+  releaseVersion: 0.3.9
+  configChecksum: 69ad0c919a03bdb297be48f7c268fe82
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 44ce2507-7b4c-468e-b465-496bcac72c44
-  pristine_commit_hash: 82f5fb8d514717a6928c3d25b0206c02f56a2e5f
-  pristine_tree_hash: faf1eb1aac0c72b430b9b30407b4503f42883b26
+  generation_id: 7530ba6c-a0f9-4f59-93ff-4f9ac107925b
+  pristine_commit_hash: 9c3e94dc48cd086e6b1143f116060b373bf4ab6f
+  pristine_tree_hash: b9be894eb0d43245efd142df58678865a0725a26
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -137,8 +137,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:c7e0b2557aa3270d118dffd3be0f29f5c4ffd7fe
-    pristine_git_object: 62efae23fbe251a98edc342604d57105b45c57df
+    last_write_checksum: sha1:c092a6f9d5e7fba96a0fd2559f1a96bef73e2779
+    pristine_git_object: 07aaca0926427f97c4701f6c3a50d56df119836b
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1249,8 +1249,8 @@ trackedFiles:
     pristine_git_object: 65408f45c8a7eb0303e0b0b3c457828058082609
   internal/sdk/interns.go:
     id: 29c37e85fb2b
-    last_write_checksum: sha1:dc563c5a68452b6eab2b4dfcac56c6b50cbaba06
-    pristine_git_object: 46b206b56b9388638ddf5bc7e68cd939735ddae7
+    last_write_checksum: sha1:2c83037d1dbf3c960118f2e48633295b13f8f5fd
+    pristine_git_object: 5ecb204bf40659fc07ad03cf05500e013d146ef5
   internal/sdk/models.go:
     id: 7b13b8162cf6
     last_write_checksum: sha1:5a64b1311ee4c95050fb7caf9a1e5b2acb47f66d
@@ -1321,8 +1321,8 @@ trackedFiles:
     pristine_git_object: 1c4f32df0b73d9be4c859aefcad7cacd7c1eafed
   internal/sdk/models/operations/createintern.go:
     id: 35f593197ed7
-    last_write_checksum: sha1:fbb9a6455b16ba6111651b96eca27296ce5b5123
-    pristine_git_object: 6379c4285762d4909c3232d70253550574c7108d
+    last_write_checksum: sha1:0ad381aabc47c1f3db98841dc85400061aca2172
+    pristine_git_object: b5bd20dee4cd0262ee2e9cc93d1e43e3d7fc2688
   internal/sdk/models/operations/createkeys.go:
     id: a7eab078e836
     last_write_checksum: sha1:91fcb9e02b6f4b83604e119cf74faa0c366deed5
@@ -1585,8 +1585,8 @@ trackedFiles:
     pristine_git_object: f2c412b82645a9170c63561bfc13b9d0d6d53fa3
   internal/sdk/models/operations/listinterns.go:
     id: 658c3dac51e4
-    last_write_checksum: sha1:026b1cafb0d76d79a436740b8035b41f65520eb8
-    pristine_git_object: 19cafac57310f7b2f5bfc32c39f694a786981bda
+    last_write_checksum: sha1:65f8ac51dfbf77170681460673fffba7c2240035
+    pristine_git_object: b2d48719f32afa84ade2771b3eeb6b8e5cd14f66
   internal/sdk/models/operations/listinternvaultsecrets.go:
     id: a6e3d7c77c58
     last_write_checksum: sha1:93b050941aeaf1243d6de28e18f879107ad902ae
@@ -1673,8 +1673,8 @@ trackedFiles:
     pristine_git_object: 176d6406b263cb4c63453e397b54a912a8a7d0f3
   internal/sdk/models/operations/provisionintern.go:
     id: 08f627d03a0d
-    last_write_checksum: sha1:84d6a6c701891525315ee74f0a464a725edc1654
-    pristine_git_object: 18ab4c50c3d4ad95c8c484970ba82287a8f4e358
+    last_write_checksum: sha1:2b0b32597d0d185bcc285c5a28e696d28449098d
+    pristine_git_object: 39786d8559acf767caa9f2d41810e85c8de70218
   internal/sdk/models/operations/queryanalytics.go:
     id: 8220db2e9ee1
     last_write_checksum: sha1:0c9ec65be37e84381e6dac5bc96d2f10af75b3fe
@@ -1693,8 +1693,8 @@ trackedFiles:
     pristine_git_object: 278bb47edca51c7ef51f22e6584bf3efa9775690
   internal/sdk/models/operations/suspendintern.go:
     id: 7eea88db1f52
-    last_write_checksum: sha1:4f6d97d0550530664e5f13a7df27c31c3f691907
-    pristine_git_object: 1320b256320d17a30a1ffaedaa3c96a6b1d55c9d
+    last_write_checksum: sha1:cf25763f74563c0bc29def10aa267528a590b0ee
+    pristine_git_object: 32caa2c5a99f293ef1c7bab13c584e3f5fee2087
   internal/sdk/models/operations/updatebyokkey.go:
     id: a46887ef7981
     last_write_checksum: sha1:bc3928cc84bba998384709347ef1aece8d41f583
@@ -2789,8 +2789,8 @@ trackedFiles:
     pristine_git_object: 63ffdc6f3c4e8ec5f8ca6d58330a39c3bdf8acb7
   internal/sdk/models/shared/internlifecycleerror.go:
     id: 1a651f8252ad
-    last_write_checksum: sha1:a2754da67091f685e5362e86861f39a1814669ee
-    pristine_git_object: 674cd42d84a5ad52e98822ea0dc9ec9bf802b252
+    last_write_checksum: sha1:1ed4883ea5b51e6d37dc4ed16c3e3929eb94a3cb
+    pristine_git_object: c73368d035d3bd598c9f83edc482b2a4180492e5
   internal/sdk/models/shared/internlistresponse.go:
     id: 40b11ee93fd8
     last_write_checksum: sha1:c1558e2432d739fafea56f2d64d15c70ea963821
@@ -2937,8 +2937,8 @@ trackedFiles:
     pristine_git_object: e078bb85d763df4526014340e797870884811dbb
   internal/sdk/models/shared/messagesrequest.go:
     id: 364162322d0e
-    last_write_checksum: sha1:924e23691dbec9e509ee9c22ba17659422b5d317
-    pristine_git_object: 5c0c3bf6daa2183eea9c737e70531aedc209eac1
+    last_write_checksum: sha1:5ca7a003c0c2a2461d6fd02cb985b5609423a0f0
+    pristine_git_object: 1b734a8b2f57765a5061859d2ce1b55d9d51f883
   internal/sdk/models/shared/messagessearchmodelsservertool.go:
     id: 39a47da803ce
     last_write_checksum: sha1:3651c27699b9428a923a1e0a5278ae3da1a78772
@@ -3949,8 +3949,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:a697bc51c5c9f8ade403ffe2e54262afb614810b
-    pristine_git_object: ac12bba20b7db46d7969e57f6213189b3551c400
+    last_write_checksum: sha1:78c92018668ef32cb954fee496cb74527c2f429f
+    pristine_git_object: bb37aee061faa78a06d337f4c733baa5237b685d
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -7084,9 +7084,9 @@ examples:
         "200":
           application/json: {"data": [{"attached_vault_id": null, "created_at": "2026-09-16T08:30:00.000Z", "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}], "has_more": false}
         "400":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
   createIntern:
     speakeasy-default-create-intern:
       parameters:
@@ -7098,9 +7098,9 @@ examples:
         "200":
           application/json: {"attached_vault_id": null, "created_at": "2026-09-16T08:30:00.000Z", "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
         "400":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
   deleteIntern:
     speakeasy-default-delete-intern:
       parameters:
@@ -7114,9 +7114,9 @@ examples:
         "401":
           application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
         "500":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "400":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
   getIntern:
     speakeasy-default-get-intern:
       parameters:
@@ -7126,9 +7126,9 @@ examples:
         "200":
           application/json: {"attached_vault_id": null, "created_at": "2026-09-16T08:30:00.000Z", "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
         "401":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
   updateIntern:
     speakeasy-default-update-intern:
       parameters:
@@ -7140,9 +7140,9 @@ examples:
         "200":
           application/json: {"attached_vault_id": null, "created_at": "2026-09-16T08:30:00.000Z", "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
         "400":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
   provisionIntern:
     speakeasy-default-provision-intern:
       parameters:
@@ -7154,7 +7154,9 @@ examples:
         "401":
           application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
         "500":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+        "400":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
   suspendIntern:
     speakeasy-default-suspend-intern:
       parameters:
@@ -7166,7 +7168,9 @@ examples:
         "401":
           application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
         "500":
-          application/json: {"error": {"code": "not_found", "message": "Intern not found"}}
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+        "400":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
   createApiAlphaDecisions:
     speakeasy-default-create-api-alpha-decisions:
       requestBody:
@@ -7232,4 +7236,10 @@ examples:
 examplesVersion: 1.0.2
 releaseNotes: |
   ## Terraform SDK Changes:
-  * `OpenRouter.SystemOne.create()`: **Added**
+  * `OpenRouter.Interns.updateIntern()`:  `response` **Changed** (Breaking ⚠️)
+  * `OpenRouter.Interns.provisionIntern()`:  `response` **Changed** (Breaking ⚠️)
+  * `OpenRouter.Interns.suspendIntern()`:  `response` **Changed** (Breaking ⚠️)
+  * `OpenRouter.Interns.listInterns()`:  `response.error.metadata` **Added**
+  * `OpenRouter.Interns.createIntern()`:  `response.error.metadata` **Added**
+  * `OpenRouter.Interns.deleteIntern()`:  `response.error.metadata` **Added**
+  * `OpenRouter.Interns.getIntern()`:  `response.error.metadata` **Added**

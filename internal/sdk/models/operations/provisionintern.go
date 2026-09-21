@@ -30,7 +30,7 @@ type ProvisionInternResponse struct {
 	RawResponse *http.Response
 	// The operation was accepted.
 	ProvisionInternResponse *shared.ProvisionInternResponse
-	// Missing, unknown or provisioning API key.
+	// The request body is invalid.
 	InternLifecycleError *shared.InternLifecycleError
 }
 
