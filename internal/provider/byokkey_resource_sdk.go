@@ -54,6 +54,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedCreateBYOKKeyResponseData(ctx co
 		r.AllowedUserIds = nil
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
+	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
 	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
@@ -111,6 +112,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedGetBYOKKeyResponseData(ctx conte
 		r.AllowedUserIds = nil
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
+	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
 	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
@@ -168,6 +170,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedUpdateBYOKKeyResponseData(ctx co
 		r.AllowedUserIds = nil
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
+	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
 	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
@@ -253,6 +256,12 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 			allowedUserIds = append(allowedUserIds, r.AllowedUserIds[allowedUserIdsIndex].ValueString())
 		}
 	}
+	declaredZdr := new(bool)
+	if !r.DeclaredZdr.IsUnknown() && !r.DeclaredZdr.IsNull() {
+		*declaredZdr = r.DeclaredZdr.ValueBool()
+	} else {
+		declaredZdr = nil
+	}
 	disabled := new(bool)
 	if !r.Disabled.IsUnknown() && !r.Disabled.IsNull() {
 		*disabled = r.Disabled.ValueBool()
@@ -297,6 +306,7 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 		AllowedAPIKeyHashes: allowedAPIKeyHashes,
 		AllowedModels:       allowedModels,
 		AllowedUserIds:      allowedUserIds,
+		DeclaredZdr:         declaredZdr,
 		Disabled:            disabled,
 		IsByokOnly:          isByokOnly,
 		IsFallback:          isFallback,
@@ -333,6 +343,12 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 		for allowedUserIdsIndex := range r.AllowedUserIds {
 			allowedUserIds = append(allowedUserIds, r.AllowedUserIds[allowedUserIdsIndex].ValueString())
 		}
+	}
+	declaredZdr := new(bool)
+	if !r.DeclaredZdr.IsUnknown() && !r.DeclaredZdr.IsNull() {
+		*declaredZdr = r.DeclaredZdr.ValueBool()
+	} else {
+		declaredZdr = nil
 	}
 	disabled := new(bool)
 	if !r.Disabled.IsUnknown() && !r.Disabled.IsNull() {
@@ -374,6 +390,7 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 		AllowedAPIKeyHashes: allowedAPIKeyHashes,
 		AllowedModels:       allowedModels,
 		AllowedUserIds:      allowedUserIds,
+		DeclaredZdr:         declaredZdr,
 		Disabled:            disabled,
 		IsByokOnly:          isByokOnly,
 		IsFallback:          isFallback,

@@ -41,6 +41,7 @@ Read-Only:
 - `allowed_models` (List of String) Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
 - `allowed_user_ids` (List of String) Optional allowlist of user IDs that may use this credential. `null` means no restriction.
 - `created_at` (String) ISO timestamp of when the credential was created.
+- `declared_zdr` (Boolean) Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). `null` inherits OpenRouter's data policy for the provider's endpoint; `true` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; `false` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter.
 - `disabled` (Boolean) Whether this credential is currently disabled.
 - `id` (String) Stable public identifier for this BYOK credential.
 - `is_byok_only` (Boolean) Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside `allowed_models` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials.

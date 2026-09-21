@@ -12,6 +12,7 @@ type BYOKKey struct {
 	AllowedModels       []types.String `tfsdk:"allowed_models"`
 	AllowedUserIds      []types.String `tfsdk:"allowed_user_ids"`
 	CreatedAt           types.String   `tfsdk:"created_at"`
+	DeclaredZdr         types.Bool     `tfsdk:"declared_zdr"`
 	Disabled            types.Bool     `tfsdk:"disabled"`
 	ID                  types.String   `tfsdk:"id"`
 	IsByokOnly          types.Bool     `tfsdk:"is_byok_only"`

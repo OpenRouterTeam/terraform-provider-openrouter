@@ -15,11 +15,11 @@ const (
 	APITypeCompletions APIType = "completions"
 	APITypeEmbeddings  APIType = "embeddings"
 	APITypeRerank      APIType = "rerank"
+	APITypeDecisions   APIType = "decisions"
+	APITypeVideo       APIType = "video"
 	APITypeTts         APIType = "tts"
 	APITypeStt         APIType = "stt"
-	APITypeVideo       APIType = "video"
 	APITypeImage       APIType = "image"
-	APITypeDecisions   APIType = "decisions"
 )
 
 func (e APIType) ToPointer() *APIType {
@@ -37,15 +37,15 @@ func (e *APIType) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "rerank":
 		fallthrough
+	case "decisions":
+		fallthrough
+	case "video":
+		fallthrough
 	case "tts":
 		fallthrough
 	case "stt":
 		fallthrough
-	case "video":
-		fallthrough
 	case "image":
-		fallthrough
-	case "decisions":
 		*e = APIType(v)
 		return nil
 	default:

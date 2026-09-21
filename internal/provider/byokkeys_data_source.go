@@ -72,6 +72,10 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 							Computed:    true,
 							Description: `ISO timestamp of when the credential was created.`,
 						},
+						"declared_zdr": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). ` + "`" + `null` + "`" + ` inherits OpenRouter's data policy for the provider's endpoint; ` + "`" + `true` + "`" + ` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; ` + "`" + `false` + "`" + ` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter.`,
+						},
 						"disabled": schema.BoolAttribute{
 							Computed:    true,
 							Description: `Whether this credential is currently disabled.`,
