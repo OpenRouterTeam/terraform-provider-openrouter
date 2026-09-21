@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 06fbabc9a0690fe6ca889055b34ec122
+  docChecksum: 0b7e8e2779f8f4b7077f429a651d29e0
   docVersion: 1.0.0
   speakeasyVersion: 1.798.0
   generationVersion: 2.938.0
-  releaseVersion: 0.3.13
-  configChecksum: 0a4db677be89f08cf21fabcb6ba682ff
+  releaseVersion: 0.3.14
+  configChecksum: 507a26c41f3e5b1286172338feb41943
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 4c164f15-c53f-4109-8ea5-71b9b9785fc9
-  pristine_commit_hash: 259d62a6cccfda6df8ccf10298fd1ab5f976d6a6
-  pristine_tree_hash: 03fede6301012586066fb71a5b45c508bbb6cb8b
+  generation_id: 26c0c17b-5418-498c-bb27-7c64100d8791
+  pristine_commit_hash: 6980110dc5719a5c02c6942daa551e58d60ebfae
+  pristine_tree_hash: c555ae15ab6b412ddc62c0ffdcff0a94e1aba709
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -137,8 +137,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:c5154a3c3749b90e6ee52f269e16c22643ae3b57
-    pristine_git_object: 7e67c114e720a72e199871f22e551f582e67de65
+    last_write_checksum: sha1:be921d31f29b19559dd142857810425042bb7f55
+    pristine_git_object: 16d30c309ba42c16c8045332987b959aff237419
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1851,6 +1851,10 @@ trackedFiles:
     id: 9a14a6d3c434
     last_write_checksum: sha1:3b674815acf811cfda70577ede20765e0c6e2748
     pristine_git_object: b85762ea10a8b952ad58fc4e933e7e14d9b85bf2
+  internal/sdk/models/shared/anthropicsafeguard.go:
+    id: 87fb9025301c
+    last_write_checksum: sha1:5b0fba25d253eb36999be20030fc9d3313f9dcfb
+    pristine_git_object: 19df0ab7332d128b0eea050ecabb75aa8bd21ad5
   internal/sdk/models/shared/anthropicsearchresultblockparam.go:
     id: 0c873e811f3c
     last_write_checksum: sha1:d0168fc86cfbca854120b5117ca8c163daa7f47d
@@ -2937,8 +2941,8 @@ trackedFiles:
     pristine_git_object: e078bb85d763df4526014340e797870884811dbb
   internal/sdk/models/shared/messagesrequest.go:
     id: 364162322d0e
-    last_write_checksum: sha1:5ca7a003c0c2a2461d6fd02cb985b5609423a0f0
-    pristine_git_object: 1b734a8b2f57765a5061859d2ce1b55d9d51f883
+    last_write_checksum: sha1:dea5f21590bdf7785b6107da55371e230ede3f93
+    pristine_git_object: 1f535d40832bc0a177371547aa600ea1d6a78313
   internal/sdk/models/shared/messagessearchmodelsservertool.go:
     id: 39a47da803ce
     last_write_checksum: sha1:3651c27699b9428a923a1e0a5278ae3da1a78772
@@ -3953,8 +3957,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:94d292dadebfafa347c86392f3b7bee80a2548c4
-    pristine_git_object: 41cbc802cd4a57cc51af3995b59102f9765ce5a8
+    last_write_checksum: sha1:be654f95e6b134564b8abc695a772aaff41b293c
+    pristine_git_object: 7d08b80141fc328b5c9e69fa692d4e79d1fafab6
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -7238,10 +7242,4 @@ examples:
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
-releaseNotes: |
-  ## Terraform SDK Changes:
-  * `OpenRouter.Interns.createIntern()`:  `response.status[415]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Interns.deleteIntern()`:  `response.status[415]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Interns.updateIntern()`:  `response.status[415]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Interns.provisionIntern()`:  `response.status[415]` **Added** (Breaking ⚠️)
-  * `OpenRouter.Interns.suspendIntern()`:  `response.status[415]` **Added** (Breaking ⚠️)
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.safeguards` **Added**\n"
