@@ -8,6 +8,7 @@ resource "openrouter_byok_key" "my_byokkey" {
   allowed_user_ids = [
     "..."
   ]
+  declared_zdr  = true
   disabled      = false
   is_byok_only  = false
   is_fallback   = false
