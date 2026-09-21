@@ -722,11 +722,11 @@ func (c *ContextManagement) GetEdits() []Edit {
 	return c.Edits
 }
 
-type Metadata struct {
+type MessagesRequestMetadata struct {
 	UserID *string `json:"user_id,omitzero"`
 }
 
-func (m *Metadata) GetUserID() *string {
+func (m *MessagesRequestMetadata) GetUserID() *string {
 	if m == nil {
 		return nil
 	}
@@ -2796,12 +2796,12 @@ type MessagesRequest struct {
 	CacheControl      *AnthropicCacheControlDirective `json:"cache_control,omitzero"`
 	ContextManagement *ContextManagement              `json:"context_management,omitzero"`
 	// Fallback models to try if the primary model fails or refuses, in order. Handled by OpenRouter multi-model routing rather than Anthropic server-side fallbacks; cannot be combined with `models`. Each entry accepts only `model`. Maximum of 3 entries.
-	Fallbacks []MessagesFallbackParam `json:"fallbacks,omitzero"`
-	MaxTokens *int64                  `json:"max_tokens,omitzero"`
-	Messages  []MessagesMessageParam  `json:"messages"`
-	Metadata  *Metadata               `json:"metadata,omitzero"`
-	Model     string                  `json:"model"`
-	Models    []string                `json:"models,omitzero"`
+	Fallbacks []MessagesFallbackParam  `json:"fallbacks,omitzero"`
+	MaxTokens *int64                   `json:"max_tokens,omitzero"`
+	Messages  []MessagesMessageParam   `json:"messages"`
+	Metadata  *MessagesRequestMetadata `json:"metadata,omitzero"`
+	Model     string                   `json:"model"`
+	Models    []string                 `json:"models,omitzero"`
 	// Configuration for controlling output behavior. Supports the effort parameter and structured output format.
 	OutputConfig *MessagesOutputConfig `json:"output_config,omitzero"`
 	// Plugins you want to enable for this request, including their settings.
@@ -2875,7 +2875,7 @@ func (m *MessagesRequest) GetMessages() []MessagesMessageParam {
 	return m.Messages
 }
 
-func (m *MessagesRequest) GetMetadata() *Metadata {
+func (m *MessagesRequest) GetMetadata() *MessagesRequestMetadata {
 	if m == nil {
 		return nil
 	}
