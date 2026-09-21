@@ -85,6 +85,7 @@ func (e *SupportedFrameImage) UnmarshalJSON(data []byte) error {
 type SupportedResolution string
 
 const (
+	SupportedResolutionThreeHundredAndSixtyp      SupportedResolution = "360p"
 	SupportedResolutionFourHundredAndEightyp      SupportedResolution = "480p"
 	SupportedResolutionSevenHundredAndTwentyp     SupportedResolution = "720p"
 	SupportedResolutionSevenHundredAndSixtyEightp SupportedResolution = "768p"
@@ -103,6 +104,8 @@ func (e *SupportedResolution) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
+	case "360p":
+		fallthrough
 	case "480p":
 		fallthrough
 	case "720p":
@@ -126,12 +129,20 @@ func (e *SupportedResolution) UnmarshalJSON(data []byte) error {
 type SupportedSize string
 
 const (
+	SupportedSizeThreeHundredAndSixtyx360                SupportedSize = "360x360"
+	SupportedSizeThreeHundredAndSixtyx480                SupportedSize = "360x480"
+	SupportedSizeThreeHundredAndSixtyx540                SupportedSize = "360x540"
+	SupportedSizeThreeHundredAndSixtyx640                SupportedSize = "360x640"
+	SupportedSizeThreeHundredAndSixtyx840                SupportedSize = "360x840"
+	SupportedSizeFourHundredAndEightyx360                SupportedSize = "480x360"
 	SupportedSizeFourHundredAndEightyx480                SupportedSize = "480x480"
 	SupportedSizeFourHundredAndEightyx640                SupportedSize = "480x640"
 	SupportedSizeFourHundredAndEightyx720                SupportedSize = "480x720"
 	SupportedSizeFourHundredAndEightyx854                SupportedSize = "480x854"
 	SupportedSizeFourHundredAndEightyx1120               SupportedSize = "480x1120"
+	SupportedSizeFiveHundredAndFortyx360                 SupportedSize = "540x360"
 	SupportedSizeFiveHundredAndSixtyx752                 SupportedSize = "560x752"
+	SupportedSizeSixHundredAndFortyx360                  SupportedSize = "640x360"
 	SupportedSizeSixHundredAndFortyx480                  SupportedSize = "640x480"
 	SupportedSizeSixHundredAndFortyx640                  SupportedSize = "640x640"
 	SupportedSizeSevenHundredAndTwentyx480               SupportedSize = "720x480"
@@ -147,6 +158,7 @@ const (
 	SupportedSizeSevenHundredAndSixtyEightx1366          SupportedSize = "768x1366"
 	SupportedSizeSevenHundredAndSixtyEightx1792          SupportedSize = "768x1792"
 	SupportedSizeEightHundredAndThirtyFourx1112          SupportedSize = "834x1112"
+	SupportedSizeEightHundredAndFortyx360                SupportedSize = "840x360"
 	SupportedSizeEightHundredAndFiftyFourx480            SupportedSize = "854x480"
 	SupportedSizeNineHundredAndSixtyx720                 SupportedSize = "960x720"
 	SupportedSizeNineHundredAndSixtyx960                 SupportedSize = "960x960"
@@ -199,6 +211,18 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
+	case "360x360":
+		fallthrough
+	case "360x480":
+		fallthrough
+	case "360x540":
+		fallthrough
+	case "360x640":
+		fallthrough
+	case "360x840":
+		fallthrough
+	case "480x360":
+		fallthrough
 	case "480x480":
 		fallthrough
 	case "480x640":
@@ -209,7 +233,11 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "480x1120":
 		fallthrough
+	case "540x360":
+		fallthrough
 	case "560x752":
+		fallthrough
+	case "640x360":
 		fallthrough
 	case "640x480":
 		fallthrough
@@ -240,6 +268,8 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 	case "768x1792":
 		fallthrough
 	case "834x1112":
+		fallthrough
+	case "840x360":
 		fallthrough
 	case "854x480":
 		fallthrough
