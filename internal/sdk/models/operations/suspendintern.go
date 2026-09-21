@@ -30,7 +30,7 @@ type SuspendInternResponse struct {
 	RawResponse *http.Response
 	// Intern suspended.
 	SuspendInternResponse *shared.SuspendInternResponse
-	// Missing, unknown or provisioning API key.
+	// The request body is invalid.
 	InternLifecycleError *shared.InternLifecycleError
 }
 

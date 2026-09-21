@@ -1275,6 +1275,8 @@ func (s *Interns) UpdateIntern(ctx context.Context, request operations.UpdateInt
 		fallthrough
 	case httpRes.StatusCode == 408:
 		fallthrough
+	case httpRes.StatusCode == 409:
+		fallthrough
 	case httpRes.StatusCode == 413:
 		switch {
 		case utils.MatchContentType(httpRes.Header.Get("Content-Type"), `application/json`):
@@ -1330,7 +1332,7 @@ func (s *Interns) UpdateIntern(ctx context.Context, request operations.UpdateInt
 }
 
 // ProvisionIntern - Provision an intern
-// Starts the first boot, or resumes an intern after suspension. The API key selects the caller, workspace and visible interns. There is no default workspace fallback. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](/docs/api-reference/authentication) required.
+// Starts the first boot, or resumes an intern after suspension. This operation takes no request body. A body carrying any field is refused with 400 rather than ignored. The API key selects the caller, workspace and visible interns. There is no default workspace fallback. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](/docs/api-reference/authentication) required.
 //
 // If set, this operation will use [Security.APIKey] from the global security.
 func (s *Interns) ProvisionIntern(ctx context.Context, request operations.ProvisionInternRequest, opts ...operations.Option) (*operations.ProvisionInternResponse, error) {
@@ -1518,6 +1520,8 @@ func (s *Interns) ProvisionIntern(ctx context.Context, request operations.Provis
 			}
 			return nil, errors.NewAPIError(fmt.Sprintf("unknown content-type received: %s", httpRes.Header.Get("Content-Type")), httpRes.StatusCode, string(rawBody), httpRes)
 		}
+	case httpRes.StatusCode == 400:
+		fallthrough
 	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 403:
@@ -1527,6 +1531,8 @@ func (s *Interns) ProvisionIntern(ctx context.Context, request operations.Provis
 	case httpRes.StatusCode == 408:
 		fallthrough
 	case httpRes.StatusCode == 409:
+		fallthrough
+	case httpRes.StatusCode == 413:
 		switch {
 		case utils.MatchContentType(httpRes.Header.Get("Content-Type"), `application/json`):
 			rawBody, err := utils.ConsumeRawBody(httpRes)
@@ -1583,7 +1589,7 @@ func (s *Interns) ProvisionIntern(ctx context.Context, request operations.Provis
 }
 
 // SuspendIntern - Suspend an intern
-// Stops the intern runtime while keeping its disk and configuration for a later provision call. The API key selects the caller, workspace and visible interns. There is no default workspace fallback. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](/docs/api-reference/authentication) required.
+// Stops the intern runtime while keeping its disk and configuration for a later provision call. This operation takes no request body. A body carrying any field is refused with 400 rather than ignored. The API key selects the caller, workspace and visible interns. There is no default workspace fallback. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](/docs/api-reference/authentication) required.
 //
 // If set, this operation will use [Security.APIKey] from the global security.
 func (s *Interns) SuspendIntern(ctx context.Context, request operations.SuspendInternRequest, opts ...operations.Option) (*operations.SuspendInternResponse, error) {
@@ -1771,6 +1777,8 @@ func (s *Interns) SuspendIntern(ctx context.Context, request operations.SuspendI
 			}
 			return nil, errors.NewAPIError(fmt.Sprintf("unknown content-type received: %s", httpRes.Header.Get("Content-Type")), httpRes.StatusCode, string(rawBody), httpRes)
 		}
+	case httpRes.StatusCode == 400:
+		fallthrough
 	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 403:
@@ -1780,6 +1788,8 @@ func (s *Interns) SuspendIntern(ctx context.Context, request operations.SuspendI
 	case httpRes.StatusCode == 408:
 		fallthrough
 	case httpRes.StatusCode == 409:
+		fallthrough
+	case httpRes.StatusCode == 413:
 		switch {
 		case utils.MatchContentType(httpRes.Header.Get("Content-Type"), `application/json`):
 			rawBody, err := utils.ConsumeRawBody(httpRes)
