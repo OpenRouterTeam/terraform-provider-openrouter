@@ -23,6 +23,7 @@ resource "openrouter_byok_key" "my_byokkey" {
   allowed_user_ids = [
     "..."
   ]
+  declared_zdr  = true
   disabled      = false
   is_byok_only  = false
   is_fallback   = false
@@ -47,6 +48,7 @@ resource "openrouter_byok_key" "my_byokkey" {
 - `allowed_api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400.
 - `allowed_models` (List of String) Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
 - `allowed_user_ids` (List of String) Optional allowlist of user IDs that may use this credential. `null` means no restriction.
+- `declared_zdr` (Boolean) Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). `null` inherits OpenRouter's data policy for the provider's endpoint; `true` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; `false` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter. Defaults to `null`.
 - `disabled` (Boolean) Whether this credential should be created in a disabled state.
 - `is_byok_only` (Boolean) Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside `allowed_models` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials. Defaults to `false`.
 - `is_fallback` (Boolean) Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried. Cannot be combined with `is_byok_only`.

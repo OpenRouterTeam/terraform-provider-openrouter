@@ -33,6 +33,7 @@ type ByokKeyDataSourceModel struct {
 	AllowedModels       []types.String `tfsdk:"allowed_models"`
 	AllowedUserIds      []types.String `tfsdk:"allowed_user_ids"`
 	CreatedAt           types.String   `tfsdk:"created_at"`
+	DeclaredZdr         types.Bool     `tfsdk:"declared_zdr"`
 	Disabled            types.Bool     `tfsdk:"disabled"`
 	ID                  types.String   `tfsdk:"id"`
 	IsByokOnly          types.Bool     `tfsdk:"is_byok_only"`
@@ -74,6 +75,10 @@ func (r *ByokKeyDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			"created_at": schema.StringAttribute{
 				Computed:    true,
 				Description: `ISO timestamp of when the credential was created.`,
+			},
+			"declared_zdr": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). ` + "`" + `null` + "`" + ` inherits OpenRouter's data policy for the provider's endpoint; ` + "`" + `true` + "`" + ` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; ` + "`" + `false` + "`" + ` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter.`,
 			},
 			"disabled": schema.BoolAttribute{
 				Computed:    true,

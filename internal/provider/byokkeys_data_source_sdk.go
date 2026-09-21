@@ -54,6 +54,7 @@ func (r *ByokKeysDataSourceModel) RefreshFromSharedListBYOKKeysResponse(ctx cont
 				data.AllowedUserIds = nil
 			}
 			data.CreatedAt = types.StringValue(dataItem.CreatedAt)
+			data.DeclaredZdr = types.BoolPointerValue(dataItem.DeclaredZdr)
 			data.Disabled = types.BoolValue(dataItem.Disabled)
 			data.ID = types.StringValue(dataItem.ID)
 			data.IsByokOnly = types.BoolValue(dataItem.IsByokOnly)

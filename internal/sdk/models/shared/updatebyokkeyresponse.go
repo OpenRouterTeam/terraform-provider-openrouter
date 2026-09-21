@@ -13,6 +13,8 @@ type UpdateBYOKKeyResponseData struct {
 	AllowedUserIds []string `json:"allowed_user_ids"`
 	// ISO timestamp of when the credential was created.
 	CreatedAt string `json:"created_at"`
+	// Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). `null` inherits OpenRouter's data policy for the provider's endpoint; `true` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; `false` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter.
+	DeclaredZdr *bool `json:"declared_zdr"`
 	// Whether this credential is currently disabled.
 	Disabled bool `json:"disabled"`
 	// Stable public identifier for this BYOK credential.
@@ -61,6 +63,13 @@ func (u *UpdateBYOKKeyResponseData) GetCreatedAt() string {
 		return ""
 	}
 	return u.CreatedAt
+}
+
+func (u *UpdateBYOKKeyResponseData) GetDeclaredZdr() *bool {
+	if u == nil {
+		return nil
+	}
+	return u.DeclaredZdr
 }
 
 func (u *UpdateBYOKKeyResponseData) GetDisabled() bool {
