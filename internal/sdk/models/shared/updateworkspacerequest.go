@@ -4,8 +4,66 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
+
+type UpdateWorkspaceRequestDisabledServerTool string
+
+const (
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterAdvisor                  UpdateWorkspaceRequestDisabledServerTool = "openrouter:advisor"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterApplyPatch               UpdateWorkspaceRequestDisabledServerTool = "openrouter:apply_patch"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterBash                     UpdateWorkspaceRequestDisabledServerTool = "openrouter:bash"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterDatetime                 UpdateWorkspaceRequestDisabledServerTool = "openrouter:datetime"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterFusion                   UpdateWorkspaceRequestDisabledServerTool = "openrouter:fusion"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterImageGeneration          UpdateWorkspaceRequestDisabledServerTool = "openrouter:image_generation"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterExperimentalSearchModels UpdateWorkspaceRequestDisabledServerTool = "openrouter:experimental__search_models"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterShell                    UpdateWorkspaceRequestDisabledServerTool = "openrouter:shell"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterSubagent                 UpdateWorkspaceRequestDisabledServerTool = "openrouter:subagent"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterToolSearch               UpdateWorkspaceRequestDisabledServerTool = "openrouter:tool_search"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterWebFetch                 UpdateWorkspaceRequestDisabledServerTool = "openrouter:web_fetch"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterWebSearch                UpdateWorkspaceRequestDisabledServerTool = "openrouter:web_search"
+)
+
+func (e UpdateWorkspaceRequestDisabledServerTool) ToPointer() *UpdateWorkspaceRequestDisabledServerTool {
+	return &e
+}
+func (e *UpdateWorkspaceRequestDisabledServerTool) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "openrouter:advisor":
+		fallthrough
+	case "openrouter:apply_patch":
+		fallthrough
+	case "openrouter:bash":
+		fallthrough
+	case "openrouter:datetime":
+		fallthrough
+	case "openrouter:fusion":
+		fallthrough
+	case "openrouter:image_generation":
+		fallthrough
+	case "openrouter:experimental__search_models":
+		fallthrough
+	case "openrouter:shell":
+		fallthrough
+	case "openrouter:subagent":
+		fallthrough
+	case "openrouter:tool_search":
+		fallthrough
+	case "openrouter:web_fetch":
+		fallthrough
+	case "openrouter:web_search":
+		*e = UpdateWorkspaceRequestDisabledServerTool(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UpdateWorkspaceRequestDisabledServerTool: %v", v)
+	}
+}
 
 type UpdateWorkspaceRequest struct {
 	// Default image model for this workspace
@@ -16,6 +74,8 @@ type UpdateWorkspaceRequest struct {
 	DefaultTextModel *string `json:"default_text_model,omitzero"`
 	// New description for the workspace
 	Description *string `json:"description,omitzero"`
+	// OpenRouter server tools that requests in this workspace may not invoke. Requests naming a disabled tool are rejected with 403. An empty array or null clears the list.
+	DisabledServerTools []UpdateWorkspaceRequestDisabledServerTool `json:"disabled_server_tools,omitzero"`
 	// Optional array of API key IDs to filter I/O logging
 	IoLoggingAPIKeyIds []int64 `json:"io_logging_api_key_ids,omitzero"`
 	// Sampling rate for I/O logging (0.0001-1)
@@ -69,6 +129,13 @@ func (u *UpdateWorkspaceRequest) GetDescription() *string {
 		return nil
 	}
 	return u.Description
+}
+
+func (u *UpdateWorkspaceRequest) GetDisabledServerTools() []UpdateWorkspaceRequestDisabledServerTool {
+	if u == nil {
+		return nil
+	}
+	return u.DisabledServerTools
 }
 
 func (u *UpdateWorkspaceRequest) GetIoLoggingAPIKeyIds() []int64 {

@@ -77,6 +77,11 @@ func (r *WorkspacesDataSource) Schema(ctx context.Context, req datasource.Schema
 							Computed:    true,
 							Description: `Description of the workspace`,
 						},
+						"disabled_server_tools": schema.ListAttribute{
+							Computed:    true,
+							ElementType: types.StringType,
+							Description: `OpenRouter server tools (e.g. openrouter:web_search) that requests in this workspace may not invoke. Null means no tools are disabled.`,
+						},
 						"id": schema.StringAttribute{
 							Computed:    true,
 							Description: `Unique identifier for the workspace`,
