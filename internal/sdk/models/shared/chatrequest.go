@@ -50,6 +50,7 @@ const (
 	ChatRequestPluginTypeModeration         ChatRequestPluginType = "moderation"
 	ChatRequestPluginTypeParetoRouter       ChatRequestPluginType = "pareto-router"
 	ChatRequestPluginTypeResponseHealing    ChatRequestPluginType = "response-healing"
+	ChatRequestPluginTypeSwitchyardRouter   ChatRequestPluginType = "switchyard-router"
 	ChatRequestPluginTypeWeb                ChatRequestPluginType = "web"
 	ChatRequestPluginTypeWebFetch           ChatRequestPluginType = "web-fetch"
 )
@@ -65,6 +66,7 @@ type ChatRequestPlugin struct {
 	ContextCompressionPlugin *ContextCompressionPlugin `queryParam:"inline" union:"member"`
 	ParetoRouterPlugin       *ParetoRouterPlugin       `queryParam:"inline" union:"member"`
 	FusionPlugin             *FusionPlugin             `queryParam:"inline" union:"member"`
+	SwitchyardRouterPlugin   *SwitchyardRouterPlugin   `queryParam:"inline" union:"member"`
 
 	Type ChatRequestPluginType
 }
@@ -138,6 +140,15 @@ func CreateChatRequestPluginResponseHealing(responseHealing ResponseHealingPlugi
 	return ChatRequestPlugin{
 		ResponseHealingPlugin: &responseHealing,
 		Type:                  typ,
+	}
+}
+
+func CreateChatRequestPluginSwitchyardRouter(switchyardRouter SwitchyardRouterPlugin) ChatRequestPlugin {
+	typ := ChatRequestPluginTypeSwitchyardRouter
+
+	return ChatRequestPlugin{
+		SwitchyardRouterPlugin: &switchyardRouter,
+		Type:                   typ,
 	}
 }
 
@@ -250,6 +261,15 @@ func (u *ChatRequestPlugin) UnmarshalJSON(data []byte) (err error) {
 		u.ResponseHealingPlugin = responseHealingPlugin
 		u.Type = ChatRequestPluginTypeResponseHealing
 		return nil
+	case "switchyard-router":
+		switchyardRouterPlugin := new(SwitchyardRouterPlugin)
+		if err := utils.UnmarshalJSON(data, &switchyardRouterPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == switchyard-router) type SwitchyardRouterPlugin within ChatRequestPlugin: %w", string(data), err)
+		}
+
+		u.SwitchyardRouterPlugin = switchyardRouterPlugin
+		u.Type = ChatRequestPluginTypeSwitchyardRouter
+		return nil
 	case "web":
 		webSearchPlugin := new(WebSearchPlugin)
 		if err := utils.UnmarshalJSON(data, &webSearchPlugin, "", true, nil); err != nil {
@@ -312,6 +332,10 @@ func (u ChatRequestPlugin) MarshalJSON() ([]byte, error) {
 
 	if u.FusionPlugin != nil {
 		return utils.MarshalJSON(u.FusionPlugin, "", true)
+	}
+
+	if u.SwitchyardRouterPlugin != nil {
+		return utils.MarshalJSON(u.SwitchyardRouterPlugin, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ChatRequestPlugin: all fields are null")
