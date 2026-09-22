@@ -192,6 +192,9 @@ actions:
   - target: $["paths"]["/organization/members"]["get"]
     update:
       x-speakeasy-entity-operation: OrganizationMembers#read
+  - target: $["paths"]["/scim/groups"]["get"]
+    update:
+      x-speakeasy-entity-operation: ScimGroups#read
   # Plural list data source. The singular WorkspaceBudget managed resource is
   # annotated at the end of this file (DEV-1073).
   - target: $["paths"]["/workspaces/{workspace_ref}/budgets"]["get"]
