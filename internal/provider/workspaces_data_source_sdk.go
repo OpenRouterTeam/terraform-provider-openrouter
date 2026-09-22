@@ -30,6 +30,16 @@ func (r *WorkspacesDataSourceModel) RefreshFromSharedListWorkspacesResponse(ctx 
 			data.DefaultProviderSort = types.StringPointerValue(dataItem.DefaultProviderSort)
 			data.DefaultTextModel = types.StringPointerValue(dataItem.DefaultTextModel)
 			data.Description = types.StringPointerValue(dataItem.Description)
+			if dataItem.DisabledServerTools != nil {
+				if data.DisabledServerTools == nil {
+					data.DisabledServerTools = make([]types.String, 0, len(dataItem.DisabledServerTools))
+				}
+				for _, v := range dataItem.DisabledServerTools {
+					data.DisabledServerTools = append(data.DisabledServerTools, types.StringValue(v))
+				}
+			} else {
+				data.DisabledServerTools = nil
+			}
 			data.ID = types.StringValue(dataItem.ID)
 			data.IncludeByokInBudgets = types.BoolPointerValue(dataItem.IncludeByokInBudgets)
 			if dataItem.IoLoggingAPIKeyIds != nil {

@@ -31,23 +31,24 @@ type WorkspaceDataSource struct {
 
 // WorkspaceDataSourceModel describes the data model.
 type WorkspaceDataSourceModel struct {
-	CreatedAt                       types.String  `tfsdk:"created_at"`
-	CreatedBy                       types.String  `tfsdk:"created_by"`
-	DefaultGuardrailID              types.String  `tfsdk:"default_guardrail_id"`
-	DefaultImageModel               types.String  `tfsdk:"default_image_model"`
-	DefaultProviderSort             types.String  `tfsdk:"default_provider_sort"`
-	DefaultTextModel                types.String  `tfsdk:"default_text_model"`
-	Description                     types.String  `tfsdk:"description"`
-	ID                              types.String  `tfsdk:"id"`
-	IncludeByokInBudgets            types.Bool    `tfsdk:"include_byok_in_budgets"`
-	IoLoggingAPIKeyIds              []types.Int64 `tfsdk:"io_logging_api_key_ids"`
-	IoLoggingSamplingRate           types.Float64 `tfsdk:"io_logging_sampling_rate"`
-	IsDataDiscountLoggingEnabled    types.Bool    `tfsdk:"is_data_discount_logging_enabled"`
-	IsObservabilityBroadcastEnabled types.Bool    `tfsdk:"is_observability_broadcast_enabled"`
-	IsObservabilityIoLoggingEnabled types.Bool    `tfsdk:"is_observability_io_logging_enabled"`
-	Name                            types.String  `tfsdk:"name"`
-	Slug                            types.String  `tfsdk:"slug"`
-	UpdatedAt                       types.String  `tfsdk:"updated_at"`
+	CreatedAt                       types.String   `tfsdk:"created_at"`
+	CreatedBy                       types.String   `tfsdk:"created_by"`
+	DefaultGuardrailID              types.String   `tfsdk:"default_guardrail_id"`
+	DefaultImageModel               types.String   `tfsdk:"default_image_model"`
+	DefaultProviderSort             types.String   `tfsdk:"default_provider_sort"`
+	DefaultTextModel                types.String   `tfsdk:"default_text_model"`
+	Description                     types.String   `tfsdk:"description"`
+	DisabledServerTools             []types.String `tfsdk:"disabled_server_tools"`
+	ID                              types.String   `tfsdk:"id"`
+	IncludeByokInBudgets            types.Bool     `tfsdk:"include_byok_in_budgets"`
+	IoLoggingAPIKeyIds              []types.Int64  `tfsdk:"io_logging_api_key_ids"`
+	IoLoggingSamplingRate           types.Float64  `tfsdk:"io_logging_sampling_rate"`
+	IsDataDiscountLoggingEnabled    types.Bool     `tfsdk:"is_data_discount_logging_enabled"`
+	IsObservabilityBroadcastEnabled types.Bool     `tfsdk:"is_observability_broadcast_enabled"`
+	IsObservabilityIoLoggingEnabled types.Bool     `tfsdk:"is_observability_io_logging_enabled"`
+	Name                            types.String   `tfsdk:"name"`
+	Slug                            types.String   `tfsdk:"slug"`
+	UpdatedAt                       types.String   `tfsdk:"updated_at"`
 }
 
 // Metadata returns the data source type name.
@@ -88,6 +89,11 @@ func (r *WorkspaceDataSource) Schema(ctx context.Context, req datasource.SchemaR
 			"description": schema.StringAttribute{
 				Computed:    true,
 				Description: `Description of the workspace`,
+			},
+			"disabled_server_tools": schema.ListAttribute{
+				Computed:    true,
+				ElementType: types.StringType,
+				Description: `OpenRouter server tools (e.g. openrouter:web_search) that requests in this workspace may not invoke. Null means no tools are disabled.`,
 			},
 			"id": schema.StringAttribute{
 				Required:    true,

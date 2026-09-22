@@ -4,8 +4,66 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
+
+type CreateWorkspaceRequestDisabledServerTool string
+
+const (
+	CreateWorkspaceRequestDisabledServerToolOpenrouterAdvisor                  CreateWorkspaceRequestDisabledServerTool = "openrouter:advisor"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterApplyPatch               CreateWorkspaceRequestDisabledServerTool = "openrouter:apply_patch"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterBash                     CreateWorkspaceRequestDisabledServerTool = "openrouter:bash"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterDatetime                 CreateWorkspaceRequestDisabledServerTool = "openrouter:datetime"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterFusion                   CreateWorkspaceRequestDisabledServerTool = "openrouter:fusion"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterImageGeneration          CreateWorkspaceRequestDisabledServerTool = "openrouter:image_generation"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterExperimentalSearchModels CreateWorkspaceRequestDisabledServerTool = "openrouter:experimental__search_models"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterShell                    CreateWorkspaceRequestDisabledServerTool = "openrouter:shell"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterSubagent                 CreateWorkspaceRequestDisabledServerTool = "openrouter:subagent"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterToolSearch               CreateWorkspaceRequestDisabledServerTool = "openrouter:tool_search"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterWebFetch                 CreateWorkspaceRequestDisabledServerTool = "openrouter:web_fetch"
+	CreateWorkspaceRequestDisabledServerToolOpenrouterWebSearch                CreateWorkspaceRequestDisabledServerTool = "openrouter:web_search"
+)
+
+func (e CreateWorkspaceRequestDisabledServerTool) ToPointer() *CreateWorkspaceRequestDisabledServerTool {
+	return &e
+}
+func (e *CreateWorkspaceRequestDisabledServerTool) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "openrouter:advisor":
+		fallthrough
+	case "openrouter:apply_patch":
+		fallthrough
+	case "openrouter:bash":
+		fallthrough
+	case "openrouter:datetime":
+		fallthrough
+	case "openrouter:fusion":
+		fallthrough
+	case "openrouter:image_generation":
+		fallthrough
+	case "openrouter:experimental__search_models":
+		fallthrough
+	case "openrouter:shell":
+		fallthrough
+	case "openrouter:subagent":
+		fallthrough
+	case "openrouter:tool_search":
+		fallthrough
+	case "openrouter:web_fetch":
+		fallthrough
+	case "openrouter:web_search":
+		*e = CreateWorkspaceRequestDisabledServerTool(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for CreateWorkspaceRequestDisabledServerTool: %v", v)
+	}
+}
 
 type CreateWorkspaceRequest struct {
 	// Default image model for this workspace
@@ -16,6 +74,8 @@ type CreateWorkspaceRequest struct {
 	DefaultTextModel *string `json:"default_text_model,omitzero"`
 	// Description of the workspace
 	Description *string `json:"description,omitzero"`
+	// OpenRouter server tools that requests in this workspace may not invoke. Requests naming a disabled tool are rejected with 403. An empty array or null clears the list.
+	DisabledServerTools []CreateWorkspaceRequestDisabledServerTool `json:"disabled_server_tools,omitzero"`
 	// Optional array of API key IDs to filter I/O logging
 	IoLoggingAPIKeyIds []int64 `json:"io_logging_api_key_ids,omitzero"`
 	// Sampling rate for I/O logging (0.0001-1)
@@ -69,6 +129,13 @@ func (c *CreateWorkspaceRequest) GetDescription() *string {
 		return nil
 	}
 	return c.Description
+}
+
+func (c *CreateWorkspaceRequest) GetDisabledServerTools() []CreateWorkspaceRequestDisabledServerTool {
+	if c == nil {
+		return nil
+	}
+	return c.DisabledServerTools
 }
 
 func (c *CreateWorkspaceRequest) GetIoLoggingAPIKeyIds() []int64 {

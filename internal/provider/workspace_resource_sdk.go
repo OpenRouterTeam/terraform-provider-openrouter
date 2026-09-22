@@ -36,6 +36,14 @@ func (r *WorkspaceResourceModel) RefreshFromSharedCreateWorkspaceResponseData(ct
 	r.DefaultProviderSort = types.StringPointerValue(resp.DefaultProviderSort)
 	r.DefaultTextModel = types.StringPointerValue(resp.DefaultTextModel)
 	r.Description = types.StringPointerValue(resp.Description)
+	if resp.DisabledServerTools != nil {
+		r.DisabledServerTools = make([]types.String, 0, len(resp.DisabledServerTools))
+		for _, v := range resp.DisabledServerTools {
+			r.DisabledServerTools = append(r.DisabledServerTools, types.StringValue(v))
+		}
+	} else {
+		r.DisabledServerTools = nil
+	}
 	r.ID = types.StringValue(resp.ID)
 	r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
 	if resp.IoLoggingAPIKeyIds != nil {
@@ -82,6 +90,14 @@ func (r *WorkspaceResourceModel) RefreshFromSharedGetWorkspaceResponseData(ctx c
 	r.DefaultProviderSort = types.StringPointerValue(resp.DefaultProviderSort)
 	r.DefaultTextModel = types.StringPointerValue(resp.DefaultTextModel)
 	r.Description = types.StringPointerValue(resp.Description)
+	if resp.DisabledServerTools != nil {
+		r.DisabledServerTools = make([]types.String, 0, len(resp.DisabledServerTools))
+		for _, v := range resp.DisabledServerTools {
+			r.DisabledServerTools = append(r.DisabledServerTools, types.StringValue(v))
+		}
+	} else {
+		r.DisabledServerTools = nil
+	}
 	r.ID = types.StringValue(resp.ID)
 	r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
 	if resp.IoLoggingAPIKeyIds != nil {
@@ -128,6 +144,14 @@ func (r *WorkspaceResourceModel) RefreshFromSharedUpdateWorkspaceResponseData(ct
 	r.DefaultProviderSort = types.StringPointerValue(resp.DefaultProviderSort)
 	r.DefaultTextModel = types.StringPointerValue(resp.DefaultTextModel)
 	r.Description = types.StringPointerValue(resp.Description)
+	if resp.DisabledServerTools != nil {
+		r.DisabledServerTools = make([]types.String, 0, len(resp.DisabledServerTools))
+		for _, v := range resp.DisabledServerTools {
+			r.DisabledServerTools = append(r.DisabledServerTools, types.StringValue(v))
+		}
+	} else {
+		r.DisabledServerTools = nil
+	}
 	r.ID = types.StringValue(resp.ID)
 	r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
 	if resp.IoLoggingAPIKeyIds != nil {
@@ -230,6 +254,13 @@ func (r *WorkspaceResourceModel) ToSharedCreateWorkspaceRequest(ctx context.Cont
 	} else {
 		description = nil
 	}
+	var disabledServerTools []shared.CreateWorkspaceRequestDisabledServerTool
+	if r.DisabledServerTools != nil {
+		disabledServerTools = make([]shared.CreateWorkspaceRequestDisabledServerTool, 0, len(r.DisabledServerTools))
+		for _, disabledServerToolsItem := range r.DisabledServerTools {
+			disabledServerTools = append(disabledServerTools, shared.CreateWorkspaceRequestDisabledServerTool(disabledServerToolsItem.ValueString()))
+		}
+	}
 	var ioLoggingAPIKeyIds []int64
 	if r.IoLoggingAPIKeyIds != nil {
 		ioLoggingAPIKeyIds = make([]int64, 0, len(r.IoLoggingAPIKeyIds))
@@ -272,6 +303,7 @@ func (r *WorkspaceResourceModel) ToSharedCreateWorkspaceRequest(ctx context.Cont
 		DefaultProviderSort:             defaultProviderSort,
 		DefaultTextModel:                defaultTextModel,
 		Description:                     description,
+		DisabledServerTools:             disabledServerTools,
 		IoLoggingAPIKeyIds:              ioLoggingAPIKeyIds,
 		IoLoggingSamplingRate:           ioLoggingSamplingRate,
 		IsDataDiscountLoggingEnabled:    isDataDiscountLoggingEnabled,
@@ -310,6 +342,13 @@ func (r *WorkspaceResourceModel) ToSharedUpdateWorkspaceRequest(ctx context.Cont
 		*description = r.Description.ValueString()
 	} else {
 		description = nil
+	}
+	var disabledServerTools []shared.UpdateWorkspaceRequestDisabledServerTool
+	if r.DisabledServerTools != nil {
+		disabledServerTools = make([]shared.UpdateWorkspaceRequestDisabledServerTool, 0, len(r.DisabledServerTools))
+		for _, disabledServerToolsItem := range r.DisabledServerTools {
+			disabledServerTools = append(disabledServerTools, shared.UpdateWorkspaceRequestDisabledServerTool(disabledServerToolsItem.ValueString()))
+		}
 	}
 	var ioLoggingAPIKeyIds []int64
 	if r.IoLoggingAPIKeyIds != nil {
@@ -359,6 +398,7 @@ func (r *WorkspaceResourceModel) ToSharedUpdateWorkspaceRequest(ctx context.Cont
 		DefaultProviderSort:             defaultProviderSort,
 		DefaultTextModel:                defaultTextModel,
 		Description:                     description,
+		DisabledServerTools:             disabledServerTools,
 		IoLoggingAPIKeyIds:              ioLoggingAPIKeyIds,
 		IoLoggingSamplingRate:           ioLoggingSamplingRate,
 		IsDataDiscountLoggingEnabled:    isDataDiscountLoggingEnabled,

@@ -36,6 +36,14 @@ func (r *WorkspaceDataSourceModel) RefreshFromSharedGetWorkspaceResponseData(ctx
 	r.DefaultProviderSort = types.StringPointerValue(resp.DefaultProviderSort)
 	r.DefaultTextModel = types.StringPointerValue(resp.DefaultTextModel)
 	r.Description = types.StringPointerValue(resp.Description)
+	if resp.DisabledServerTools != nil {
+		r.DisabledServerTools = make([]types.String, 0, len(resp.DisabledServerTools))
+		for _, v := range resp.DisabledServerTools {
+			r.DisabledServerTools = append(r.DisabledServerTools, types.StringValue(v))
+		}
+	} else {
+		r.DisabledServerTools = nil
+	}
 	r.ID = types.StringValue(resp.ID)
 	r.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
 	if resp.IoLoggingAPIKeyIds != nil {

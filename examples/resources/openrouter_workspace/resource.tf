@@ -4,6 +4,10 @@ resource "openrouter_workspace" "my_workspace" {
   default_provider_sort              = "price"
   default_text_model                 = "openai/gpt-4o"
   description                        = "Production environment workspace"
+  disabled_server_tools = [
+    "openrouter:web_search",
+    "openrouter:bash",
+  ]
   io_logging_api_key_ids = [
     4
   ]
