@@ -18,7 +18,7 @@ import (
 	"net/url"
 )
 
-// Decisions - Alpha feature endpoints for Decisions (questions and answers) requests
+// Decisions - Alpha feature endpoints for Decisions requests
 type Decisions struct {
 	rootSDK          *OpenRouter
 	sdkConfiguration config.SDKConfiguration
@@ -33,7 +33,7 @@ func newDecisions(rootSDK *OpenRouter, sdkConfig config.SDKConfiguration, hooks 
 	}
 }
 
-// Create - Submit a Decisions (questions and answers) request
+// Create - Submit a Decisions request
 // Submits a Decisions request to the Decisions router
 func (s *Decisions) Create(ctx context.Context, request shared.DecisionsRequest, opts ...operations.Option) (*operations.CreateAPIAlphaDecisionsResponse, error) {
 	o := operations.Options{}
