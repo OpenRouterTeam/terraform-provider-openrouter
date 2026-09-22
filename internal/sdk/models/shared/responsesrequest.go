@@ -1270,7 +1270,7 @@ type ResponsesRequest struct {
 	// Plugins you want to enable for this request, including their settings.
 	Plugins         []ResponsesRequestPlugin `json:"plugins,omitzero"`
 	PresencePenalty *float64                 `json:"presence_penalty,omitzero"`
-	// Not supported. The Responses API is stateless: no responses are stored, so a previous response cannot be referenced. Requests with a non-null value are rejected with a 400 error. Send the full conversation history in `input` instead.
+	// Not supported on this proxy. Each response request is independent: no responses are stored, so a previous response cannot be referenced. Requests with a non-null value are rejected with a 400 error. Send the full conversation history in `input` instead.
 	PreviousResponseID any                   `json:"previous_response_id,omitzero"`
 	Prompt             *StoredPromptTemplate `json:"prompt,omitzero"`
 	PromptCacheKey     *string               `json:"prompt_cache_key,omitzero"`
