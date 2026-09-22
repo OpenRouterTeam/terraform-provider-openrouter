@@ -8,21 +8,22 @@ import (
 )
 
 type Workspace struct {
-	CreatedAt                       types.String  `tfsdk:"created_at"`
-	CreatedBy                       types.String  `tfsdk:"created_by"`
-	DefaultGuardrailID              types.String  `tfsdk:"default_guardrail_id"`
-	DefaultImageModel               types.String  `tfsdk:"default_image_model"`
-	DefaultProviderSort             types.String  `tfsdk:"default_provider_sort"`
-	DefaultTextModel                types.String  `tfsdk:"default_text_model"`
-	Description                     types.String  `tfsdk:"description"`
-	ID                              types.String  `tfsdk:"id"`
-	IncludeByokInBudgets            types.Bool    `tfsdk:"include_byok_in_budgets"`
-	IoLoggingAPIKeyIds              []types.Int64 `tfsdk:"io_logging_api_key_ids"`
-	IoLoggingSamplingRate           types.Float64 `tfsdk:"io_logging_sampling_rate"`
-	IsDataDiscountLoggingEnabled    types.Bool    `tfsdk:"is_data_discount_logging_enabled"`
-	IsObservabilityBroadcastEnabled types.Bool    `tfsdk:"is_observability_broadcast_enabled"`
-	IsObservabilityIoLoggingEnabled types.Bool    `tfsdk:"is_observability_io_logging_enabled"`
-	Name                            types.String  `tfsdk:"name"`
-	Slug                            types.String  `tfsdk:"slug"`
-	UpdatedAt                       types.String  `tfsdk:"updated_at"`
+	CreatedAt                       types.String   `tfsdk:"created_at"`
+	CreatedBy                       types.String   `tfsdk:"created_by"`
+	DefaultGuardrailID              types.String   `tfsdk:"default_guardrail_id"`
+	DefaultImageModel               types.String   `tfsdk:"default_image_model"`
+	DefaultProviderSort             types.String   `tfsdk:"default_provider_sort"`
+	DefaultTextModel                types.String   `tfsdk:"default_text_model"`
+	Description                     types.String   `tfsdk:"description"`
+	DisabledServerTools             []types.String `tfsdk:"disabled_server_tools"`
+	ID                              types.String   `tfsdk:"id"`
+	IncludeByokInBudgets            types.Bool     `tfsdk:"include_byok_in_budgets"`
+	IoLoggingAPIKeyIds              []types.Int64  `tfsdk:"io_logging_api_key_ids"`
+	IoLoggingSamplingRate           types.Float64  `tfsdk:"io_logging_sampling_rate"`
+	IsDataDiscountLoggingEnabled    types.Bool     `tfsdk:"is_data_discount_logging_enabled"`
+	IsObservabilityBroadcastEnabled types.Bool     `tfsdk:"is_observability_broadcast_enabled"`
+	IsObservabilityIoLoggingEnabled types.Bool     `tfsdk:"is_observability_io_logging_enabled"`
+	Name                            types.String   `tfsdk:"name"`
+	Slug                            types.String   `tfsdk:"slug"`
+	UpdatedAt                       types.String   `tfsdk:"updated_at"`
 }

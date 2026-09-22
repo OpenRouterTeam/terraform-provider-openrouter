@@ -19,6 +19,10 @@ resource "openrouter_workspace" "my_workspace" {
   default_provider_sort              = "price"
   default_text_model                 = "openai/gpt-4o"
   description                        = "Production environment workspace"
+  disabled_server_tools = [
+    "openrouter:web_search",
+    "openrouter:bash",
+  ]
   io_logging_api_key_ids = [
     4
   ]
@@ -46,6 +50,7 @@ resource "openrouter_workspace" "my_workspace" {
 - `default_provider_sort` (String) Default provider sort preference (price, throughput, latency, exacto)
 - `default_text_model` (String) Default text model for this workspace
 - `description` (String) Description of the workspace
+- `disabled_server_tools` (List of String) OpenRouter server tools that requests in this workspace may not invoke. Requests naming a disabled tool are rejected with 403. An empty array or null clears the list.
 - `io_logging_api_key_ids` (List of Number) Optional array of API key IDs to filter I/O logging
 - `io_logging_sampling_rate` (Number) Sampling rate for I/O logging (0.0001-1)
 - `is_data_discount_logging_enabled` (Boolean) Whether data discount logging is enabled

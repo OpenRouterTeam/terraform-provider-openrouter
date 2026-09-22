@@ -3,6 +3,10 @@
 
 package shared
 
+import (
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
+)
+
 // GetWorkspaceResponseData - The workspace
 type GetWorkspaceResponseData struct {
 	// ISO 8601 timestamp of when the workspace was created
@@ -19,6 +23,8 @@ type GetWorkspaceResponseData struct {
 	DefaultTextModel *string `json:"default_text_model"`
 	// Description of the workspace
 	Description *string `json:"description"`
+	// OpenRouter server tools (e.g. openrouter:web_search) that requests in this workspace may not invoke. Null means no tools are disabled.
+	DisabledServerTools []string `json:"disabled_server_tools,omitzero"`
 	// Unique identifier for the workspace
 	ID string `json:"id"`
 	// Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Set it via the workspace budget endpoints.
@@ -39,6 +45,17 @@ type GetWorkspaceResponseData struct {
 	Slug string `json:"slug"`
 	// ISO 8601 timestamp of when the workspace was last updated
 	UpdatedAt *string `json:"updated_at"`
+}
+
+func (g GetWorkspaceResponseData) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(g, "", false)
+}
+
+func (g *GetWorkspaceResponseData) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &g, "", false, nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (g *GetWorkspaceResponseData) GetCreatedAt() string {
@@ -88,6 +105,13 @@ func (g *GetWorkspaceResponseData) GetDescription() *string {
 		return nil
 	}
 	return g.Description
+}
+
+func (g *GetWorkspaceResponseData) GetDisabledServerTools() []string {
+	if g == nil {
+		return nil
+	}
+	return g.DisabledServerTools
 }
 
 func (g *GetWorkspaceResponseData) GetID() string {

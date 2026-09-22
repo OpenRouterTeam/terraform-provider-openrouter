@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 0b7e8e2779f8f4b7077f429a651d29e0
+  docChecksum: ef70f0bc6e8174e2344108cfe9db0431
   docVersion: 1.0.0
   speakeasyVersion: 1.798.0
   generationVersion: 2.938.0
-  releaseVersion: 0.3.14
-  configChecksum: 507a26c41f3e5b1286172338feb41943
+  releaseVersion: 0.3.15
+  configChecksum: 9bed5ef323212b40b3851fa4a3a10ec4
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 26c0c17b-5418-498c-bb27-7c64100d8791
-  pristine_commit_hash: 6980110dc5719a5c02c6942daa551e58d60ebfae
-  pristine_tree_hash: c555ae15ab6b412ddc62c0ffdcff0a94e1aba709
+  generation_id: 2ce8b343-a72a-447a-9397-7d8cc3c688da
+  pristine_commit_hash: 1086ed4f1685d3affca38f36883e2e9d77ba519f
+  pristine_tree_hash: a1c54e864eaa81e04c58eafb0ff877d64e427611
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -137,8 +137,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:be921d31f29b19559dd142857810425042bb7f55
-    pristine_git_object: 16d30c309ba42c16c8045332987b959aff237419
+    last_write_checksum: sha1:b35d13959fb3a2e6531609ec8c9d04cb2ac1d96a
+    pristine_git_object: 5fa7ab49146fb5dc71fe4eb5d32e9b7cb9fbb366
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -209,8 +209,8 @@ trackedFiles:
     pristine_git_object: 2bb7f919f54bbd887d4cbb028b378ae190698b93
   examples/resources/openrouter_workspace/resource.tf:
     id: 8d2b7bd7db64
-    last_write_checksum: sha1:4506893cbe8fe4e58e526248acf929da4f972c08
-    pristine_git_object: 2fc4b9047bc57910cc2a7dc4b6532aad9e69b711
+    last_write_checksum: sha1:afced1855a8fbb8d2c646851d6c7e2b7929282ce
+    pristine_git_object: f3ec11f5e84b6ba86aa2b50dc53bf7c3a5ff7955
   examples/resources/openrouter_workspace_budget/import-by-string-id.tf:
     id: 5d0b9183a816
     last_write_checksum: sha1:c2af4c461f5981b5e5783449434ad2bc09af4788
@@ -1045,8 +1045,8 @@ trackedFiles:
     pristine_git_object: 68f81b85e207e0a88cbcb26f67c528116c9c8d66
   internal/provider/types/workspace.go:
     id: 8f8324888640
-    last_write_checksum: sha1:e6185e12599f04008df236a4fadbbeabe381e0a4
-    pristine_git_object: 738ceda06c2ef33e67d6ff78e656a2bb5abf919a
+    last_write_checksum: sha1:d1615c4f3cce6a526b6e11af199c7f6be4eeb118
+    pristine_git_object: ad28ef788f0610c91ed53d8061d896de43c34438
   internal/provider/types/workspace_budget.go:
     id: 47c17dee233e
     last_write_checksum: sha1:1db2333a4801588af975c6a56be6837bc08f3741
@@ -1061,20 +1061,20 @@ trackedFiles:
     pristine_git_object: 9b80be6e3e064b51bc0ee0604ae2740f1a333e9a
   internal/provider/workspace_data_source.go:
     id: 0215b9e1a8ce
-    last_write_checksum: sha1:885ce8964f8154daa25951898e12e83b3f0e1c4b
-    pristine_git_object: faf283246a4c29d58472a8c1308dddfdef95e580
+    last_write_checksum: sha1:b1c47b343ec510a23658905bcee949bbe1a2a2a4
+    pristine_git_object: 9bf75261cbe83615ef2bab0041a762bad303518f
   internal/provider/workspace_data_source_sdk.go:
     id: fb6e7a09af34
-    last_write_checksum: sha1:95591d9a159fc61257d1983259ffae902f28120f
-    pristine_git_object: 211dcdcf240b375dae32c93666ae492129654493
+    last_write_checksum: sha1:850feafdd898cd87096c0500c12e3d6b4dfda395
+    pristine_git_object: 752a403a62d11ec5c7f86357c00ac0c5e60e77db
   internal/provider/workspace_resource.go:
     id: 4255ab3c913f
-    last_write_checksum: sha1:7ba621c954a70a656185c5adfc3d09500f94ba31
-    pristine_git_object: 189d075e846ead6b91f19a600b954e009ada4ce2
+    last_write_checksum: sha1:965290ed3d2926c344fc5a61a978b21a46da235d
+    pristine_git_object: feac2667b2c09c397aaab204f12a0ac0d1bd6cb3
   internal/provider/workspace_resource_sdk.go:
     id: 6b7b5772bf74
-    last_write_checksum: sha1:f184c0beb0dfa93d0889a422cb9a1be3930a2b85
-    pristine_git_object: ad5c1f944a2122b1b476d8110a75e73c2e80c977
+    last_write_checksum: sha1:b4744ac49dcb519e7d14e5291cefdf6341b3e181
+    pristine_git_object: f5a54b9fce3510c761580a22a04c47a4f0dda2b0
   internal/provider/workspacebudget_data_source.go:
     id: 7e375470340b
     last_write_checksum: sha1:1dff5c1634995a960711d23dab8db71a335f5db7
@@ -1109,12 +1109,12 @@ trackedFiles:
     pristine_git_object: 41c7ca36085eef17b2ce9b37ecfaed02bc1d4fa8
   internal/provider/workspaces_data_source.go:
     id: bd46e9e30c0d
-    last_write_checksum: sha1:82430d0d0480710bdc50b3ab69c150944b8c45ab
-    pristine_git_object: 3d7370a348efbf059bed16363c4fc6966fbe47d8
+    last_write_checksum: sha1:59f8e6a909f3353647681d0adcdfd9a694709811
+    pristine_git_object: 2238d22236a0c2400c9c518a1ef462f36199a517
   internal/provider/workspaces_data_source_sdk.go:
     id: 2791418d72c4
-    last_write_checksum: sha1:6fc0ba7b3eb7f5e20d1833ffee9e3304751c87aa
-    pristine_git_object: 9a673f4c33bd99ae5d494bd5b20f970db2d5abfc
+    last_write_checksum: sha1:dc221a35b5cac70171f813290bff5e221675e865
+    pristine_git_object: cceb4d8c734517e4033edb4d7a41d7fe1312802c
   internal/sdk/.gitattributes:
     id: 1ea4c4e0a39d
     last_write_checksum: sha1:84b0115789fc3ea52e31df701d8a27f76077e29f
@@ -2377,12 +2377,12 @@ trackedFiles:
     pristine_git_object: 2598e1fe8cbe1ee7a17a7bbb55e9a633eff30c90
   internal/sdk/models/shared/createworkspacerequest.go:
     id: a2adda010c27
-    last_write_checksum: sha1:caef7f9248c1a353b9d8f5146fdfd1b1690df484
-    pristine_git_object: d962e6dda89effa2addda9a8fc92cb2950d4619a
+    last_write_checksum: sha1:7ff11b0ad5b124d0dd6802280f558348ae5551ba
+    pristine_git_object: 572b0cc0e6f1e2ac37bf9822613da83b661f78fe
   internal/sdk/models/shared/createworkspaceresponse.go:
     id: aee357718cbf
-    last_write_checksum: sha1:fcfcc817a2154fd06ef08efabf1830860cc03144
-    pristine_git_object: 446d425d723fed52d595dec22f04b9e8f6df95e5
+    last_write_checksum: sha1:d4c8cdcf2bfa77bcc1c3a401d5a072e15da45847
+    pristine_git_object: fc918cf3a5a42b7d66ef1adbe3ef1e29dec18781
   internal/sdk/models/shared/customtool.go:
     id: 716e54b1a5b5
     last_write_checksum: sha1:5ade4a0aac20fdfebb3487c5dd3a85aefa8e33c2
@@ -2661,8 +2661,8 @@ trackedFiles:
     pristine_git_object: e8ae900845ca1608f29123d42fda53b549f2d8a5
   internal/sdk/models/shared/getworkspaceresponse.go:
     id: 954c597bc3ff
-    last_write_checksum: sha1:647446bcce9b7fa2da548e0253620b84bd54ec10
-    pristine_git_object: be6c5b9e26a9fcef25dd66eefd0bb5af18a94fc9
+    last_write_checksum: sha1:f2c54fa0754ce7c4a623a24d68c0c86396cb3120
+    pristine_git_object: 00673c8f4a8f0dad425d698e1a752a0222a15722
   internal/sdk/models/shared/goneresponse.go:
     id: 81f6f63c03f1
     last_write_checksum: sha1:ef26cb526d16a564156dabbad9e8026333b4b2e3
@@ -3793,12 +3793,12 @@ trackedFiles:
     pristine_git_object: 4838b3a8b5202d928ab5259ac9c8425a05cad4fb
   internal/sdk/models/shared/updateworkspacerequest.go:
     id: 8227a1e8e903
-    last_write_checksum: sha1:4f563da8d60a20d42bfe2894b57b22c156ea62de
-    pristine_git_object: 951d73e6b2b1f56272a8e16903e6d144cb91e5e0
+    last_write_checksum: sha1:8a0fb61070e8b3014d187b0e8aafc396f92cd37d
+    pristine_git_object: 35bccaba4c375bc8c589392eaff850c3fefbcac2
   internal/sdk/models/shared/updateworkspaceresponse.go:
     id: 402d0a200451
-    last_write_checksum: sha1:a22bcc51c433403bb8a60ce1648796d33ad7b728
-    pristine_git_object: 326a0a937bd08a4ad95941116f804b95adfad953
+    last_write_checksum: sha1:2d4a3439ff95a77f8260905ecf55bd132360a9bf
+    pristine_git_object: 24bb8a6e3a789a5097973879088fa4d632889e18
   internal/sdk/models/shared/upsertworkspacebudgetrequest.go:
     id: f54c21919979
     last_write_checksum: sha1:a7759c63bf4c486638c771b38668493a55ccfd0b
@@ -3925,8 +3925,8 @@ trackedFiles:
     pristine_git_object: 22dd4f803627f3846e07feee6de87bd5d1a0a642
   internal/sdk/models/shared/workspace.go:
     id: e51ad67224b2
-    last_write_checksum: sha1:bade0de655d3d3199b5d6f6dd90fcd7a1c52ee88
-    pristine_git_object: 4d5486b9da71e13b0a3d38520aee3903a37a87f3
+    last_write_checksum: sha1:9e1c7ba4e8e35d899957226c65f4b1d656b77a79
+    pristine_git_object: 33bd8db1b260d77b952d599040eb6920239b74a4
   internal/sdk/models/shared/workspacebudget.go:
     id: 5f2178cfe6ff
     last_write_checksum: sha1:b1dd976c76b1369e2db176cf2460b6d8fe15e7d3
@@ -3957,8 +3957,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:be654f95e6b134564b8abc695a772aaff41b293c
-    pristine_git_object: 7d08b80141fc328b5c9e69fa692d4e79d1fafab6
+    last_write_checksum: sha1:cfb36eb22abc515102a932b697be0f2ff957dea0
+    pristine_git_object: 9ba363160d591a01d6ad5ac8df6ae3bde697d42d
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:eb1c7d4333d39fff54827fd3b98443df8e2a22a8
@@ -5503,7 +5503,7 @@ examples:
           limit: 50
       responses:
         "200":
-          application/json: {"data": [{"created_at": "2025-08-24T10:30:00Z", "created_by": "user_abc123", "default_guardrail_id": "595d5849-7e86-51fd-a7c0-705c34e4afff", "default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "id": "550e8400-e29b-41d4-a716-446655440000", "include_byok_in_budgets": false, "io_logging_api_key_ids": null, "io_logging_sampling_rate": 1, "is_data_discount_logging_enabled": true, "is_observability_broadcast_enabled": false, "is_observability_io_logging_enabled": false, "name": "Production", "slug": "production", "updated_at": "2025-08-24T15:45:00Z"}], "total_count": 1}
+          application/json: {"data": [{"created_at": "2025-08-24T10:30:00Z", "created_by": "user_abc123", "default_guardrail_id": "595d5849-7e86-51fd-a7c0-705c34e4afff", "default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "disabled_server_tools": null, "id": "550e8400-e29b-41d4-a716-446655440000", "include_byok_in_budgets": false, "io_logging_api_key_ids": null, "io_logging_sampling_rate": 1, "is_data_discount_logging_enabled": true, "is_observability_broadcast_enabled": false, "is_observability_io_logging_enabled": false, "name": "Production", "slug": "production", "updated_at": "2025-08-24T15:45:00Z"}], "total_count": 1}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
@@ -5514,7 +5514,7 @@ examples:
         application/json: {"default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "name": "Production", "slug": "production"}
       responses:
         "201":
-          application/json: {"data": {"created_at": "2025-08-24T10:30:00Z", "created_by": "user_abc123", "default_guardrail_id": "595d5849-7e86-51fd-a7c0-705c34e4afff", "default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "id": "550e8400-e29b-41d4-a716-446655440000", "include_byok_in_budgets": false, "io_logging_api_key_ids": null, "io_logging_sampling_rate": 1, "is_data_discount_logging_enabled": true, "is_observability_broadcast_enabled": false, "is_observability_io_logging_enabled": false, "name": "Production", "slug": "production", "updated_at": null}}
+          application/json: {"data": {"created_at": "2025-08-24T10:30:00Z", "created_by": "user_abc123", "default_guardrail_id": "595d5849-7e86-51fd-a7c0-705c34e4afff", "default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "disabled_server_tools": null, "id": "550e8400-e29b-41d4-a716-446655440000", "include_byok_in_budgets": false, "io_logging_api_key_ids": null, "io_logging_sampling_rate": 1, "is_data_discount_logging_enabled": true, "is_observability_broadcast_enabled": false, "is_observability_io_logging_enabled": false, "name": "Production", "slug": "production", "updated_at": null}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -5551,7 +5551,7 @@ examples:
           id: "production"
       responses:
         "200":
-          application/json: {"data": {"created_at": "2025-08-24T10:30:00Z", "created_by": "user_abc123", "default_guardrail_id": "595d5849-7e86-51fd-a7c0-705c34e4afff", "default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "id": "550e8400-e29b-41d4-a716-446655440000", "include_byok_in_budgets": false, "io_logging_api_key_ids": null, "io_logging_sampling_rate": 1, "is_data_discount_logging_enabled": true, "is_observability_broadcast_enabled": false, "is_observability_io_logging_enabled": false, "name": "Production", "slug": "production", "updated_at": "2025-08-24T15:45:00Z"}}
+          application/json: {"data": {"created_at": "2025-08-24T10:30:00Z", "created_by": "user_abc123", "default_guardrail_id": "595d5849-7e86-51fd-a7c0-705c34e4afff", "default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "disabled_server_tools": null, "id": "550e8400-e29b-41d4-a716-446655440000", "include_byok_in_budgets": false, "io_logging_api_key_ids": null, "io_logging_sampling_rate": 1, "is_data_discount_logging_enabled": true, "is_observability_broadcast_enabled": false, "is_observability_io_logging_enabled": false, "name": "Production", "slug": "production", "updated_at": "2025-08-24T15:45:00Z"}}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "404":
@@ -5567,7 +5567,7 @@ examples:
         application/json: {"name": "Updated Workspace", "slug": "updated-workspace"}
       responses:
         "200":
-          application/json: {"data": {"created_at": "2025-08-24T10:30:00Z", "created_by": "user_abc123", "default_guardrail_id": "595d5849-7e86-51fd-a7c0-705c34e4afff", "default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "id": "550e8400-e29b-41d4-a716-446655440000", "include_byok_in_budgets": false, "io_logging_api_key_ids": null, "io_logging_sampling_rate": 1, "is_data_discount_logging_enabled": true, "is_observability_broadcast_enabled": false, "is_observability_io_logging_enabled": false, "name": "Updated Workspace", "slug": "updated-workspace", "updated_at": "2025-08-25T10:00:00Z"}}
+          application/json: {"data": {"created_at": "2025-08-24T10:30:00Z", "created_by": "user_abc123", "default_guardrail_id": "595d5849-7e86-51fd-a7c0-705c34e4afff", "default_image_model": "openai/dall-e-3", "default_provider_sort": "price", "default_text_model": "openai/gpt-4o", "description": "Production environment workspace", "disabled_server_tools": null, "id": "550e8400-e29b-41d4-a716-446655440000", "include_byok_in_budgets": false, "io_logging_api_key_ids": null, "io_logging_sampling_rate": 1, "is_data_discount_logging_enabled": true, "is_observability_broadcast_enabled": false, "is_observability_io_logging_enabled": false, "name": "Updated Workspace", "slug": "updated-workspace", "updated_at": "2025-08-25T10:00:00Z"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -7242,4 +7242,4 @@ examples:
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.safeguards` **Added**\n"
+releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Workspaces.list()`:  `response.data[].disabled_server_tools` **Added**\n* `OpenRouter.Workspaces.create()`: \n  *  `request.disabled_server_tools` **Added**\n  *  `response.data.disabled_server_tools` **Added**\n* `OpenRouter.Workspaces.get()`:  `response.data.disabled_server_tools` **Added**\n* `OpenRouter.Workspaces.update()`: \n  *  `request.body.disabled_server_tools` **Added**\n  *  `response.data.disabled_server_tools` **Added**\n"
