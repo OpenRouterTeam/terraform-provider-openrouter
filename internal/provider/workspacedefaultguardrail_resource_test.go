@@ -279,6 +279,16 @@ func TestWorkspaceDefaultGuardrail_DematerializedReadsAsUnconfigured(t *testing.
 					defer api.mu.Unlock()
 					api.materialized = false
 				},
+				RefreshState:       true,
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_workspace_default_guardrail.this", "id", fakeGuardrailID),
+					resource.TestCheckResourceAttr("openrouter_workspace_default_guardrail.this", "workspace_id", fakeWorkspaceID),
+					resource.TestCheckNoResourceAttr("openrouter_workspace_default_guardrail.this", "limit_usd"),
+					resource.TestCheckNoResourceAttr("openrouter_workspace_default_guardrail.this", "name"),
+				),
+			},
+			{
 				Config: defaultGuardrailConfig(srv.URL, 100),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{

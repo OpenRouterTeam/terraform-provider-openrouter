@@ -9,14 +9,12 @@ import (
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
@@ -81,19 +79,19 @@ func (r *WorkspaceDefaultGuardrailResource) Schema(ctx context.Context, req reso
 	}
 
 	attrs["name"] = schema.StringAttribute{
-		Computed:    true,
-		Optional:    true,
-		Description: `Name of the default guardrail. Assigned by the platform (` + "`" + `Workspace <id> Default` + "`" + `) when omitted.`,
-		Validators: []validator.String{
-			stringvalidator.UTF8LengthBetween(1, 200),
+		Computed: true,
+		PlanModifiers: []planmodifier.String{
+			stringplanmodifier.UseStateForUnknown(),
 		},
+		Description: `Name of the default guardrail. Derived from the workspace by the platform (` + "`" + `Workspace <id> Default` + "`" + `) and not editable.`,
 	}
 
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Manages the default guardrail of a workspace. The default guardrail is enforced for every API key and member of the workspace that has no explicit guardrail assignment, so this resource is the place to define workspace-wide protections. " +
 			"The guardrail is created by the platform together with the workspace and materialized on first write, so this resource never issues `POST /guardrails`; create and update both `PATCH /guardrails/{default_guardrail_id}`. " +
 			"Destroying the resource only removes it from state, the guardrail itself cannot be deleted. Import with the workspace id.\n\n" +
-			"Until the first write, `GET /guardrails/{default_guardrail_id}` returns 404 even though the guardrail is in force. Read and import treat that 404 as an existing, unconfigured guardrail and use the workspace as the existence oracle: `GET /workspaces/{workspace_id}` still returning `default_guardrail_id` means the guardrail exists, while a 404 from the workspace lookup means the workspace and its default guardrail are gone and the resource is removed from state.",
+			"Until the first write, `GET /guardrails/{default_guardrail_id}` returns 404 even though the guardrail is in force. Read and import treat that 404 as an existing, unconfigured guardrail and use the workspace as the existence oracle: `GET /workspaces/{workspace_id}` still returning `default_guardrail_id` means the guardrail exists, while a 404 from the workspace lookup means the workspace and its default guardrail are gone and the resource is removed from state.\n\n" +
+			"A default guardrail that was materialized and later deleted outside Terraform reads the same way (present, unconfigured), and the next apply re-issues the `PATCH`. If the platform rejects that `PATCH` with 404, remove the resource from state with `terraform state rm` and import it again once the workspace reports a usable `default_guardrail_id`.",
 		Attributes: attrs,
 	}
 }
@@ -167,7 +165,17 @@ func (r *WorkspaceDefaultGuardrailResource) patch(ctx context.Context, data *Wor
 		diags.AddError("unexpected response from API", fmt.Sprintf("%v", res))
 		return diags
 	}
-	if res.StatusCode != 200 {
+	switch {
+	case res.BadRequestResponse != nil:
+		diags.AddError("invalid default guardrail configuration", res.BadRequestResponse.Error.Message)
+		return diags
+	case res.NotFoundResponse != nil:
+		diags.AddError("default guardrail not found", fmt.Sprintf("PATCH /guardrails/%s returned 404: %s", data.ID.ValueString(), res.NotFoundResponse.Error.Message))
+		return diags
+	case res.ConflictResponse != nil:
+		diags.AddError("conflicting default guardrail configuration", res.ConflictResponse.Error.Message)
+		return diags
+	case res.StatusCode != 200:
 		diags.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
 		return diags
 	}
