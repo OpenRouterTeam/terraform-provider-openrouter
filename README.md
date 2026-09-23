@@ -92,6 +92,7 @@ Available configuration:
 * [openrouter_scim_group_mapping](docs/resources/scim_group_mapping.md)
 * [openrouter_workspace](docs/resources/workspace.md)
 * [openrouter_workspace_budget](docs/resources/workspace_budget.md)
+* [openrouter_workspace_default_guardrail](docs/resources/workspace_default_guardrail.md)
 
 ### Data Sources
 

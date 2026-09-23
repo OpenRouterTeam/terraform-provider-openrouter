@@ -43,7 +43,8 @@ terraform:
   additionalProviderAttributes:
     httpHeaders: ""
     tlsSkipVerify: ""
-  additionalResources: []
+  additionalResources:
+    - resource: NewWorkspaceDefaultGuardrailResource
   author: OpenRouterTeam
   baseErrorName: OpenRouterError
   debugLogging: {}
