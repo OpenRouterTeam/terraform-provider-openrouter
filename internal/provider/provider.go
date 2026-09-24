@@ -124,6 +124,7 @@ func (p *OpenrouterProvider) Resources(ctx context.Context) []func() resource.Re
 		NewScimGroupMappingResource,
 		NewWorkspaceResource,
 		NewWorkspaceBudgetResource,
+		NewWorkspaceMemberResource,
 	}
 }
 
@@ -150,6 +151,7 @@ func (p *OpenrouterProvider) DataSources(ctx context.Context) []func() datasourc
 		NewWorkspaceDataSource,
 		NewWorkspaceBudgetDataSource,
 		NewWorkspaceBudgetsDataSource,
+		NewWorkspaceMemberDataSource,
 		NewWorkspaceMembersDataSource,
 		NewWorkspacesDataSource,
 	}
