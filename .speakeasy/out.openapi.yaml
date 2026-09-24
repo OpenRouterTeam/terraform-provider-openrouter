@@ -4384,6 +4384,7 @@ components:
       required:
         - 'user_ids'
       type: 'object'
+      x-speakeasy-entity: WorkspaceMember
     BulkAddWorkspaceMembersResponse:
       example:
         added_count: 1
@@ -4484,6 +4485,7 @@ components:
       required:
         - 'user_ids'
       type: 'object'
+      x-speakeasy-entity: WorkspaceMember
     BulkRemoveWorkspaceMembersResponse:
       example:
         removed_count: 2
@@ -29682,6 +29684,7 @@ components:
         - 'role'
         - 'created_at'
       type: 'object'
+      x-speakeasy-entity: WorkspaceMember
     XSearchOptions:
       additionalProperties: false
       description: 'Enable SpaceXAI X (Twitter) search alongside native web search, with optional filters. Only applies to SpaceXAI endpoints with native search; omit to search the web only. X search is billed separately by SpaceXAI, per post and per user profile fetched.'
@@ -46060,7 +46063,9 @@ paths:
         outputs:
           results: '$.data'
         type: 'offsetLimit'
-      x-speakeasy-entity-operation: WorkspaceMembers#read
+      x-speakeasy-entity-operation:
+        - WorkspaceMembers#read
+        - WorkspaceMember#read
   /workspaces/{id}/members/add:
     post:
       description: 'Add multiple organization members to a workspace. Members are assigned the same role they hold in the organization. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -46154,6 +46159,7 @@ paths:
       tags:
         - 'Workspaces'
       x-speakeasy-name-override: 'addMembers'
+      x-speakeasy-entity-operation: WorkspaceMember#create
   /workspaces/{id}/members/remove:
     post:
       description: 'Remove multiple members from a workspace. Members with active API keys in the workspace cannot be removed. SCIM-managed members cannot be removed; changes must be made in your identity provider. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -46241,6 +46247,7 @@ paths:
       tags:
         - 'Workspaces'
       x-speakeasy-name-override: 'bulkRemoveMembers'
+      x-speakeasy-entity-operation: WorkspaceMember#delete
   /workspaces/{workspace_ref}/budgets:
     get:
       description: 'List all budgets configured for a workspace. [Management key](/docs/guides/overview/auth/management-api-keys) required.'

@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 95d3b605551d12821e0d589f5a6c1b43
+  docChecksum: 11e30da20ac6b3946a44b32a04388835
   docVersion: 1.0.0
   speakeasyVersion: 1.798.0
   generationVersion: 2.938.0
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 1ec6036b-150b-46aa-9e8b-6f68aaf16d4d
-  pristine_commit_hash: 1b1ac2991a86145e42013a677f0514ede0fb3f6e
-  pristine_tree_hash: 4611904f10eca73bae5d8f337ca53010beb328a9
+  generation_id: 218858df-e003-4925-957b-fe9a66ad389c
+  pristine_commit_hash: 54312e25a170714594b9aca44421b1e640349a51
+  pristine_tree_hash: 7c3dfed937ba81c8396aeb3dd22466749a299cf5
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -127,6 +127,10 @@ trackedFiles:
     id: ba3a1e6a83ee
     last_write_checksum: sha1:5b6cb918ff64e72c2982ab37741718f30c3fff04
     pristine_git_object: 7c02585fa3e02f1c062788a62875ba2d645739d2
+  examples/data-sources/openrouter_workspace_member/data-source.tf:
+    id: 210c5fbd66be
+    last_write_checksum: sha1:a1dbe24fb049aed15aa1d97b1a3cfe6b149e70b4
+    pristine_git_object: 31c8f000f8252e2fb735709db9fb4c33d94bb878
   examples/data-sources/openrouter_workspace_members/data-source.tf:
     id: fbca15debc45
     last_write_checksum: sha1:e83e33cc18268215ea160e5ed820be6b19f7332b
@@ -223,6 +227,18 @@ trackedFiles:
     id: 0f9ed266ae68
     last_write_checksum: sha1:e4fe703fcd4de6688e2316ed48cc083d40f2852a
     pristine_git_object: b97ff2ffeff454ededad08f3e0f08373e7b7d156
+  examples/resources/openrouter_workspace_member/import-by-string-id.tf:
+    id: bd2aea738208
+    last_write_checksum: sha1:d74376a55d68c6967947dd5435ebcd1a45bee9fc
+    pristine_git_object: bd58cd61cd6837a8135ac85e2597cff77ad4a697
+  examples/resources/openrouter_workspace_member/import.sh:
+    id: 9cc5653e94af
+    last_write_checksum: sha1:fcf66881b49bf3cc806dcf490b8f3841aa9d4d38
+    pristine_git_object: f9466c838ecda577354de21e712501f7463e7947
+  examples/resources/openrouter_workspace_member/resource.tf:
+    id: 683c56d00b98
+    last_write_checksum: sha1:7928ec9ae9e6e96969213b5b1fa86d8845a0c61e
+    pristine_git_object: eb44e35b97ba1faa327f453045162f9d33c0ed9d
   go.mod:
     id: c47645c391ad
     last_write_checksum: sha1:609968f68df27b8d637e507eba25bde47d13c4e8
@@ -529,8 +545,8 @@ trackedFiles:
     pristine_git_object: 6d6db7af516483c5f209083f5a95afdcc1f7eaaf
   internal/provider/provider.go:
     id: 1e7e86841cf3
-    last_write_checksum: sha1:32fa497cef0d2e3a1d5c1eddd163082c5c2dbc98
-    pristine_git_object: d979f9f1c5ecfc983939bbda4b198519467fed3c
+    last_write_checksum: sha1:ff1f5e7955fd895e40967e0d33533f0f30c3d469
+    pristine_git_object: c23b77ea6f0dd7ca3049305d22d81a5f6cbc49b5
   internal/provider/providers_data_source.go:
     id: f86d43a8ffda
     last_write_checksum: sha1:bb9c26269830d336d8298e09f1ed5544c4219f6c
@@ -1099,6 +1115,22 @@ trackedFiles:
     id: f0c40d5abd5c
     last_write_checksum: sha1:dba1de05b902cc1d82f7e8a1e35ea8985ba654e7
     pristine_git_object: cb7f67f58facff79d6dc0ed1ab06273bf6359aae
+  internal/provider/workspacemember_data_source.go:
+    id: dd2054943e9a
+    last_write_checksum: sha1:2ae7230c5712ecf27690f5065789a967ae0a1b6d
+    pristine_git_object: eff008b950fdcb91e8564207f5fd57597ea921f9
+  internal/provider/workspacemember_data_source_sdk.go:
+    id: 9d3e119d8e7e
+    last_write_checksum: sha1:9f93cc1cdc1eb277d1f5682f0422f6aff66b0fd3
+    pristine_git_object: 333569c915bd81cf770d75578dde83af7c8e0089
+  internal/provider/workspacemember_resource.go:
+    id: e6817d16f95b
+    last_write_checksum: sha1:4fdf2ccd2080686a8c4348501ef0391bcc9e0f36
+    pristine_git_object: 79ef7f9913768d604860c80e31b6daf132d8bc2e
+  internal/provider/workspacemember_resource_sdk.go:
+    id: 008fd7261ef9
+    last_write_checksum: sha1:4db2fbf9757035be79b6508a0e67d50a226b15bc
+    pristine_git_object: 30b8bb847337470324cedcb445ba0c82d081e471
   internal/provider/workspacemembers_data_source.go:
     id: 960bfaea22ce
     last_write_checksum: sha1:b7de28033a476b771163fc9add0b5f7e35ca566a
@@ -7246,4 +7278,3 @@ examples:
         "529":
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body.plugins[].union(switchyard-router)` **Added**\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body.plugins[].union(switchyard-router)` **Added**\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body.plugins[].union(switchyard-router)` **Added**\n"

@@ -374,6 +374,35 @@ actions:
   - target: $["paths"]["/workspaces/{workspace_ref}/budgets/{interval}"]["delete"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudget#delete
+  # ---------------------------------------------------------------------------
+  # WorkspaceMember  (POST /workspaces/{id}/members/add, GET /workspaces/{id}/members,
+  # POST /workspaces/{id}/members/remove)
+  # One resource per membership so memberships granted by other paths (SCIM
+  # group mappings, dashboard adds) are never clobbered. Add and remove are
+  # both POSTs; the entity operation, not the HTTP method, drives CRUD.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["WorkspaceMember"]
+    update:
+      x-speakeasy-entity: WorkspaceMember
+  - target: $["components"]["schemas"]["BulkAddWorkspaceMembersRequest"]
+    update:
+      x-speakeasy-entity: WorkspaceMember
+  - target: $["components"]["schemas"]["BulkRemoveWorkspaceMembersRequest"]
+    update:
+      x-speakeasy-entity: WorkspaceMember
+
+  - target: $["paths"]["/workspaces/{id}/members/add"]["post"]
+    update:
+      x-speakeasy-entity-operation: WorkspaceMember#create
+  - target: $["paths"]["/workspaces/{id}/members"]["get"]
+    update:
+      x-speakeasy-entity-operation:
+        - WorkspaceMembers#read
+        - WorkspaceMember#read
+  - target: $["paths"]["/workspaces/{id}/members/remove"]["post"]
+    update:
+      x-speakeasy-entity-operation: WorkspaceMember#delete
+
   # DEV-856: drop doc-only `default` values from destination config schemas.
   # These defaults come from Zod `.default()` in the server-side broadcast
   # schemas; the API never applies them, so the emitted OpenAPI `default:` is
