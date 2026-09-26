@@ -7,7 +7,7 @@ info:
     Maps OpenRouter management API operations to Terraform entities via
     x-speakeasy-entity / x-speakeasy-entity-operation. Resources: ApiKey,
     Guardrail, Workspace, ByokKey, ObservabilityDestination,
-    ScimGroupMapping, WorkspaceBudget. Plus read-only
+    ScimGroupMapping, WorkspaceBudget, PrivateEndpoint. Plus read-only
     data-source entities for management lists and the model/provider/preset
     /credits catalog.
 actions:
@@ -374,6 +374,63 @@ actions:
   - target: $["paths"]["/workspaces/{workspace_ref}/budgets/{interval}"]["delete"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudget#delete
+  # ---------------------------------------------------------------------------
+  # PrivateEndpoint  (POST /private-endpoints, GET/DELETE /private-endpoints/{id},
+  # PUT /private-endpoints/{id}/pricing). ECO-4315.
+  # Component-based: PrivateEndpoint is the read model, ManagedPrivateEndpoint
+  # the create response. Create sends `activate` so one apply runs
+  # create -> validate -> activate. The API only edits pricing in place once an
+  # endpoint leaves draft, so every other create field forces replacement and
+  # PUT .../pricing is the sole update operation.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["PrivateEndpoint"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+  - target: $["components"]["schemas"]["ManagedPrivateEndpoint"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+  - target: $["components"]["schemas"]["UpdatePrivateEndpointPricingRequest"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["model_permaslug"]
+    update:
+      x-speakeasy-param-force-new: true
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["provider_slug"]
+    update:
+      x-speakeasy-param-force-new: true
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["upstream_model_id"]
+    update:
+      x-speakeasy-param-force-new: true
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["base_url"]
+    update:
+      x-speakeasy-param-force-new: true
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["declared_zdr"]
+    update:
+      x-speakeasy-param-force-new: true
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["declared_region"]
+    update:
+      x-speakeasy-param-force-new: true
+
+  - target: $["paths"]["/private-endpoints"]["post"]
+    update:
+      x-speakeasy-entity-operation: PrivateEndpoint#create
+  # Create returns the summary shape without pricing or the upstream fields,
+  # so GET runs as create step 2 to settle every computed attribute.
+  - target: $["paths"]["/private-endpoints/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation:
+        - PrivateEndpoint#create#2
+        - PrivateEndpoint#read
+  - target: $["paths"]["/private-endpoints/{id}/pricing"]["put"]
+    update:
+      x-speakeasy-entity-operation: PrivateEndpoint#update
+  - target: $["paths"]["/private-endpoints/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: PrivateEndpoint#delete
+
   # DEV-856: drop doc-only `default` values from destination config schemas.
   # These defaults come from Zod `.default()` in the server-side broadcast
   # schemas; the API never applies them, so the emitted OpenAPI `default:` is
@@ -499,3 +556,21 @@ actions:
     remove: true
   - target: $["components"]["schemas"]["ObservabilityWebhookDestination"]["properties"]["config"]["properties"]["method"]["default"]
     remove: true
+  - target: $["paths"]["/private-endpoints"]["post"]
+    update:
+      x-speakeasy-retries:
+        strategy: 'backoff'
+        backoff:
+          initialInterval: 500
+          maxInterval: 60000
+          maxElapsedTime: 3600000
+          exponent: 1.5
+        statusCodes:
+          - '429'
+        retryConnectionErrors: false
+  - target: $["paths"]["/private-endpoints/{id}"]["delete"]["parameters"][?(@.name == "draft_only")]
+    update:
+      example: 'false'
+  - target: $["components"]["schemas"]["PrivateEndpointSummary"]["properties"]["created_at"]
+    update:
+      x-speakeasy-terraform-ignore: true

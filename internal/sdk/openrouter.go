@@ -3,7 +3,7 @@
 
 package sdk
 
-// Generated from OpenAPI doc version 1.0.0 and generator version 2.938.0
+// Generated from OpenAPI doc version 1.0.0 and generator version 2.941.0
 
 import (
 	"context"
@@ -100,6 +100,8 @@ type OpenRouter struct {
 	Organization *Organization
 	// Presets endpoints
 	Presets *Presets
+	// Private Endpoints endpoints
+	PrivateEndpoints *PrivateEndpoints
 	// Provider information endpoints
 	Providers *Providers
 	// Rerank endpoints
@@ -192,9 +194,9 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
 		SDKVersion: "0.3.19",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.3.19 2.938.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			UserAgent:         "speakeasy-sdk/terraform 0.3.19 2.941.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
 			SDKVersion:        "0.3.19",
-			GenVersion:        "2.938.0",
+			GenVersion:        "2.941.0",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
 		},
@@ -240,6 +242,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Observability = newObservability(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Organization = newOrganization(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Presets = newPresets(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Providers = newProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Rerank = newRerank(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Scim = newScim(sdk, sdk.sdkConfiguration, sdk.hooks)
