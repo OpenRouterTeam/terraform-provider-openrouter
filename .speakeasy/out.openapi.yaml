@@ -22977,6 +22977,7 @@ components:
           description: 'ISO timestamp of when the endpoint was created.'
           example: '2026-09-24T10:30:00Z'
           type: 'string'
+          x-speakeasy-terraform-ignore: true
         id:
           description: 'Stable identifier of the private endpoint.'
           example: '5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11'

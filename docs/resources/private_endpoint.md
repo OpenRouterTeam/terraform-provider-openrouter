@@ -51,7 +51,6 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 
 ### Read-Only
 
-- `created_at` (String) ISO timestamp of when the endpoint was created.
 - `id` (String) Stable identifier of the private endpoint.
 - `model_name` (String) Display name of the model, or `null` when the model is no longer listed.
 - `model_slug` (String) Public model slug, or `null` when the model is no longer listed.

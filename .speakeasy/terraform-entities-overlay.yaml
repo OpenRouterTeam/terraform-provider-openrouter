@@ -571,3 +571,6 @@ actions:
   - target: $["paths"]["/private-endpoints/{id}"]["delete"]["parameters"][?(@.name == "draft_only")]
     update:
       example: 'false'
+  - target: $["components"]["schemas"]["PrivateEndpointSummary"]["properties"]["created_at"]
+    update:
+      x-speakeasy-terraform-ignore: true

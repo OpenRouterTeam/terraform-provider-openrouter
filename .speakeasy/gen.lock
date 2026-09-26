@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 8f60b7cc322a000cd40161e6712ac50d
+  docChecksum: e9a01b771c90ca7a4c4c34fe7c6eb89a
   docVersion: 1.0.0
   speakeasyVersion: 1.799.0
   generationVersion: 2.941.0
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 53256276-6bcf-451d-b31c-3c3497de8611
-  pristine_commit_hash: 71abcbbf09af1e2995e91765d5662c370fdd65b0
-  pristine_tree_hash: 169bcf8cc8dc105baca4211cd533e11cf522b880
+  generation_id: 2e04d75d-a29f-45ed-b09a-bc19a3ca5565
+  pristine_commit_hash: c2a08ff80120d8b190eb3f864956d99fb9837c7e
+  pristine_tree_hash: 2f3055e39eba352b6993e75be6676f9e70faea68
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -553,12 +553,12 @@ trackedFiles:
     pristine_git_object: 8b7ab4914feec5fe42771595ff16620b8536b537
   internal/provider/privateendpoint_resource.go:
     id: a64a2acbf118
-    last_write_checksum: sha1:c76688c9d630391491d64a861dc042c16334b70f
-    pristine_git_object: d8277d528afbe39feb3e9c116c4859fd3c9a3b3c
+    last_write_checksum: sha1:c987c0a0bbf2a2b09e452182c23b28c134931786
+    pristine_git_object: 93d1b0279b3576e15fe15e399d2a7392d6187de2
   internal/provider/privateendpoint_resource_sdk.go:
     id: f78a28b90402
-    last_write_checksum: sha1:6f9585fd6dc96591b078128e280814d3c83fe973
-    pristine_git_object: 98a4454cfb161ba273c712104e22028c03dc8335
+    last_write_checksum: sha1:12a4283508d371edeb84eeb725b222f765fce51f
+    pristine_git_object: 7eca9b320408c4e7bda63a2211b31fc9c694d980
   internal/provider/provider.go:
     id: 1e7e86841cf3
     last_write_checksum: sha1:6b738d1c154c0e0eafe1ef079e1a5f304de717fd

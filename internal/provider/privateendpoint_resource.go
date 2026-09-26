@@ -43,7 +43,6 @@ type PrivateEndpointResource struct {
 type PrivateEndpointResourceModel struct {
 	Activate        *tfTypes.PrivateEndpointActivation `tfsdk:"activate"`
 	BaseURL         types.String                       `tfsdk:"base_url"`
-	CreatedAt       types.String                       `tfsdk:"created_at"`
 	DeclaredRegion  types.String                       `tfsdk:"declared_region"`
 	DeclaredZdr     types.Bool                         `tfsdk:"declared_zdr"`
 	DraftOnly       types.String                       `queryParam:"style=form,explode=true,name=draft_only" tfsdk:"draft_only"`
@@ -93,10 +92,6 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
 				},
-			},
-			"created_at": schema.StringAttribute{
-				Computed:    true,
-				Description: `ISO timestamp of when the endpoint was created.`,
 			},
 			"declared_region": schema.StringAttribute{
 				Computed: true,
