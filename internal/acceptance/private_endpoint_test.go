@@ -295,7 +295,7 @@ func TestStubPrivateEndpointLifecycle(t *testing.T) {
 				ResourceName:            name,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"activate", "created_at"},
+				ImportStateVerifyIgnore: []string{"activate"},
 			},
 		},
 	})
