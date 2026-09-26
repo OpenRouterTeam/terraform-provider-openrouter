@@ -4,12 +4,12 @@
 package shared
 
 type PrivateEndpointValidationResponse struct {
-	Data *PrivateEndpointValidation `json:"data"`
+	Data PrivateEndpointValidation `json:"data"`
 }
 
-func (p *PrivateEndpointValidationResponse) GetData() *PrivateEndpointValidation {
+func (p *PrivateEndpointValidationResponse) GetData() PrivateEndpointValidation {
 	if p == nil {
-		return nil
+		return PrivateEndpointValidation{}
 	}
 	return p.Data
 }

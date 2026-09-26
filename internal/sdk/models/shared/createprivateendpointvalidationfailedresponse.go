@@ -8,8 +8,8 @@ import (
 )
 
 type CreatePrivateEndpointValidationFailedResponseData struct {
-	Endpoint   ManagedPrivateEndpoint     `json:"endpoint"`
-	Validation *PrivateEndpointValidation `json:"validation"`
+	Endpoint   ManagedPrivateEndpoint             `json:"endpoint"`
+	Validation *PrivateEndpointValidationNullable `json:"validation"`
 }
 
 func (c CreatePrivateEndpointValidationFailedResponseData) MarshalJSON() ([]byte, error) {
@@ -30,7 +30,7 @@ func (c *CreatePrivateEndpointValidationFailedResponseData) GetEndpoint() Manage
 	return c.Endpoint
 }
 
-func (c *CreatePrivateEndpointValidationFailedResponseData) GetValidation() *PrivateEndpointValidation {
+func (c *CreatePrivateEndpointValidationFailedResponseData) GetValidation() *PrivateEndpointValidationNullable {
 	if c == nil {
 		return nil
 	}
