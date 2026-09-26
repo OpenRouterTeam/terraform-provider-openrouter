@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"strings"
 	"sync"
 	"testing"
@@ -14,7 +15,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-const privateEndpointWorkspaceID = "550e8400-e29b-41d4-a716-446655440000"
+const (
+	privateEndpointWorkspaceID       = "550e8400-e29b-41d4-a716-446655440000"
+	privateEndpointNoByokWorkspaceID = "550e8400-e29b-41d4-a716-4466554400ff"
+)
 
 type stubPricing struct {
 	Prompt     string `json:"prompt"`
@@ -45,6 +49,7 @@ type stubPrivateEndpoints struct {
 	nextID    int
 	endpoints map[string]*stubPrivateEndpoint
 	creates   []map[string]any
+	deletes   []string
 }
 
 func newStubPrivateEndpoints(t *testing.T) (*httptest.Server, *stubPrivateEndpoints) {
@@ -95,6 +100,11 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		endpoint.Pricing = body.Pricing
 	case len(parts) == 2 && r.Method == http.MethodGet:
 	case len(parts) == 2 && r.Method == http.MethodDelete:
+		if r.URL.Query().Get("draft_only") == "true" && endpoint.Status != "draft" {
+			writeError(http.StatusConflict, "not_draft")
+			return
+		}
+		s.deletes = append(s.deletes, r.URL.RawQuery)
 		delete(s.endpoints, endpoint.ID)
 		_ = json.NewEncoder(w).Encode(map[string]any{"data": map[string]string{"id": endpoint.ID}})
 		return
@@ -145,6 +155,18 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 	if body.Pricing != nil {
 		endpoint.Pricing = *body.Pricing
 	}
+	if body.Activate != nil && body.Activate.WorkspaceID == privateEndpointNoByokWorkspaceID {
+		s.endpoints[endpoint.ID] = endpoint
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"error": map[string]any{"code": 422, "message": "Validation failed; the draft was kept so it can be fixed and activated"},
+			"data": map[string]any{
+				"endpoint":   stubSummary(endpoint),
+				"validation": map[string]any{"passed": false, "checks": []map[string]any{{"name": "auth_ok", "passed": false, "reason": "no_byok_key"}}},
+			},
+		})
+		return
+	}
 	if body.Activate != nil {
 		if body.Activate.WorkspaceID != privateEndpointWorkspaceID {
 			writeError(http.StatusNotFound, "Workspace not found")
@@ -154,12 +176,16 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 	}
 	s.endpoints[endpoint.ID] = endpoint
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(map[string]any{"data": map[string]any{
+	_ = json.NewEncoder(w).Encode(map[string]any{"data": stubSummary(endpoint)})
+}
+
+func stubSummary(endpoint *stubPrivateEndpoint) map[string]any {
+	return map[string]any{
 		"id": endpoint.ID, "status": endpoint.Status, "model_permaslug": endpoint.ModelPermaslug,
 		"model_slug": endpoint.ModelSlug, "model_name": endpoint.ModelName,
 		"provider_name": endpoint.ProviderName, "created_at": endpoint.CreatedAt,
 		"declared_zdr": endpoint.DeclaredZDR, "declared_region": endpoint.DeclaredRegion,
-	}})
+	}
 }
 
 func (s *stubPrivateEndpoints) checkCreateCount(want int) resource.TestCheckFunc {
@@ -273,4 +299,40 @@ func TestStubPrivateEndpointLifecycle(t *testing.T) {
 			},
 		},
 	})
+}
+
+func TestStubPrivateEndpointFailedActivationDeletesRetainedDraft(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	config := strings.Replace(privateEndpointConfig(srv.URL, "gpt-4o-prod", "0.000002"), privateEndpointWorkspaceID, privateEndpointNoByokWorkspaceID, 1)
+	failedApply := resource.TestStep{Config: config, ExpectError: regexp.MustCompile(`Got an unexpected response code 422`)}
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps:                    []resource.TestStep{failedApply, failedApply},
+	})
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if len(api.creates) != 2 || len(api.endpoints) != 0 {
+		t.Fatalf("creates=%d remaining endpoints=%d, want 2 creates and no stranded drafts", len(api.creates), len(api.endpoints))
+	}
+	for _, query := range api.deletes {
+		if query != "draft_only=true" {
+			t.Fatalf("cleanup delete query = %q, want draft_only=true", query)
+		}
+	}
+}
+
+func TestStubPrivateEndpointRejectsPartialPricing(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	config := strings.Replace(privateEndpointConfig(srv.URL, "gpt-4o-prod", "0.000002"), `completion = "0.000008"`, "", 1)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config, ExpectError: regexp.MustCompile(`pricing.completion: value must be configured`)},
+		},
+	})
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if len(api.creates) != 0 {
+		t.Fatalf("server saw %d creates for an invalid pricing block, want 0", len(api.creates))
+	}
 }

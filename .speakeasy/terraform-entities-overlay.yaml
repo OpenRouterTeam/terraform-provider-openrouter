@@ -556,3 +556,18 @@ actions:
     remove: true
   - target: $["components"]["schemas"]["ObservabilityWebhookDestination"]["properties"]["config"]["properties"]["method"]["default"]
     remove: true
+  - target: $["paths"]["/private-endpoints"]["post"]
+    update:
+      x-speakeasy-retries:
+        strategy: 'backoff'
+        backoff:
+          initialInterval: 500
+          maxInterval: 60000
+          maxElapsedTime: 3600000
+          exponent: 1.5
+        statusCodes:
+          - '429'
+        retryConnectionErrors: false
+  - target: $["paths"]["/private-endpoints/{id}"]["delete"]["parameters"][?(@.name == "draft_only")]
+    update:
+      example: 'false'

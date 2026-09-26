@@ -42364,6 +42364,16 @@ paths:
         - 'Private Endpoints'
       x-speakeasy-name-override: 'create'
       x-speakeasy-entity-operation: PrivateEndpoint#create
+      x-speakeasy-retries:
+        strategy: 'backoff'
+        backoff:
+          initialInterval: 500
+          maxInterval: 60000
+          maxElapsedTime: 3600000
+          exponent: 1.5
+        statusCodes:
+          - '429'
+        retryConnectionErrors: false
   /private-endpoints/{id}:
     delete:
       description: 'Delete a private endpoint and stop routing to it. Pass `draft_only=true` to refuse (409) when the endpoint has been activated. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -42388,6 +42398,7 @@ paths:
               - 'true'
               - 'false'
             type: 'string'
+          example: 'false'
       responses:
         '200':
           content:

@@ -377,7 +377,7 @@ func (s *PrivateEndpoints) Create(ctx context.Context, request shared.CreatePriv
 					Exponent:        1.5,
 					MaxElapsedTime:  3600000,
 				},
-				RetryConnectionErrors: true,
+				RetryConnectionErrors: false,
 			}
 		}
 	}
@@ -387,7 +387,7 @@ func (s *PrivateEndpoints) Create(ctx context.Context, request shared.CreatePriv
 		httpRes, err = utils.Retry(ctx, utils.Retries{
 			Config: retryConfig,
 			StatusCodes: []string{
-				"5XX",
+				"429",
 			},
 		}, func() (*http.Response, error) {
 			if req.Body != nil && req.Body != http.NoBody && req.GetBody != nil {

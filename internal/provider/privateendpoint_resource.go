@@ -271,6 +271,11 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
 		return
 	}
+	if res.StatusCode != 201 {
+		if draftID := retainedPrivateEndpointDraftID(res); draftID != "" {
+			resp.Diagnostics.Append(deleteRetainedPrivateEndpointDraft(ctx, r.client, draftID)...)
+		}
+	}
 	if res.StatusCode == 409 {
 		resp.Diagnostics.AddError(
 			"Resource Already Exists",
