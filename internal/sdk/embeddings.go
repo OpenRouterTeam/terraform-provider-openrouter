@@ -567,7 +567,6 @@ func (s *Embeddings) ListModels(ctx context.Context, request operations.ListEmbe
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -737,7 +736,7 @@ func (s *Embeddings) ListModels(ctx context.Context, request operations.ListEmbe
 		request.Offset = &nOS
 
 		return s.ListModels(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)

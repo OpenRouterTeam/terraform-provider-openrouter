@@ -44,14 +44,7 @@ func CreateCreatePrivateEndpointBadGatewayResponseBodyCreatePrivateEndpointValid
 	}
 }
 
-func (u *CreatePrivateEndpointBadGatewayResponseBody) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = CreatePrivateEndpointBadGatewayResponseBody{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *CreatePrivateEndpointBadGatewayResponseBody) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -141,14 +134,7 @@ func CreateCreatePrivateEndpointInternalServerErrorResponseBodyCreatePrivateEndp
 	}
 }
 
-func (u *CreatePrivateEndpointInternalServerErrorResponseBody) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = CreatePrivateEndpointInternalServerErrorResponseBody{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *CreatePrivateEndpointInternalServerErrorResponseBody) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -238,14 +224,7 @@ func CreateCreatePrivateEndpointUnprocessableEntityResponseBodyCreatePrivateEndp
 	}
 }
 
-func (u *CreatePrivateEndpointUnprocessableEntityResponseBody) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = CreatePrivateEndpointUnprocessableEntityResponseBody{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *CreatePrivateEndpointUnprocessableEntityResponseBody) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -335,14 +314,7 @@ func CreateCreatePrivateEndpointConflictResponseBodyCreatePrivateEndpointValidat
 	}
 }
 
-func (u *CreatePrivateEndpointConflictResponseBody) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = CreatePrivateEndpointConflictResponseBody{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *CreatePrivateEndpointConflictResponseBody) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -432,14 +404,7 @@ func CreateCreatePrivateEndpointNotFoundResponseBodyCreatePrivateEndpointValidat
 	}
 }
 
-func (u *CreatePrivateEndpointNotFoundResponseBody) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = CreatePrivateEndpointNotFoundResponseBody{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *CreatePrivateEndpointNotFoundResponseBody) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

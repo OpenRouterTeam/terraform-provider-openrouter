@@ -76,14 +76,7 @@ func CreateChatMessagesUser(user ChatUserMessage) ChatMessages {
 	}
 }
 
-func (u *ChatMessages) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ChatMessages{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ChatMessages) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Role string `json:"role"`

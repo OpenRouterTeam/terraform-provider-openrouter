@@ -90,14 +90,7 @@ func CreateChatContentItemsVideoURL(videoURL ChatContentVideo) ChatContentItems 
 	}
 }
 
-func (u *ChatContentItems) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ChatContentItems{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ChatContentItems) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

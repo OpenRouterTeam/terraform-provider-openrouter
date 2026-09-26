@@ -76,7 +76,6 @@ func (s *Files) List(ctx context.Context, request operations.ListFilesRequest, o
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -258,7 +257,7 @@ func (s *Files) List(ctx context.Context, request operations.ListFilesRequest, o
 		request.Cursor = &nCVal
 
 		return s.List(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)

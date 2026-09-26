@@ -54,14 +54,7 @@ func CreateCapabilityDescriptorRange(rangeT RangeCapability) CapabilityDescripto
 	}
 }
 
-func (u *CapabilityDescriptor) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = CapabilityDescriptor{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *CapabilityDescriptor) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

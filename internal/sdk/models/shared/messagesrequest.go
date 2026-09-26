@@ -221,14 +221,7 @@ func CreateKeepKeepEnum(keepEnum KeepEnum) Keep {
 	}
 }
 
-func (u *Keep) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Keep{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Keep) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -363,14 +356,7 @@ func CreateClearToolInputsArrayOfStr(arrayOfStr []string) ClearToolInputs {
 	}
 }
 
-func (u *ClearToolInputs) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ClearToolInputs{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ClearToolInputs) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -459,14 +445,7 @@ func CreateTriggerToolUses(toolUses AnthropicToolUsesTrigger) Trigger {
 	}
 }
 
-func (u *Trigger) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Trigger{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Trigger) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -633,14 +612,7 @@ func CreateEditCompact20260112(compact20260112 EditCompact20260112) Edit {
 	}
 }
 
-func (u *Edit) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Edit{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Edit) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -864,14 +836,7 @@ func CreateMessagesRequestPluginWebFetch(webFetch WebFetchPlugin) MessagesReques
 	}
 }
 
-func (u *MessagesRequestPlugin) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = MessagesRequestPlugin{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *MessagesRequestPlugin) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		ID string `json:"id"`
@@ -1094,14 +1059,7 @@ func CreateSystemArrayOfAnthropicTextBlockParam(arrayOfAnthropicTextBlockParam [
 	}
 }
 
-func (u *System) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = System{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *System) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -1301,14 +1259,7 @@ func CreateThinkingAdaptive(adaptive ThinkingAdaptive) Thinking {
 	}
 }
 
-func (u *Thinking) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Thinking{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Thinking) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -1534,14 +1485,7 @@ func CreateToolChoiceTool(tool ToolChoiceTool) ToolChoice {
 	}
 }
 
-func (u *ToolChoice) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ToolChoice{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ToolChoice) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -2525,14 +2469,7 @@ func CreateMessagesRequestToolUnionToolSearchServerTool(toolSearchServerTool Too
 	}
 }
 
-func (u *MessagesRequestToolUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = MessagesRequestToolUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *MessagesRequestToolUnion) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

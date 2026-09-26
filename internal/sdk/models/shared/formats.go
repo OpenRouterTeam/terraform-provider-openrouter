@@ -54,14 +54,7 @@ func CreateFormatsJSONSchema(jsonSchema FormatJSONSchemaConfig) Formats {
 	}
 }
 
-func (u *Formats) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Formats{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Formats) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

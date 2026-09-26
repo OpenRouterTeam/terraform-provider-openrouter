@@ -64,14 +64,7 @@ func CreateAnthropicDocumentBlockParamContent1Text(text AnthropicTextBlockParam)
 	}
 }
 
-func (u *AnthropicDocumentBlockParamContent1) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = AnthropicDocumentBlockParamContent1{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *AnthropicDocumentBlockParamContent1) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -150,14 +143,7 @@ func CreateAnthropicDocumentBlockParamContent2ArrayOfAnthropicDocumentBlockParam
 	}
 }
 
-func (u *AnthropicDocumentBlockParamContent2) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = AnthropicDocumentBlockParamContent2{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *AnthropicDocumentBlockParamContent2) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -307,14 +293,7 @@ func CreateAnthropicDocumentBlockParamSourceUnionFile(file AnthropicFileDocument
 	}
 }
 
-func (u *AnthropicDocumentBlockParamSourceUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = AnthropicDocumentBlockParamSourceUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *AnthropicDocumentBlockParamSourceUnion) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

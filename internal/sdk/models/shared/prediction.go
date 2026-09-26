@@ -42,14 +42,7 @@ func CreatePredictionContentArrayOfPredictionContentText(arrayOfPredictionConten
 	}
 }
 
-func (u *PredictionContent) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = PredictionContent{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *PredictionContent) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

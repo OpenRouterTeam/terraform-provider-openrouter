@@ -54,14 +54,7 @@ func CreateApplyPatchCallOperationUpdateFile(updateFile ApplyPatchUpdateFileOper
 	}
 }
 
-func (u *ApplyPatchCallOperation) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ApplyPatchCallOperation{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ApplyPatchCallOperation) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

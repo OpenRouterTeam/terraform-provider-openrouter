@@ -53,14 +53,7 @@ func CreateLegendArrayOfAny(arrayOfAny []any) Legend {
 	}
 }
 
-func (u *Legend) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Legend{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Legend) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

@@ -124,14 +124,7 @@ func CreateFormatGrammar(grammar FormatGrammar) Format {
 	}
 }
 
-func (u *Format) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Format{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Format) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

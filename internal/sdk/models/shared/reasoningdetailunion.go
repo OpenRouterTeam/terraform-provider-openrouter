@@ -65,14 +65,7 @@ func CreateReasoningDetailUnionReasoningText(reasoningText ReasoningDetailText) 
 	}
 }
 
-func (u *ReasoningDetailUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ReasoningDetailUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ReasoningDetailUnion) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

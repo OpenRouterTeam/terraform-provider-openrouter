@@ -86,14 +86,7 @@ func CreateValueClassifierFiltersNumber(number float64) ValueClassifierFilters {
 	}
 }
 
-func (u *ValueClassifierFilters) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ValueClassifierFilters{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ValueClassifierFilters) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -194,14 +187,7 @@ func CreateClassifierFiltersValueArrayOfValueClassifierFilters(arrayOfValueClass
 	}
 }
 
-func (u *ClassifierFiltersValue) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ClassifierFiltersValue{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ClassifierFiltersValue) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -356,14 +342,7 @@ func CreateValue2Number(number float64) Value2 {
 	}
 }
 
-func (u *Value2) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Value2{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Value2) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -464,14 +443,7 @@ func CreateValue1ArrayOfValue2(arrayOfValue2 []Value2) Value1 {
 	}
 }
 
-func (u *Value1) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Value1{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Value1) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

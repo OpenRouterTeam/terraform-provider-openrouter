@@ -74,7 +74,6 @@ func (s *Guardrails) List(ctx context.Context, request operations.ListGuardrails
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -244,7 +243,7 @@ func (s *Guardrails) List(ctx context.Context, request operations.ListGuardrails
 		request.Offset = &nOS
 
 		return s.List(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)
@@ -1535,7 +1534,6 @@ func (s *Guardrails) ListKeyAssignments(ctx context.Context, request operations.
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -1705,7 +1703,7 @@ func (s *Guardrails) ListKeyAssignments(ctx context.Context, request operations.
 		request.Offset = &nOS
 
 		return s.ListKeyAssignments(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)
@@ -2449,7 +2447,6 @@ func (s *Guardrails) ListMemberAssignmentsByGuardrail(ctx context.Context, reque
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -2619,7 +2616,7 @@ func (s *Guardrails) ListMemberAssignmentsByGuardrail(ctx context.Context, reque
 		request.Offset = &nOS
 
 		return s.ListMemberAssignmentsByGuardrail(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)
@@ -3342,7 +3339,6 @@ func (s *Guardrails) ListAPIKeyAssignments(ctx context.Context, request operatio
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -3512,7 +3508,7 @@ func (s *Guardrails) ListAPIKeyAssignments(ctx context.Context, request operatio
 		request.Offset = &nOS
 
 		return s.ListAPIKeyAssignments(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)
@@ -3636,7 +3632,6 @@ func (s *Guardrails) ListMemberAssignments(ctx context.Context, request operatio
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -3806,7 +3801,7 @@ func (s *Guardrails) ListMemberAssignments(ctx context.Context, request operatio
 		request.Offset = &nOS
 
 		return s.ListMemberAssignments(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)

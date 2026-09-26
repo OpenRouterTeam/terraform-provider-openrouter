@@ -54,14 +54,7 @@ func CreateAnswersScore(score DecisionsScoreAnswer) Answers {
 	}
 }
 
-func (u *Answers) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Answers{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Answers) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

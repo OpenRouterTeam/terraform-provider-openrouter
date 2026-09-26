@@ -152,14 +152,7 @@ func CreateEasyInputMessageContentUnion1InputVideo(inputVideo InputVideo) EasyIn
 	}
 }
 
-func (u *EasyInputMessageContentUnion1) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = EasyInputMessageContentUnion1{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *EasyInputMessageContentUnion1) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -277,14 +270,7 @@ func CreateEasyInputMessageContentUnion2Str(str string) EasyInputMessageContentU
 	}
 }
 
-func (u *EasyInputMessageContentUnion2) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = EasyInputMessageContentUnion2{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *EasyInputMessageContentUnion2) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -420,14 +406,7 @@ func CreateEasyInputMessagePhaseUnionEasyInputMessagePhaseFinalAnswer(easyInputM
 	}
 }
 
-func (u *EasyInputMessagePhaseUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = EasyInputMessagePhaseUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *EasyInputMessagePhaseUnion) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -630,14 +609,7 @@ func CreateEasyInputMessageRoleUnionEasyInputMessageRoleDeveloper(easyInputMessa
 	}
 }
 
-func (u *EasyInputMessageRoleUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = EasyInputMessageRoleUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *EasyInputMessageRoleUnion) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

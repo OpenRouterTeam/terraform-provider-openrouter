@@ -42,14 +42,7 @@ func CreateChatAssistantMessageContentArrayOfChatContentItems(arrayOfChatContent
 	}
 }
 
-func (u *ChatAssistantMessageContent) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ChatAssistantMessageContent{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ChatAssistantMessageContent) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

@@ -52,14 +52,7 @@ func CreateImageGenerationServerToolConfigUnionArrayOfAny(arrayOfAny []any) Imag
 	}
 }
 
-func (u *ImageGenerationServerToolConfigUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ImageGenerationServerToolConfigUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ImageGenerationServerToolConfigUnion) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

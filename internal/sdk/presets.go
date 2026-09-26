@@ -76,7 +76,6 @@ func (s *Presets) List(ctx context.Context, request operations.ListPresetsReques
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -246,7 +245,7 @@ func (s *Presets) List(ctx context.Context, request operations.ListPresetsReques
 		request.Offset = &nOS
 
 		return s.List(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)
@@ -1680,7 +1679,6 @@ func (s *Presets) ListVersions(ctx context.Context, request operations.ListPrese
 	if timeout == nil {
 		timeout = s.sdkConfiguration.Timeout
 	}
-	paginationCtx := ctx
 
 	if timeout != nil {
 		var cancel context.CancelFunc
@@ -1850,7 +1848,7 @@ func (s *Presets) ListVersions(ctx context.Context, request operations.ListPrese
 		request.Offset = &nOS
 
 		return s.ListVersions(
-			paginationCtx,
+			ctx,
 			request,
 			opts...,
 		)

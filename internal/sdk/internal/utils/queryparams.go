@@ -11,8 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"sort"
-	"strings"
 	"time"
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/optionalnullable"
@@ -26,58 +24,25 @@ func PopulateQueryParams(_ context.Context, req *http.Request, queryParams inter
 	}
 
 	values := url.Values{}
-	allowReserved := map[string][]bool{}
 
-	globalsAlreadyPopulated, err := populateQueryParams(queryParams, globals, values, []string{}, allowEmptyValue, allowReserved)
+	globalsAlreadyPopulated, err := populateQueryParams(queryParams, globals, values, []string{}, allowEmptyValue)
 	if err != nil {
 		return err
 	}
 
 	if globals != nil {
-		_, err = populateQueryParams(globals, nil, values, globalsAlreadyPopulated, allowEmptyValue, allowReserved)
+		_, err = populateQueryParams(globals, nil, values, globalsAlreadyPopulated, allowEmptyValue)
 		if err != nil {
 			return err
 		}
 	}
 
-	req.URL.RawQuery = encodeQueryValues(values, allowReserved)
+	req.URL.RawQuery = values.Encode()
 
 	return nil
 }
 
-func encodeQueryValues(values url.Values, allowReserved map[string][]bool) string {
-	keys := make([]string, 0, len(values))
-	for k := range values {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	var buf strings.Builder
-	for _, k := range keys {
-		keyEscaped := url.QueryEscape(k)
-		for i, v := range values[k] {
-			if buf.Len() > 0 {
-				buf.WriteByte('&')
-			}
-			buf.WriteString(keyEscaped)
-			buf.WriteByte('=')
-			reserved := i < len(allowReserved[k]) && allowReserved[k][i]
-			if reserved {
-				buf.WriteString(escapeExceptReserved(v))
-			} else {
-				buf.WriteString(url.QueryEscape(v))
-			}
-		}
-	}
-	return buf.String()
-}
-
-func addQueryValue(values url.Values, allowReserved map[string][]bool, key, value string, reserved bool) {
-	values.Add(key, value)
-	allowReserved[key] = append(allowReserved[key], reserved)
-}
-
-func populateQueryParams(queryParams interface{}, globals interface{}, values url.Values, skipFields []string, allowEmptyValue map[string]struct{}, allowReserved map[string][]bool) ([]string, error) {
+func populateQueryParams(queryParams interface{}, globals interface{}, values url.Values, skipFields []string, allowEmptyValue map[string]struct{}) ([]string, error) {
 	queryParamsVal := reflect.ValueOf(queryParams)
 	if queryParamsVal.Kind() == reflect.Pointer && queryParamsVal.IsNil() {
 		return nil, nil
@@ -105,7 +70,7 @@ func populateQueryParams(queryParams interface{}, globals interface{}, values ur
 
 		constValue := parseConstTag(fieldType)
 		if constValue != nil {
-			addQueryValue(values, allowReserved, qpTag.ParamName, *constValue, qpTag.AllowReserved)
+			values.Add(qpTag.ParamName, *constValue)
 			continue
 		}
 
@@ -125,7 +90,7 @@ func populateQueryParams(queryParams interface{}, globals interface{}, values ur
 				return nil, err
 			}
 			for k, v := range vals {
-				addQueryValue(values, allowReserved, k, v, qpTag.AllowReserved)
+				values.Add(k, v)
 			}
 		} else {
 			switch qpTag.Style {
@@ -133,21 +98,21 @@ func populateQueryParams(queryParams interface{}, globals interface{}, values ur
 				vals := populateDeepObjectParams(qpTag, fieldType.Type, valType)
 				for k, v := range vals {
 					for _, vv := range v {
-						addQueryValue(values, allowReserved, k, vv, qpTag.AllowReserved)
+						values.Add(k, vv)
 					}
 				}
 			case "form":
 				vals := populateFormParams(qpTag, fieldType.Type, valType, ",", defaultValue, allowEmptyValue)
 				for k, v := range vals {
 					for _, vv := range v {
-						addQueryValue(values, allowReserved, k, vv, qpTag.AllowReserved)
+						values.Add(k, vv)
 					}
 				}
 			case "pipeDelimited":
 				vals := populateFormParams(qpTag, fieldType.Type, valType, "|", defaultValue, allowEmptyValue)
 				for k, v := range vals {
 					for _, vv := range v {
-						addQueryValue(values, allowReserved, k, vv, qpTag.AllowReserved)
+						values.Add(k, vv)
 					}
 				}
 			default:
@@ -197,10 +162,9 @@ func populateDeepObjectParams(tag *paramTag, objType reflect.Type, objValue refl
 	case reflect.Map:
 		// check if optionalnullable.OptionalNullable[T]
 		if nullableValue, ok := optionalnullable.AsOptionalNullable(objValue); ok {
-			// Serialize the wrapped value using the rules for its own type
+			// Handle optionalnullable.OptionalNullable[T] using GetUntyped method
 			if value, isSet := nullableValue.GetUntyped(); isSet && value != nil {
-				innerValue := reflect.ValueOf(value)
-				return populateDeepObjectParams(tag, innerValue.Type(), innerValue)
+				values.Add(tag.ParamName, valToString(value))
 			}
 			// If not set or explicitly null, skip adding to values
 			return values
@@ -212,45 +176,6 @@ func populateDeepObjectParams(tag *paramTag, objType reflect.Type, objValue refl
 	}
 
 	return values
-}
-
-func populateDeepObjectParamsValue(qsValues url.Values, scope string, value reflect.Value) {
-	if value.Kind() == reflect.Pointer {
-		if value.IsNil() {
-			return
-		}
-
-		value = value.Elem()
-	}
-
-	if nullableValue, ok := optionalnullable.AsOptionalNullable(value); ok {
-		inner, isSet := nullableValue.GetUntyped()
-		if !isSet || inner == nil {
-			return
-		}
-
-		populateDeepObjectParamsValue(qsValues, scope, reflect.ValueOf(inner))
-
-		return
-	}
-
-	switch value.Kind() {
-	case reflect.Array, reflect.Slice:
-		populateDeepObjectParamsArray(qsValues, scope, value)
-	case reflect.Map:
-		populateDeepObjectParamsMap(qsValues, scope, value)
-	case reflect.Struct:
-		switch value.Type() {
-		case reflect.TypeOf(big.Int{}), reflect.TypeOf(time.Time{}), reflect.TypeOf(types.Date{}):
-			qsValues.Add(scope, valToString(value.Interface()))
-
-			return
-		}
-
-		populateDeepObjectParamsStruct(qsValues, scope, value)
-	default:
-		qsValues.Add(scope, valToString(value.Interface()))
-	}
 }
 
 func populateDeepObjectParamsArray(qsValues url.Values, priorScope string, value reflect.Value) {
@@ -272,8 +197,16 @@ func populateDeepObjectParamsMap(qsValues url.Values, priorScope string, mapValu
 
 	for iter.Next() {
 		scope := priorScope + "[" + iter.Key().String() + "]"
+		iterValue := iter.Value()
 
-		populateDeepObjectParamsValue(qsValues, scope, iter.Value())
+		switch iterValue.Kind() {
+		case reflect.Array, reflect.Slice:
+			populateDeepObjectParamsArray(qsValues, scope, iterValue)
+		case reflect.Map:
+			populateDeepObjectParamsMap(qsValues, scope, iterValue)
+		default:
+			qsValues.Add(scope, valToString(iterValue.Interface()))
+		}
 	}
 }
 
@@ -292,6 +225,10 @@ func populateDeepObjectParamsStruct(qsValues url.Values, priorScope string, stru
 			continue
 		}
 
+		if fieldValue.Kind() == reflect.Pointer {
+			fieldValue = fieldValue.Elem()
+		}
+
 		qpTag := parseQueryParamTag(field)
 
 		if qpTag == nil {
@@ -304,7 +241,23 @@ func populateDeepObjectParamsStruct(qsValues url.Values, priorScope string, stru
 			scope = priorScope + "[" + qpTag.ParamName + "]"
 		}
 
-		populateDeepObjectParamsValue(qsValues, scope, fieldValue)
+		switch fieldValue.Kind() {
+		case reflect.Array, reflect.Slice:
+			populateDeepObjectParamsArray(qsValues, scope, fieldValue)
+		case reflect.Map:
+			populateDeepObjectParamsMap(qsValues, scope, fieldValue)
+		case reflect.Struct:
+			switch fieldValue.Type() {
+			case reflect.TypeOf(big.Int{}), reflect.TypeOf(time.Time{}), reflect.TypeOf(types.Date{}):
+				qsValues.Add(scope, valToString(fieldValue.Interface()))
+
+				continue
+			}
+
+			populateDeepObjectParamsStruct(qsValues, scope, fieldValue)
+		default:
+			qsValues.Add(scope, valToString(fieldValue.Interface()))
+		}
 	}
 }
 
@@ -331,7 +284,6 @@ type paramTag struct {
 	Explode       bool
 	ParamName     string
 	Serialization string
-	AllowReserved bool
 
 	// Inline is a special case for union/oneOf. When a wrapper struct type is
 	// used, each union/oneOf value field should be inlined (e.g. not appended

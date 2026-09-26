@@ -63,14 +63,7 @@ func CreateFileResponseOpenrouter(openrouter OpenRouterFile) FileResponse {
 	}
 }
 
-func (u *FileResponse) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = FileResponse{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *FileResponse) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Shape string `json:"_shape"`

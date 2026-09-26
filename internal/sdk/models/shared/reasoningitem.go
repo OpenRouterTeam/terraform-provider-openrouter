@@ -122,14 +122,7 @@ func CreateReasoningItemStatusUnionReasoningItemStatusInProgress(reasoningItemSt
 	}
 }
 
-func (u *ReasoningItemStatusUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ReasoningItemStatusUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ReasoningItemStatusUnion) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

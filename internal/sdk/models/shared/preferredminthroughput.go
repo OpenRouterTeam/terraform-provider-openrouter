@@ -42,14 +42,7 @@ func CreatePreferredMinThroughputPercentileThroughputCutoffs(percentileThroughpu
 	}
 }
 
-func (u *PreferredMinThroughput) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = PreferredMinThroughput{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *PreferredMinThroughput) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

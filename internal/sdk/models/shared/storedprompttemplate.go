@@ -63,14 +63,7 @@ func CreateVariablesInputFile(inputFile InputFile) Variables {
 	}
 }
 
-func (u *Variables) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Variables{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Variables) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

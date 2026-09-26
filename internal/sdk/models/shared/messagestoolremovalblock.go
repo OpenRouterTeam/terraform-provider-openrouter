@@ -145,14 +145,7 @@ func CreateMessagesToolRemovalBlockToolUnionMcpToolsetReference(mcpToolsetRefere
 	}
 }
 
-func (u *MessagesToolRemovalBlockToolUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = MessagesToolRemovalBlockToolUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *MessagesToolRemovalBlockToolUnion) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

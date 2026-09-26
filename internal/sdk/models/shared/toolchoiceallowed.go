@@ -88,14 +88,7 @@ func CreateModeModeRequired(modeRequired ModeRequired) Mode {
 	}
 }
 
-func (u *Mode) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Mode{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Mode) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

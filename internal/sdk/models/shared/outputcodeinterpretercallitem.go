@@ -53,14 +53,7 @@ func CreateOutputCodeInterpreterCallItemOutputLogs(logs CodeInterpreterLogsOutpu
 	}
 }
 
-func (u *OutputCodeInterpreterCallItemOutput) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = OutputCodeInterpreterCallItemOutput{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *OutputCodeInterpreterCallItemOutput) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

@@ -5,119 +5,12 @@ package optionalnullable
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
-	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
-
-func msgSuffix(msgAndArgs ...any) string {
-	if len(msgAndArgs) == 0 {
-		return ""
-	}
-	if format, ok := msgAndArgs[0].(string); ok && len(msgAndArgs) > 1 {
-		return ": " + fmt.Sprintf(format, msgAndArgs[1:]...)
-	}
-	return ": " + fmt.Sprint(msgAndArgs...)
-}
-
-func isNil(v any) bool {
-	if v == nil {
-		return true
-	}
-	rv := reflect.ValueOf(v)
-	switch rv.Kind() {
-	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
-		return rv.IsNil()
-	}
-	return false
-}
-
-func containsElement(container, elem any) bool {
-	cv := reflect.ValueOf(container)
-	switch cv.Kind() {
-	case reflect.String:
-		return strings.Contains(cv.String(), reflect.ValueOf(elem).String())
-	case reflect.Map:
-		for _, k := range cv.MapKeys() {
-			if reflect.DeepEqual(k.Interface(), elem) {
-				return true
-			}
-		}
-		return false
-	case reflect.Slice, reflect.Array:
-		for i := 0; i < cv.Len(); i++ {
-			if reflect.DeepEqual(cv.Index(i).Interface(), elem) {
-				return true
-			}
-		}
-		return false
-	}
-	return false
-}
-
-func assertEqual(t *testing.T, want, got any, msgAndArgs ...any) {
-	t.Helper()
-	if !reflect.DeepEqual(want, got) {
-		t.Errorf("expected %#v, got %#v%s", want, got, msgSuffix(msgAndArgs...))
-	}
-}
-
-func assertTrue(t *testing.T, cond bool, msgAndArgs ...any) {
-	t.Helper()
-	if !cond {
-		t.Errorf("expected true%s", msgSuffix(msgAndArgs...))
-	}
-}
-
-func assertFalse(t *testing.T, cond bool, msgAndArgs ...any) {
-	t.Helper()
-	if cond {
-		t.Errorf("expected false%s", msgSuffix(msgAndArgs...))
-	}
-}
-
-func assertNil(t *testing.T, v any, msgAndArgs ...any) {
-	t.Helper()
-	if !isNil(v) {
-		t.Errorf("expected nil, got %#v%s", v, msgSuffix(msgAndArgs...))
-	}
-}
-
-func assertNotNil(t *testing.T, v any, msgAndArgs ...any) {
-	t.Helper()
-	if isNil(v) {
-		t.Errorf("expected non-nil value%s", msgSuffix(msgAndArgs...))
-	}
-}
-
-func assertError(t *testing.T, err error, msgAndArgs ...any) {
-	t.Helper()
-	if err == nil {
-		t.Errorf("expected an error%s", msgSuffix(msgAndArgs...))
-	}
-}
-
-func assertContains(t *testing.T, container, elem any, msgAndArgs ...any) {
-	t.Helper()
-	if !containsElement(container, elem) {
-		t.Errorf("%#v does not contain %#v%s", container, elem, msgSuffix(msgAndArgs...))
-	}
-}
-
-func assertNotContains(t *testing.T, container, elem any, msgAndArgs ...any) {
-	t.Helper()
-	if containsElement(container, elem) {
-		t.Errorf("%#v should not contain %#v%s", container, elem, msgSuffix(msgAndArgs...))
-	}
-}
-
-func mustNoError(t *testing.T, err error, msgAndArgs ...any) {
-	t.Helper()
-	if err != nil {
-		t.Fatalf("unexpected error: %v%s", err, msgSuffix(msgAndArgs...))
-	}
-}
 
 // Test helper function to create pointers from values
 func ptrFrom[T any](value T) *T {
@@ -144,60 +37,60 @@ func TestNewNullable(t *testing.T) {
 		t.Parallel()
 		nullable := From(ptrFrom("test"))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "test", got)
+		assert.True(t, ok)
+		assert.Equal(t, "test", got)
 	})
 
 	t.Run("with nil pointer", func(t *testing.T) {
 		t.Parallel()
 		nullable := From[string](nil)
 
-		assertTrue(t, nullable.IsSet())
-		assertTrue(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.True(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "", got) // zero value for string
+		assert.True(t, ok)
+		assert.Equal(t, "", got) // zero value for string
 	})
 
 	t.Run("with int value", func(t *testing.T) {
 		t.Parallel()
 		nullable := From(ptrFrom(42))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, 42, got)
+		assert.True(t, ok)
+		assert.Equal(t, 42, got)
 	})
 
 	t.Run("with slice value", func(t *testing.T) {
 		t.Parallel()
 		nullable := From(ptrFrom([]string{"a", "b", "c"}))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{"a", "b", "c"}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{"a", "b", "c"}, got)
 	})
 
 	t.Run("with empty slice", func(t *testing.T) {
 		t.Parallel()
 		nullable := From(ptrFrom([]string{}))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{}, got)
 	})
 
 	t.Run("with struct value", func(t *testing.T) {
@@ -205,15 +98,15 @@ func TestNewNullable(t *testing.T) {
 		val := TestStruct{Name: "John", Age: 30}
 		nullable := From(&val)
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 		v, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, val, v)
+		assert.True(t, ok)
+		assert.Equal(t, val, v)
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, TestStruct{Name: "John", Age: 30}, got)
+		assert.True(t, ok)
+		assert.Equal(t, TestStruct{Name: "John", Age: 30}, got)
 	})
 }
 
@@ -224,36 +117,36 @@ func TestNewNullableUnset(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[string]
 
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull()) // Unset is not null
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull()) // Unset is not null
 
 		got, ok := nullable.GetOrZero()
-		assertFalse(t, ok)
-		assertEqual(t, "", got) // zero value for string
+		assert.False(t, ok)
+		assert.Equal(t, "", got) // zero value for string
 	})
 
 	t.Run("int type", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[int]
 
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull()) // Unset is not null
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull()) // Unset is not null
 
 		got, ok := nullable.GetOrZero()
-		assertFalse(t, ok)
-		assertEqual(t, 0, got) // zero value for int
+		assert.False(t, ok)
+		assert.Equal(t, 0, got) // zero value for int
 	})
 
 	t.Run("slice type", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[[]string]
 
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull()) // Unset is not null
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull()) // Unset is not null
 
 		got, ok := nullable.GetOrZero()
-		assertFalse(t, ok)
-		assertNil(t, got) // zero value for slice is nil
+		assert.False(t, ok)
+		assert.Nil(t, got) // zero value for slice is nil
 	})
 }
 
@@ -263,19 +156,19 @@ func TestIsNull(t *testing.T) {
 	t.Run("with value", func(t *testing.T) {
 		t.Parallel()
 		nullable := From(ptrFrom("test"))
-		assertFalse(t, nullable.IsNull())
+		assert.False(t, nullable.IsNull())
 	})
 
 	t.Run("with nil pointer", func(t *testing.T) {
 		t.Parallel()
 		nullable := From[string](nil)
-		assertTrue(t, nullable.IsNull())
+		assert.True(t, nullable.IsNull())
 	})
 
 	t.Run("unset", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[string]
-		assertFalse(t, nullable.IsNull())
+		assert.False(t, nullable.IsNull())
 	})
 }
 
@@ -285,19 +178,19 @@ func TestIsSet(t *testing.T) {
 	t.Run("with value", func(t *testing.T) {
 		t.Parallel()
 		nullable := From(ptrFrom("test"))
-		assertTrue(t, nullable.IsSet())
+		assert.True(t, nullable.IsSet())
 	})
 
 	t.Run("with nil pointer", func(t *testing.T) {
 		t.Parallel()
 		nullable := From[string](nil)
-		assertTrue(t, nullable.IsSet())
+		assert.True(t, nullable.IsSet())
 	})
 
 	t.Run("unset", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[string]
-		assertFalse(t, nullable.IsSet())
+		assert.False(t, nullable.IsSet())
 	})
 }
 
@@ -309,8 +202,8 @@ func TestGet(t *testing.T) {
 		nullable := From(ptrFrom("test"))
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "test", got)
+		assert.True(t, ok)
+		assert.Equal(t, "test", got)
 	})
 
 	t.Run("with nil pointer", func(t *testing.T) {
@@ -318,8 +211,8 @@ func TestGet(t *testing.T) {
 		nullable := From[string](nil)
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "", got) // zero value
+		assert.True(t, ok)
+		assert.Equal(t, "", got) // zero value
 	})
 
 	t.Run("unset", func(t *testing.T) {
@@ -327,8 +220,8 @@ func TestGet(t *testing.T) {
 		var nullable OptionalNullable[string]
 
 		got, ok := nullable.GetOrZero()
-		assertFalse(t, ok)
-		assertEqual(t, "", got) // zero value
+		assert.False(t, ok)
+		assert.Equal(t, "", got) // zero value
 	})
 
 	t.Run("with slice value", func(t *testing.T) {
@@ -336,8 +229,8 @@ func TestGet(t *testing.T) {
 		nullable := From(ptrFrom([]string{"a", "b"}))
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{"a", "b"}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{"a", "b"}, got)
 	})
 
 	t.Run("with nil slice pointer", func(t *testing.T) {
@@ -345,8 +238,8 @@ func TestGet(t *testing.T) {
 		nullable := From[[]string](nil)
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertNil(t, got) // zero value for slice is nil
+		assert.True(t, ok)
+		assert.Nil(t, got) // zero value for slice is nil
 	})
 }
 
@@ -358,9 +251,9 @@ func TestPointer(t *testing.T) {
 		nullable := From(ptrFrom("test"))
 
 		ptr, ok := nullable.Get()
-		assertTrue(t, ok)
-		assertNotNil(t, ptr)
-		assertEqual(t, "test", *ptr)
+		assert.True(t, ok)
+		assert.NotNil(t, ptr)
+		assert.Equal(t, "test", *ptr)
 	})
 
 	t.Run("with nil pointer", func(t *testing.T) {
@@ -368,8 +261,8 @@ func TestPointer(t *testing.T) {
 		nullable := From[string](nil)
 
 		ptr, ok := nullable.Get()
-		assertTrue(t, ok)
-		assertNil(t, ptr)
+		assert.True(t, ok)
+		assert.Nil(t, ptr)
 	})
 
 	t.Run("unset", func(t *testing.T) {
@@ -377,8 +270,8 @@ func TestPointer(t *testing.T) {
 		var nullable OptionalNullable[string]
 
 		ptr, ok := nullable.Get()
-		assertFalse(t, ok)
-		assertNil(t, ptr)
+		assert.False(t, ok)
+		assert.Nil(t, ptr)
 	})
 }
 
@@ -390,18 +283,18 @@ func TestSet(t *testing.T) {
 		var nullable OptionalNullable[string]
 
 		// Initially unset
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull()) // Unset is not null
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull()) // Unset is not null
 
 		// Set a value
 		nullable.Set(ptrFrom("test"))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "test", got)
+		assert.True(t, ok)
+		assert.Equal(t, "test", got)
 	})
 
 	t.Run("set int value", func(t *testing.T) {
@@ -410,12 +303,12 @@ func TestSet(t *testing.T) {
 
 		nullable.Set(ptrFrom(42))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, 42, got)
+		assert.True(t, ok)
+		assert.Equal(t, 42, got)
 	})
 
 	t.Run("set slice value", func(t *testing.T) {
@@ -425,12 +318,12 @@ func TestSet(t *testing.T) {
 		slice := []string{"a", "b"}
 		nullable.Set(ptrFrom(slice))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{"a", "b"}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{"a", "b"}, got)
 	})
 
 	t.Run("set empty slice", func(t *testing.T) {
@@ -440,12 +333,12 @@ func TestSet(t *testing.T) {
 		slice := []string{}
 		nullable.Set(ptrFrom(slice))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{}, got)
 	})
 
 	t.Run("overwrite existing value", func(t *testing.T) {
@@ -454,15 +347,15 @@ func TestSet(t *testing.T) {
 
 		// Verify original value
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "original", got)
+		assert.True(t, ok)
+		assert.Equal(t, "original", got)
 
 		// Set new value
 		nullable.Set(ptrFrom("new"))
 
 		got, ok = nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "new", got)
+		assert.True(t, ok)
+		assert.Equal(t, "new", got)
 	})
 }
 
@@ -474,19 +367,19 @@ func TestUnset(t *testing.T) {
 		nullable := From(ptrFrom("test"))
 
 		// Initially set
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		// Unset
 		nullable.Unset()
 
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull()) // After unset is not null
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull()) // After unset is not null
 		// Value is now internal to the map implementation
 
 		got, ok := nullable.GetOrZero()
-		assertFalse(t, ok)
-		assertEqual(t, "", got) // zero value
+		assert.False(t, ok)
+		assert.Equal(t, "", got) // zero value
 	})
 
 	t.Run("unset from nil", func(t *testing.T) {
@@ -494,14 +387,14 @@ func TestUnset(t *testing.T) {
 		nullable := From[string](nil)
 
 		// Initially set to nil
-		assertTrue(t, nullable.IsSet())
-		assertTrue(t, nullable.IsNull()) // Set to nil should be null
+		assert.True(t, nullable.IsSet())
+		assert.True(t, nullable.IsNull()) // Set to nil should be null
 
 		// Unset
 		nullable.Unset()
 
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull()) // After unset is not null
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull()) // After unset is not null
 	})
 
 	t.Run("unset already unset", func(t *testing.T) {
@@ -509,13 +402,13 @@ func TestUnset(t *testing.T) {
 		var nullable OptionalNullable[string]
 
 		// Initially unset
-		assertFalse(t, nullable.IsSet())
+		assert.False(t, nullable.IsSet())
 
 		// Unset again
 		nullable.Unset()
 
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull()) // Empty map is not null
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull()) // Empty map is not null
 	})
 }
 
@@ -527,8 +420,8 @@ func TestMarshalJSON(t *testing.T) {
 		nullable := From(ptrFrom("test"))
 
 		data, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, `"test"`, string(data))
+		require.NoError(t, err)
+		assert.Equal(t, `"test"`, string(data))
 	})
 
 	t.Run("marshal int value", func(t *testing.T) {
@@ -536,8 +429,8 @@ func TestMarshalJSON(t *testing.T) {
 		nullable := From(ptrFrom(42))
 
 		data, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, `42`, string(data))
+		require.NoError(t, err)
+		assert.Equal(t, `42`, string(data))
 	})
 
 	t.Run("marshal nil value", func(t *testing.T) {
@@ -545,8 +438,8 @@ func TestMarshalJSON(t *testing.T) {
 		nullable := From[string](nil)
 
 		data, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, `null`, string(data))
+		require.NoError(t, err)
+		assert.Equal(t, `null`, string(data))
 	})
 
 	t.Run("marshal slice value", func(t *testing.T) {
@@ -554,8 +447,8 @@ func TestMarshalJSON(t *testing.T) {
 		nullable := From(ptrFrom([]string{"a", "b", "c"}))
 
 		data, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, `["a","b","c"]`, string(data))
+		require.NoError(t, err)
+		assert.Equal(t, `["a","b","c"]`, string(data))
 	})
 
 	t.Run("marshal empty slice", func(t *testing.T) {
@@ -563,8 +456,8 @@ func TestMarshalJSON(t *testing.T) {
 		nullable := From(ptrFrom([]string{}))
 
 		data, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, `[]`, string(data))
+		require.NoError(t, err)
+		assert.Equal(t, `[]`, string(data))
 	})
 
 	t.Run("marshal struct value", func(t *testing.T) {
@@ -572,8 +465,8 @@ func TestMarshalJSON(t *testing.T) {
 		nullable := From(ptrFrom(TestStruct{Name: "John", Age: 30}))
 
 		data, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, `{"name":"John","age":30}`, string(data))
+		require.NoError(t, err)
+		assert.Equal(t, `{"name":"John","age":30}`, string(data))
 	})
 
 	// Note: Unset values are not tested here because the current implementation
@@ -587,114 +480,114 @@ func TestUnmarshalJSON(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[string]
 		err := json.Unmarshal([]byte(`"test"`), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "test", got)
+		assert.True(t, ok)
+		assert.Equal(t, "test", got)
 	})
 
 	t.Run("unmarshal int value", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[int]
 		err := json.Unmarshal([]byte(`42`), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, 42, got)
+		assert.True(t, ok)
+		assert.Equal(t, 42, got)
 	})
 
 	t.Run("unmarshal null value", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[string]
 		err := json.Unmarshal([]byte(`null`), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertTrue(t, nullable.IsSet())
-		assertTrue(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.True(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "", got) // zero value
+		assert.True(t, ok)
+		assert.Equal(t, "", got) // zero value
 	})
 
 	t.Run("unmarshal slice value", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[[]string]
 		err := json.Unmarshal([]byte(`["a","b","c"]`), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{"a", "b", "c"}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{"a", "b", "c"}, got)
 	})
 
 	t.Run("unmarshal empty slice", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[[]string]
 		err := json.Unmarshal([]byte(`[]`), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{}, got)
 	})
 
 	t.Run("unmarshal struct value", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[TestStruct]
 		err := json.Unmarshal([]byte(`{"name":"John","age":30}`), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, TestStruct{Name: "John", Age: 30}, got)
+		assert.True(t, ok)
+		assert.Equal(t, TestStruct{Name: "John", Age: 30}, got)
 	})
 
 	t.Run("unmarshal invalid JSON", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[string]
 		err := json.Unmarshal([]byte(`invalid`), &nullable)
-		assertError(t, err)
+		assert.Error(t, err)
 
 		// Ensure the nullable remains unset after error
-		assertFalse(t, nullable.IsSet())
+		assert.False(t, nullable.IsSet())
 	})
 
 	t.Run("unmarshal invalid JSON for int", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[int]
 		err := json.Unmarshal([]byte(`"not_a_number"`), &nullable)
-		assertError(t, err)
+		assert.Error(t, err)
 
 		// Ensure the nullable remains unset after error
-		assertFalse(t, nullable.IsSet())
+		assert.False(t, nullable.IsSet())
 	})
 
 	t.Run("unmarshal malformed JSON", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[TestStruct]
 		err := json.Unmarshal([]byte(`{invalid json`), &nullable)
-		assertError(t, err)
+		assert.Error(t, err)
 
 		// Ensure the nullable remains unset after error
-		assertFalse(t, nullable.IsSet())
+		assert.False(t, nullable.IsSet())
 	})
 }
 
@@ -707,21 +600,21 @@ func TestJSONRoundTrip(t *testing.T) {
 
 		// Marshal
 		data, err := json.Marshal(nullable1)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Unmarshal
 		var nullable2 OptionalNullable[string]
 		err = json.Unmarshal(data, &nullable2)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Compare
-		assertEqual(t, nullable1.IsSet(), nullable2.IsSet())
-		assertEqual(t, nullable1.IsNull(), nullable2.IsNull())
+		assert.Equal(t, nullable1.IsSet(), nullable2.IsSet())
+		assert.Equal(t, nullable1.IsNull(), nullable2.IsNull())
 
 		got1, ok1 := nullable1.GetOrZero()
 		got2, ok2 := nullable2.GetOrZero()
-		assertEqual(t, ok1, ok2)
-		assertEqual(t, got1, got2)
+		assert.Equal(t, ok1, ok2)
+		assert.Equal(t, got1, got2)
 	})
 
 	t.Run("nil value round trip", func(t *testing.T) {
@@ -730,21 +623,21 @@ func TestJSONRoundTrip(t *testing.T) {
 
 		// Marshal
 		data, err := json.Marshal(nullable1)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Unmarshal
 		var nullable2 OptionalNullable[string]
 		err = json.Unmarshal(data, &nullable2)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Compare
-		assertEqual(t, nullable1.IsSet(), nullable2.IsSet())
-		assertEqual(t, nullable1.IsNull(), nullable2.IsNull())
+		assert.Equal(t, nullable1.IsSet(), nullable2.IsSet())
+		assert.Equal(t, nullable1.IsNull(), nullable2.IsNull())
 
 		got1, ok1 := nullable1.GetOrZero()
 		got2, ok2 := nullable2.GetOrZero()
-		assertEqual(t, ok1, ok2)
-		assertEqual(t, got1, got2)
+		assert.Equal(t, ok1, ok2)
+		assert.Equal(t, got1, got2)
 	})
 
 	t.Run("slice round trip", func(t *testing.T) {
@@ -753,21 +646,21 @@ func TestJSONRoundTrip(t *testing.T) {
 
 		// Marshal
 		data, err := json.Marshal(nullable1)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Unmarshal
 		var nullable2 OptionalNullable[[]string]
 		err = json.Unmarshal(data, &nullable2)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Compare
-		assertEqual(t, nullable1.IsSet(), nullable2.IsSet())
-		assertEqual(t, nullable1.IsNull(), nullable2.IsNull())
+		assert.Equal(t, nullable1.IsSet(), nullable2.IsSet())
+		assert.Equal(t, nullable1.IsNull(), nullable2.IsNull())
 
 		got1, ok1 := nullable1.GetOrZero()
 		got2, ok2 := nullable2.GetOrZero()
-		assertEqual(t, ok1, ok2)
-		assertEqual(t, got1, got2)
+		assert.Equal(t, ok1, ok2)
+		assert.Equal(t, got1, got2)
 	})
 }
 
@@ -781,19 +674,19 @@ func TestJSONToJSONRoundTrip(t *testing.T) {
 		// Unmarshal from JSON
 		var nullable OptionalNullable[string]
 		err := json.Unmarshal([]byte(originalJSON), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Verify state
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "hello world", got)
+		assert.True(t, ok)
+		assert.Equal(t, "hello world", got)
 
 		// Marshal back to JSON
 		resultJSON, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, originalJSON, string(resultJSON))
+		require.NoError(t, err)
+		assert.Equal(t, originalJSON, string(resultJSON))
 	})
 
 	t.Run("null value JSON round trip", func(t *testing.T) {
@@ -803,19 +696,19 @@ func TestJSONToJSONRoundTrip(t *testing.T) {
 		// Unmarshal from JSON
 		var nullable OptionalNullable[string]
 		err := json.Unmarshal([]byte(originalJSON), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Verify state
-		assertTrue(t, nullable.IsSet())
-		assertTrue(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.True(t, nullable.IsNull())
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "", got) // zero value
+		assert.True(t, ok)
+		assert.Equal(t, "", got) // zero value
 
 		// Marshal back to JSON
 		resultJSON, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, originalJSON, string(resultJSON))
+		require.NoError(t, err)
+		assert.Equal(t, originalJSON, string(resultJSON))
 	})
 
 	t.Run("int value JSON round trip", func(t *testing.T) {
@@ -825,19 +718,19 @@ func TestJSONToJSONRoundTrip(t *testing.T) {
 		// Unmarshal from JSON
 		var nullable OptionalNullable[int]
 		err := json.Unmarshal([]byte(originalJSON), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Verify state
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, 42, got)
+		assert.True(t, ok)
+		assert.Equal(t, 42, got)
 
 		// Marshal back to JSON
 		resultJSON, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, originalJSON, string(resultJSON))
+		require.NoError(t, err)
+		assert.Equal(t, originalJSON, string(resultJSON))
 	})
 
 	t.Run("slice value JSON round trip", func(t *testing.T) {
@@ -847,19 +740,19 @@ func TestJSONToJSONRoundTrip(t *testing.T) {
 		// Unmarshal from JSON
 		var nullable OptionalNullable[[]string]
 		err := json.Unmarshal([]byte(originalJSON), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Verify state
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{"a", "b", "c"}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{"a", "b", "c"}, got)
 
 		// Marshal back to JSON
 		resultJSON, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, originalJSON, string(resultJSON))
+		require.NoError(t, err)
+		assert.Equal(t, originalJSON, string(resultJSON))
 	})
 
 	t.Run("empty slice JSON round trip", func(t *testing.T) {
@@ -869,19 +762,19 @@ func TestJSONToJSONRoundTrip(t *testing.T) {
 		// Unmarshal from JSON
 		var nullable OptionalNullable[[]string]
 		err := json.Unmarshal([]byte(originalJSON), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Verify state
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{}, got)
+		assert.True(t, ok)
+		assert.Equal(t, []string{}, got)
 
 		// Marshal back to JSON
 		resultJSON, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, originalJSON, string(resultJSON))
+		require.NoError(t, err)
+		assert.Equal(t, originalJSON, string(resultJSON))
 	})
 
 	t.Run("struct value JSON round trip", func(t *testing.T) {
@@ -891,19 +784,19 @@ func TestJSONToJSONRoundTrip(t *testing.T) {
 		// Unmarshal from JSON
 		var nullable OptionalNullable[TestStruct]
 		err := json.Unmarshal([]byte(originalJSON), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Verify state
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, TestStruct{Name: "Alice", Age: 25}, got)
+		assert.True(t, ok)
+		assert.Equal(t, TestStruct{Name: "Alice", Age: 25}, got)
 
 		// Marshal back to JSON
 		resultJSON, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, originalJSON, string(resultJSON))
+		require.NoError(t, err)
+		assert.Equal(t, originalJSON, string(resultJSON))
 	})
 }
 
@@ -920,46 +813,46 @@ func TestContainerStates(t *testing.T) {
 		}
 
 		// Verify all fields are set and not null
-		assertTrue(t, container.StringField.IsSet())
-		assertFalse(t, container.StringField.IsNull())
-		assertTrue(t, container.IntField.IsSet())
-		assertFalse(t, container.IntField.IsNull())
-		assertTrue(t, container.SliceField.IsSet())
-		assertFalse(t, container.SliceField.IsNull())
-		assertTrue(t, container.StructField.IsSet())
-		assertFalse(t, container.StructField.IsNull())
+		assert.True(t, container.StringField.IsSet())
+		assert.False(t, container.StringField.IsNull())
+		assert.True(t, container.IntField.IsSet())
+		assert.False(t, container.IntField.IsNull())
+		assert.True(t, container.SliceField.IsSet())
+		assert.False(t, container.SliceField.IsNull())
+		assert.True(t, container.StructField.IsSet())
+		assert.False(t, container.StructField.IsNull())
 
 		// Verify values
 		stringVal, ok := container.StringField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "hello", stringVal)
+		assert.True(t, ok)
+		assert.Equal(t, "hello", stringVal)
 
 		intVal, ok := container.IntField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, 42, intVal)
+		assert.True(t, ok)
+		assert.Equal(t, 42, intVal)
 
 		sliceVal, ok := container.SliceField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{"a", "b"}, sliceVal)
+		assert.True(t, ok)
+		assert.Equal(t, []string{"a", "b"}, sliceVal)
 
 		structVal, ok := container.StructField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, TestStruct{Name: "John", Age: 30}, structVal)
+		assert.True(t, ok)
+		assert.Equal(t, TestStruct{Name: "John", Age: 30}, structVal)
 
 		// Test JSON serialization
 		data, err := json.Marshal(container)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		var result map[string]interface{}
 		err = json.Unmarshal(data, &result)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertEqual(t, "hello", result["string_field"])
-		assertEqual(t, float64(42), result["int_field"]) // JSON numbers are float64
-		assertEqual(t, []interface{}{"a", "b"}, result["slice_field"])
+		assert.Equal(t, "hello", result["string_field"])
+		assert.Equal(t, float64(42), result["int_field"]) // JSON numbers are float64
+		assert.Equal(t, []interface{}{"a", "b"}, result["slice_field"])
 		structResult := result["struct_field"].(map[string]interface{})
-		assertEqual(t, "John", structResult["name"])
-		assertEqual(t, float64(30), structResult["age"])
+		assert.Equal(t, "John", structResult["name"])
+		assert.Equal(t, float64(30), structResult["age"])
 	})
 
 	t.Run("all fields set to nil", func(t *testing.T) {
@@ -972,44 +865,44 @@ func TestContainerStates(t *testing.T) {
 		}
 
 		// Verify all fields are set but null
-		assertTrue(t, container.StringField.IsSet())
-		assertTrue(t, container.StringField.IsNull())
-		assertTrue(t, container.IntField.IsSet())
-		assertTrue(t, container.IntField.IsNull())
-		assertTrue(t, container.SliceField.IsSet())
-		assertTrue(t, container.SliceField.IsNull())
-		assertTrue(t, container.StructField.IsSet())
-		assertTrue(t, container.StructField.IsNull())
+		assert.True(t, container.StringField.IsSet())
+		assert.True(t, container.StringField.IsNull())
+		assert.True(t, container.IntField.IsSet())
+		assert.True(t, container.IntField.IsNull())
+		assert.True(t, container.SliceField.IsSet())
+		assert.True(t, container.SliceField.IsNull())
+		assert.True(t, container.StructField.IsSet())
+		assert.True(t, container.StructField.IsNull())
 
 		// Verify GetOrZero() behavior for nil values
 		stringVal, ok := container.StringField.GetOrZero()
-		assertTrue(t, ok)             // set to nil still returns true
-		assertEqual(t, "", stringVal) // zero value
+		assert.True(t, ok)             // set to nil still returns true
+		assert.Equal(t, "", stringVal) // zero value
 
 		intVal, ok := container.IntField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, 0, intVal) // zero value
+		assert.True(t, ok)
+		assert.Equal(t, 0, intVal) // zero value
 
 		sliceVal, ok := container.SliceField.GetOrZero()
-		assertTrue(t, ok)
-		assertNil(t, sliceVal) // zero value for slice is nil
+		assert.True(t, ok)
+		assert.Nil(t, sliceVal) // zero value for slice is nil
 
 		structVal, ok := container.StructField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, TestStruct{}, structVal) // zero value
+		assert.True(t, ok)
+		assert.Equal(t, TestStruct{}, structVal) // zero value
 
 		// Test JSON serialization - all should be null
 		data, err := json.Marshal(container)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		var result map[string]interface{}
 		err = json.Unmarshal(data, &result)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertNil(t, result["string_field"])
-		assertNil(t, result["int_field"])
-		assertNil(t, result["slice_field"])
-		assertNil(t, result["struct_field"])
+		assert.Nil(t, result["string_field"])
+		assert.Nil(t, result["int_field"])
+		assert.Nil(t, result["slice_field"])
+		assert.Nil(t, result["struct_field"])
 	})
 
 	t.Run("all fields unset", func(t *testing.T) {
@@ -1017,45 +910,45 @@ func TestContainerStates(t *testing.T) {
 		container := TestContainer{}
 
 		// Verify all fields are unset
-		assertFalse(t, container.StringField.IsSet())
-		assertFalse(t, container.StringField.IsNull()) // unset is not null in new implementation
-		assertFalse(t, container.IntField.IsSet())
-		assertFalse(t, container.IntField.IsNull())
-		assertFalse(t, container.SliceField.IsSet())
-		assertFalse(t, container.SliceField.IsNull())
-		assertFalse(t, container.StructField.IsSet())
-		assertFalse(t, container.StructField.IsNull())
+		assert.False(t, container.StringField.IsSet())
+		assert.False(t, container.StringField.IsNull()) // unset is not null in new implementation
+		assert.False(t, container.IntField.IsSet())
+		assert.False(t, container.IntField.IsNull())
+		assert.False(t, container.SliceField.IsSet())
+		assert.False(t, container.SliceField.IsNull())
+		assert.False(t, container.StructField.IsSet())
+		assert.False(t, container.StructField.IsNull())
 
 		// Verify GetOrZero() behavior for unset values
 		stringVal, ok := container.StringField.GetOrZero()
-		assertFalse(t, ok)            // unset returns false
-		assertEqual(t, "", stringVal) // zero value
+		assert.False(t, ok)            // unset returns false
+		assert.Equal(t, "", stringVal) // zero value
 
 		intVal, ok := container.IntField.GetOrZero()
-		assertFalse(t, ok)
-		assertEqual(t, 0, intVal) // zero value
+		assert.False(t, ok)
+		assert.Equal(t, 0, intVal) // zero value
 
 		sliceVal, ok := container.SliceField.GetOrZero()
-		assertFalse(t, ok)
-		assertNil(t, sliceVal) // zero value
+		assert.False(t, ok)
+		assert.Nil(t, sliceVal) // zero value
 
 		structVal, ok := container.StructField.GetOrZero()
-		assertFalse(t, ok)
-		assertEqual(t, TestStruct{}, structVal) // zero value
+		assert.False(t, ok)
+		assert.Equal(t, TestStruct{}, structVal) // zero value
 
 		// Test JSON serialization - unset fields should be omitted due to omitempty
 		data, err := json.Marshal(container)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		var result map[string]interface{}
 		err = json.Unmarshal(data, &result)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// With omitempty, unset fields should not appear in JSON
-		assertNotContains(t, result, "string_field")
-		assertNotContains(t, result, "int_field")
-		assertNotContains(t, result, "slice_field")
-		assertNotContains(t, result, "struct_field")
+		assert.NotContains(t, result, "string_field")
+		assert.NotContains(t, result, "int_field")
+		assert.NotContains(t, result, "slice_field")
+		assert.NotContains(t, result, "struct_field")
 	})
 
 	t.Run("slice field states: nil vs unset vs empty vs set", func(t *testing.T) {
@@ -1073,49 +966,49 @@ func TestContainerStates(t *testing.T) {
 		}
 
 		// Verify nil slice
-		assertTrue(t, nilSlice.SliceField.IsSet())
-		assertTrue(t, nilSlice.SliceField.IsNull())
+		assert.True(t, nilSlice.SliceField.IsSet())
+		assert.True(t, nilSlice.SliceField.IsNull())
 		val, ok := nilSlice.SliceField.GetOrZero()
-		assertTrue(t, ok)
-		assertNil(t, val)
+		assert.True(t, ok)
+		assert.Nil(t, val)
 
 		// Verify unset slice
-		assertFalse(t, unsetSlice.SliceField.IsSet())
-		assertFalse(t, unsetSlice.SliceField.IsNull()) // Unset is not null
+		assert.False(t, unsetSlice.SliceField.IsSet())
+		assert.False(t, unsetSlice.SliceField.IsNull()) // Unset is not null
 		val, ok = unsetSlice.SliceField.GetOrZero()
-		assertFalse(t, ok)
-		assertNil(t, val)
+		assert.False(t, ok)
+		assert.Nil(t, val)
 
 		// Verify empty slice
-		assertTrue(t, emptySlice.SliceField.IsSet())
-		assertFalse(t, emptySlice.SliceField.IsNull())
+		assert.True(t, emptySlice.SliceField.IsSet())
+		assert.False(t, emptySlice.SliceField.IsNull())
 		val, ok = emptySlice.SliceField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{}, val)
+		assert.True(t, ok)
+		assert.Equal(t, []string{}, val)
 
 		// Verify set slice
-		assertTrue(t, setSlice.SliceField.IsSet())
-		assertFalse(t, setSlice.SliceField.IsNull())
+		assert.True(t, setSlice.SliceField.IsSet())
+		assert.False(t, setSlice.SliceField.IsNull())
 		val, ok = setSlice.SliceField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, []string{"a", "b"}, val)
+		assert.True(t, ok)
+		assert.Equal(t, []string{"a", "b"}, val)
 
 		// Test JSON serialization for each state
 		nilData, err := json.Marshal(nilSlice)
-		mustNoError(t, err)
-		assertContains(t, string(nilData), `"slice_field":null`)
+		require.NoError(t, err)
+		assert.Contains(t, string(nilData), `"slice_field":null`)
 
 		unsetData, err := json.Marshal(unsetSlice)
-		mustNoError(t, err)
-		assertNotContains(t, string(unsetData), "slice_field") // omitted due to omitempty
+		require.NoError(t, err)
+		assert.NotContains(t, string(unsetData), "slice_field") // omitted due to omitempty
 
 		emptyData, err := json.Marshal(emptySlice)
-		mustNoError(t, err)
-		assertContains(t, string(emptyData), `"slice_field":[]`)
+		require.NoError(t, err)
+		assert.Contains(t, string(emptyData), `"slice_field":[]`)
 
 		setData, err := json.Marshal(setSlice)
-		mustNoError(t, err)
-		assertContains(t, string(setData), `"slice_field":["a","b"]`)
+		require.NoError(t, err)
+		assert.Contains(t, string(setData), `"slice_field":["a","b"]`)
 	})
 
 	t.Run("mixed states container", func(t *testing.T) {
@@ -1127,32 +1020,32 @@ func TestContainerStates(t *testing.T) {
 		}
 
 		// Verify states
-		assertTrue(t, container.StringField.IsSet())
-		assertFalse(t, container.StringField.IsNull())
+		assert.True(t, container.StringField.IsSet())
+		assert.False(t, container.StringField.IsNull())
 
-		assertTrue(t, container.IntField.IsSet())
-		assertTrue(t, container.IntField.IsNull())
+		assert.True(t, container.IntField.IsSet())
+		assert.True(t, container.IntField.IsNull())
 
-		assertFalse(t, container.SliceField.IsSet())
-		assertFalse(t, container.SliceField.IsNull()) // Unset is not null
+		assert.False(t, container.SliceField.IsSet())
+		assert.False(t, container.SliceField.IsNull()) // Unset is not null
 
-		assertTrue(t, container.StructField.IsSet())
-		assertFalse(t, container.StructField.IsNull())
+		assert.True(t, container.StructField.IsSet())
+		assert.False(t, container.StructField.IsNull())
 
 		// Test JSON serialization
 		data, err := json.Marshal(container)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		var result map[string]interface{}
 		err = json.Unmarshal(data, &result)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertEqual(t, "hello", result["string_field"])
-		assertNil(t, result["int_field"])
-		assertNotContains(t, result, "slice_field") // unset, so omitted
+		assert.Equal(t, "hello", result["string_field"])
+		assert.Nil(t, result["int_field"])
+		assert.NotContains(t, result, "slice_field") // unset, so omitted
 		structResult := result["struct_field"].(map[string]interface{})
-		assertEqual(t, "Alice", structResult["name"])
-		assertEqual(t, float64(25), structResult["age"])
+		assert.Equal(t, "Alice", structResult["name"])
+		assert.Equal(t, float64(25), structResult["age"])
 	})
 
 	t.Run("JSON unmarshaling preserves states", func(t *testing.T) {
@@ -1166,35 +1059,35 @@ func TestContainerStates(t *testing.T) {
 
 		var container TestContainer
 		err := json.Unmarshal([]byte(jsonData), &container)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// string_field: present with value
-		assertTrue(t, container.StringField.IsSet())
-		assertFalse(t, container.StringField.IsNull())
+		assert.True(t, container.StringField.IsSet())
+		assert.False(t, container.StringField.IsNull())
 		stringVal, ok := container.StringField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "test", stringVal)
+		assert.True(t, ok)
+		assert.Equal(t, "test", stringVal)
 
 		// int_field: present but null
-		assertTrue(t, container.IntField.IsSet())
-		assertTrue(t, container.IntField.IsNull())
+		assert.True(t, container.IntField.IsSet())
+		assert.True(t, container.IntField.IsNull())
 		intVal, ok := container.IntField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, 0, intVal) // zero value
+		assert.True(t, ok)
+		assert.Equal(t, 0, intVal) // zero value
 
 		// slice_field: missing from JSON, should remain unset
-		assertFalse(t, container.SliceField.IsSet())
-		assertFalse(t, container.SliceField.IsNull()) // Unset is not null
+		assert.False(t, container.SliceField.IsSet())
+		assert.False(t, container.SliceField.IsNull()) // Unset is not null
 		sliceVal, ok := container.SliceField.GetOrZero()
-		assertFalse(t, ok)
-		assertNil(t, sliceVal)
+		assert.False(t, ok)
+		assert.Nil(t, sliceVal)
 
 		// struct_field: present with value
-		assertTrue(t, container.StructField.IsSet())
-		assertFalse(t, container.StructField.IsNull())
+		assert.True(t, container.StructField.IsSet())
+		assert.False(t, container.StructField.IsNull())
 		structVal, ok := container.StructField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, TestStruct{Name: "Bob", Age: 35}, structVal)
+		assert.True(t, ok)
+		assert.Equal(t, TestStruct{Name: "Bob", Age: 35}, structVal)
 	})
 }
 
@@ -1210,29 +1103,29 @@ func TestNilVsUnsetDistinction(t *testing.T) {
 		var unset OptionalNullable[string]
 
 		// Both are null, but only one is set
-		assertTrue(t, explicitNil.IsNull())
-		assertTrue(t, explicitNil.IsSet())
+		assert.True(t, explicitNil.IsNull())
+		assert.True(t, explicitNil.IsSet())
 
-		assertFalse(t, unset.IsNull()) // Unset is not null
-		assertFalse(t, unset.IsSet())
+		assert.False(t, unset.IsNull()) // Unset is not null
+		assert.False(t, unset.IsSet())
 
 		// Get behavior differs
 		got1, ok1 := explicitNil.GetOrZero()
 		got2, ok2 := unset.GetOrZero()
 
-		assertTrue(t, ok1)       // explicitly set to nil returns true
-		assertFalse(t, ok2)      // unset returns false
-		assertEqual(t, "", got1) // both return zero value
-		assertEqual(t, "", got2)
+		assert.True(t, ok1)       // explicitly set to nil returns true
+		assert.False(t, ok2)      // unset returns false
+		assert.Equal(t, "", got1) // both return zero value
+		assert.Equal(t, "", got2)
 
 		// Get behavior differs
 		ptr1, ok1 := explicitNil.Get()
 		ptr2, ok2 := unset.Get()
 
-		assertTrue(t, ok1)  // explicitly set to nil returns true
-		assertFalse(t, ok2) // unset returns false
-		assertNil(t, ptr1)  // both return nil pointer
-		assertNil(t, ptr2)
+		assert.True(t, ok1)  // explicitly set to nil returns true
+		assert.False(t, ok2) // unset returns false
+		assert.Nil(t, ptr1)  // both return nil pointer
+		assert.Nil(t, ptr2)
 	})
 
 	t.Run("empty slice vs nil slice vs unset", func(t *testing.T) {
@@ -1247,28 +1140,28 @@ func TestNilVsUnsetDistinction(t *testing.T) {
 		var unsetNullable OptionalNullable[[]string]
 
 		// All have different characteristics
-		assertTrue(t, emptyNullable.IsSet())
-		assertFalse(t, emptyNullable.IsNull())
+		assert.True(t, emptyNullable.IsSet())
+		assert.False(t, emptyNullable.IsNull())
 
-		assertTrue(t, nilNullable.IsSet())
-		assertTrue(t, nilNullable.IsNull())
+		assert.True(t, nilNullable.IsSet())
+		assert.True(t, nilNullable.IsNull())
 
-		assertFalse(t, unsetNullable.IsSet())
-		assertFalse(t, unsetNullable.IsNull()) // Unset is not null
+		assert.False(t, unsetNullable.IsSet())
+		assert.False(t, unsetNullable.IsNull()) // Unset is not null
 
 		// Get behavior
 		got1, ok1 := emptyNullable.GetOrZero()
 		got2, ok2 := nilNullable.GetOrZero()
 		got3, ok3 := unsetNullable.GetOrZero()
 
-		assertTrue(t, ok1)
-		assertEqual(t, []string{}, got1)
+		assert.True(t, ok1)
+		assert.Equal(t, []string{}, got1)
 
-		assertTrue(t, ok2)
-		assertNil(t, got2)
+		assert.True(t, ok2)
+		assert.Nil(t, got2)
 
-		assertFalse(t, ok3)
-		assertNil(t, got3)
+		assert.False(t, ok3)
+		assert.Nil(t, got3)
 	})
 }
 
@@ -1285,17 +1178,17 @@ func TestJSONOmitEmpty(t *testing.T) {
 		}
 
 		data, err := json.Marshal(container)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Parse back to verify structure
 		var result map[string]interface{}
 		err = json.Unmarshal(data, &result)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Should contain set fields
-		assertContains(t, result, "string_field")
-		assertContains(t, result, "int_field")
-		assertContains(t, result, "struct_field")
+		assert.Contains(t, result, "string_field")
+		assert.Contains(t, result, "int_field")
+		assert.Contains(t, result, "struct_field")
 
 		// Should not contain unset field (due to omitempty)
 		// Note: This depends on how the marshaling handles unset fields
@@ -1309,22 +1202,22 @@ func TestJSONOmitEmpty(t *testing.T) {
 
 		var container TestContainer
 		err := json.Unmarshal([]byte(jsonData), &container)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Present fields should be set
-		assertTrue(t, container.StringField.IsSet())
-		assertFalse(t, container.StringField.IsNull())
+		assert.True(t, container.StringField.IsSet())
+		assert.False(t, container.StringField.IsNull())
 		got, ok := container.StringField.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "test", got)
+		assert.True(t, ok)
+		assert.Equal(t, "test", got)
 
 		// Null field should be set to nil
-		assertTrue(t, container.IntField.IsSet())
-		assertTrue(t, container.IntField.IsNull())
+		assert.True(t, container.IntField.IsSet())
+		assert.True(t, container.IntField.IsNull())
 
 		// Missing fields should remain unset
-		assertFalse(t, container.SliceField.IsSet())
-		assertFalse(t, container.StructField.IsSet())
+		assert.False(t, container.SliceField.IsSet())
+		assert.False(t, container.StructField.IsSet())
 	})
 }
 
@@ -1337,17 +1230,17 @@ func TestEdgeCases(t *testing.T) {
 		intNullable := From(ptrFrom(0))
 		stringNullable := From(ptrFrom(""))
 
-		assertTrue(t, intNullable.IsSet())
-		assertFalse(t, intNullable.IsNull())
+		assert.True(t, intNullable.IsSet())
+		assert.False(t, intNullable.IsNull())
 		got, ok := intNullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, 0, got)
+		assert.True(t, ok)
+		assert.Equal(t, 0, got)
 
-		assertTrue(t, stringNullable.IsSet())
-		assertFalse(t, stringNullable.IsNull())
+		assert.True(t, stringNullable.IsSet())
+		assert.False(t, stringNullable.IsNull())
 		got2, ok2 := stringNullable.GetOrZero()
-		assertTrue(t, ok2)
-		assertEqual(t, "", got2)
+		assert.True(t, ok2)
+		assert.Equal(t, "", got2)
 	})
 
 	t.Run("pointer to pointer", func(t *testing.T) {
@@ -1356,13 +1249,13 @@ func TestEdgeCases(t *testing.T) {
 		inner := "test"
 		nullable := From(ptrFrom(&inner))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, &inner, got)
-		assertEqual(t, "test", *got)
+		assert.True(t, ok)
+		assert.Equal(t, &inner, got)
+		assert.Equal(t, "test", *got)
 	})
 
 	t.Run("complex struct", func(t *testing.T) {
@@ -1382,12 +1275,12 @@ func TestEdgeCases(t *testing.T) {
 
 		nullable := From(ptrFrom(complexStruct))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, complexStruct, got)
+		assert.True(t, ok)
+		assert.Equal(t, complexStruct, got)
 	})
 }
 
@@ -1401,14 +1294,14 @@ func TestDoublePointers(t *testing.T) {
 		ptr := &inner
 		nullable := From(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, ptr, got)
-		assertEqual(t, &inner, got)
-		assertEqual(t, "hello world", *got)
+		assert.True(t, ok)
+		assert.Equal(t, ptr, got)
+		assert.Equal(t, &inner, got)
+		assert.Equal(t, "hello world", *got)
 	})
 
 	t.Run("int double pointer with value", func(t *testing.T) {
@@ -1417,14 +1310,14 @@ func TestDoublePointers(t *testing.T) {
 		ptr := &inner
 		nullable := From(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, ptr, got)
-		assertEqual(t, &inner, got)
-		assertEqual(t, 42, *got)
+		assert.True(t, ok)
+		assert.Equal(t, ptr, got)
+		assert.Equal(t, &inner, got)
+		assert.Equal(t, 42, *got)
 	})
 
 	t.Run("double pointer to nil", func(t *testing.T) {
@@ -1432,37 +1325,37 @@ func TestDoublePointers(t *testing.T) {
 		var ptr *string = nil
 		nullable := From(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, ptr, got)
-		assertNil(t, got)
+		assert.True(t, ok)
+		assert.Equal(t, ptr, got)
+		assert.Nil(t, got)
 	})
 
 	t.Run("nil double pointer", func(t *testing.T) {
 		t.Parallel()
 		nullable := From[*string](nil)
 
-		assertTrue(t, nullable.IsSet())
-		assertTrue(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.True(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertNil(t, got) // zero value for **string is nil
+		assert.True(t, ok)
+		assert.Nil(t, got) // zero value for **string is nil
 	})
 
 	t.Run("unset double pointer", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[*string]
 
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertFalse(t, ok)
-		assertNil(t, got) // zero value for **string is nil
+		assert.False(t, ok)
+		assert.Nil(t, got) // zero value for **string is nil
 	})
 
 	t.Run("double pointer modification", func(t *testing.T) {
@@ -1473,13 +1366,13 @@ func TestDoublePointers(t *testing.T) {
 
 		// Verify original value
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "original", *got)
+		assert.True(t, ok)
+		assert.Equal(t, "original", *got)
 
 		// Modify through double pointer
 		*got = "modified"
-		assertEqual(t, "modified", inner)
-		assertEqual(t, "modified", *got)
+		assert.Equal(t, "modified", inner)
+		assert.Equal(t, "modified", *got)
 	})
 
 	t.Run("double pointer to struct", func(t *testing.T) {
@@ -1488,18 +1381,18 @@ func TestDoublePointers(t *testing.T) {
 		ptr := &inner
 		nullable := From(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, ptr, got)
-		assertEqual(t, TestStruct{Name: "Alice", Age: 30}, *got)
+		assert.True(t, ok)
+		assert.Equal(t, ptr, got)
+		assert.Equal(t, TestStruct{Name: "Alice", Age: 30}, *got)
 
 		// Modify through double pointer
 		(*got).Name = "Bob"
-		assertEqual(t, "Bob", inner.Name)
-		assertEqual(t, "Bob", (*got).Name)
+		assert.Equal(t, "Bob", inner.Name)
+		assert.Equal(t, "Bob", (*got).Name)
 	})
 
 	t.Run("double pointer to slice", func(t *testing.T) {
@@ -1508,18 +1401,18 @@ func TestDoublePointers(t *testing.T) {
 		ptr := &inner
 		nullable := From(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, ptr, got)
-		assertEqual(t, []string{"a", "b", "c"}, *got)
+		assert.True(t, ok)
+		assert.Equal(t, ptr, got)
+		assert.Equal(t, []string{"a", "b", "c"}, *got)
 
 		// Modify through double pointer
 		*got = append(*got, "d")
-		assertEqual(t, []string{"a", "b", "c", "d"}, inner)
-		assertEqual(t, []string{"a", "b", "c", "d"}, *got)
+		assert.Equal(t, []string{"a", "b", "c", "d"}, inner)
+		assert.Equal(t, []string{"a", "b", "c", "d"}, *got)
 	})
 
 	t.Run("double pointer to empty slice", func(t *testing.T) {
@@ -1528,13 +1421,13 @@ func TestDoublePointers(t *testing.T) {
 		ptr := &inner
 		nullable := From(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, ptr, got)
-		assertEqual(t, []string{}, *got)
+		assert.True(t, ok)
+		assert.Equal(t, ptr, got)
+		assert.Equal(t, []string{}, *got)
 	})
 
 	t.Run("double pointer to nil slice", func(t *testing.T) {
@@ -1543,13 +1436,13 @@ func TestDoublePointers(t *testing.T) {
 		ptr := &inner
 		nullable := From(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, ptr, got)
-		assertNil(t, *got)
+		assert.True(t, ok)
+		assert.Equal(t, ptr, got)
+		assert.Nil(t, *got)
 	})
 
 	t.Run("double pointer JSON marshaling", func(t *testing.T) {
@@ -1559,23 +1452,23 @@ func TestDoublePointers(t *testing.T) {
 		nullable := From(ptrFrom(ptr))
 
 		data, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, `"json test"`, string(data))
+		require.NoError(t, err)
+		assert.Equal(t, `"json test"`, string(data))
 	})
 
 	t.Run("double pointer JSON unmarshaling", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[*string]
 		err := json.Unmarshal([]byte(`"json test"`), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertNotNil(t, got)
-		assertEqual(t, "json test", *got)
+		assert.True(t, ok)
+		assert.NotNil(t, got)
+		assert.Equal(t, "json test", *got)
 	})
 
 	t.Run("double pointer JSON null marshaling", func(t *testing.T) {
@@ -1583,22 +1476,22 @@ func TestDoublePointers(t *testing.T) {
 		nullable := From[*string](nil)
 
 		data, err := json.Marshal(nullable)
-		mustNoError(t, err)
-		assertEqual(t, `null`, string(data))
+		require.NoError(t, err)
+		assert.Equal(t, `null`, string(data))
 	})
 
 	t.Run("double pointer JSON null unmarshaling", func(t *testing.T) {
 		t.Parallel()
 		var nullable OptionalNullable[*string]
 		err := json.Unmarshal([]byte(`null`), &nullable)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
-		assertTrue(t, nullable.IsSet())
-		assertTrue(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.True(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertNil(t, got)
+		assert.True(t, ok)
+		assert.Nil(t, got)
 	})
 
 	t.Run("double pointer round trip", func(t *testing.T) {
@@ -1609,23 +1502,23 @@ func TestDoublePointers(t *testing.T) {
 
 		// Marshal
 		data, err := json.Marshal(nullable1)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Unmarshal
 		var nullable2 OptionalNullable[*string]
 		err = json.Unmarshal(data, &nullable2)
-		mustNoError(t, err)
+		require.NoError(t, err)
 
 		// Compare states
-		assertEqual(t, nullable1.IsSet(), nullable2.IsSet())
-		assertEqual(t, nullable1.IsNull(), nullable2.IsNull())
+		assert.Equal(t, nullable1.IsSet(), nullable2.IsSet())
+		assert.Equal(t, nullable1.IsNull(), nullable2.IsNull())
 
 		got1, ok1 := nullable1.GetOrZero()
 		got2, ok2 := nullable2.GetOrZero()
-		assertEqual(t, ok1, ok2)
+		assert.Equal(t, ok1, ok2)
 
 		// Values should be equal
-		assertEqual(t, *got1, *got2)
+		assert.Equal(t, *got1, *got2)
 	})
 
 	t.Run("triple pointer", func(t *testing.T) {
@@ -1635,14 +1528,14 @@ func TestDoublePointers(t *testing.T) {
 		ptr2 := &ptr1
 		nullable := From(ptrFrom(ptr2))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, ptr2, got)
-		assertEqual(t, ptr1, *got)
-		assertEqual(t, "triple", **got)
+		assert.True(t, ok)
+		assert.Equal(t, ptr2, got)
+		assert.Equal(t, ptr1, *got)
+		assert.Equal(t, "triple", **got)
 	})
 
 	t.Run("double pointer set and unset", func(t *testing.T) {
@@ -1650,39 +1543,39 @@ func TestDoublePointers(t *testing.T) {
 		var nullable OptionalNullable[*string]
 
 		// Initially unset
-		assertFalse(t, nullable.IsSet())
+		assert.False(t, nullable.IsSet())
 
 		// Set to double pointer
 		inner := "set test"
 		ptr := &inner
 		nullable.Set(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "set test", *got)
+		assert.True(t, ok)
+		assert.Equal(t, "set test", *got)
 
 		// Set to nil
 		nullable.Set(nil)
 
-		assertTrue(t, nullable.IsSet())
-		assertTrue(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.True(t, nullable.IsNull())
 
 		got, ok = nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertNil(t, got)
+		assert.True(t, ok)
+		assert.Nil(t, got)
 
 		// Unset
 		nullable.Unset()
 
-		assertFalse(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.False(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok = nullable.GetOrZero()
-		assertFalse(t, ok)
-		assertNil(t, got)
+		assert.False(t, ok)
+		assert.Nil(t, got)
 	})
 
 	t.Run("double pointer Get method", func(t *testing.T) {
@@ -1693,22 +1586,22 @@ func TestDoublePointers(t *testing.T) {
 
 		// Test Get method
 		gotPtr, ok := nullable.Get()
-		assertTrue(t, ok)
-		assertNotNil(t, gotPtr)
-		assertEqual(t, ptr, *gotPtr)
-		assertEqual(t, "get test", **gotPtr)
+		assert.True(t, ok)
+		assert.NotNil(t, gotPtr)
+		assert.Equal(t, ptr, *gotPtr)
+		assert.Equal(t, "get test", **gotPtr)
 
 		// Test with nil
 		nilNullable := From[*string](nil)
 		gotPtr, ok = nilNullable.Get()
-		assertTrue(t, ok)
-		assertNil(t, gotPtr)
+		assert.True(t, ok)
+		assert.Nil(t, gotPtr)
 
 		// Test with unset
 		var unsetNullable OptionalNullable[*string]
 		gotPtr, ok = unsetNullable.Get()
-		assertFalse(t, ok)
-		assertNil(t, gotPtr)
+		assert.False(t, ok)
+		assert.Nil(t, gotPtr)
 	})
 
 	t.Run("double pointer zero values", func(t *testing.T) {
@@ -1718,24 +1611,24 @@ func TestDoublePointers(t *testing.T) {
 		ptr := &inner
 		nullable := From(ptrFrom(ptr))
 
-		assertTrue(t, nullable.IsSet())
-		assertFalse(t, nullable.IsNull())
+		assert.True(t, nullable.IsSet())
+		assert.False(t, nullable.IsNull())
 
 		got, ok := nullable.GetOrZero()
-		assertTrue(t, ok)
-		assertEqual(t, "", *got)
+		assert.True(t, ok)
+		assert.Equal(t, "", *got)
 
 		// Test with zero value int
 		innerInt := 0
 		ptrInt := &innerInt
 		nullableInt := From(ptrFrom(ptrInt))
 
-		assertTrue(t, nullableInt.IsSet())
-		assertFalse(t, nullableInt.IsNull())
+		assert.True(t, nullableInt.IsSet())
+		assert.False(t, nullableInt.IsNull())
 
 		gotInt, okInt := nullableInt.GetOrZero()
-		assertTrue(t, okInt)
-		assertEqual(t, 0, *gotInt)
+		assert.True(t, okInt)
+		assert.Equal(t, 0, *gotInt)
 	})
 }
 
@@ -1749,12 +1642,12 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(nullable)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertTrue(t, ok)
-		assertNotNil(t, result)
+		assert.True(t, ok)
+		assert.NotNil(t, result)
 
 		value, isSet := result.GetUntyped()
-		assertTrue(t, isSet)
-		assertEqual(t, "test", value)
+		assert.True(t, isSet)
+		assert.Equal(t, "test", value)
 	})
 
 	t.Run("with nullable int", func(t *testing.T) {
@@ -1763,12 +1656,12 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(nullable)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertTrue(t, ok)
-		assertNotNil(t, result)
+		assert.True(t, ok)
+		assert.NotNil(t, result)
 
 		value, isSet := result.GetUntyped()
-		assertTrue(t, isSet)
-		assertEqual(t, 42, value)
+		assert.True(t, isSet)
+		assert.Equal(t, 42, value)
 	})
 
 	t.Run("with nullable nil", func(t *testing.T) {
@@ -1777,12 +1670,12 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(nullable)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertTrue(t, ok)
-		assertNotNil(t, result)
+		assert.True(t, ok)
+		assert.NotNil(t, result)
 
 		value, isSet := result.GetUntyped()
-		assertTrue(t, isSet)
-		assertNil(t, value)
+		assert.True(t, isSet)
+		assert.Nil(t, value)
 	})
 
 	t.Run("with unset nullable", func(t *testing.T) {
@@ -1791,8 +1684,8 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(nullable)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertFalse(t, ok)
-		assertNil(t, result)
+		assert.False(t, ok)
+		assert.Nil(t, result)
 	})
 
 	t.Run("with non-nullable string", func(t *testing.T) {
@@ -1801,8 +1694,8 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(regularString)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertFalse(t, ok)
-		assertNil(t, result)
+		assert.False(t, ok)
+		assert.Nil(t, result)
 	})
 
 	t.Run("with non-nullable int", func(t *testing.T) {
@@ -1811,8 +1704,8 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(regularInt)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertFalse(t, ok)
-		assertNil(t, result)
+		assert.False(t, ok)
+		assert.Nil(t, result)
 	})
 
 	t.Run("with non-nullable map", func(t *testing.T) {
@@ -1821,8 +1714,8 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(regularMap)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertFalse(t, ok)
-		assertNil(t, result)
+		assert.False(t, ok)
+		assert.Nil(t, result)
 	})
 
 	t.Run("with non-nullable struct", func(t *testing.T) {
@@ -1831,8 +1724,8 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(regularStruct)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertFalse(t, ok)
-		assertNil(t, result)
+		assert.False(t, ok)
+		assert.Nil(t, result)
 	})
 
 	t.Run("with nullable double pointer", func(t *testing.T) {
@@ -1843,13 +1736,13 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(nullable)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertTrue(t, ok)
-		assertNotNil(t, result)
+		assert.True(t, ok)
+		assert.NotNil(t, result)
 
 		value, isSet := result.GetUntyped()
-		assertTrue(t, isSet)
-		assertEqual(t, ptr, value)
-		assertEqual(t, "test", *value.(*string))
+		assert.True(t, isSet)
+		assert.Equal(t, ptr, value)
+		assert.Equal(t, "test", *value.(*string))
 	})
 
 	t.Run("with nullable slice", func(t *testing.T) {
@@ -1858,12 +1751,12 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(nullable)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertTrue(t, ok)
-		assertNotNil(t, result)
+		assert.True(t, ok)
+		assert.NotNil(t, result)
 
 		value, isSet := result.GetUntyped()
-		assertTrue(t, isSet)
-		assertEqual(t, []string{"a", "b", "c"}, value)
+		assert.True(t, isSet)
+		assert.Equal(t, []string{"a", "b", "c"}, value)
 	})
 
 	t.Run("with nullable struct", func(t *testing.T) {
@@ -1873,12 +1766,12 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(nullable)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertTrue(t, ok)
-		assertNotNil(t, result)
+		assert.True(t, ok)
+		assert.NotNil(t, result)
 
 		value, isSet := result.GetUntyped()
-		assertTrue(t, isSet)
-		assertEqual(t, testStruct, value)
+		assert.True(t, isSet)
+		assert.Equal(t, testStruct, value)
 	})
 
 	t.Run("with pointer to nullable", func(t *testing.T) {
@@ -1889,12 +1782,12 @@ func TestAsOptionalNullable(t *testing.T) {
 
 		// This should work since the pointer to nullable still contains a nullable
 		result, ok := AsOptionalNullable(reflectValue)
-		assertTrue(t, ok)
-		assertNotNil(t, result)
+		assert.True(t, ok)
+		assert.NotNil(t, result)
 
 		value, isSet := result.GetUntyped()
-		assertTrue(t, isSet)
-		assertEqual(t, "test", value)
+		assert.True(t, isSet)
+		assert.Equal(t, "test", value)
 	})
 
 	t.Run("with interface containing nullable", func(t *testing.T) {
@@ -1904,104 +1797,11 @@ func TestAsOptionalNullable(t *testing.T) {
 		reflectValue := reflect.ValueOf(iface)
 
 		result, ok := AsOptionalNullable(reflectValue)
-		assertTrue(t, ok)
-		assertNotNil(t, result)
+		assert.True(t, ok)
+		assert.NotNil(t, result)
 
 		value, isSet := result.GetUntyped()
-		assertTrue(t, isSet)
-		assertEqual(t, "test", value)
-	})
-}
-
-func TestIsOptionalNullableType(t *testing.T) {
-	tests := []struct {
-		name string
-		typ  reflect.Type
-		want bool
-	}{
-		{
-			name: "OptionalNullable of scalar",
-			typ:  reflect.TypeOf(OptionalNullable[string]{}),
-			want: true,
-		},
-		{
-			name: "OptionalNullable of pointer",
-			typ:  reflect.TypeOf(OptionalNullable[*int]{}),
-			want: true,
-		},
-		{
-			name: "OptionalNullable of slice",
-			typ:  reflect.TypeOf(OptionalNullable[[]string]{}),
-			want: true,
-		},
-		{
-			name: "plain string map",
-			typ:  reflect.TypeOf(map[string]string{}),
-			want: false,
-		},
-		{
-			name: "bool-keyed map with non-pointer values",
-			typ:  reflect.TypeOf(map[bool]string{}),
-			want: false,
-		},
-		{
-			name: "bool-keyed pointer map without the interface method",
-			typ:  reflect.TypeOf(map[bool]*string{}),
-			want: false,
-		},
-		{
-			name: "non-map type",
-			typ:  reflect.TypeOf(""),
-			want: false,
-		},
-		{
-			name: "pointer to OptionalNullable",
-			typ:  reflect.TypeOf(&OptionalNullable[string]{}),
-			want: false,
-		},
-		{
-			name: "nil type",
-			typ:  nil,
-			want: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assertEqual(t, tt.want, IsOptionalNullableType(tt.typ))
-		})
-	}
-}
-
-func TestFromReflect(t *testing.T) {
-	typ := reflect.TypeOf(OptionalNullable[string]{})
-
-	t.Run("with value", func(t *testing.T) {
-		inner := reflect.New(reflect.TypeOf(""))
-		inner.Elem().SetString("hello")
-
-		got, ok := FromReflect(typ, inner).Interface().(OptionalNullable[string])
-		if !ok {
-			t.Fatal("expected FromReflect to return an OptionalNullable[string]")
-		}
-		assertTrue(t, got.IsSet())
-		assertFalse(t, got.IsNull())
-		v, set := got.Get()
-		if !set || v == nil {
-			t.Fatal("expected a set, non-nil value")
-		}
-		assertEqual(t, "hello", *v)
-		assertEqual(t, From(ptrFrom("hello")), got)
-	})
-
-	t.Run("with nil pointer sets null", func(t *testing.T) {
-		nilPtr := reflect.Zero(typ.Elem())
-
-		got, ok := FromReflect(typ, nilPtr).Interface().(OptionalNullable[string])
-		if !ok {
-			t.Fatal("expected FromReflect to return an OptionalNullable[string]")
-		}
-		assertTrue(t, got.IsSet())
-		assertTrue(t, got.IsNull())
-		assertEqual(t, From[string](nil), got)
+		assert.True(t, isSet)
+		assert.Equal(t, "test", value)
 	})
 }

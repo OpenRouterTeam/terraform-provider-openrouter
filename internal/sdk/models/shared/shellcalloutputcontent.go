@@ -106,14 +106,7 @@ func CreateOutcomeTimeoutObj(timeoutT OutcomeTimeout) Outcome {
 	}
 }
 
-func (u *Outcome) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Outcome{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Outcome) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

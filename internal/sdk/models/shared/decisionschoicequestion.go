@@ -53,14 +53,7 @@ func CreateCriteriaArrayOfAny(arrayOfAny []any) Criteria {
 	}
 }
 
-func (u *Criteria) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Criteria{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Criteria) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -176,14 +169,7 @@ func CreateDecisionsChoiceQuestionInstructionsArrayOfAny(arrayOfAny []any) Decis
 	}
 }
 
-func (u *DecisionsChoiceQuestionInstructions) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = DecisionsChoiceQuestionInstructions{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *DecisionsChoiceQuestionInstructions) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

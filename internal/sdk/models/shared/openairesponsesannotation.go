@@ -53,14 +53,7 @@ func CreateOpenAIResponsesAnnotationFilePath(filePath FilePath) OpenAIResponsesA
 	}
 }
 
-func (u *OpenAIResponsesAnnotation) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = OpenAIResponsesAnnotation{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *OpenAIResponsesAnnotation) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

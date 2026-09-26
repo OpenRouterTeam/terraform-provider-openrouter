@@ -178,14 +178,7 @@ func CreateTypeOpenAIResponsesToolChoiceTypeWebSearchPreview(openAIResponsesTool
 	}
 }
 
-func (u *Type) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Type{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Type) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -484,14 +477,7 @@ func CreateOpenAIResponsesToolChoiceUnionOpenAIResponsesToolChoiceShell(openAIRe
 	}
 }
 
-func (u *OpenAIResponsesToolChoiceUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = OpenAIResponsesToolChoiceUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *OpenAIResponsesToolChoiceUnion) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

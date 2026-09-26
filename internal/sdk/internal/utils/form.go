@@ -58,11 +58,6 @@ func populateForm(paramName string, explode bool, objType reflect.Type, objValue
 					valType = valType.Elem()
 				}
 
-				valType, hasValue := unwrapOptionalNullable(valType)
-				if !hasValue {
-					continue
-				}
-
 				fieldName := getFieldName(fieldType)
 				if fieldName == "" {
 					continue
@@ -88,10 +83,9 @@ func populateForm(paramName string, explode bool, objType reflect.Type, objValue
 	case reflect.Map:
 		// check if optionalnullable.OptionalNullable[T]
 		if nullableValue, ok := optionalnullable.AsOptionalNullable(objValue); ok {
-			// Serialize the wrapped value using the rules for its own type
+			// Handle optionalnullable.OptionalNullable[T] using GetUntyped method
 			if value, isSet := nullableValue.GetUntyped(); isSet && value != nil {
-				innerValue := reflect.ValueOf(value)
-				return populateForm(paramName, explode, innerValue.Type(), innerValue, delimiter, defaultValue, allowEmptyValue, getFieldName)
+				formValues.Add(paramName, valToString(value))
 			}
 			// If not set or explicitly null, skip adding to form
 			return formValues

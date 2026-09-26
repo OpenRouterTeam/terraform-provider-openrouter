@@ -95,14 +95,7 @@ func CreatePDFParserEnginePDFParserEnginePDFText(pdfParserEnginePDFText PDFParse
 	}
 }
 
-func (u *PDFParserEngine) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = PDFParserEngine{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *PDFParserEngine) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

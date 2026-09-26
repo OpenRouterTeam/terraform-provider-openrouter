@@ -75,14 +75,7 @@ func CreateCitationWebSearchResultLocation(webSearchResultLocation AnthropicCita
 	}
 }
 
-func (u *Citation) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Citation{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Citation) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

@@ -130,14 +130,7 @@ func CreateCustomToolCallOutputItemOutputUnion1InputFile(inputFile InputFile) Cu
 	}
 }
 
-func (u *CustomToolCallOutputItemOutputUnion1) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = CustomToolCallOutputItemOutputUnion1{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *CustomToolCallOutputItemOutputUnion1) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`
@@ -229,14 +222,7 @@ func CreateCustomToolCallOutputItemOutputUnion2ArrayOfCustomToolCallOutputItemOu
 	}
 }
 
-func (u *CustomToolCallOutputItemOutputUnion2) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = CustomToolCallOutputItemOutputUnion2{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *CustomToolCallOutputItemOutputUnion2) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

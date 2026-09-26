@@ -43,14 +43,7 @@ func CreateBashServerToolEnvironmentContainerReference(containerReference Contai
 	}
 }
 
-func (u *BashServerToolEnvironment) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = BashServerToolEnvironment{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *BashServerToolEnvironment) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

@@ -509,14 +509,7 @@ func CreateAdditionalToolsItemToolUnionAdditionalToolsItemTool(additionalToolsIt
 	}
 }
 
-func (u *AdditionalToolsItemToolUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = AdditionalToolsItemToolUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *AdditionalToolsItemToolUnion) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

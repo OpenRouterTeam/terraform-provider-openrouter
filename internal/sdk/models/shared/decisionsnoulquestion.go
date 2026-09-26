@@ -53,14 +53,7 @@ func CreateFalseArrayOfAny(arrayOfAny []any) False {
 	}
 }
 
-func (u *False) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = False{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *False) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -176,14 +169,7 @@ func CreateTrueArrayOfAny(arrayOfAny []any) True {
 	}
 }
 
-func (u *True) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = True{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *True) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
@@ -331,14 +317,7 @@ func CreateDecisionsNoulQuestionInstructionsArrayOfAny(arrayOfAny []any) Decisio
 	}
 }
 
-func (u *DecisionsNoulQuestionInstructions) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = DecisionsNoulQuestionInstructions{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *DecisionsNoulQuestionInstructions) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

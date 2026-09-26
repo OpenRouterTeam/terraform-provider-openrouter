@@ -94,14 +94,7 @@ func CreateContainerNetworkPolicyAllowlist(allowlist ContainerNetworkPolicyAllow
 	}
 }
 
-func (u *ContainerNetworkPolicy) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = ContainerNetworkPolicy{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *ContainerNetworkPolicy) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

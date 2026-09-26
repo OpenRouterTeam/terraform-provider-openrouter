@@ -92,14 +92,7 @@ func CreateInputUnionInput2(input2 Input2) InputUnion {
 	}
 }
 
-func (u *InputUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = InputUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *InputUnion) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 

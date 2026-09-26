@@ -43,14 +43,7 @@ func CreateSpeechInputReferenceText(text SpeechInputReferenceText) SpeechInputRe
 	}
 }
 
-func (u *SpeechInputReference) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = SpeechInputReference{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *SpeechInputReference) UnmarshalJSON(data []byte) error {
 
 	type discriminator struct {
 		Type string `json:"type"`

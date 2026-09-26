@@ -41,14 +41,7 @@ func CreateCodeInteger(integer int64) Code {
 	}
 }
 
-func (u *Code) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Code{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
+func (u *Code) UnmarshalJSON(data []byte) error {
 
 	var candidates []utils.UnionCandidate
 
