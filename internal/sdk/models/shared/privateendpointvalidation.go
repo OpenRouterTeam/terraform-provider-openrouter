@@ -3,25 +3,10 @@
 
 package shared
 
-import (
-	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
-)
-
 type PrivateEndpointValidation struct {
 	Checks []PrivateEndpointCheck `json:"checks"`
 	// Whether every check passed.
 	Passed bool `json:"passed"`
-}
-
-func (p PrivateEndpointValidation) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(p, "", false)
-}
-
-func (p *PrivateEndpointValidation) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &p, "", false, nil); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (p *PrivateEndpointValidation) GetChecks() []PrivateEndpointCheck {
