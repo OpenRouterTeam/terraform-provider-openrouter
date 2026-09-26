@@ -15,7 +15,6 @@ import (
 func (r *PrivateEndpointResourceModel) RefreshFromSharedManagedPrivateEndpoint(ctx context.Context, resp *shared.ManagedPrivateEndpoint) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	r.CreatedAt = types.StringValue(resp.CreatedAt)
 	if resp.DeclaredRegion != nil {
 		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))
 	} else {
