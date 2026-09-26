@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: e9a01b771c90ca7a4c4c34fe7c6eb89a
+  docChecksum: f48070672e925ec3d2dd51e979942bd1
   docVersion: 1.0.0
   speakeasyVersion: 1.799.0
   generationVersion: 2.941.0
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 2e04d75d-a29f-45ed-b09a-bc19a3ca5565
-  pristine_commit_hash: c2a08ff80120d8b190eb3f864956d99fb9837c7e
-  pristine_tree_hash: 2f3055e39eba352b6993e75be6676f9e70faea68
+  generation_id: 583bac09-3d2d-42d7-a9ab-70528f6b9f0b
+  pristine_commit_hash: 63c1eae267f8cd481fb7e0266fc7eb3c0b38c960
+  pristine_tree_hash: 6dfe07219ef6eeedc45531201d5280cc2a0dcbd0
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -2453,8 +2453,8 @@ trackedFiles:
     pristine_git_object: ff5db7e6a57bb7c0bc594aea6c52e9bd363fbdd0
   internal/sdk/models/shared/createprivateendpointvalidationfailedresponse.go:
     id: 2f3602659007
-    last_write_checksum: sha1:4b9e5407d9782abed33236721558b9c690a1515d
-    pristine_git_object: 74eda726f04c0f49c4b52c4faeeac7dc7f89cb06
+    last_write_checksum: sha1:a19bab34f667a9689200d656e7801f53bed8e0f8
+    pristine_git_object: 1d2242c486ad21a7c7f90ad2ddff554a1ef9c9f9
   internal/sdk/models/shared/createscimgroupmappingrequest.go:
     id: 848b3abcf061
     last_write_checksum: sha1:d862f07d8d1c0d3537e35fc3fa680c68cea29cbc
@@ -3457,12 +3457,16 @@ trackedFiles:
     pristine_git_object: cc541ccefb16eed117b65ea96152abeb878aeb4e
   internal/sdk/models/shared/privateendpointvalidation.go:
     id: 804e15057f66
-    last_write_checksum: sha1:afd20ce0afdc347b211def7c556dcf5adfeffc86
-    pristine_git_object: 0de5ed9d5aab7ed30460bf04c509e5d6be624221
+    last_write_checksum: sha1:c8b757ec636ac6f9ad5ece563ebb12ad41e209b4
+    pristine_git_object: e8544830d801c93aa5e991b73dc1b8a96845a58b
+  internal/sdk/models/shared/privateendpointvalidationnullable.go:
+    id: 5760c3b7bdfe
+    last_write_checksum: sha1:d89fb2fe9833d4d996268c9488bfce6c0334c891
+    pristine_git_object: 32858151f26f430bbd9e6dfc6fd397e19397c31a
   internal/sdk/models/shared/privateendpointvalidationresponse.go:
     id: 944ac10b22c7
-    last_write_checksum: sha1:e812bd038416f1c9499de047900955cb98615a15
-    pristine_git_object: 75c766b4c9a1cdb81ff8a173f4b4f45dc345b65f
+    last_write_checksum: sha1:0c3852ac306003c998e56c25f6fd60328434d7fd
+    pristine_git_object: ba79074cf750ddd620165737f768b141f7dc4afd
   internal/sdk/models/shared/promptcachebreakpoint.go:
     id: 5344f3e55f1d
     last_write_checksum: sha1:a3dbc998b43be62602b18026affc3d2d67e33d13

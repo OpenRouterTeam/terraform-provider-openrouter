@@ -7499,7 +7499,7 @@ components:
             endpoint:
               $ref: '#/components/schemas/ManagedPrivateEndpoint'
             validation:
-              $ref: '#/components/schemas/PrivateEndpointValidation'
+              $ref: '#/components/schemas/PrivateEndpointValidationNullable'
           required:
             - 'endpoint'
             - 'validation'
@@ -23015,6 +23015,20 @@ components:
         - 'created_at'
       type: 'object'
     PrivateEndpointValidation:
+      properties:
+        checks:
+          items:
+            $ref: '#/components/schemas/PrivateEndpointCheck'
+          type: 'array'
+        passed:
+          description: 'Whether every check passed.'
+          example: true
+          type: 'boolean'
+      required:
+        - 'passed'
+        - 'checks'
+      type: 'object'
+    PrivateEndpointValidationNullable:
       properties:
         checks:
           items:
