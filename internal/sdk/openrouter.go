@@ -100,6 +100,8 @@ type OpenRouter struct {
 	Organization *Organization
 	// Presets endpoints
 	Presets *Presets
+	// Private Endpoints endpoints
+	PrivateEndpoints *PrivateEndpoints
 	// Provider information endpoints
 	Providers *Providers
 	// Rerank endpoints
@@ -240,6 +242,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Observability = newObservability(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Organization = newOrganization(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Presets = newPresets(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Providers = newProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Rerank = newRerank(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Scim = newScim(sdk, sdk.sdkConfiguration, sdk.hooks)
