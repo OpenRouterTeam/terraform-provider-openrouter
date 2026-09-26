@@ -3,7 +3,7 @@
 
 package sdk
 
-// Generated from OpenAPI doc version 1.0.0 and generator version 2.938.0
+// Generated from OpenAPI doc version 1.0.0 and generator version 2.941.0
 
 import (
 	"context"
@@ -194,9 +194,9 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
 		SDKVersion: "0.3.19",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.3.19 2.938.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			UserAgent:         "speakeasy-sdk/terraform 0.3.19 2.941.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
 			SDKVersion:        "0.3.19",
-			GenVersion:        "2.938.0",
+			GenVersion:        "2.941.0",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
 		},
