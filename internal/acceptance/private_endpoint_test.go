@@ -32,7 +32,7 @@ type stubPrivateEndpoint struct {
 	ModelSlug       string      `json:"model_slug"`
 	ModelName       string      `json:"model_name"`
 	ProviderName    string      `json:"provider_name"`
-	ProviderSlug    string      `json:"provider_slug"`
+	ProviderSlug    *string     `json:"provider_slug"`
 	BaseURL         *string     `json:"base_url"`
 	UpstreamModelID string      `json:"upstream_model_id"`
 	DeclaredZDR     *bool       `json:"declared_zdr"`
@@ -50,6 +50,7 @@ type stubPrivateEndpoints struct {
 	endpoints map[string]*stubPrivateEndpoint
 	creates   []map[string]any
 	deletes   []string
+	failGets  int
 }
 
 func newStubPrivateEndpoints(t *testing.T) (*httptest.Server, *stubPrivateEndpoints) {
@@ -99,6 +100,11 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		}
 		endpoint.Pricing = body.Pricing
 	case len(parts) == 2 && r.Method == http.MethodGet:
+		if s.failGets > 0 {
+			s.failGets--
+			writeError(http.StatusForbidden, "Forbidden")
+			return
+		}
 	case len(parts) == 2 && r.Method == http.MethodDelete:
 		if r.URL.Query().Get("draft_only") == "true" && endpoint.Status != "draft" {
 			writeError(http.StatusConflict, "not_draft")
@@ -144,7 +150,7 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 		ModelSlug:       body.ModelPermaslug,
 		ModelName:       "GPT-4o",
 		ProviderName:    "OpenAI",
-		ProviderSlug:    body.ProviderSlug,
+		ProviderSlug:    &body.ProviderSlug,
 		BaseURL:         body.BaseURL,
 		UpstreamModelID: body.UpstreamModelID,
 		DeclaredZDR:     body.DeclaredZDR,
@@ -208,6 +214,25 @@ func (s *stubPrivateEndpoints) checkLastCreateActivated() resource.TestCheckFunc
 			return fmt.Errorf("create body activate = %v, want workspace %s", s.creates[len(s.creates)-1]["activate"], privateEndpointWorkspaceID)
 		}
 		return nil
+	}
+}
+
+func (s *stubPrivateEndpoints) checkEndpointCount(want int) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		if len(s.endpoints) != want {
+			return fmt.Errorf("server holds %d endpoints, want %d", len(s.endpoints), want)
+		}
+		return nil
+	}
+}
+
+func (s *stubPrivateEndpoints) unlistProviders() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, endpoint := range s.endpoints {
+		endpoint.ProviderSlug = nil
 	}
 }
 
@@ -335,4 +360,57 @@ func TestStubPrivateEndpointRejectsPartialPricing(t *testing.T) {
 	if len(api.creates) != 0 {
 		t.Fatalf("server saw %d creates for an invalid pricing block, want 0", len(api.creates))
 	}
+}
+
+func TestStubPrivateEndpointFailedReadAfterCreateKeepsEndpointInState(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	config := privateEndpointConfig(srv.URL, "gpt-4o-prod", "0.000002")
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				PreConfig:   func() { api.failGets = 1 },
+				Config:      config,
+				ExpectError: regexp.MustCompile(`Got an unexpected response code 403`),
+			},
+			{
+				Config: config,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(name, plancheck.ResourceActionDestroyBeforeCreate),
+					},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "status", "active"),
+					api.checkCreateCount(2),
+					api.checkEndpointCount(1),
+				),
+			},
+		},
+	})
+}
+
+func TestStubPrivateEndpointUnlistedProviderKeepsConfiguredSlug(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	config := privateEndpointConfig(srv.URL, "gpt-4o-prod", "0.000002")
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config},
+			{
+				PreConfig: api.unlistProviders,
+				Config:    config,
+				PlanOnly:  true,
+			},
+			{
+				Config: config,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "provider_slug", "openai"),
+					api.checkCreateCount(1),
+				),
+			},
+		},
+	})
 }

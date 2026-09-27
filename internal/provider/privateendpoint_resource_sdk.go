@@ -66,7 +66,9 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	r.Pricing.Completion = types.StringValue(resp.Pricing.Completion)
 	r.Pricing.Prompt = types.StringValue(resp.Pricing.Prompt)
 	r.ProviderName = types.StringValue(resp.ProviderName)
-	r.ProviderSlug = types.StringPointerValue(resp.ProviderSlug)
+	if resp.ProviderSlug != nil {
+		r.ProviderSlug = types.StringValue(*resp.ProviderSlug)
+	}
 	r.Status = types.StringValue(string(resp.Status))
 	r.UpstreamModelID = types.StringValue(resp.UpstreamModelID)
 

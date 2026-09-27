@@ -297,6 +297,12 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	request1, request1Diags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(request1Diags...)
 
