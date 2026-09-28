@@ -186,7 +186,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 			},
 			"status": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Lifecycle state. ` + "`" + `draft` + "`" + ` endpoints are not routable until validated and activated; ` + "`" + `disabled` + "`" + ` endpoints are activated but temporarily not routable.`,
 			},
 			"upstream_model_id": schema.StringAttribute{
