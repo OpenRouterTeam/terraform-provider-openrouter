@@ -29734,6 +29734,9 @@ components:
           type: string
           x-speakeasy-param-force-new: false
           x-speakeasy-plan-modifiers: PrivateEndpointBaseURLRequiresReplace
+          # The API only accepts https (any case, since it lowercases the scheme);
+          # reject other schemes at plan time instead of with a 400 on create.
+          pattern: '^(?i)https://'
         declared_region:
           description: Attest where this deployment processes data.
           enum:

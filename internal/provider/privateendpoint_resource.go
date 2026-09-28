@@ -83,6 +83,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Description: `HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).`,
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
+					stringvalidator.RegexMatches(regexp.MustCompile(`^(?i)https://`), "must match pattern "+regexp.MustCompile(`^(?i)https://`).String()),
 				},
 			},
 			"declared_region": schema.StringAttribute{

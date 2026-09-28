@@ -755,3 +755,23 @@ func TestStubPrivateEndpointReplayedDraftAfterRetriedActivationIsDeleted(t *test
 		t.Fatalf("endpoints=%d deletes=%q, want the replayed draft deleted with draft_only=true", len(api.endpoints), api.deletes)
 	}
 }
+
+// The API only accepts HTTPS base URLs; any other scheme fails at plan time
+// instead of with a 400 on create.
+func TestStubPrivateEndpointRejectsNonHTTPSBaseURL(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:      privateEndpointBaseURLConfig(srv.URL, "http://contoso.openai.azure.com", privateEndpointWorkspaceID),
+				ExpectError: regexp.MustCompile(`must match pattern`),
+			},
+		},
+	})
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if len(api.creates) != 0 {
+		t.Fatalf("server saw %d creates for an http base_url, want 0", len(api.creates))
+	}
+}

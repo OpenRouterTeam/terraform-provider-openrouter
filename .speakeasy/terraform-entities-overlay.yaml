@@ -423,6 +423,9 @@ actions:
     update:
       x-speakeasy-param-force-new: false
       x-speakeasy-plan-modifiers: PrivateEndpointBaseURLRequiresReplace
+      # The API only accepts https (any case, since it lowercases the scheme);
+      # reject other schemes at plan time instead of with a 400 on create.
+      pattern: '^(?i)https://'
   - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["declared_zdr"]
     update:
       x-speakeasy-param-force-new: true
