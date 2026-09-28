@@ -17,7 +17,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -67,19 +66,13 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 		Attributes: map[string]schema.Attribute{
 			"activate": schema.SingleNestedAttribute{
 				Optional: true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplaceIfConfigured(),
-				},
 				Attributes: map[string]schema.Attribute{
 					"workspace_id": schema.StringAttribute{
-						Required: true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplaceIfConfigured(),
-						},
-						Description: `Workspace whose BYOK credential is used for the live validation call. The workspace must belong to your account. Requires replacement if changed.`,
+						Required:    true,
+						Description: `Workspace whose BYOK credential is used for the live validation call. The workspace must belong to your account.`,
 					},
 				},
-				Description: `Validate and activate in the same call. On a failed validation the draft is kept and returned with a 422, so fix it and call ` + "`" + `/validate` + "`" + ` and ` + "`" + `/activate` + "`" + ` instead of creating it again. Requires replacement if changed.`,
+				Description: `Validate and activate in the same call. On a failed validation the draft is kept and returned with a 422, so fix it and call ` + "`" + `/validate` + "`" + ` and ` + "`" + `/activate` + "`" + ` instead of creating it again.`,
 			},
 			"base_url": schema.StringAttribute{
 				Computed: true,
