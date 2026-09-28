@@ -21,6 +21,7 @@ workflow:
             inputs:
                 - location: .speakeasy/in.openapi.yaml
             overlays:
+                - location: .speakeasy/private-endpoints-overlay.yaml
                 - location: .speakeasy/speakeasy-modifications-overlay.yaml
                 - location: .speakeasy/terraform-entities-overlay.yaml
             output: .speakeasy/out.openapi.yaml

@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: f48070672e925ec3d2dd51e979942bd1
+  docChecksum: 633ec520b204da752869c322298fc1cc
   docVersion: 1.0.0
   speakeasyVersion: 1.799.0
   generationVersion: 2.941.0
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 583bac09-3d2d-42d7-a9ab-70528f6b9f0b
-  pristine_commit_hash: 63c1eae267f8cd481fb7e0266fc7eb3c0b38c960
-  pristine_tree_hash: 6dfe07219ef6eeedc45531201d5280cc2a0dcbd0
+  generation_id: a7b67e45-f08d-4a1c-87a1-f6a4dc687629
+  pristine_commit_hash: 4330bb56b80f27503ac32b983ca1c3155789d6dc
+  pristine_tree_hash: f8f595345ad5b2df4b56fc1e9f0b168d6a85a390
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -201,8 +201,8 @@ trackedFiles:
     pristine_git_object: f0098a99de94cae86badd9a21e43d14e798a7869
   examples/resources/openrouter_private_endpoint/resource.tf:
     id: 2b1c7d4b04ce
-    last_write_checksum: sha1:3e0a3acaf3d025d4191e5bb7378b7989f9acb22a
-    pristine_git_object: 5e68a54f62907efcd127fe2bc2cc112c2c56494c
+    last_write_checksum: sha1:8c191b0bcd0bf69718103fb8962ef56f92b68f1a
+    pristine_git_object: 4098da9cbf6f36be4e539853ed49ba91591972f6
   examples/resources/openrouter_scim_group_mapping/import-by-string-id.tf:
     id: aaa905f58c19
     last_write_checksum: sha1:8315cd1b1c896fb14c49ff9295d8a92210c367a0
@@ -241,8 +241,8 @@ trackedFiles:
     pristine_git_object: b97ff2ffeff454ededad08f3e0f08373e7b7d156
   go.mod:
     id: c47645c391ad
-    last_write_checksum: sha1:609968f68df27b8d637e507eba25bde47d13c4e8
-    pristine_git_object: ce59f9b82b2642ea873902bafa728316af194ad0
+    last_write_checksum: sha1:f8be98cf56ef9e9981b16fb336f491100593b751
+    pristine_git_object: eaa5aba3c170b0b977b0ea7c462c3dad452c58b4
   internal/planmodifiers/boolplanmodifier/suppress_diff.go:
     id: 3cf85b98963e
     last_write_checksum: sha1:69fe11dbe8d6b874d28105fc3de0add7b89f2f23
@@ -553,12 +553,12 @@ trackedFiles:
     pristine_git_object: 8b7ab4914feec5fe42771595ff16620b8536b537
   internal/provider/privateendpoint_resource.go:
     id: a64a2acbf118
-    last_write_checksum: sha1:c987c0a0bbf2a2b09e452182c23b28c134931786
-    pristine_git_object: 93d1b0279b3576e15fe15e399d2a7392d6187de2
+    last_write_checksum: sha1:6c6f96bfa2540cbb82e474b4fce919b69c781bca
+    pristine_git_object: 516c97adfd938860757de79ad71a631dedbdc14b
   internal/provider/privateendpoint_resource_sdk.go:
     id: f78a28b90402
-    last_write_checksum: sha1:12a4283508d371edeb84eeb725b222f765fce51f
-    pristine_git_object: 7eca9b320408c4e7bda63a2211b31fc9c694d980
+    last_write_checksum: sha1:3ae8ae1cb024e077734a99e0b5545e75f7b2af3e
+    pristine_git_object: 208a54f55a0cc17c9c160b3bbf497c69314921da
   internal/provider/provider.go:
     id: 1e7e86841cf3
     last_write_checksum: sha1:6b738d1c154c0e0eafe1ef079e1a5f304de717fd
@@ -1305,8 +1305,8 @@ trackedFiles:
     pristine_git_object: e6484923daa30356417dc199e1850462d73c01e7
   internal/sdk/models/operations/activateprivateendpoint.go:
     id: ec3fe3e822e9
-    last_write_checksum: sha1:686e0d06a646e3a7b7f4949729ecf4acd624919a
-    pristine_git_object: d7f783e7bb67debe7f1a47211869b74804b65694
+    last_write_checksum: sha1:0f52a03710d4d74d9f1bc4d359794d92dd3bd6b0
+    pristine_git_object: 6c5be88c75dd2f50fea44816823a2842067fe2ca
   internal/sdk/models/operations/bulkaddworkspacemembers.go:
     id: 15569e93f367
     last_write_checksum: sha1:7230db40d166afa13098dc92b58ff00e19a27771
@@ -1397,8 +1397,8 @@ trackedFiles:
     pristine_git_object: 313edcef01ad826ee20c4aed910c9a897e722255
   internal/sdk/models/operations/createprivateendpoint.go:
     id: 74e31e3d39ce
-    last_write_checksum: sha1:13f97cdf1f1fc07098a7efe26920ab256e3a795f
-    pristine_git_object: 55be35f627a17231c10638619e7fcaa654aeb938
+    last_write_checksum: sha1:f27e7473a897136d2ddcc6d042e912c49fa03683
+    pristine_git_object: 0588191e5eeaa90916b3861fc3ce3f708956bf57
   internal/sdk/models/operations/creatererank.go:
     id: fda06b3cd6fe
     last_write_checksum: sha1:3530ac9f52a422bc1dbf5ec3db4a3a01aa1e721c
@@ -1453,8 +1453,8 @@ trackedFiles:
     pristine_git_object: 3c803df99b364c4855bf84ab40cd0c15ec13ca1b
   internal/sdk/models/operations/deleteprivateendpoint.go:
     id: 7303c9b0b69e
-    last_write_checksum: sha1:14ab760040f53508eefc5bfd17c41b1ce3815b62
-    pristine_git_object: 5627a1e17fcd470ac60af8e1c7e659d1c5d2769d
+    last_write_checksum: sha1:323a39a9004db4cee701487d6a779f017b42395f
+    pristine_git_object: 0767fa40c62a4304ed9ce426bc77f406086f406c
   internal/sdk/models/operations/deletescimgroupmapping.go:
     id: bc7adc2e526f
     last_write_checksum: sha1:1133d71c45c2d620372de8d9ae8ad25e023422fd
@@ -1473,8 +1473,8 @@ trackedFiles:
     pristine_git_object: 0bf862259d4c27acd9578375dbba483c73819094
   internal/sdk/models/operations/disableprivateendpoint.go:
     id: 06b09af9d428
-    last_write_checksum: sha1:7fa0662bece2a10224cb95a05298c838613c4d42
-    pristine_git_object: a557f8270e2dd3defd4490744e6203d75605f77a
+    last_write_checksum: sha1:c61f7a0df5e69bcb0169926a5a5438b78d70ff5d
+    pristine_git_object: 808454007a1629a58e33fc6d9627eec77c7971d4
   internal/sdk/models/operations/downloadcontainerfilecontent.go:
     id: 667c48f59c5d
     last_write_checksum: sha1:ef08f3a1ca82fc1c1a66547d569c89c82041f9bf
@@ -1485,8 +1485,8 @@ trackedFiles:
     pristine_git_object: a0989ffc173cce3d916f0e6aa9730cce17ab4f2c
   internal/sdk/models/operations/enableprivateendpoint.go:
     id: d2b8fdfe9e0b
-    last_write_checksum: sha1:68e1b6c2dbafa6b9a355bed07036abbff2235b10
-    pristine_git_object: 436dfcf46a698a397e9b02f1ce9ea6eb2130415e
+    last_write_checksum: sha1:42767f764c354266bfd0dd1d858ab52e72f5d492
+    pristine_git_object: 4eee7aeef666b3ba431c3c30b77a5783d1a1a529
   internal/sdk/models/operations/exchangeauthcodeforapikey.go:
     id: 51819836ede7
     last_write_checksum: sha1:d80298a498498a03e4c4a4942fdb1909b0f11d2a
@@ -1561,8 +1561,8 @@ trackedFiles:
     pristine_git_object: 7e8b5c0c2f9a410df1523cadb46b5447325e4206
   internal/sdk/models/operations/getprivateendpoint.go:
     id: 45ed29867613
-    last_write_checksum: sha1:05902d84f8eaf425e07e9f7aefab277ea9712c39
-    pristine_git_object: 94eba56e16e8ee052d6f80f1d6f216fb87e9cb42
+    last_write_checksum: sha1:6ee9f512e56125b0f2ba065751b844b4b91a8e91
+    pristine_git_object: 08293886040062427a8029431507e862f73e543d
   internal/sdk/models/operations/getrankingsdaily.go:
     id: fbdc2ec534ff
     last_write_checksum: sha1:9c45debae657b14eeddd1ec288b75216e0268335
@@ -1697,8 +1697,8 @@ trackedFiles:
     pristine_git_object: 90dc69641a2b859d4d1e2e5b531e62efbb66f633
   internal/sdk/models/operations/listprivateendpoints.go:
     id: 4dbf54ccc30e
-    last_write_checksum: sha1:dd94ea2d1544ab27fd0e6cef4b9a45041d4fe391
-    pristine_git_object: d2cbdf347cfaa5f10ea0b8c8c988ec7771eb5296
+    last_write_checksum: sha1:7fd813b0cc2fe420795c0d2baee0f95814944fdb
+    pristine_git_object: 2519771bfb7294aaa5ec59f886e0a7e9bfbe57e9
   internal/sdk/models/operations/listproviders.go:
     id: b665031c7add
     last_write_checksum: sha1:d83baf28a87c7f225f4c6f2984ac8c6b4be9da93
@@ -1789,12 +1789,12 @@ trackedFiles:
     pristine_git_object: 11571f7e83751d99c13e5b3675b24cf1b8ee2818
   internal/sdk/models/operations/updateprivateendpoint.go:
     id: a06968cb4975
-    last_write_checksum: sha1:0d6c5b8ed37f0dc34bfa43a860ad8f8e84e7ea5d
-    pristine_git_object: a20e4fbf12a4dbb46615efbb7a58ae0579a1725a
+    last_write_checksum: sha1:6967fbba1ae76b669a9a5573fdbeb64a87d50a59
+    pristine_git_object: 39c494835ee41abf7340806f3a0b80e3cd2648dd
   internal/sdk/models/operations/updateprivateendpointpricing.go:
     id: db422401e293
-    last_write_checksum: sha1:f7f607c7fd30ee94d8a430a79fc0fc2fff94b393
-    pristine_git_object: 4e43a1528c60dbd3f8cbc3e492eae0b3b7f4a687
+    last_write_checksum: sha1:fcf8f7d4ba35b469a7dbb1e76534b91f7b964849
+    pristine_git_object: 52bb2c375ec5820edf05130368be93f99bcf0e75
   internal/sdk/models/operations/updatescimgroupmapping.go:
     id: 02599722cab7
     last_write_checksum: sha1:2a0ce065cb52807d96ffea5429950d144de540e3
@@ -1813,8 +1813,8 @@ trackedFiles:
     pristine_git_object: 6d87e4bdc5cc7495a1dbdad80b77a3b6636418b0
   internal/sdk/models/operations/validateprivateendpoint.go:
     id: 96ac9b2666aa
-    last_write_checksum: sha1:9fbfa80d787445e1a3ba8c820fa5f72981450c2f
-    pristine_git_object: 4089868ea90c68e807e67d94ef652dcb6c2bc59b
+    last_write_checksum: sha1:01b601e98a254d3868bf846d9e550f7398cd2013
+    pristine_git_object: 4a00d8de49cbd8cf5a402cfffa4eb390bb56a880
   internal/sdk/models/shared/aabenchmarkentry.go:
     id: 219e22db6e08
     last_write_checksum: sha1:7bbde49aa25b72fc96a36ea56672053c88bb63df
@@ -4137,8 +4137,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:7a5f0131f0cc29ae2e3b67ae54327fcf27f1918d
-    pristine_git_object: 0dcb139438d7987fc6693d862493754739471ea8
+    last_write_checksum: sha1:1f5389062d6459bb9072acb805910ea36ea67207
+    pristine_git_object: 7021a2702df599e9265a79544e16f055c3d8dcc0
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -4157,8 +4157,8 @@ trackedFiles:
     pristine_git_object: 6539d1d37a00f85584a1b45e42ce3549ed9f3dca
   internal/sdk/privateendpoints.go:
     id: c9211a390c27
-    last_write_checksum: sha1:dc116f37f575f94aca22960e6ee795bd59dccdd6
-    pristine_git_object: 114ce345dba806c5960890453caac5ad746bcedf
+    last_write_checksum: sha1:08419d43a0f1787df74ec7313d3f2b83ce31949a
+    pristine_git_object: 6d17b9b7250528fb079f81ea4f33f2a414181e57
   internal/sdk/providers.go:
     id: 3c6c5c46b0f8
     last_write_checksum: sha1:11db9cebc5018f96e8c15af884bf457b25516550
@@ -7436,8 +7436,13 @@ examples:
           application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   createPrivateEndpoint:
     speakeasy-default-create-private-endpoint:
+      parameters:
+        header:
+          Idempotency-Key: "wayfair-gpt-4o-eastus-2026-09"
       requestBody:
         application/json: {"activate": {"workspace_id": "550e8400-e29b-41d4-a716-446655440000"}, "base_url": "https://contoso.openai.azure.com", "declared_region": "us", "model_permaslug": "openai/gpt-4o-2024-08-06", "pricing": {"completion": "0.00001", "prompt": "0.0000025"}, "provider_slug": "azure", "upstream_model_id": "gpt-4o-prod"}
       responses:
@@ -7459,6 +7464,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   deletePrivateEndpoint:
     speakeasy-default-delete-private-endpoint:
       parameters:
@@ -7485,6 +7492,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   getPrivateEndpoint:
     speakeasy-default-get-private-endpoint:
       parameters:
@@ -7501,6 +7510,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   updatePrivateEndpoint:
     speakeasy-default-update-private-endpoint:
       parameters:
@@ -7527,6 +7538,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   activatePrivateEndpoint:
     speakeasy-default-activate-private-endpoint:
       parameters:
@@ -7551,6 +7564,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   disablePrivateEndpoint:
     speakeasy-default-disable-private-endpoint:
       parameters:
@@ -7575,6 +7590,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   enablePrivateEndpoint:
     speakeasy-default-enable-private-endpoint:
       parameters:
@@ -7599,6 +7616,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   updatePrivateEndpointPricing:
     speakeasy-default-update-private-endpoint-pricing:
       parameters:
@@ -7625,6 +7644,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
   validatePrivateEndpoint:
     speakeasy-default-validate-private-endpoint:
       parameters:
@@ -7651,4 +7672,6 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
 examplesVersion: 1.0.2

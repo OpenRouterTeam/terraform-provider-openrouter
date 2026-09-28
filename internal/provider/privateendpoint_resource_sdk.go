@@ -90,6 +90,30 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpointResponse(
 	return diags
 }
 
+func (r *PrivateEndpointResourceModel) ToOperationsCreatePrivateEndpointRequest(ctx context.Context) (*operations.CreatePrivateEndpointRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	idempotencyKey := new(string)
+	if !r.IdempotencyKey.IsUnknown() && !r.IdempotencyKey.IsNull() {
+		*idempotencyKey = r.IdempotencyKey.ValueString()
+	} else {
+		idempotencyKey = nil
+	}
+	body, bodyDiags := r.ToSharedCreatePrivateEndpointRequest(ctx)
+	diags.Append(bodyDiags...)
+
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	out := operations.CreatePrivateEndpointRequest{
+		IdempotencyKey: idempotencyKey,
+		Body:           *body,
+	}
+
+	return &out, diags
+}
+
 func (r *PrivateEndpointResourceModel) ToOperationsDeletePrivateEndpointRequest(ctx context.Context) (*operations.DeletePrivateEndpointRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 

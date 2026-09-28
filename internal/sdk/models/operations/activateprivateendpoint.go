@@ -38,6 +38,8 @@ type ActivatePrivateEndpointResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
 	// Conflict - Resource conflict or concurrent modification
 	ConflictResponse *shared.ConflictResponse
 	// Unprocessable Entity - Semantic validation failure
@@ -113,6 +115,13 @@ func (a *ActivatePrivateEndpointResponse) GetNotFoundResponse() *shared.NotFound
 		return nil
 	}
 	return a.NotFoundResponse
+}
+
+func (a *ActivatePrivateEndpointResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if a == nil {
+		return nil
+	}
+	return a.RequestTimeoutResponse
 }
 
 func (a *ActivatePrivateEndpointResponse) GetConflictResponse() *shared.ConflictResponse {

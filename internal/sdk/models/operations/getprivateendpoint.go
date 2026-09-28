@@ -36,6 +36,8 @@ type GetPrivateEndpointResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 }
@@ -98,6 +100,13 @@ func (g *GetPrivateEndpointResponse) GetNotFoundResponse() *shared.NotFoundRespo
 		return nil
 	}
 	return g.NotFoundResponse
+}
+
+func (g *GetPrivateEndpointResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if g == nil {
+		return nil
+	}
+	return g.RequestTimeoutResponse
 }
 
 func (g *GetPrivateEndpointResponse) GetInternalServerResponse() *shared.InternalServerResponse {

@@ -22,6 +22,8 @@ type ListPrivateEndpointsResponse struct {
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Forbidden - Authentication successful but insufficient permissions
 	ForbiddenResponse *shared.ForbiddenResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 }
@@ -77,6 +79,13 @@ func (l *ListPrivateEndpointsResponse) GetForbiddenResponse() *shared.ForbiddenR
 		return nil
 	}
 	return l.ForbiddenResponse
+}
+
+func (l *ListPrivateEndpointsResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if l == nil {
+		return nil
+	}
+	return l.RequestTimeoutResponse
 }
 
 func (l *ListPrivateEndpointsResponse) GetInternalServerResponse() *shared.InternalServerResponse {
