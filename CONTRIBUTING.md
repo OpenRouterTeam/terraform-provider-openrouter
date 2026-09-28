@@ -25,6 +25,7 @@ The provider ships with a live acceptance suite in `internal/acceptance/` that e
 
 - `OPENROUTER_MANAGEMENT_KEY` (required) — a Management API key (`sk-or-mgmt-...`) from a **dedicated test organization with $0 credits**. Management keys cannot spend on inference, and a zero-credit org makes any inference key minted during the tests unusable. Never run the suite against a production org.
 - `OPENROUTER_BASE_URL` (optional) — an explicit override to point the provider and the sweeper at a staging API base URL. When unset, the provider defaults to the production API (`https://openrouter.ai/api/v1`).
+- `OPENROUTER_PRIVATE_ENDPOINT_*` (optional) — the live `openrouter_private_endpoint` tests need an org with the private endpoints entitlement and each skips unless its workspace is set: `OPENROUTER_PRIVATE_ENDPOINT_WORKSPACE_ID` (a workspace holding a BYOK key) for the lifecycle test, `OPENROUTER_PRIVATE_ENDPOINT_NO_BYOK_WORKSPACE_ID` (one without) for the failed-activation test. The full variable list is documented at the top of `internal/acceptance/private_endpoint_live_test.go`.
 
 ### Running locally
 
