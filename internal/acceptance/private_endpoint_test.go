@@ -724,3 +724,34 @@ func TestStubPrivateEndpointRetainedDraftWithAnyStatusIsDeleted(t *testing.T) {
 		t.Fatalf("endpoints=%d deletes=%q, want the kept draft deleted with draft_only=true", len(api.endpoints), api.deletes)
 	}
 }
+
+// A failed activation answered with 5xx is retried with the same
+// Idempotency-Key, and the replay returns the kept draft as 201. The draft is
+// deleted rather than saved as though activation had succeeded.
+func TestStubPrivateEndpointReplayedDraftAfterRetriedActivationIsDeleted(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	api.retainedDraftStatus = http.StatusBadGateway
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:      privateEndpointConfig(srv.URL, "gpt-4o-prod", "0.000002"),
+				ExpectError: regexp.MustCompile(`Private endpoint activation did not complete`),
+			},
+		},
+		CheckDestroy: func(state *terraform.State) error {
+			if len(state.RootModule().Resources) != 0 {
+				return fmt.Errorf("state holds %d resources, want none", len(state.RootModule().Resources))
+			}
+			return nil
+		},
+	})
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if len(api.createKeys) != 2 || api.createKeys[0] != api.createKeys[1] {
+		t.Fatalf("create Idempotency-Keys = %q, want the 502 retried once with the same key", api.createKeys)
+	}
+	if len(api.endpoints) != 0 || len(api.deletes) != 1 || api.deletes[0] != "draft_only=true" {
+		t.Fatalf("endpoints=%d deletes=%q, want the replayed draft deleted with draft_only=true", len(api.endpoints), api.deletes)
+	}
+}

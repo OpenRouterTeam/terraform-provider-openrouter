@@ -292,6 +292,11 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
+	resp.Diagnostics.Append(deleteUnactivatedPrivateEndpoint(ctx, r.client, data, res.ManagedPrivateEndpointResponse)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(data.RefreshFromSharedManagedPrivateEndpointResponse(ctx, res.ManagedPrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {

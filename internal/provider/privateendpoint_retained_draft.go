@@ -9,6 +9,7 @@ import (
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
@@ -58,6 +59,24 @@ func deleteRetainedPrivateEndpointDraft(ctx context.Context, client *sdk.OpenRou
 	diags.AddError(
 		"Failed to clean up draft private endpoint",
 		detail+". Delete it with the API or import it with `terraform import`.",
+	)
+	return diags
+}
+
+// deleteUnactivatedPrivateEndpoint rejects a 201 create that asked for
+// activation but returned a draft. A create retried with the same
+// Idempotency-Key after a failed activation replays the kept draft as 201, and
+// activate is create-only, so saving it would leave a non-routable endpoint
+// that no later apply activates.
+func deleteUnactivatedPrivateEndpoint(ctx context.Context, client *sdk.OpenRouter, data *PrivateEndpointResourceModel, res *shared.ManagedPrivateEndpointResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
+	if data.Activate == nil || res.Data.Status != shared.PrivateEndpointStatusDraft {
+		return diags
+	}
+	diags.Append(deleteRetainedPrivateEndpointDraft(ctx, client, res.Data.ID)...)
+	diags.AddError(
+		"Private endpoint activation did not complete",
+		fmt.Sprintf("The API returned private endpoint %q as a draft although activate was set, so it was not saved to state. Fix the cause of the failed activation and apply again.", res.Data.ID),
 	)
 	return diags
 }
