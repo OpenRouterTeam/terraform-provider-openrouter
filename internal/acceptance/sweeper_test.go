@@ -43,8 +43,55 @@ func sweep() error {
 			errs = append(errs, path+": "+err.Error())
 		}
 	}
+	// Private endpoints need an entitled org, so only sweep where the live
+	// private endpoint tests are configured to run.
+	if os.Getenv("OPENROUTER_PRIVATE_ENDPOINT_WORKSPACE_ID") != "" || os.Getenv("OPENROUTER_PRIVATE_ENDPOINT_NO_BYOK_WORKSPACE_ID") != "" {
+		if err := sweepPrivateEndpoints(ctx); err != nil {
+			errs = append(errs, "/private-endpoints: "+err.Error())
+		}
+	}
 	if len(errs) > 0 {
 		return fmt.Errorf("%s", strings.Join(errs, "; "))
+	}
+	return nil
+}
+
+// sweepPrivateEndpoints deletes private endpoints whose upstream model ID
+// carries the tf-acc prefix. Endpoints have no name, and the list omits the
+// upstream model ID, so each one is read before it is matched. Endpoints the
+// live tests create against real upstream model IDs cannot be matched.
+func sweepPrivateEndpoints(ctx context.Context) error {
+	body, err := apiRequest(ctx, http.MethodGet, "/private-endpoints", nil)
+	if err != nil {
+		return err
+	}
+	var list struct {
+		Data []struct {
+			ID string `json:"id"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(body, &list); err != nil {
+		return fmt.Errorf("decode list: %w", err)
+	}
+	for _, item := range list.Data {
+		body, err := apiRequest(ctx, http.MethodGet, "/private-endpoints/"+item.ID, nil)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "sweeper: failed reading private endpoint %s: %v\n", item.ID, err)
+			continue
+		}
+		var detail struct {
+			Data struct {
+				UpstreamModelID string `json:"upstream_model_id"`
+			} `json:"data"`
+		}
+		if err := json.Unmarshal(body, &detail); err != nil || !strings.HasPrefix(detail.Data.UpstreamModelID, runPrefix+"-") {
+			continue
+		}
+		if _, err := apiRequest(ctx, http.MethodDelete, "/private-endpoints/"+item.ID, nil); err != nil {
+			fmt.Fprintf(os.Stderr, "sweeper: failed deleting private endpoint %q (%s): %v\n", detail.Data.UpstreamModelID, item.ID, err)
+			continue
+		}
+		fmt.Fprintf(os.Stderr, "sweeper: deleted orphaned private endpoint %q\n", detail.Data.UpstreamModelID)
 	}
 	return nil
 }

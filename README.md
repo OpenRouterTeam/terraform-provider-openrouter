@@ -23,7 +23,7 @@ terraform {
   required_providers {
     openrouter = {
       source  = "OpenRouterTeam/openrouter"
-      version = "0.3.18"
+      version = "0.3.19"
     }
   }
 }
@@ -89,6 +89,7 @@ Available configuration:
 * [openrouter_byok_key](docs/resources/byok_key.md)
 * [openrouter_guardrail](docs/resources/guardrail.md)
 * [openrouter_observability_destination](docs/resources/observability_destination.md)
+* [openrouter_private_endpoint](docs/resources/private_endpoint.md)
 * [openrouter_scim_group_mapping](docs/resources/scim_group_mapping.md)
 * [openrouter_workspace](docs/resources/workspace.md)
 * [openrouter_workspace_budget](docs/resources/workspace_budget.md)
@@ -111,6 +112,7 @@ Available configuration:
 * [openrouter_organization_members](docs/data-sources/organization_members.md)
 * [openrouter_preset](docs/data-sources/preset.md)
 * [openrouter_presets](docs/data-sources/presets.md)
+* [openrouter_private_endpoint](docs/data-sources/private_endpoint.md)
 * [openrouter_providers](docs/data-sources/providers.md)
 * [openrouter_scim_group_mapping](docs/data-sources/scim_group_mapping.md)
 * [openrouter_workspace](docs/data-sources/workspace.md)

@@ -7,7 +7,7 @@ info:
     Maps OpenRouter management API operations to Terraform entities via
     x-speakeasy-entity / x-speakeasy-entity-operation. Resources: ApiKey,
     Guardrail, Workspace, ByokKey, ObservabilityDestination,
-    ScimGroupMapping, WorkspaceBudget. Plus read-only
+    ScimGroupMapping, WorkspaceBudget, PrivateEndpoint. Plus read-only
     data-source entities for management lists and the model/provider/preset
     /credits catalog.
 actions:
@@ -374,6 +374,82 @@ actions:
   - target: $["paths"]["/workspaces/{workspace_ref}/budgets/{interval}"]["delete"]
     update:
       x-speakeasy-entity-operation: WorkspaceBudget#delete
+  # ---------------------------------------------------------------------------
+  # PrivateEndpoint  (POST /private-endpoints, GET/DELETE /private-endpoints/{id},
+  # PUT /private-endpoints/{id}/pricing). ECO-4315.
+  # Component-based: PrivateEndpoint is the read model, ManagedPrivateEndpoint
+  # the create response. Create sends `activate` so one apply runs
+  # create -> validate -> activate. The API only edits pricing in place once an
+  # endpoint leaves draft, so every other create field forces replacement and
+  # PUT .../pricing is the sole update operation.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["PrivateEndpoint"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+  - target: $["components"]["schemas"]["ManagedPrivateEndpoint"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+      x-speakeasy-entity-description: |-
+        A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
+
+        Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+
+        `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
+
+        `activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.
+
+        If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
+  - target: $["components"]["schemas"]["UpdatePrivateEndpointPricingRequest"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["model_permaslug"]
+    update:
+      x-speakeasy-param-force-new: true
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["provider_slug"]
+    update:
+      x-speakeasy-param-force-new: true
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["upstream_model_id"]
+    update:
+      x-speakeasy-param-force-new: true
+  # base_url is replaced only when its normalized form changes: the API
+  # lowercases the scheme and host and strips a trailing "/" or
+  # "/chat/completions", so a config spelled differently from the stored value
+  # must not recreate the endpoint. The modifier lives in
+  # internal/planmodifiers/stringplanmodifier/private_endpoint_base_url_requires_replace.go.
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["base_url"]
+    update:
+      x-speakeasy-param-force-new: false
+      x-speakeasy-plan-modifiers: PrivateEndpointBaseURLRequiresReplace
+      # The API only accepts https (any case, since it lowercases the scheme);
+      # reject other schemes at plan time instead of with a 400 on create.
+      pattern: '^(?i)https://'
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["declared_zdr"]
+    update:
+      x-speakeasy-param-force-new: true
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["declared_region"]
+    update:
+      x-speakeasy-param-force-new: true
+
+  - target: $["paths"]["/private-endpoints"]["post"]
+    update:
+      x-speakeasy-entity-operation: PrivateEndpoint#create
+  # Create returns the summary shape without pricing or the upstream fields,
+  # so GET runs as create step 2 to settle every computed attribute.
+  - target: $["paths"]["/private-endpoints/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation:
+        - PrivateEndpoint#create#2
+        - PrivateEndpoint#read
+  - target: $["paths"]["/private-endpoints/{id}/pricing"]["put"]
+    update:
+      x-speakeasy-entity-operation: PrivateEndpoint#update
+  - target: $["paths"]["/private-endpoints/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: PrivateEndpoint#delete
+
   # DEV-856: drop doc-only `default` values from destination config schemas.
   # These defaults come from Zod `.default()` in the server-side broadcast
   # schemas; the API never applies them, so the emitted OpenAPI `default:` is
@@ -499,3 +575,79 @@ actions:
     remove: true
   - target: $["components"]["schemas"]["ObservabilityWebhookDestination"]["properties"]["config"]["properties"]["method"]["default"]
     remove: true
+  # Create sends a fresh Idempotency-Key per resource create (set in
+  # privateendpoint_resource.go), so a retry after a 408, a 5xx or a dropped
+  # connection returns the endpoint the first attempt made instead of adding a
+  # second one. The server keeps running after its 60s timeout, which is why a
+  # 408 is retried rather than reported.
+  - target: $["paths"]["/private-endpoints"]["post"]
+    update:
+      x-speakeasy-retries:
+        strategy: 'backoff'
+        backoff:
+          initialInterval: 1000
+          maxInterval: 30000
+          maxElapsedTime: 300000
+          exponent: 1.5
+        statusCodes:
+          - '408'
+          - '429'
+          - '5XX'
+        retryConnectionErrors: true
+  - target: $["paths"]["/private-endpoints"]["post"]["parameters"][?(@.name == "Idempotency-Key")]
+    update:
+      x-speakeasy-terraform-ignore: true
+  # draft_only is a flag on one DELETE call, not a property of the endpoint.
+  # The retained-draft cleanup sets it directly.
+  - target: $["paths"]["/private-endpoints/{id}"]["delete"]["parameters"][?(@.name == "draft_only")]
+    update:
+      x-speakeasy-terraform-ignore: true
+  # activate is create-time input and is never read back. Changing or removing
+  # it later, or adding it after an import, is an in-place no-op instead of a
+  # replacement of a live endpoint.
+  - target: $["components"]["schemas"]["PrivateEndpointActivation"]
+    update:
+      x-speakeasy-param-force-new: false
+      description: Validate and activate the endpoint as part of create. Only sent when the endpoint is created; if validation fails, the provider deletes the draft the API kept and reports the failed checks. Later changes are recorded in state without calling the API.
+  - target: $["components"]["schemas"]["PrivateEndpointActivation"]["properties"]["workspace_id"]
+    update:
+      x-speakeasy-param-force-new: false
+  # Server-assigned attributes keep their state value in plans for in-place
+  # (pricing) updates instead of showing as known after apply.
+  - target: $["components"]["schemas"]["PrivateEndpoint"]["properties"]["id"]
+    update:
+      x-speakeasy-param-suppress-computed-diff: true
+  # status is a $ref to the shared enum, where a sibling annotation is ignored.
+  - target: $["components"]["schemas"]["PrivateEndpointStatus"]
+    update:
+      x-speakeasy-param-suppress-computed-diff: true
+  - target: $["components"]["schemas"]["PrivateEndpoint"]["properties"]["model_name"]
+    update:
+      x-speakeasy-param-suppress-computed-diff: true
+  - target: $["components"]["schemas"]["PrivateEndpoint"]["properties"]["model_slug"]
+    update:
+      x-speakeasy-param-suppress-computed-diff: true
+  - target: $["components"]["schemas"]["PrivateEndpoint"]["properties"]["provider_name"]
+    update:
+      x-speakeasy-param-suppress-computed-diff: true
+  # The upstream examples pair provider "azure" with a base_url, which the API
+  # rejects: Azure takes its URL from the BYOK credential. Show a provider that
+  # is served from a base_url instead.
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["provider_slug"]
+    update:
+      example: openai
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["base_url"]
+    update:
+      example: https://api.openai.com/v1
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["upstream_model_id"]
+    update:
+      example: gpt-4o-2024-08-06
+  - target: $["components"]["schemas"]["PrivateEndpoint"]["example"]
+    update:
+      base_url: https://api.openai.com/v1
+      provider_name: OpenAI
+      provider_slug: openai
+      upstream_model_id: gpt-4o-2024-08-06
+  - target: $["components"]["schemas"]["PrivateEndpointSummary"]["properties"]["created_at"]
+    update:
+      x-speakeasy-terraform-ignore: true
