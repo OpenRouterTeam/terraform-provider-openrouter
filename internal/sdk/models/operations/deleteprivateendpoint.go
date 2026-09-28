@@ -76,6 +76,8 @@ type DeletePrivateEndpointResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
 	// Conflict - Resource conflict or concurrent modification
 	ConflictResponse *shared.ConflictResponse
 	// Unprocessable Entity - Semantic validation failure
@@ -151,6 +153,13 @@ func (d *DeletePrivateEndpointResponse) GetNotFoundResponse() *shared.NotFoundRe
 		return nil
 	}
 	return d.NotFoundResponse
+}
+
+func (d *DeletePrivateEndpointResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if d == nil {
+		return nil
+	}
+	return d.RequestTimeoutResponse
 }
 
 func (d *DeletePrivateEndpointResponse) GetConflictResponse() *shared.ConflictResponse {

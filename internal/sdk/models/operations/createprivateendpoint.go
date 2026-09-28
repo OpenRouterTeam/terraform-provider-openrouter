@@ -11,6 +11,26 @@ import (
 	"net/http"
 )
 
+type CreatePrivateEndpointRequest struct {
+	// Retry-safe create: a repeated create with the same key from the same organization returns the endpoint the first request created instead of creating another. The endpoint is returned as it is now. Reusing a key with a different request body (model, provider, base URL, upstream model ID, declared ZDR or region, or pricing) is rejected with 422 `idempotency_key_reused`. `activate` is not compared, and later edits to the endpoint do not affect the comparison.
+	IdempotencyKey *string                             `header:"style=simple,explode=false,name=Idempotency-Key"`
+	Body           shared.CreatePrivateEndpointRequest `request:"mediaType=application/json"`
+}
+
+func (c *CreatePrivateEndpointRequest) GetIdempotencyKey() *string {
+	if c == nil {
+		return nil
+	}
+	return c.IdempotencyKey
+}
+
+func (c *CreatePrivateEndpointRequest) GetBody() shared.CreatePrivateEndpointRequest {
+	if c == nil {
+		return shared.CreatePrivateEndpointRequest{}
+	}
+	return c.Body
+}
+
 type CreatePrivateEndpointBadGatewayResponseBodyType string
 
 const (
@@ -513,6 +533,8 @@ type CreatePrivateEndpointResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// The model, provider, or validation workspace was not found. When `activate` was passed and the draft was created, `data` carries it and any validation checks.
 	FourHundredAndFourApplicationJSONOneOf *CreatePrivateEndpointNotFoundResponseBody
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
 	// The request conflicts with the endpoint state, such as a stale validation. When `activate` was passed and the draft was created, `data` carries it and any validation checks.
 	FourHundredAndNineApplicationJSONOneOf *CreatePrivateEndpointConflictResponseBody
 	// The request was invalid, or validation failed. When `activate` was passed and the draft was created, `data` carries it and any validation checks.
@@ -588,6 +610,13 @@ func (c *CreatePrivateEndpointResponse) GetFourHundredAndFourApplicationJSONOneO
 		return nil
 	}
 	return c.FourHundredAndFourApplicationJSONOneOf
+}
+
+func (c *CreatePrivateEndpointResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if c == nil {
+		return nil
+	}
+	return c.RequestTimeoutResponse
 }
 
 func (c *CreatePrivateEndpointResponse) GetFourHundredAndNineApplicationJSONOneOf() *CreatePrivateEndpointConflictResponseBody {
