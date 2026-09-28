@@ -279,10 +279,7 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 		}
 	}
 	if res.StatusCode == 409 {
-		resp.Diagnostics.AddError(
-			"Resource Already Exists",
-			"When creating this resource, the API indicated that this resource already exists. You can bring the existing resource under management using Terraform import functionality or retry with a unique configuration.",
-		)
+		resp.Diagnostics.AddError("private endpoint could not be activated", privateEndpointCreateConflictDetail(res))
 		return
 	}
 	if res.StatusCode != 201 {

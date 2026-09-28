@@ -1,10 +1,14 @@
 package provider
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 
 	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -48,6 +52,41 @@ func privateEndpointCreateTimeoutDetail(statusCode int) string {
 		return ""
 	}
 	return fmt.Sprintf("The API timed out (%d) on every attempt but keeps processing a create after it times out, so the private endpoint may still have been created. List private endpoints and import it with `terraform import` instead of applying again.", statusCode)
+}
+
+// privateEndpointCreateConflictDetail explains a 409 on create. The API
+// answers 409 when the endpoint it activated is disabled, or when validation
+// is stale or never passed, not when a matching endpoint already exists, so
+// importing is not the fix.
+func privateEndpointCreateConflictDetail(res *operations.CreatePrivateEndpointResponse) string {
+	const detail = "The API could not activate the private endpoint: it is disabled, its validation is stale, or it never passed validation. This is not an existing endpoint to import. Check the validation workspace and its BYOK key, then apply again."
+	reason := privateEndpointErrorMessage(res)
+	if reason == "" {
+		return detail
+	}
+	return fmt.Sprintf("%s API reason: %s.", detail, reason)
+}
+
+// privateEndpointErrorMessage returns error.message from a create response
+// body, leaving the body readable.
+func privateEndpointErrorMessage(res *operations.CreatePrivateEndpointResponse) string {
+	if res == nil || res.RawResponse == nil || res.RawResponse.Body == nil {
+		return ""
+	}
+	raw, err := io.ReadAll(res.RawResponse.Body)
+	res.RawResponse.Body = io.NopCloser(bytes.NewReader(raw))
+	if err != nil {
+		return ""
+	}
+	var body struct {
+		Error struct {
+			Message string `json:"message"`
+		} `json:"error"`
+	}
+	if json.Unmarshal(raw, &body) != nil {
+		return ""
+	}
+	return body.Error.Message
 }
 
 // privateEndpointPricingChanged reports whether an update asks for different
