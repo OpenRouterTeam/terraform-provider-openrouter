@@ -80,10 +80,9 @@ func TestAccPrivateEndpoint_Lifecycle(t *testing.T) {
 				ImportStateVerifyIgnore: []string{"activate"},
 			},
 			{
-				ResourceName:            draft,
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"draft_only"},
+				ResourceName:      draft,
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
@@ -139,7 +138,6 @@ resource "openrouter_private_endpoint" "draft" {
   provider_slug     = %[2]q
   upstream_model_id = %[7]q
   base_url          = %[4]q
-  draft_only        = "true"
   pricing = {
     prompt     = "0.000002"
     completion = "0.000008"
