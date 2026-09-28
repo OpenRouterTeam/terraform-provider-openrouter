@@ -3,7 +3,7 @@
 
 package shared
 
-// PrivateEndpointActivation - Validate and activate in the same call. On a failed validation the draft is kept and returned with a 422, so fix it and call `/validate` and `/activate` instead of creating it again.
+// PrivateEndpointActivation - Validate and activate the endpoint as part of create. Only sent when the endpoint is created; if validation fails, the provider deletes the draft the API kept and reports the failed checks. Later changes are recorded in state without calling the API.
 type PrivateEndpointActivation struct {
 	// Workspace whose BYOK credential is used for the live validation call. The workspace must belong to your account.
 	WorkspaceID string `json:"workspace_id"`
