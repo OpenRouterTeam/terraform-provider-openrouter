@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	speakeasy_boolplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
+	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
@@ -16,7 +17,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -45,9 +45,7 @@ type PrivateEndpointResourceModel struct {
 	BaseURL         types.String                       `tfsdk:"base_url"`
 	DeclaredRegion  types.String                       `tfsdk:"declared_region"`
 	DeclaredZdr     types.Bool                         `tfsdk:"declared_zdr"`
-	DraftOnly       types.String                       `queryParam:"style=form,explode=true,name=draft_only" tfsdk:"draft_only"`
 	ID              types.String                       `tfsdk:"id"`
-	IdempotencyKey  types.String                       `tfsdk:"idempotency_key"`
 	ModelName       types.String                       `tfsdk:"model_name"`
 	ModelPermaslug  types.String                       `tfsdk:"model_permaslug"`
 	ModelSlug       types.String                       `tfsdk:"model_slug"`
@@ -64,32 +62,25 @@ func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.Met
 
 func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "PrivateEndpoint Resource",
+		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\nOnly `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
 		Attributes: map[string]schema.Attribute{
 			"activate": schema.SingleNestedAttribute{
 				Optional: true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplaceIfConfigured(),
-				},
 				Attributes: map[string]schema.Attribute{
 					"workspace_id": schema.StringAttribute{
-						Required: true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplaceIfConfigured(),
-						},
-						Description: `Workspace whose BYOK credential is used for the live validation call. The workspace must belong to your account. Requires replacement if changed.`,
+						Required:    true,
+						Description: `Workspace whose BYOK credential is used for the live validation call. The workspace must belong to your account.`,
 					},
 				},
-				Description: `Validate and activate in the same call. On a failed validation the draft is kept and returned with a 422, so fix it and call ` + "`" + `/validate` + "`" + ` and ` + "`" + `/activate` + "`" + ` instead of creating it again. Requires replacement if changed.`,
+				Description: `Validate and activate the endpoint as part of create. Only sent when the endpoint is created; if validation fails, the provider deletes the draft the API kept and reports the failed checks. Later changes are recorded in state without calling the API.`,
 			},
 			"base_url": schema.StringAttribute{
 				Computed: true,
 				Optional: true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIfConfigured(),
-					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+					custom_stringplanmodifier.PrivateEndpointBaseURLRequiresReplace(),
 				},
-				Description: `HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex). Requires replacement if changed.`,
+				Description: `HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).`,
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
 				},
@@ -119,32 +110,18 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 				Description: `Attest that this deployment retains no prompt or completion data. Requires replacement if changed.`,
 			},
-			"draft_only": schema.StringAttribute{
-				Optional:    true,
-				Description: `When ` + "`" + `true` + "`" + `, only delete the endpoint if it is still a draft (409 otherwise). must be one of ["true", "false"]`,
-				Validators: []validator.String{
-					stringvalidator.OneOf(
-						"true",
-						"false",
-					),
-				},
-			},
 			"id": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Stable identifier of the private endpoint.`,
 			},
-			"idempotency_key": schema.StringAttribute{
-				Optional: true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIfConfigured(),
-				},
-				Description: `Retry-safe create: a repeated create with the same key from the same organization returns the endpoint the first request created instead of creating another. The endpoint is returned as it is now. Reusing a key with a different request body (model, provider, base URL, upstream model ID, declared ZDR or region, or pricing) is rejected with 422 ` + "`" + `idempotency_key_reused` + "`" + `. ` + "`" + `activate` + "`" + ` is not compared, and later edits to the endpoint do not affect the comparison. Requires replacement if changed.`,
-				Validators: []validator.String{
-					stringvalidator.UTF8LengthBetween(1, 255),
-				},
-			},
 			"model_name": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Display name of the model, or ` + "`" + `null` + "`" + ` when the model is no longer listed.`,
 			},
 			"model_permaslug": schema.StringAttribute{
@@ -159,7 +136,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 			},
 			"model_slug": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Public model slug, or ` + "`" + `null` + "`" + ` when the model is no longer listed.`,
 			},
 			"pricing": schema.SingleNestedAttribute{
@@ -188,7 +168,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Description: `Negotiated per-token rates reported for requests routed to this endpoint.`,
 			},
 			"provider_name": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Display name of the upstream provider.`,
 			},
 			"provider_slug": schema.StringAttribute{
@@ -203,7 +186,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 			},
 			"status": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Lifecycle state. ` + "`" + `draft` + "`" + ` endpoints are not routable until validated and activated; ` + "`" + `disabled` + "`" + ` endpoints are activated but temporarily not routable.`,
 			},
 			"upstream_model_id": schema.StringAttribute{
@@ -265,6 +251,12 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	request.IdempotencyKey, requestDiags = newPrivateEndpointIdempotencyKey()
+	resp.Diagnostics.Append(requestDiags...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	res, err := r.client.PrivateEndpoints.Create(ctx, *request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
@@ -280,6 +272,9 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 	if res.StatusCode != 201 {
 		if draftID := retainedPrivateEndpointDraftID(res); draftID != "" {
 			resp.Diagnostics.Append(deleteRetainedPrivateEndpointDraft(ctx, r.client, draftID)...)
+		}
+		if detail := privateEndpointCreateTimeoutDetail(res.StatusCode); detail != "" {
+			resp.Diagnostics.AddError("private endpoint may have been created", detail)
 		}
 	}
 	if res.StatusCode == 409 {
@@ -425,6 +420,15 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 
 	merge(ctx, req, resp, &data)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+	pricingChanged, pricingDiags := privateEndpointPricingChanged(ctx, req)
+	resp.Diagnostics.Append(pricingDiags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	if !pricingChanged {
+		r.refreshPrivateEndpointWithoutPricingWrite(ctx, plan, data, resp)
 		return
 	}
 

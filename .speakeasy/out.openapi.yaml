@@ -29729,10 +29729,11 @@ components:
           $ref: '#/components/schemas/PrivateEndpointActivation'
         base_url:
           description: HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
-          example: https://contoso.openai.azure.com
+          example: https://api.openai.com/v1
           minLength: 1
           type: string
-          x-speakeasy-param-force-new: true
+          x-speakeasy-param-force-new: false
+          x-speakeasy-plan-modifiers: PrivateEndpointBaseURLRequiresReplace
         declared_region:
           description: Attest where this deployment processes data.
           enum:
@@ -29761,13 +29762,13 @@ components:
           $ref: '#/components/schemas/PrivateEndpointPricing'
         provider_slug:
           description: Slug of the upstream provider.
-          example: azure
+          example: openai
           minLength: 1
           type: string
           x-speakeasy-param-force-new: true
         upstream_model_id:
           description: Model or deployment identifier sent to the upstream provider.
-          example: gpt-4o-prod
+          example: gpt-4o-2024-08-06
           minLength: 1
           type: string
           x-speakeasy-param-force-new: true
@@ -29777,6 +29778,16 @@ components:
         - upstream_model_id
       type: object
       x-speakeasy-entity: PrivateEndpoint
+      x-speakeasy-entity-description: |-
+        A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
+
+        Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+
+        `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
+
+        `activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.
+
+        If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
     CreatePrivateEndpointValidationFailedResponse:
       properties:
         data:
@@ -29853,7 +29864,7 @@ components:
       type: object
     PrivateEndpoint:
       example:
-        base_url: https://contoso.openai.azure.com
+        base_url: https://api.openai.com/v1
         declared_region: us
         declared_zdr: true
         id: 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11
@@ -29863,10 +29874,10 @@ components:
         pricing:
           completion: '0.00001'
           prompt: '0.0000025'
-        provider_name: Azure
-        provider_slug: azure
+        provider_name: OpenAI
+        provider_slug: openai
         status: active
-        upstream_model_id: gpt-4o-prod
+        upstream_model_id: gpt-4o-2024-08-06
       properties:
         base_url:
           description: HTTPS base URL of your deployment, or `null` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
@@ -29887,12 +29898,14 @@ components:
           example: 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11
           format: uuid
           type: string
+          x-speakeasy-param-suppress-computed-diff: true
         model_name:
           description: Display name of the model, or `null` when the model is no longer listed.
           example: 'OpenAI: GPT-4o'
           type:
             - string
             - 'null'
+          x-speakeasy-param-suppress-computed-diff: true
         model_permaslug:
           description: Permanent slug of the model this endpoint serves.
           example: openai/gpt-4o-2024-08-06
@@ -29903,12 +29916,14 @@ components:
           type:
             - string
             - 'null'
+          x-speakeasy-param-suppress-computed-diff: true
         pricing:
           $ref: '#/components/schemas/PrivateEndpointPricing'
         provider_name:
           description: Display name of the upstream provider.
           example: Azure
           type: string
+          x-speakeasy-param-suppress-computed-diff: true
         provider_slug:
           description: Slug of the upstream provider, or `null` when the provider is no longer listed.
           example: azure
@@ -29937,7 +29952,7 @@ components:
       type: object
       x-speakeasy-entity: PrivateEndpoint
     PrivateEndpointActivation:
-      description: Validate and activate in the same call. On a failed validation the draft is kept and returned with a 422, so fix it and call `/validate` and `/activate` instead of creating it again.
+      description: Validate and activate the endpoint as part of create. Only sent when the endpoint is created; if validation fails, the provider deletes the draft the API kept and reports the failed checks. Later changes are recorded in state without calling the API.
       example:
         workspace_id: 550e8400-e29b-41d4-a716-446655440000
       properties:
@@ -29946,9 +29961,11 @@ components:
           example: 550e8400-e29b-41d4-a716-446655440000
           format: uuid
           type: string
+          x-speakeasy-param-force-new: false
       required:
         - workspace_id
       type: object
+      x-speakeasy-param-force-new: false
     PrivateEndpointCheck:
       example:
         name: auth_ok
@@ -30048,6 +30065,7 @@ components:
         - disabled
       example: active
       type: string
+      x-speakeasy-param-suppress-computed-diff: true
     PrivateEndpointSummary:
       properties:
         created_at:
@@ -47077,6 +47095,7 @@ paths:
             maxLength: 255
             minLength: 1
             type: string
+          x-speakeasy-terraform-ignore: true
       requestBody:
         content:
           application/json:
@@ -47178,13 +47197,15 @@ paths:
       x-speakeasy-retries:
         strategy: 'backoff'
         backoff:
-          initialInterval: 500
-          maxInterval: 60000
-          maxElapsedTime: 3600000
+          initialInterval: 1000
+          maxInterval: 30000
+          maxElapsedTime: 300000
           exponent: 1.5
         statusCodes:
+          - '408'
           - '429'
-        retryConnectionErrors: false
+          - '5XX'
+        retryConnectionErrors: true
   /private-endpoints/{id}:
     delete:
       description: Delete a private endpoint and stop routing to it. Pass `draft_only=true` to refuse (409) when the endpoint has been activated. [Management key](/docs/guides/overview/auth/management-api-keys) required.
@@ -47209,7 +47230,7 @@ paths:
               - 'true'
               - 'false'
             type: string
-          example: 'false'
+          x-speakeasy-terraform-ignore: true
       responses:
         '200':
           content:

@@ -1,40 +1,42 @@
 package provider
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
-	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
 // retainedPrivateEndpointDraftID returns the ID of the draft the API kept
 // when a one-shot create-and-activate failed after the draft was persisted.
+// The kept draft can come back with any error status (a failed check can
+// surface as 400, 404, 409, 422 or 5xx), so the raw body is read rather than
+// the per-status models.
 func retainedPrivateEndpointDraftID(res *operations.CreatePrivateEndpointResponse) string {
-	candidates := []*shared.CreatePrivateEndpointValidationFailedResponse{}
-	if body := res.FourHundredAndFourApplicationJSONOneOf; body != nil {
-		candidates = append(candidates, body.CreatePrivateEndpointValidationFailedResponse)
+	if res == nil || res.RawResponse == nil || res.RawResponse.Body == nil {
+		return ""
 	}
-	if body := res.FourHundredAndNineApplicationJSONOneOf; body != nil {
-		candidates = append(candidates, body.CreatePrivateEndpointValidationFailedResponse)
+	raw, err := io.ReadAll(res.RawResponse.Body)
+	res.RawResponse.Body = io.NopCloser(bytes.NewReader(raw))
+	if err != nil {
+		return ""
 	}
-	if body := res.FourHundredAndTwentyTwoApplicationJSONOneOf; body != nil {
-		candidates = append(candidates, body.CreatePrivateEndpointValidationFailedResponse)
+	var body struct {
+		Data struct {
+			Endpoint struct {
+				ID string `json:"id"`
+			} `json:"endpoint"`
+		} `json:"data"`
 	}
-	if body := res.FiveHundredApplicationJSONOneOf; body != nil {
-		candidates = append(candidates, body.CreatePrivateEndpointValidationFailedResponse)
+	if json.Unmarshal(raw, &body) != nil {
+		return ""
 	}
-	if body := res.FiveHundredAndTwoApplicationJSONOneOf; body != nil {
-		candidates = append(candidates, body.CreatePrivateEndpointValidationFailedResponse)
-	}
-	for _, candidate := range candidates {
-		if candidate != nil && candidate.Data.Endpoint.ID != "" {
-			return candidate.Data.Endpoint.ID
-		}
-	}
-	return ""
+	return body.Data.Endpoint.ID
 }
 
 // deleteRetainedPrivateEndpointDraft removes a draft left behind by a failed

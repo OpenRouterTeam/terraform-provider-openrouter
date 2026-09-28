@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -13,26 +14,30 @@ import (
 )
 
 func TestRetainedPrivateEndpointDraftID(t *testing.T) {
-	retained := &shared.CreatePrivateEndpointValidationFailedResponse{}
-	retained.Data.Endpoint.ID = "ep_retained"
-	res := &operations.CreatePrivateEndpointResponse{
-		StatusCode: 422,
-		FourHundredAndTwentyTwoApplicationJSONOneOf: &operations.CreatePrivateEndpointUnprocessableEntityResponseBody{
-			CreatePrivateEndpointValidationFailedResponse: retained,
-		},
+	response := func(status int, body string) *operations.CreatePrivateEndpointResponse {
+		return &operations.CreatePrivateEndpointResponse{
+			StatusCode:  status,
+			RawResponse: &http.Response{StatusCode: status, Body: io.NopCloser(strings.NewReader(body))},
+		}
 	}
-	if got := retainedPrivateEndpointDraftID(res); got != "ep_retained" {
-		t.Fatalf("retained draft id = %q, want ep_retained", got)
+	for _, status := range []int{400, 404, 409, 422, 500, 502} {
+		res := response(status, `{"error":{"code":1,"message":"failed"},"data":{"endpoint":{"id":"ep_retained"},"validation":null}}`)
+		if got := retainedPrivateEndpointDraftID(res); got != "ep_retained" {
+			t.Fatalf("status %d: retained draft id = %q, want ep_retained", status, got)
+		}
+		// The body stays readable for the error diagnostic.
+		if body, _ := io.ReadAll(res.RawResponse.Body); !strings.Contains(string(body), "ep_retained") {
+			t.Fatalf("status %d: body after parsing = %q, want it intact", status, body)
+		}
 	}
 
-	plainError := &operations.CreatePrivateEndpointResponse{
-		StatusCode: 422,
-		FourHundredAndTwentyTwoApplicationJSONOneOf: &operations.CreatePrivateEndpointUnprocessableEntityResponseBody{
-			UnprocessableEntityResponse: &shared.UnprocessableEntityResponse{},
-		},
+	for _, body := range []string{`{"error":{"code":422,"message":"invalid"}}`, `not json`, ``} {
+		if got := retainedPrivateEndpointDraftID(response(422, body)); got != "" {
+			t.Fatalf("retained draft id for %q = %q, want empty", body, got)
+		}
 	}
-	if got := retainedPrivateEndpointDraftID(plainError); got != "" {
-		t.Fatalf("retained draft id for a pre-create error = %q, want empty", got)
+	if got := retainedPrivateEndpointDraftID(&operations.CreatePrivateEndpointResponse{StatusCode: 408}); got != "" {
+		t.Fatalf("retained draft id without a raw response = %q, want empty", got)
 	}
 }
 

@@ -40,7 +40,7 @@ func (e *CreatePrivateEndpointRequestDeclaredRegion) UnmarshalJSON(data []byte) 
 }
 
 type CreatePrivateEndpointRequest struct {
-	// Validate and activate in the same call. On a failed validation the draft is kept and returned with a 422, so fix it and call `/validate` and `/activate` instead of creating it again.
+	// Validate and activate the endpoint as part of create. Only sent when the endpoint is created; if validation fails, the provider deletes the draft the API kept and reports the failed checks. Later changes are recorded in state without calling the API.
 	Activate *PrivateEndpointActivation `json:"activate,omitzero"`
 	// HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 	BaseURL *string `json:"base_url,omitzero"`

@@ -3,12 +3,24 @@
 page_title: "openrouter_private_endpoint Resource - terraform-provider-openrouter"
 subcategory: ""
 description: |-
-  PrivateEndpoint Resource
+  A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set activate to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
+  Only pricing changes in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr or declared_region destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
+  base_url is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing / or /chat/completions); a config that differs from the stored value only in those ways is not a change.
+  activate is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after terraform import you can keep it in config without replacing the endpoint.
+  If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
 ---
 
 # openrouter_private_endpoint (Resource)
 
-PrivateEndpoint Resource
+A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
+
+Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+
+`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
+
+`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.
+
+If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
 
 ## Example Usage
 
@@ -17,17 +29,16 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
   activate = {
     workspace_id = "550e8400-e29b-41d4-a716-446655440000"
   }
-  base_url        = "https://contoso.openai.azure.com"
+  base_url        = "https://api.openai.com/v1"
   declared_region = "us"
   declared_zdr    = true
-  draft_only      = "false"
   model_permaslug = "openai/gpt-4o-2024-08-06"
   pricing = {
     completion = "0.00001"
     prompt     = "0.0000025"
   }
-  provider_slug     = "azure"
-  upstream_model_id = "gpt-4o-prod"
+  provider_slug     = "openai"
+  upstream_model_id = "gpt-4o-2024-08-06"
 }
 ```
 
@@ -42,11 +53,10 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 
 ### Optional
 
-- `activate` (Attributes) Validate and activate in the same call. On a failed validation the draft is kept and returned with a 422, so fix it and call `/validate` and `/activate` instead of creating it again. Requires replacement if changed. (see [below for nested schema](#nestedatt--activate))
-- `base_url` (String) HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex). Requires replacement if changed.
+- `activate` (Attributes) Validate and activate the endpoint as part of create. Only sent when the endpoint is created; if validation fails, the provider deletes the draft the API kept and reports the failed checks. Later changes are recorded in state without calling the API. (see [below for nested schema](#nestedatt--activate))
+- `base_url` (String) HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 - `declared_region` (String) Attest where this deployment processes data. must be one of ["global", "europe", "us"]; Requires replacement if changed.
 - `declared_zdr` (Boolean) Attest that this deployment retains no prompt or completion data. Requires replacement if changed.
-- `draft_only` (String) When `true`, only delete the endpoint if it is still a draft (409 otherwise). must be one of ["true", "false"]
 - `pricing` (Attributes) Negotiated per-token rates reported for requests routed to this endpoint. (see [below for nested schema](#nestedatt--pricing))
 
 ### Read-Only
@@ -62,7 +72,7 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 
 Required:
 
-- `workspace_id` (String) Workspace whose BYOK credential is used for the live validation call. The workspace must belong to your account. Requires replacement if changed.
+- `workspace_id` (String) Workspace whose BYOK credential is used for the live validation call. The workspace must belong to your account.
 
 
 <a id="nestedatt--pricing"></a>
