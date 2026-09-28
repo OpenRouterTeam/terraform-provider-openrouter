@@ -395,12 +395,12 @@ func (s *PrivateEndpoints) Create(ctx context.Context, request operations.Create
 		} else {
 			retryConfig = &retry.Config{
 				Strategy: "backoff", Backoff: &retry.BackoffStrategy{
-					InitialInterval: 500,
-					MaxInterval:     60000,
+					InitialInterval: 1000,
+					MaxInterval:     30000,
 					Exponent:        1.5,
-					MaxElapsedTime:  3600000,
+					MaxElapsedTime:  300000,
 				},
-				RetryConnectionErrors: false,
+				RetryConnectionErrors: true,
 			}
 		}
 	}
@@ -410,7 +410,9 @@ func (s *PrivateEndpoints) Create(ctx context.Context, request operations.Create
 		httpRes, err = utils.Retry(ctx, utils.Retries{
 			Config: retryConfig,
 			StatusCodes: []string{
+				"408",
 				"429",
+				"5XX",
 			},
 		}, func() (*http.Response, error) {
 			if req.Body != nil && req.Body != http.NoBody && req.GetBody != nil {

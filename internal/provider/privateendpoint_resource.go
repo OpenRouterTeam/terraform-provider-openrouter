@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	speakeasy_boolplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
+	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
@@ -45,9 +46,7 @@ type PrivateEndpointResourceModel struct {
 	BaseURL         types.String                       `tfsdk:"base_url"`
 	DeclaredRegion  types.String                       `tfsdk:"declared_region"`
 	DeclaredZdr     types.Bool                         `tfsdk:"declared_zdr"`
-	DraftOnly       types.String                       `queryParam:"style=form,explode=true,name=draft_only" tfsdk:"draft_only"`
 	ID              types.String                       `tfsdk:"id"`
-	IdempotencyKey  types.String                       `tfsdk:"idempotency_key"`
 	ModelName       types.String                       `tfsdk:"model_name"`
 	ModelPermaslug  types.String                       `tfsdk:"model_permaslug"`
 	ModelSlug       types.String                       `tfsdk:"model_slug"`
@@ -64,7 +63,7 @@ func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.Met
 
 func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "PrivateEndpoint Resource",
+		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\n- Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n- `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n- `activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n- If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
 		Attributes: map[string]schema.Attribute{
 			"activate": schema.SingleNestedAttribute{
 				Optional: true,
@@ -86,10 +85,9 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Computed: true,
 				Optional: true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIfConfigured(),
-					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+					custom_stringplanmodifier.PrivateEndpointBaseURLRequiresReplace(),
 				},
-				Description: `HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex). Requires replacement if changed.`,
+				Description: `HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).`,
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
 				},
@@ -119,32 +117,18 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 				Description: `Attest that this deployment retains no prompt or completion data. Requires replacement if changed.`,
 			},
-			"draft_only": schema.StringAttribute{
-				Optional:    true,
-				Description: `When ` + "`" + `true` + "`" + `, only delete the endpoint if it is still a draft (409 otherwise). must be one of ["true", "false"]`,
-				Validators: []validator.String{
-					stringvalidator.OneOf(
-						"true",
-						"false",
-					),
-				},
-			},
 			"id": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Stable identifier of the private endpoint.`,
 			},
-			"idempotency_key": schema.StringAttribute{
-				Optional: true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIfConfigured(),
-				},
-				Description: `Retry-safe create: a repeated create with the same key from the same organization returns the endpoint the first request created instead of creating another. The endpoint is returned as it is now. Reusing a key with a different request body (model, provider, base URL, upstream model ID, declared ZDR or region, or pricing) is rejected with 422 ` + "`" + `idempotency_key_reused` + "`" + `. ` + "`" + `activate` + "`" + ` is not compared, and later edits to the endpoint do not affect the comparison. Requires replacement if changed.`,
-				Validators: []validator.String{
-					stringvalidator.UTF8LengthBetween(1, 255),
-				},
-			},
 			"model_name": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Display name of the model, or ` + "`" + `null` + "`" + ` when the model is no longer listed.`,
 			},
 			"model_permaslug": schema.StringAttribute{
@@ -159,7 +143,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 			},
 			"model_slug": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Public model slug, or ` + "`" + `null` + "`" + ` when the model is no longer listed.`,
 			},
 			"pricing": schema.SingleNestedAttribute{
@@ -188,7 +175,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Description: `Negotiated per-token rates reported for requests routed to this endpoint.`,
 			},
 			"provider_name": schema.StringAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
+				},
 				Description: `Display name of the upstream provider.`,
 			},
 			"provider_slug": schema.StringAttribute{
