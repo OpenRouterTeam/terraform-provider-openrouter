@@ -26,6 +26,7 @@ jobs:
     concurrency:
       group: tf-acceptance
       cancel-in-progress: false
+      queue: max
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-go@v6
@@ -41,7 +42,9 @@ jobs:
         env:
           TF_ACC: "1"
           OPENROUTER_MANAGEMENT_KEY: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
-        run: go test ./internal/acceptance/... -v -timeout 30m
+        # Same -parallel as acceptance.yaml: keeps account caps (5
+        # observability destinations per type) and rate limits out of play.
+        run: go test ./internal/acceptance/... -v -parallel 4 -timeout 30m
 
   # Direct GoReleaser release, replacing
   # speakeasy-api/sdk-generation-action/.github/workflows/sdk-publish.yaml.

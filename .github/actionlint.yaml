@@ -1,0 +1,6 @@
+# actionlint 1.7.12 predates concurrency `queue: max` (GitHub, 2026-05-07).
+# Drop this once actionlint recognizes the key.
+paths:
+  .github/workflows/**/*.yaml:
+    ignore:
+      - 'unexpected key "queue" for "concurrency" section'
