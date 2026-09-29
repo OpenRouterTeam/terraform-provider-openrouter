@@ -576,7 +576,7 @@ func TestStubGuardrailMemberAssignmentAPIFailure(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      config,
-				ExpectError: regexp.MustCompile(`API returned status 401`),
+				ExpectError: regexp.MustCompile(`API returned status 401: Missing Authentication header`),
 			},
 			{
 				PreConfig: func() {
@@ -591,7 +591,7 @@ func TestStubGuardrailMemberAssignmentAPIFailure(t *testing.T) {
 				PreConfig:   func() { api.setFailList(true) },
 				Config:      config,
 				PlanOnly:    true,
-				ExpectError: regexp.MustCompile(`failed to list member assignments`),
+				ExpectError: regexp.MustCompile(`(?s)failed to list member assignments.*Missing Authentication header`),
 			},
 			{
 				PreConfig: func() { api.setFailList(false) },

@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
@@ -136,7 +137,7 @@ func (r *GuardrailMemberAssignmentResource) Create(ctx context.Context, req reso
 	if res.StatusCode != 200 || res.BulkAssignMembersResponse == nil {
 		resp.Diagnostics.AddError(
 			fmt.Sprintf("failed to assign guardrail %q to member %q", guardrailID, userID),
-			fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(res.BadRequestResponse, res.NotFoundResponse)),
+			fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(res.RawResponse, res.BadRequestResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
 		)
 		return
 	}
@@ -225,7 +226,7 @@ func (r *GuardrailMemberAssignmentResource) Delete(ctx context.Context, req reso
 	if res.StatusCode != 200 || res.BulkUnassignMembersResponse == nil {
 		resp.Diagnostics.AddError(
 			fmt.Sprintf("failed to unassign guardrail %q from member %q", guardrailID, userID),
-			fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(res.BadRequestResponse, res.NotFoundResponse)),
+			fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(res.RawResponse, res.BadRequestResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
 		)
 	}
 }
@@ -262,7 +263,7 @@ func (r *GuardrailMemberAssignmentResource) checkWorkspaceScope(ctx context.Cont
 		return diags
 	}
 	if res.StatusCode != 200 || res.GetWorkspaceResponse == nil {
-		diags.AddError(fmt.Sprintf("failed to read workspace %q", workspaceID), fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(nil, res.NotFoundResponse)))
+		diags.AddError(fmt.Sprintf("failed to read workspace %q", workspaceID), fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(res.RawResponse, nil, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)))
 		return diags
 	}
 	workspace := res.GetWorkspaceResponse.Data
@@ -307,7 +308,7 @@ func (r *GuardrailMemberAssignmentResource) getGuardrail(ctx context.Context, gu
 		return nil, diags
 	}
 	if res.StatusCode != 200 || res.GetGuardrailResponse == nil {
-		diags.AddError(fmt.Sprintf("failed to read guardrail %q", guardrailID), fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(nil, res.NotFoundResponse)))
+		diags.AddError(fmt.Sprintf("failed to read guardrail %q", guardrailID), fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(res.RawResponse, nil, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)))
 		return nil, diags
 	}
 	return &res.GetGuardrailResponse.Data, diags
@@ -351,7 +352,7 @@ func (r *GuardrailMemberAssignmentResource) memberAssigned(ctx context.Context, 
 			return false, diags
 		}
 		if res.StatusCode != 200 || res.ListMemberAssignmentsResponse == nil {
-			diags.AddError(fmt.Sprintf("failed to list member assignments of guardrail %q", guardrailID), fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(nil, res.NotFoundResponse)))
+			diags.AddError(fmt.Sprintf("failed to list member assignments of guardrail %q", guardrailID), fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessage(res.RawResponse, nil, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)))
 			return false, diags
 		}
 
@@ -380,12 +381,20 @@ func parseGuardrailMemberAssignmentID(id string) (workspaceID, guardrailID, user
 	return parts[0], parts[1], parts[2], nil
 }
 
-func apiErrorMessage(badRequest *shared.BadRequestResponse, notFound *shared.NotFoundResponse) string {
+// apiErrorMessage returns the API error message from whichever typed error
+// payload is set, falling back to a dump of the raw response.
+func apiErrorMessage(raw *http.Response, badRequest *shared.BadRequestResponse, notFound *shared.NotFoundResponse, unauthorized *shared.UnauthorizedResponse, internalServer *shared.InternalServerResponse) string {
 	switch {
 	case badRequest != nil && badRequest.Error.Message != "":
 		return badRequest.Error.Message
 	case notFound != nil && notFound.Error.Message != "":
 		return notFound.Error.Message
+	case unauthorized != nil && unauthorized.Error.Message != "":
+		return unauthorized.Error.Message
+	case internalServer != nil && internalServer.Error.Message != "":
+		return internalServer.Error.Message
+	case raw != nil:
+		return debugResponse(raw)
 	default:
 		return "no error message"
 	}
