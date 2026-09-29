@@ -46,6 +46,7 @@ terraform:
   additionalResources:
     - resource: NewGuardrailMemberAssignmentResource
     - resource: NewWorkspaceDefaultGuardrailResource
+    - resource: NewWorkspaceMemberResource
   author: OpenRouterTeam
   baseErrorName: OpenRouterError
   debugLogging: {}
