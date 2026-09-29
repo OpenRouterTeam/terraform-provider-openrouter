@@ -21,8 +21,11 @@ on:
 permissions:
   contents: read
 
+# A new PR revision cancels the older run. Pushes and dispatches get a group
+# per run, so every main commit is checked: a shared group would let a newer
+# queued run replace an older pending one.
 concurrency:
-  group: ci-${{ github.event.pull_request.number || github.ref }}
+  group: ci-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
