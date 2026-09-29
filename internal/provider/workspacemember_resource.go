@@ -226,6 +226,7 @@ func (r *WorkspaceMemberResource) Delete(ctx context.Context, req resource.Delet
 			fmt.Sprintf("failed to remove member %q from workspace %q", userID, workspaceID),
 			fmt.Sprintf("API returned status %d: %s", res.StatusCode, workspaceMemberAPIErrorMessage(res.RawResponse, res.BadRequestResponse, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
 		)
+		return
 	}
 }
 
