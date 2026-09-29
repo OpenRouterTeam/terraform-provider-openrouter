@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/explicitnull"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -26,8 +27,8 @@ func NewWorkspaceDefaultGuardrailResource() resource.Resource {
 	return &WorkspaceDefaultGuardrailResource{}
 }
 
-// WorkspaceDefaultGuardrailResource manages the guardrail that every
-// workspace applies to keys and members without an explicit assignment.
+// WorkspaceDefaultGuardrailResource manages the guardrail that applies to all
+// traffic in a workspace, combined with any member or API key guardrails.
 //
 // The default guardrail has a deterministic id, exposed as
 // openrouter_workspace.default_guardrail_id, but it is lazily materialized:
@@ -49,9 +50,43 @@ func (r *WorkspaceDefaultGuardrailResource) Metadata(ctx context.Context, req re
 	resp.TypeName = req.ProviderTypeName + "_workspace_default_guardrail"
 }
 
+// clearableAttributes are the nullable restriction lists of PATCH
+// /guardrails/{id}. They are Optional without Computed so that removing one
+// from the configuration plans null, and patch sends that null explicitly
+// because the generated request model omits nil fields.
+var clearableAttributes = []string{
+	"allowed_data_regions",
+	"allowed_models",
+	"allowed_providers",
+	"content_filter_builtins",
+	"content_filters",
+	"ignored_models",
+	"ignored_providers",
+}
+
+// clearedAttributes returns the clearableAttributes that are null in data.
+func clearedAttributes(data *WorkspaceDefaultGuardrailResourceModel) []string {
+	isNull := map[string]bool{
+		"allowed_data_regions":    data.AllowedDataRegions == nil,
+		"allowed_models":          data.AllowedModels == nil,
+		"allowed_providers":       data.AllowedProviders == nil,
+		"content_filter_builtins": data.ContentFilterBuiltins == nil,
+		"content_filters":         data.ContentFilters == nil,
+		"ignored_models":          data.IgnoredModels == nil,
+		"ignored_providers":       data.IgnoredProviders == nil,
+	}
+	var cleared []string
+	for _, name := range clearableAttributes {
+		if isNull[name] {
+			cleared = append(cleared, name)
+		}
+	}
+	return cleared
+}
+
 // Schema derives from the generated openrouter_guardrail schema so the
 // configurable surface stays in lockstep with the API spec, then adjusts the
-// three attributes whose semantics differ for the workspace default.
+// attributes whose semantics differ for the workspace default.
 func (r *WorkspaceDefaultGuardrailResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	var base resource.SchemaResponse
 	NewGuardrailResource().Schema(ctx, req, &base)
@@ -62,12 +97,28 @@ func (r *WorkspaceDefaultGuardrailResource) Schema(ctx context.Context, req reso
 
 	attrs := base.Schema.Attributes
 
+	for _, name := range clearableAttributes {
+		switch attr := attrs[name].(type) {
+		case schema.ListAttribute:
+			attr.Computed = false
+			attr.Description += " Omit or set to null to remove the restriction."
+			attrs[name] = attr
+		case schema.ListNestedAttribute:
+			attr.Computed = false
+			attr.Description += " Omit or set to null to remove the restriction."
+			attrs[name] = attr
+		default:
+			resp.Diagnostics.AddError("unexpected guardrail schema", fmt.Sprintf("attribute %q is %T, expected a list", name, attrs[name]))
+			return
+		}
+	}
+
 	attrs["workspace_id"] = schema.StringAttribute{
 		Required: true,
 		PlanModifiers: []planmodifier.String{
 			stringplanmodifier.RequiresReplace(),
 		},
-		Description: `The workspace whose default guardrail is managed. The default guardrail applies to every API key and member in the workspace that has no explicit guardrail assignment. Exactly one of these resources should exist per workspace. Requires replacement if changed.`,
+		Description: `The workspace whose default guardrail is managed. The default guardrail applies to all traffic in the workspace. Member and API key guardrails combine with it and can only narrow it, never bypass it. Exactly one of these resources should exist per workspace. Requires replacement if changed.`,
 	}
 
 	attrs["id"] = schema.StringAttribute{
@@ -87,11 +138,12 @@ func (r *WorkspaceDefaultGuardrailResource) Schema(ctx context.Context, req reso
 	}
 
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages the default guardrail of a workspace. The default guardrail is enforced for every API key and member of the workspace that has no explicit guardrail assignment, so this resource is the place to define workspace-wide protections. " +
+		MarkdownDescription: "Manages the default guardrail of a workspace. The default guardrail applies to all traffic in the workspace, including API keys and members that have their own guardrail: explicit member and API key guardrails combine with the default and can only narrow it, never bypass it. This resource is therefore the place to define workspace-wide protections. " +
 			"The guardrail is created by the platform together with the workspace and materialized on first write, so this resource never issues `POST /guardrails`; create and update both `PATCH /guardrails/{default_guardrail_id}`. " +
 			"Destroying the resource only removes it from state, the guardrail itself cannot be deleted. Import with the workspace id.\n\n" +
 			"Until the first write, `GET /guardrails/{default_guardrail_id}` returns 404 even though the guardrail is in force. Read and import treat that 404 as an existing, unconfigured guardrail and use the workspace as the existence oracle: `GET /workspaces/{workspace_id}` still returning `default_guardrail_id` means the guardrail exists, while a 404 from the workspace lookup means the workspace and its default guardrail are gone and the resource is removed from state.\n\n" +
-			"A default guardrail that was materialized and later deleted outside Terraform reads the same way (present, unconfigured), and the next apply re-issues the `PATCH`. If the platform rejects that `PATCH` with 404, remove the resource from state with `terraform state rm` and import it again once the workspace reports a usable `default_guardrail_id`.",
+			"A default guardrail that was materialized and later deleted outside Terraform reads the same way (present, unconfigured), and the next apply re-issues the `PATCH`. If the platform rejects that `PATCH` with 404, remove the resource from state with `terraform state rm` and import it again once the workspace reports a usable `default_guardrail_id`.\n\n" +
+			"The restriction lists (`allowed_data_regions`, `allowed_models`, `allowed_providers`, `ignored_models`, `ignored_providers`, `content_filter_builtins`, `content_filters`) are authoritative: omitting one, or setting it to null, sends an explicit `null` on every apply, which removes that restriction from the default guardrail.",
 		Attributes: attrs,
 	}
 }
@@ -153,7 +205,7 @@ func (r *WorkspaceDefaultGuardrailResource) patch(ctx context.Context, data *Wor
 	if diags.HasError() {
 		return diags
 	}
-	res, err := r.client.Guardrails.Update(ctx, *request)
+	res, err := r.client.Guardrails.Update(explicitnull.WithFields(ctx, clearedAttributes(data)...), *request)
 	if err != nil {
 		diags.AddError("failure to invoke API", err.Error())
 		if res != nil && res.RawResponse != nil {

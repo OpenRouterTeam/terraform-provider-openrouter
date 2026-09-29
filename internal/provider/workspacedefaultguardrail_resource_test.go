@@ -30,6 +30,7 @@ type fakeAPI struct {
 	materialized     bool
 	guardrail        map[string]any
 	patches          int
+	lastPatch        map[string]any
 	posts            int
 }
 
@@ -76,6 +77,7 @@ func (f *fakeAPI) handler(t *testing.T) http.Handler {
 		f.mu.Lock()
 		defer f.mu.Unlock()
 		f.patches++
+		f.lastPatch = body
 		if !f.materialized {
 			f.materialized = true
 			f.guardrail = map[string]any{
@@ -295,6 +297,90 @@ func TestWorkspaceDefaultGuardrail_DematerializedReadsAsUnconfigured(t *testing.
 						plancheck.ExpectResourceAction("openrouter_workspace_default_guardrail.this", plancheck.ResourceActionUpdate),
 					},
 				},
+			},
+		},
+	})
+}
+
+func dataRegionsConfig(serverURL string, regions string) string {
+	attr := ""
+	if regions != "" {
+		attr = "allowed_data_regions = " + regions
+	}
+	return fmt.Sprintf(`
+provider "openrouter" {
+  api_key    = "sk-or-mgmt-test"
+  server_url = %q
+}
+
+resource "openrouter_workspace_default_guardrail" "this" {
+  workspace_id = %q
+  %s
+}
+`, serverURL, fakeWorkspaceID, attr)
+}
+
+func (f *fakeAPI) checkClearedRegions(t *testing.T) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		f.mu.Lock()
+		defer f.mu.Unlock()
+		v, sent := f.lastPatch["allowed_data_regions"]
+		if !sent || v != nil {
+			return fmt.Errorf("last PATCH allowed_data_regions = %v (sent %v), want explicit null", v, sent)
+		}
+		if got := f.guardrail["allowed_data_regions"]; got != nil {
+			return fmt.Errorf("API allowed_data_regions = %v, want null", got)
+		}
+		return nil
+	}
+}
+
+// Removing a restriction from the configuration sends an explicit null, both
+// on update and when the resource is destroyed and created again.
+func TestWorkspaceDefaultGuardrail_ClearsRestrictions(t *testing.T) {
+	api := &fakeAPI{}
+	srv := httptest.NewServer(api.handler(t))
+	defer srv.Close()
+
+	const addr = "openrouter_workspace_default_guardrail.this"
+
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: testProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: dataRegionsConfig(srv.URL, `["europe"]`),
+				Check:  resource.TestCheckResourceAttr(addr, "allowed_data_regions.0", "europe"),
+			},
+			{
+				Config: dataRegionsConfig(srv.URL, ""),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate),
+					},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					api.checkClearedRegions(t),
+					resource.TestCheckNoResourceAttr(addr, "allowed_data_regions.#"),
+				),
+			},
+			{
+				Config:   dataRegionsConfig(srv.URL, ""),
+				PlanOnly: true,
+			},
+			{
+				Config: dataRegionsConfig(srv.URL, `["europe"]`),
+				Check:  resource.TestCheckResourceAttr(addr, "allowed_data_regions.0", "europe"),
+			},
+			{
+				Config:  dataRegionsConfig(srv.URL, `["europe"]`),
+				Destroy: true,
+			},
+			{
+				Config: dataRegionsConfig(srv.URL, ""),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					api.checkClearedRegions(t),
+					resource.TestCheckNoResourceAttr(addr, "allowed_data_regions.#"),
+				),
 			},
 		},
 	})
