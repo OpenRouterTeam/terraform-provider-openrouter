@@ -1,5 +1,11 @@
 package hooks
 
+import (
+	"net/http"
+
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/explicitnull"
+)
+
 /*
  * This file is only ever generated once on the first generation and then is free to be modified.
  * Any hooks you wish to add should be registered in the initHooks function. Feel free to define
@@ -25,4 +31,14 @@ func initHooks(h *Hooks) {
 	// h.registerBeforeRequestHook(exampleHook)
 	// h.registerAfterErrorHook(exampleHook)
 	// h.registerAfterSuccessHook(exampleHook)
+
+	h.registerBeforeRequestHook(explicitNullHook{})
+}
+
+// explicitNullHook sends the explicit JSON nulls requested through
+// explicitnull.WithFields, which the generated request models cannot express.
+type explicitNullHook struct{}
+
+func (explicitNullHook) BeforeRequest(_ BeforeRequestContext, req *http.Request) (*http.Request, error) {
+	return explicitnull.Apply(req)
 }
