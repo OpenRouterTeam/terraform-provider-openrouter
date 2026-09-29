@@ -125,6 +125,7 @@ func (p *OpenrouterProvider) Resources(ctx context.Context) []func() resource.Re
 		NewScimGroupMappingResource,
 		NewWorkspaceResource,
 		NewWorkspaceBudgetResource,
+		NewGuardrailMemberAssignmentResource,
 		NewWorkspaceDefaultGuardrailResource,
 	}
 }

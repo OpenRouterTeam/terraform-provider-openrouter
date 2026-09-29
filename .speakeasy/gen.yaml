@@ -44,6 +44,7 @@ terraform:
     httpHeaders: ""
     tlsSkipVerify: ""
   additionalResources:
+    - resource: NewGuardrailMemberAssignmentResource
     - resource: NewWorkspaceDefaultGuardrailResource
   author: OpenRouterTeam
   baseErrorName: OpenRouterError
