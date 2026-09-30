@@ -126,6 +126,7 @@ func (p *OpenrouterProvider) Resources(ctx context.Context) []func() resource.Re
 		NewWorkspaceResource,
 		NewWorkspaceBudgetResource,
 		NewGuardrailMemberAssignmentResource,
+		NewWorkspaceDefaultGuardrailResource,
 	}
 }
 
@@ -150,6 +151,7 @@ func (p *OpenrouterProvider) DataSources(ctx context.Context) []func() datasourc
 		NewPrivateEndpointDataSource,
 		NewProvidersDataSource,
 		NewScimGroupMappingDataSource,
+		NewScimGroupsDataSource,
 		NewWorkspaceDataSource,
 		NewWorkspaceBudgetDataSource,
 		NewWorkspaceBudgetsDataSource,
