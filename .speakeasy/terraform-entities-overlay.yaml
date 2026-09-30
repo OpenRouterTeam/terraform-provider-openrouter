@@ -654,3 +654,34 @@ actions:
   - target: $["components"]["schemas"]["PrivateEndpointSummary"]["properties"]["created_at"]
     update:
       x-speakeasy-terraform-ignore: true
+  # ---------------------------------------------------------------------------
+  # OrganizationSettings  (GET/PATCH /organization/settings)
+  # Singleton per organization: the management key selects the organization,
+  # so there is no path parameter, no list and no delete. The settings always
+  # exist, so PATCH serves both create and update (the WorkspaceBudget form
+  # above) and destroy only forgets the resource. Read has no identifier to
+  # match on, so import is not generated; declaring the resource adopts the
+  # settings by applying the declared value. openrouter-web#48036.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["OrganizationSettings"]
+    update:
+      x-speakeasy-entity: OrganizationSettings
+  - target: $["components"]["schemas"]["UpdateOrganizationSettingsRequest"]
+    update:
+      x-speakeasy-entity: OrganizationSettings
+      x-speakeasy-entity-description: |-
+        Settings of the organization the management key belongs to. The settings always exist, so creating this resource writes the declared values and destroying it only removes them from state; the last applied values stay in effect. Declare at most one `openrouter_organization_settings` per organization. There is nothing to import: declaring the resource adopts the settings by applying the declared values.
+  # The organization ID never changes, so plans keep the state value instead
+  # of showing it as known after apply.
+  - target: $["components"]["schemas"]["OrganizationSettings"]["properties"]["id"]
+    update:
+      x-speakeasy-param-suppress-computed-diff: true
+
+  - target: $["paths"]["/organization/settings"]["patch"]
+    update:
+      x-speakeasy-entity-operation:
+        - OrganizationSettings#create
+        - OrganizationSettings#update
+  - target: $["paths"]["/organization/settings"]["get"]
+    update:
+      x-speakeasy-entity-operation: OrganizationSettings#read
