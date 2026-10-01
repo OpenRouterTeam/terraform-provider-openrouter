@@ -149,7 +149,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 					stringplanmodifier.RequiresReplaceIfConfigured(),
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
-				Description: `The upstream provider this credential authenticates against, as a lowercase slug (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "primeintellect", "quiver", "recraft", "reka", "relace", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]; Requires replacement if changed.`,
+				Description: `The upstream provider this credential authenticates against, as a lowercase slug (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "elevenlabs", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "primeintellect", "quiver", "recraft", "reka", "relace", "respan", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "scaledown", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]; Requires replacement if changed.`,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"ai21",
@@ -189,6 +189,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 						"deepseek",
 						"dekallm",
 						"digitalocean",
+						"elevenlabs",
 						"featherless",
 						"fireworks",
 						"fish-audio",
@@ -238,11 +239,13 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 						"recraft",
 						"reka",
 						"relace",
+						"respan",
 						"runway",
 						"sail-research",
 						"sakana",
 						"sakana-ai",
 						"sambanova",
+						"scaledown",
 						"seed",
 						"siliconflow",
 						"sourceful",
@@ -322,6 +325,8 @@ func (r *ByokKeyResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
+
 	request, requestDiags := data.ToSharedCreateBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -330,7 +335,7 @@ func (r *ByokKeyResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 	res, err := r.client.Byok.Create(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -382,6 +387,8 @@ func (r *ByokKeyResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsGetBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -390,7 +397,7 @@ func (r *ByokKeyResource) Read(ctx context.Context, req resource.ReadRequest, re
 	}
 	res, err := r.client.Byok.Get(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -436,6 +443,8 @@ func (r *ByokKeyResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
+
 	request, requestDiags := data.ToOperationsUpdateBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -444,7 +453,7 @@ func (r *ByokKeyResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 	res, err := r.client.Byok.Update(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -496,6 +505,8 @@ func (r *ByokKeyResource) Delete(ctx context.Context, req resource.DeleteRequest
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsDeleteBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -504,7 +515,7 @@ func (r *ByokKeyResource) Delete(ctx context.Context, req resource.DeleteRequest
 	}
 	res, err := r.client.Byok.Delete(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
