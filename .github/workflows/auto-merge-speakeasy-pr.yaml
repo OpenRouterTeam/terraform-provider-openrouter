@@ -4,6 +4,8 @@ name: Auto-merge Speakeasy PR
 # regen PR opened/updated in the same workflow run so sdk_publish.yaml can run.
 # Prefer branch_name from Generate logs; fall back to run_started_at heuristics.
 # Uses GH_DOCS_SYNC GitHub App token (not a PAT) so merges trigger downstream push.
+# The app must be a bypass actor on the main rulesets (repo and org) for the
+# merge to land without a human approval.
 
 on:
   workflow_call:
@@ -132,7 +134,7 @@ jobs:
             sleep 1
           done
 
-      - name: Auto-merge Speakeasy PR
+      - name: Merge Speakeasy PR
         if: steps.pr.outputs.pr_num != ''
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -142,73 +144,35 @@ jobs:
           PR_NUM="${{ steps.pr.outputs.pr_num }}"
           REPO="${{ github.repository }}"
 
-          wait_for_checks() {
-            local pr=$1
-            local timeout=600
-            local interval=15
-            local elapsed=0
-
-            echo "Waiting for PR #$pr checks (timeout ${timeout}s)..."
-            while [ "$elapsed" -lt "$timeout" ]; do
-              TOTAL=$(gh pr view "$pr" --repo "$REPO" --json statusCheckRollup --jq \
-                '.statusCheckRollup | length')
-              PENDING=$(gh pr view "$pr" --repo "$REPO" --json statusCheckRollup --jq \
-                '[.statusCheckRollup[]? | select(.status != "COMPLETED")] | length')
-              FAILED=$(gh pr view "$pr" --repo "$REPO" --json statusCheckRollup --jq \
-                '[.statusCheckRollup[]? | select(.status == "COMPLETED") | select(.conclusion != "SUCCESS" and .conclusion != "SKIPPED" and .conclusion != "NEUTRAL")] | length')
-
-              if [ "$TOTAL" -eq 0 ]; then
-                echo "Checks not yet registered — waiting ${interval}s..."
-                sleep "$interval"
-                elapsed=$((elapsed + interval))
-                continue
-              fi
-
-              if [ "$PENDING" -eq 0 ]; then
-                if [ "$FAILED" -gt 0 ]; then
-                  echo "::error::PR #$pr has failing checks — refusing direct merge"
-                  gh pr checks "$pr" --repo "$REPO" || true
-                  exit 1
-                fi
-                echo "All checks completed"
-                return 0
-              fi
-
-              echo "Checks pending ($PENDING) — waiting ${interval}s..."
-              sleep "$interval"
-              elapsed=$((elapsed + interval))
-            done
-
-            echo "::error::Timed out waiting for PR #$pr checks"
-            exit 1
-          }
-
-          STATE=$(gh pr view "$PR_NUM" --repo "$REPO" --json state --jq .state)
+          PR_META=$(gh pr view "$PR_NUM" --repo "$REPO" --json state,headRefOid,headRefName)
+          STATE=$(jq -r .state <<< "$PR_META")
+          HEAD_SHA=$(jq -r .headRefOid <<< "$PR_META")
+          HEAD_REF=$(jq -r .headRefName <<< "$PR_META")
           if [ "$STATE" != "OPEN" ]; then
             echo "PR #$PR_NUM is $STATE — skipping merge"
             exit 0
           fi
 
-          MERGE_METHOD=""
-          # Prefer GitHub auto-merge when required checks exist; otherwise
-          # squash-merge directly after checks pass (sdk-release-prs.yaml pattern).
-          AUTO_MERGE_NOOP_PATTERN='is in clean status|protected branch rules|Branch does not have required protected branch rules'
-          if gh pr merge "$PR_NUM" --repo "$REPO" --squash --auto --delete-branch 2> /tmp/gh-merge.err; then
-            MERGE_METHOD="auto-merge queued"
-            echo "Auto-merge enabled for Speakeasy PR #$PR_NUM"
-          elif grep -qiE "$AUTO_MERGE_NOOP_PATTERN" /tmp/gh-merge.err; then
-            echo "Auto-merge not applicable — waiting for checks, then merging PR #$PR_NUM directly"
-            cat /tmp/gh-merge.err >&2
-            wait_for_checks "$PR_NUM"
-            gh pr merge "$PR_NUM" --repo "$REPO" --squash --delete-branch
-            MERGE_METHOD="direct squash (checks passed)"
+          # Merge through the REST endpoint, which honors the GH_DOCS_SYNC
+          # app's bypass of the main ruleset. GitHub auto-merge never uses a
+          # bypass: it waits for the required approval. Regen PRs are opened
+          # with GITHUB_TOKEN, so no PR checks run on them; the push-to-main
+          # CI run and the sdk_publish.yaml acceptance gate validate them.
+          if gh api -X PUT "repos/$REPO/pulls/$PR_NUM/merge" \
+              -f merge_method=squash -f sha="$HEAD_SHA" > /dev/null 2> /tmp/gh-merge.err; then
+            gh api -X DELETE "repos/$REPO/git/refs/heads/$HEAD_REF" > /dev/null \
+              || echo "::warning::Merged PR #$PR_NUM but could not delete branch $HEAD_REF"
+            MERGE_METHOD="direct squash"
           else
-            echo "::error::Failed to enable auto-merge on Speakeasy PR #$PR_NUM"
+            echo "Direct merge refused:" >&2
             cat /tmp/gh-merge.err >&2
-            exit 1
+            # Without the bypass, queue auto-merge so one approval lands the PR.
+            gh pr merge "$PR_NUM" --repo "$REPO" --squash --auto --delete-branch
+            echo "::warning title=auto-merge-waiting::PR #$PR_NUM needs an approval: the GH_DOCS_SYNC app cannot bypass the main ruleset"
+            MERGE_METHOD="auto-merge queued, waiting for approval"
           fi
 
-          echo "::notice title=auto-merge-pr::Merged Speakeasy PR #$PR_NUM ($MERGE_METHOD)"
+          echo "::notice title=auto-merge-pr::Speakeasy PR #$PR_NUM: $MERGE_METHOD"
           {
             echo "## Auto-merge complete"
             echo "- PR: #$PR_NUM"

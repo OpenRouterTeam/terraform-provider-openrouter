@@ -1,6 +1,6 @@
 module github.com/OpenRouterTeam/terraform-provider-openrouter
 
-go 1.25.10
+go 1.26.0
 
 require (
 	github.com/hashicorp/go-uuid v1.0.3
