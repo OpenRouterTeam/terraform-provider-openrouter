@@ -93,7 +93,6 @@ Available configuration:
 * [openrouter_scim_group_mapping](docs/resources/scim_group_mapping.md)
 * [openrouter_workspace](docs/resources/workspace.md)
 * [openrouter_workspace_budget](docs/resources/workspace_budget.md)
-* [openrouter_workspace_default_guardrail](docs/resources/workspace_default_guardrail.md)
 
 ### Data Sources
 
@@ -116,6 +115,7 @@ Available configuration:
 * [openrouter_private_endpoint](docs/data-sources/private_endpoint.md)
 * [openrouter_providers](docs/data-sources/providers.md)
 * [openrouter_scim_group_mapping](docs/data-sources/scim_group_mapping.md)
+* [openrouter_scim_groups](docs/data-sources/scim_groups.md)
 * [openrouter_workspace](docs/data-sources/workspace.md)
 * [openrouter_workspace_budget](docs/data-sources/workspace_budget.md)
 * [openrouter_workspace_budgets](docs/data-sources/workspace_budgets.md)

@@ -322,6 +322,8 @@ func (r *ByokKeyResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
+
 	request, requestDiags := data.ToSharedCreateBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -330,7 +332,7 @@ func (r *ByokKeyResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 	res, err := r.client.Byok.Create(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -382,6 +384,8 @@ func (r *ByokKeyResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsGetBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -390,7 +394,7 @@ func (r *ByokKeyResource) Read(ctx context.Context, req resource.ReadRequest, re
 	}
 	res, err := r.client.Byok.Get(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -436,6 +440,8 @@ func (r *ByokKeyResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
+
 	request, requestDiags := data.ToOperationsUpdateBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -444,7 +450,7 @@ func (r *ByokKeyResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 	res, err := r.client.Byok.Update(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -496,6 +502,8 @@ func (r *ByokKeyResource) Delete(ctx context.Context, req resource.DeleteRequest
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsDeleteBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -504,7 +512,7 @@ func (r *ByokKeyResource) Delete(ctx context.Context, req resource.DeleteRequest
 	}
 	res, err := r.client.Byok.Delete(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
