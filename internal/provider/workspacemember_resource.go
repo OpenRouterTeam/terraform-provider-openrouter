@@ -237,6 +237,11 @@ func (r *WorkspaceMemberResource) ImportState(ctx context.Context, req resource.
 		return
 	}
 
+	resp.Diagnostics.Append(r.checkWorkspaceID(ctx, workspaceID)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("workspace_id"), workspaceID)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("user_id"), userID)...)

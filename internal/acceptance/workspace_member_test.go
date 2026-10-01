@@ -380,7 +380,8 @@ func TestStubWorkspaceMemberRejectsInvalidInput(t *testing.T) {
 }
 
 func TestStubWorkspaceMemberImportRejectsInvalidOrMissing(t *testing.T) {
-	srv, _ := newStubWorkspaceMembers(t)
+	srv, api := newStubWorkspaceMembers(t)
+	api.update(func() { api.workspaces[wmWorkspaceID][wmAdminUserID] = true })
 	config := wmConfig(srv.URL, wmWorkspaceID, wmAdminUserID)
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
@@ -396,8 +397,56 @@ func TestStubWorkspaceMemberImportRejectsInvalidOrMissing(t *testing.T) {
 				Config:        config,
 				ResourceName:  wmResourceName,
 				ImportState:   true,
-				ImportStateId: wmWorkspaceID + "/" + wmAdminUserID,
+				ImportStateId: wmWorkspaceID + "/" + wmMemberUserID,
 				ExpectError:   regexp.MustCompile(`Cannot import non-existent remote object`),
+			},
+			{
+				Config:        config,
+				ResourceName:  wmResourceName,
+				ImportState:   true,
+				ImportStateId: wmWorkspaceSlug + "/" + wmAdminUserID,
+				ExpectError:   regexp.MustCompile(`workspace_id must be a workspace ID`),
+			},
+			{
+				Config:        stubBudgetProviderConfig(srv.URL) + "\nresource \"openrouter_workspace_member\" \"missing_workspace\" {\n  workspace_id = \"00000000-0000-4000-8000-000000000000\"\n  user_id      = \"" + wmAdminUserID + "\"\n}\n",
+				ResourceName:  "openrouter_workspace_member.missing_workspace",
+				ImportState:   true,
+				ImportStateId: "00000000-0000-4000-8000-000000000000/" + wmAdminUserID,
+				ExpectError:   regexp.MustCompile(`workspace not found`),
+			},
+		},
+	})
+}
+
+func TestStubWorkspaceMemberImportAdoptsExisting(t *testing.T) {
+	srv, api := newStubWorkspaceMembers(t)
+	api.update(func() { api.workspaces[wmWorkspaceID][wmAdminUserID] = true })
+	config := wmConfig(srv.URL, wmWorkspaceID, wmAdminUserID)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:             config,
+				ResourceName:       wmResourceName,
+				ImportState:        true,
+				ImportStateId:      wmWorkspaceID + "/" + wmAdminUserID,
+				ImportStatePersist: true,
+				ImportStateCheck: func(states []*terraform.InstanceState) error {
+					if len(states) != 1 {
+						return fmt.Errorf("imported %d states, want 1", len(states))
+					}
+					if got := states[0].Attributes["workspace_id"]; got != wmWorkspaceID {
+						return fmt.Errorf("workspace_id = %q, want %q", got, wmWorkspaceID)
+					}
+					return nil
+				},
+			},
+			{
+				Config: config,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+				},
+				Check: api.checkAddCalls(0),
 			},
 		},
 	})
