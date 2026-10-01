@@ -311,7 +311,9 @@ func (r *APIKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	// Save the created key before the follow-up update: if the update
 	// fails, Terraform keeps the key (tainted) instead of orphaning it and
-	// losing its one-time plaintext value.
+	// losing its one-time plaintext value. `disabled` is only applied by
+	// that update, so a disabled key stays live until it succeeds; the next
+	// apply then replaces the tainted key.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
