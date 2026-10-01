@@ -194,8 +194,6 @@ func (r *APIKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsGetKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -204,7 +202,7 @@ func (r *APIKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	res, err := r.client.APIKeys.GetByHash(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+		resp.Diagnostics.AddError("failure to invoke API", err.Error())
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}

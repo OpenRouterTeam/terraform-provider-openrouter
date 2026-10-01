@@ -84,7 +84,6 @@ func (p *OpenrouterProvider) Configure(ctx context.Context, req provider.Configu
 	if apiKeyEnvVar := os.Getenv("OPENROUTER_MANAGEMENT_KEY"); security.APIKey == nil && apiKeyEnvVar != "" {
 		security.APIKey = &apiKeyEnvVar
 	}
-	registerSensitiveValues(security.APIKey)
 
 	providerHTTPTransportOpts := ProviderHTTPTransportOpts{
 		SetHeaders: make(map[string]string),
