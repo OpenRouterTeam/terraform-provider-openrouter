@@ -28,16 +28,18 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: regenerate-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
-
 jobs:
   regenerate:
     name: Regenerate
     if: >-
       github.event.pull_request.head.repo.full_name == github.repository
       && !(github.event.action == 'synchronize' && github.event.sender.login == 'openrouter-docs-sync[bot]')
+    # Job-level, so the skipped run for the app's own push never joins the
+    # group and cancels the run that pushed. A newer push by anyone else
+    # cancels an in-progress run.
+    concurrency:
+      group: regenerate-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -94,11 +96,12 @@ jobs:
           unzip -q speakeasy_linux_amd64.zip speakeasy -d "$RUNNER_TEMP/speakeasy-bin"
           echo "$RUNNER_TEMP/speakeasy-bin" >> "$GITHUB_PATH"
 
-      # Speakeasy reruns are not idempotent with versioning on: each run bumps
-      # releaseVersion again. So generate without versioning first, keep the
-      # result only if it changes something besides the Speakeasy config and
-      # lock files (the rule sdk-generation-action uses), and regenerate with
-      # versioning only when this PR is not already ahead of main's release.
+      # Speakeasy bumps releaseVersion on every versioned run, so a branch that
+      # is already ahead of main keeps its release and generates without
+      # versioning. Otherwise one versioned run bumps past main. Either way the
+      # result is kept only if it changes something besides the Speakeasy config
+      # and lock files and the version string itself (sdk-generation-action's
+      # rule).
       - name: Generate
         id: generate
         if: steps.head.outputs.stale != 'true'
@@ -116,40 +119,58 @@ jobs:
           # to git or uses its own client.
           git remote set-url origin "https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-          generate() {
-            speakeasy run --target open-router --auto-yes --skip-upload-spec --skip-testing --output console "$@"
-            go generate ./...
-          }
-          significant() {
-            git status --porcelain -- . \
-              ':!.speakeasy/gen.yaml' ':!.speakeasy/gen.lock' \
-              ':!.speakeasy/workflow.yaml' ':!.speakeasy/workflow.lock' | grep -q .
-          }
           release_version() {
             sed -n 's/^  releaseVersion: //p' | head -1
           }
 
-          generate --skip-versioning
-          if ! significant; then
+          git fetch --quiet origin main
+          MAIN_VERSION=$(git show origin/main:.speakeasy/gen.lock | release_version)
+          PR_VERSION=$(release_version < .speakeasy/gen.lock)
+          HIGHEST=$(printf '%s\n%s\n' "$MAIN_VERSION" "$PR_VERSION" | sort -V | tail -1)
+          # Same arguments sdk-generation-action passes (the repo URL feeds the
+          # README installation section), plus no registry upload from PRs.
+          RUN_ARGS=(--target open-router --installationURLs '{}' --repo-subdirs '{"open-router":""}'
+            --repo "https://github.com/${GITHUB_REPOSITORY}.git" --skip-testing --skip-upload-spec
+            --auto-yes --output console)
+          if [ "$PR_VERSION" = "$MAIN_VERSION" ]; then
+            echo "Generating with a version bump past $MAIN_VERSION"
+          elif [ "$HIGHEST" = "$PR_VERSION" ]; then
+            echo "Branch is already on release $PR_VERSION (main: $MAIN_VERSION); generating without a bump"
+            RUN_ARGS+=(--skip-versioning)
+          else
+            echo "::error::This branch is on release $PR_VERSION but main is on $MAIN_VERSION. Merge main into the branch so the next push regenerates on top of it."
+            exit 1
+          fi
+
+          speakeasy run "${RUN_ARGS[@]}"
+          go generate ./...
+
+          # One side ("-" or "+") of a file's diff with version numbers removed.
+          # A versioned run rewrites several version strings (the README even
+          # shows the previous release), so compare lines without them.
+          diff_side() {
+            git diff -U0 --no-color -- "$2" \
+              | awk -v side="$1" '/^@@/ { body = 1; next } body && substr($0, 1, 1) == side { print substr($0, 2) }' \
+              | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+//g'
+          }
+
+          EXCLUDE=(':!.speakeasy/gen.yaml' ':!.speakeasy/gen.lock' ':!.speakeasy/workflow.yaml' ':!.speakeasy/workflow.lock')
+          significant=false
+          if git ls-files --others --exclude-standard -- . "${EXCLUDE[@]}" | grep -q .; then
+            significant=true
+          else
+            while IFS= read -r f; do
+              if [ ! -f "$f" ] || ! cmp -s <(diff_side - "$f") <(diff_side + "$f"); then
+                significant=true
+                break
+              fi
+            done < <(git diff --name-only -- . "${EXCLUDE[@]}")
+          fi
+
+          if [ "$significant" != true ]; then
             echo "Regeneration made no significant changes"
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
-          fi
-
-          git fetch --quiet origin main
-          MAIN_VERSION=$(git show origin/main:.speakeasy/gen.lock | release_version)
-          PR_VERSION=$(git show HEAD:.speakeasy/gen.lock | release_version)
-          HIGHEST=$(printf '%s\n%s\n' "$MAIN_VERSION" "$PR_VERSION" | sort -V | tail -1)
-          if [ "$PR_VERSION" = "$MAIN_VERSION" ]; then
-            echo "Regenerating with a version bump past $MAIN_VERSION"
-            git checkout -- .
-            git clean -fdq
-            generate
-          elif [ "$HIGHEST" = "$MAIN_VERSION" ]; then
-            echo "::error::This branch is on release $PR_VERSION but main is on $MAIN_VERSION. Merge main into the branch so the next push regenerates on top of it."
-            exit 1
-          else
-            echo "Branch is already on release $PR_VERSION (main: $MAIN_VERSION); keeping it"
           fi
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
