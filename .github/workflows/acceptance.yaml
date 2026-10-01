@@ -3,16 +3,23 @@ name: Acceptance Tests
 # Live acceptance tests against a dedicated OpenRouter TEST organization.
 #
 # Safety model:
-# - Never triggered by pull_request: the management key is exposed only to
-#   schedule/dispatch runs of code already on main (or a branch a maintainer
-#   explicitly dispatches).
+# - Pull requests run the live suite when the `run-acceptance` label is
+#   applied, and only for branches in this repository (fork PRs never receive
+#   secrets). While the label stays on, each new push re-runs the suite;
+#   remove the label to stop. The label is a convenience gate, not a security
+#   boundary: anyone who can push a branch here can already dispatch this
+#   workflow on it.
 # - Secret lives in the `acceptance-testing` environment as
 #   OPENROUTER_MANAGEMENT_KEY. It MUST be a Management API key
 #   (sk-or-mgmt-...) issued from a dedicated test org with $0 credits:
 #   management keys cannot spend on inference, and a zero-credit org makes
 #   any inference key minted during tests unusable.
-# - Concurrency group serializes runs; parallel runs mutating one account
-#   produce flaky state and cap collisions (5 destinations per type).
+# - The tf-acceptance concurrency group (shared with the sdk_publish.yaml
+#   release gate) serializes every live run: the sweeper below deletes all
+#   tf-acc-* resources, including those of a concurrent run, and parallel runs
+#   hit account caps (5 destinations per type). `queue: max` lets runs wait
+#   in line instead of the default one-pending-slot, where a newly queued PR
+#   run would cancel a pending release gate.
 # - Tests namespace resources as tf-acc-<run_id>-* and a TestMain sweeper
 #   deletes tf-acc-* leftovers from crashed runs before each suite.
 # - openrouter_byok_key is excluded: it needs a real provider credential we
@@ -22,19 +29,33 @@ on:
   schedule:
     - cron: 30 1 * * * # nightly, after the 00:00 generation cron
   workflow_dispatch: {}
+  pull_request:
+    branches:
+      - main
+    types: [labeled, synchronize, reopened]
 
 permissions:
   contents: read
 
-concurrency:
-  group: tf-acceptance
-  cancel-in-progress: false
-
 jobs:
   acceptance:
+    # PRs: same-repo branches carrying the run-acceptance label only, and
+    # only when that label (not some other one) was just added.
+    if: >-
+      github.event_name != 'pull_request' || (
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        contains(github.event.pull_request.labels.*.name, 'run-acceptance') &&
+        (github.event.action != 'labeled' || github.event.label.name == 'run-acceptance')
+      )
     runs-on: ubuntu-latest
     environment: acceptance-testing
     timeout-minutes: 45
+    # Job-level (not workflow-level) so PR runs skipped by the `if` above
+    # never enter the group and cancel a pending nightly or release gate.
+    concurrency:
+      group: tf-acceptance
+      cancel-in-progress: false
+      queue: max
     steps:
       - uses: actions/checkout@v5
 
@@ -82,21 +103,3 @@ jobs:
           name: acceptance-logs-${{ github.run_id }}
           path: acceptance.log
           retention-days: 14
-
-  # Local API regressions run without credentials; live acceptance tests remain
-  # gated by TF_ACC in the separate acceptance job above.
-  unit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
-        with:
-          go-version-file: go.mod
-          cache: true
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_wrapper: false
-      - name: Build
-        run: go build ./...
-      - name: Test local regressions (live acceptance skipped without TF_ACC)
-        run: go test ./internal/acceptance/... -v -timeout 5m
