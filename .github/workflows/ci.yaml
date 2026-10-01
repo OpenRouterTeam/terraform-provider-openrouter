@@ -1,0 +1,108 @@
+name: CI
+
+# Offline PR gate: build, static checks and every test that needs no
+# credentials (unit tests plus the httptest-backed stub acceptance tests in
+# internal/acceptance). Live acceptance tests skip here because TF_ACC is
+# unset; they run in acceptance.yaml (nightly, dispatch, or a PR carrying the
+# `run-acceptance` label) and as the release gate in sdk_publish.yaml.
+#
+# Speakeasy regen PRs are opened with GITHUB_TOKEN, which does not trigger
+# pull_request workflows, so the push-to-main run is their validation.
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+# A new PR revision cancels the older run. Pushes and dispatches get a group
+# per run, so every main commit is checked: a shared group would let a newer
+# queued run replace an older pending one.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # The stub acceptance tests drive a real Terraform CLI against httptest
+      # servers.
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Build
+        run: go build ./...
+
+      - name: go mod tidy
+        run: go mod tidy -diff
+
+      # Skip the generated SDK client (internal/sdk): its vet findings are
+      # Speakeasy output we cannot fix here. Generated provider code outside
+      # it is checked, so a regen that breaks gofmt/vet fails on main.
+      - name: gofmt
+        run: |
+          unformatted=$(git ls-files '*.go' | grep -v '^internal/sdk/' | xargs gofmt -l)
+          if [ -n "$unformatted" ]; then
+            echo "::error::gofmt needed on:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: go vet
+        run: go list ./... | grep -v /internal/sdk | xargs go vet
+
+      - name: Test (live acceptance skipped without TF_ACC)
+        run: go test ./... -timeout 15m
+
+  config:
+    name: Lint config
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: actionlint
+        env:
+          ACTIONLINT_VERSION: 1.7.12
+          ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+        run: |
+          archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl -sSfLo "$RUNNER_TEMP/$archive" "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/$archive"
+          echo "$ACTIONLINT_SHA256  $RUNNER_TEMP/$archive" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -color
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: terraform fmt (examples)
+        run: terraform fmt -check -recursive -diff examples
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: false
+
+      - name: goreleaser check
+        uses: goreleaser/goreleaser-action@v7
+        with:
+          version: "~> v2"
+          args: check
