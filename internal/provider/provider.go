@@ -128,6 +128,7 @@ func (p *OpenrouterProvider) Resources(ctx context.Context) []func() resource.Re
 		NewGuardrailMemberAssignmentResource,
 		NewWorkspaceDefaultGuardrailResource,
 		NewWorkspaceMemberResource,
+		NewGuardrailKeyAssignmentResource,
 	}
 }
 
