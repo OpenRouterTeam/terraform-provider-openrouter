@@ -7,7 +7,8 @@ info:
     Maps OpenRouter management API operations to Terraform entities via
     x-speakeasy-entity / x-speakeasy-entity-operation. Resources: ApiKey,
     Guardrail, Workspace, ByokKey, ObservabilityDestination,
-    ScimGroupMapping, WorkspaceBudget, PrivateEndpoint. Plus read-only
+    ScimGroupMapping, WorkspaceBudget, PrivateEndpoint, OrganizationSettings.
+    Plus read-only
     data-source entities for management lists and the model/provider/preset
     /credits catalog.
 actions:
