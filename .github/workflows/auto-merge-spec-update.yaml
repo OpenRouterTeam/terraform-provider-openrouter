@@ -73,9 +73,10 @@ jobs:
           fi
 
       # Regenerate either pushes a commit, whose synchronize event starts a
-      # fresh run of this workflow, or leaves the head alone. It is skipped on
-      # the app's own pushes. ci.yaml runs on each head because the app token,
-      # unlike GITHUB_TOKEN, triggers pull_request workflows.
+      # fresh run of this workflow, or leaves the head alone; on the app's own
+      # regen commit it confirms nothing changes. ci.yaml runs on each head
+      # because the app token, unlike GITHUB_TOKEN, triggers pull_request
+      # workflows.
       - name: Wait for Regenerate and CI
         id: wait
         env:
@@ -89,8 +90,8 @@ jobs:
                 -f check_name="$name" \
                 --jq '.check_runs | sort_by(.started_at) | last | "\(.status) \(.conclusion)"')
               case "$RESULT" in
-                "completed success" | "completed skipped")
-                  echo "$name: ${RESULT#completed }"
+                "completed success")
+                  echo "$name passed"
                   break
                   ;;
                 completed*)

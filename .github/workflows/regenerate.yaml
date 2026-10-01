@@ -12,7 +12,9 @@ name: Regenerate
 #
 # Pushes use the GH_DOCS_SYNC app token, because a GITHUB_TOKEN push does not
 # trigger CI on the new commit. The app's push fires this workflow again; that
-# run is skipped.
+# run regenerates the new head, finds nothing to change (confirming the output
+# is stable) and pushes nothing. A run that would push a second regen commit in
+# a row fails instead.
 
 on:
   pull_request:
@@ -31,15 +33,16 @@ permissions:
 jobs:
   regenerate:
     name: Regenerate
-    if: >-
-      github.event.pull_request.head.repo.full_name == github.repository
-      && !(github.event.action == 'synchronize' && github.event.sender.login == 'openrouter-docs-sync[bot]')
-    # Job-level, so the skipped run for the app's own push never joins the
-    # group and cancels the run that pushed. A newer push by anyone else
-    # cancels an in-progress run.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    # Runs for one PR queue rather than cancel each other: cancelling the run
+    # that just pushed would leave a cancelled check on that head. A run
+    # overtaken by a newer push exits early or skips its push (see the lease
+    # below), and `queue: max` keeps every push's run instead of replacing a
+    # pending one.
     concurrency:
       group: regenerate-${{ github.event.pull_request.number }}
-      cancel-in-progress: true
+      cancel-in-progress: false
+      queue: max
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -194,8 +197,23 @@ jobs:
             git push origin "$GEN_REF"
           fi
 
+          # A regen commit on top of the app's own regen commit means the
+          # output is not stable; stop rather than push in a loop.
+          if [ "$(git log -1 --format=%an HEAD)" = "${APP_SLUG}[bot]" ]; then
+            echo "::error::Regenerating the app's own commit changed the output again; generation is not stable"
+            git status --short | head -50
+            exit 1
+          fi
+
           git commit --quiet -m "chore: regenerate provider (v$VERSION)"
-          git push origin "HEAD:refs/heads/$HEAD_REF"
+          # Push only if the branch is still where this run started.
+          if ! git push --force-with-lease="refs/heads/$HEAD_REF:$HEAD_SHA" origin "HEAD:refs/heads/$HEAD_REF"; then
+            if [ "$(git ls-remote origin "refs/heads/$HEAD_REF" | cut -f1)" != "$HEAD_SHA" ]; then
+              echo "::notice::$HEAD_REF moved past $HEAD_SHA; the run for the newer push regenerates it"
+              exit 0
+            fi
+            exit 1
+          fi
           {
             echo "## Regenerated"
             echo "Pushed $(git rev-parse --short HEAD) to \`$HEAD_REF\` (release v$VERSION)."
