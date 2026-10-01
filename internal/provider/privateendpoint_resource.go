@@ -246,8 +246,6 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
-
 	request, requestDiags := data.ToOperationsCreatePrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -256,7 +254,7 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 	}
 	res, err := r.client.PrivateEndpoints.Create(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+		resp.Diagnostics.AddError("failure to invoke API", err.Error())
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -300,7 +298,7 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 	}
 	res1, err := r.client.PrivateEndpoints.Get(ctx, *request1)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+		resp.Diagnostics.AddError("failure to invoke API", err.Error())
 		if res1 != nil && res1.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res1.RawResponse))
 		}
@@ -352,8 +350,6 @@ func (r *PrivateEndpointResource) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.State)
-
 	request, requestDiags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -362,7 +358,7 @@ func (r *PrivateEndpointResource) Read(ctx context.Context, req resource.ReadReq
 	}
 	res, err := r.client.PrivateEndpoints.Get(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+		resp.Diagnostics.AddError("failure to invoke API", err.Error())
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -408,8 +404,6 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
-
 	request, requestDiags := data.ToOperationsUpdatePrivateEndpointPricingRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -418,7 +412,7 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	}
 	res, err := r.client.PrivateEndpoints.UpdatePricing(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+		resp.Diagnostics.AddError("failure to invoke API", err.Error())
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -470,8 +464,6 @@ func (r *PrivateEndpointResource) Delete(ctx context.Context, req resource.Delet
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.State)
-
 	request, requestDiags := data.ToOperationsDeletePrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -480,7 +472,7 @@ func (r *PrivateEndpointResource) Delete(ctx context.Context, req resource.Delet
 	}
 	res, err := r.client.PrivateEndpoints.Delete(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+		resp.Diagnostics.AddError("failure to invoke API", err.Error())
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
