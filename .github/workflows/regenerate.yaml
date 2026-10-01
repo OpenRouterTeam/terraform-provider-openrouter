@@ -197,9 +197,10 @@ jobs:
             git push origin "$GEN_REF"
           fi
 
-          # A regen commit on top of the app's own regen commit means the
-          # output is not stable; stop rather than push in a loop.
-          if [ "$(git log -1 --format=%an HEAD)" = "${APP_SLUG}[bot]" ]; then
+          # A regen commit on top of this workflow's own regen commit means the
+          # output is not stable; stop rather than push in a loop. (Spec
+          # commits from the monorepo are authored by "OpenRouter SDK Bot".)
+          if [ "$(git log -1 --format='%an|%s' HEAD)" = "${APP_SLUG}[bot]|chore: regenerate provider (v$(git show HEAD:.speakeasy/gen.lock | sed -n 's/^  releaseVersion: //p' | head -1))" ]; then
             echo "::error::Regenerating the app's own commit changed the output again; generation is not stable"
             git status --short | head -50
             exit 1
