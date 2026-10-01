@@ -55,11 +55,9 @@ jobs:
           REPO="${{ github.repository }}"
           RUN_ID="${{ github.run_id }}"
 
-          RUN_STARTED="${{ github.run_started_at }}"
-          if [ -z "$RUN_STARTED" ]; then
-            RUN_STARTED=$(gh run view "$RUN_ID" --repo "$REPO" --json startedAt --jq '.startedAt')
-            echo "Resolved run_started_at from API: $RUN_STARTED"
-          fi
+          # There is no github.run_started_at context property; read it from the API.
+          RUN_STARTED=$(gh run view "$RUN_ID" --repo "$REPO" --json startedAt --jq '.startedAt')
+          echo "Resolved run_started_at from API: $RUN_STARTED"
           echo "run_started_at=$RUN_STARTED" >> "$GITHUB_OUTPUT"
 
           # Full-run logs are unavailable while the workflow is in progress;
