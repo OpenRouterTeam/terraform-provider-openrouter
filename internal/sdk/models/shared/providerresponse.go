@@ -77,6 +77,7 @@ const (
 	ProviderResponseProviderNameDeepSeek            ProviderResponseProviderName = "DeepSeek"
 	ProviderResponseProviderNameDekaLlm             ProviderResponseProviderName = "DekaLLM"
 	ProviderResponseProviderNameDigitalOcean        ProviderResponseProviderName = "DigitalOcean"
+	ProviderResponseProviderNameElevenLabs          ProviderResponseProviderName = "ElevenLabs"
 	ProviderResponseProviderNameFeatherless         ProviderResponseProviderName = "Featherless"
 	ProviderResponseProviderNameFireworks           ProviderResponseProviderName = "Fireworks"
 	ProviderResponseProviderNameFishAudio           ProviderResponseProviderName = "Fish Audio"
@@ -125,9 +126,11 @@ const (
 	ProviderResponseProviderNameRecraft             ProviderResponseProviderName = "Recraft"
 	ProviderResponseProviderNameReka                ProviderResponseProviderName = "Reka"
 	ProviderResponseProviderNameRelace              ProviderResponseProviderName = "Relace"
+	ProviderResponseProviderNameRespan              ProviderResponseProviderName = "Respan"
 	ProviderResponseProviderNameSailResearch        ProviderResponseProviderName = "Sail Research"
 	ProviderResponseProviderNameSakanaAi            ProviderResponseProviderName = "Sakana AI"
 	ProviderResponseProviderNameSambaNova           ProviderResponseProviderName = "SambaNova"
+	ProviderResponseProviderNameScaleDown           ProviderResponseProviderName = "ScaleDown"
 	ProviderResponseProviderNameSeed                ProviderResponseProviderName = "Seed"
 	ProviderResponseProviderNameSiliconFlow         ProviderResponseProviderName = "SiliconFlow"
 	ProviderResponseProviderNameSourceful           ProviderResponseProviderName = "Sourceful"
@@ -292,6 +295,8 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "DigitalOcean":
 		fallthrough
+	case "ElevenLabs":
+		fallthrough
 	case "Featherless":
 		fallthrough
 	case "Fireworks":
@@ -388,11 +393,15 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "Relace":
 		fallthrough
+	case "Respan":
+		fallthrough
 	case "Sail Research":
 		fallthrough
 	case "Sakana AI":
 		fallthrough
 	case "SambaNova":
+		fallthrough
+	case "ScaleDown":
 		fallthrough
 	case "Seed":
 		fallthrough
@@ -450,8 +459,9 @@ func (e *ProviderResponseProviderName) UnmarshalJSON(data []byte) error {
 type RoutedServiceTier string
 
 const (
-	RoutedServiceTierFlex     RoutedServiceTier = "flex"
-	RoutedServiceTierPriority RoutedServiceTier = "priority"
+	RoutedServiceTierFlex      RoutedServiceTier = "flex"
+	RoutedServiceTierPriority  RoutedServiceTier = "priority"
+	RoutedServiceTierUltrafast RoutedServiceTier = "ultrafast"
 )
 
 func (e RoutedServiceTier) ToPointer() *RoutedServiceTier {
@@ -466,6 +476,8 @@ func (e *RoutedServiceTier) UnmarshalJSON(data []byte) error {
 	case "flex":
 		fallthrough
 	case "priority":
+		fallthrough
+	case "ultrafast":
 		*e = RoutedServiceTier(v)
 		return nil
 	default:

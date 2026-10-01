@@ -34,38 +34,38 @@ type ModelsDataSource struct {
 
 // ModelsDataSourceModel describes the data model.
 type ModelsDataSourceModel struct {
-	Arch                 types.String    `queryParam:"style=form,explode=true,name=arch" tfsdk:"arch"`
-	Category             types.String    `queryParam:"style=form,explode=true,name=category" tfsdk:"category"`
-	Context              types.Int64     `queryParam:"style=form,explode=true,name=context" tfsdk:"context"`
-	Data                 []tfTypes.Model `tfsdk:"data"`
-	Distillable          types.String    `queryParam:"style=form,explode=true,name=distillable" tfsdk:"distillable"`
-	InputModalities      types.String    `queryParam:"style=form,explode=true,name=input_modalities" tfsdk:"input_modalities"`
-	Links                *tfTypes.Links  `tfsdk:"links"`
-	MaxAgeDays           types.Int64     `queryParam:"style=form,explode=true,name=max_age_days" tfsdk:"max_age_days"`
-	MaxAgenticIndex      types.Float64   `queryParam:"style=form,explode=true,name=max_agentic_index" tfsdk:"max_agentic_index"`
-	MaxCodingIndex       types.Float64   `queryParam:"style=form,explode=true,name=max_coding_index" tfsdk:"max_coding_index"`
-	MaxIntelligenceIndex types.Float64   `queryParam:"style=form,explode=true,name=max_intelligence_index" tfsdk:"max_intelligence_index"`
-	MaxOutputPrice       types.Float64   `queryParam:"style=form,explode=true,name=max_output_price" tfsdk:"max_output_price"`
-	MaxPrice             types.Float64   `queryParam:"style=form,explode=true,name=max_price" tfsdk:"max_price"`
-	MaxToolSuccessRate   types.Float64   `queryParam:"style=form,explode=true,name=max_tool_success_rate" tfsdk:"max_tool_success_rate"`
-	MinAgeDays           types.Int64     `queryParam:"style=form,explode=true,name=min_age_days" tfsdk:"min_age_days"`
-	MinAgenticIndex      types.Float64   `queryParam:"style=form,explode=true,name=min_agentic_index" tfsdk:"min_agentic_index"`
-	MinCodingIndex       types.Float64   `queryParam:"style=form,explode=true,name=min_coding_index" tfsdk:"min_coding_index"`
-	MinIntelligenceIndex types.Float64   `queryParam:"style=form,explode=true,name=min_intelligence_index" tfsdk:"min_intelligence_index"`
-	MinOutputPrice       types.Float64   `queryParam:"style=form,explode=true,name=min_output_price" tfsdk:"min_output_price"`
-	MinPrice             types.Float64   `queryParam:"style=form,explode=true,name=min_price" tfsdk:"min_price"`
-	MinToolSuccessRate   types.Float64   `queryParam:"style=form,explode=true,name=min_tool_success_rate" tfsdk:"min_tool_success_rate"`
-	ModelAuthors         types.String    `queryParam:"style=form,explode=true,name=model_authors" tfsdk:"model_authors"`
-	OutputModalities     types.String    `queryParam:"style=form,explode=true,name=output_modalities" tfsdk:"output_modalities"`
-	Providers            types.String    `queryParam:"style=form,explode=true,name=providers" tfsdk:"providers"`
-	Q                    types.String    `queryParam:"style=form,explode=true,name=q" tfsdk:"q"`
-	Region               types.String    `queryParam:"style=form,explode=true,name=region" tfsdk:"region"`
-	Sort                 types.String    `queryParam:"style=form,explode=true,name=sort" tfsdk:"sort"`
-	SupportedParameters  types.String    `queryParam:"style=form,explode=true,name=supported_parameters" tfsdk:"supported_parameters"`
-	TotalCount           types.Int64     `tfsdk:"total_count"`
-	UseRss               types.String    `queryParam:"style=form,explode=true,name=use_rss" tfsdk:"use_rss"`
-	UseRssChatLinks      types.String    `queryParam:"style=form,explode=true,name=use_rss_chat_links" tfsdk:"use_rss_chat_links"`
-	Zdr                  types.String    `queryParam:"style=form,explode=true,name=zdr" tfsdk:"zdr"`
+	Arch                 types.String                     `queryParam:"style=form,explode=true,name=arch" tfsdk:"arch"`
+	Category             types.String                     `queryParam:"style=form,explode=true,name=category" tfsdk:"category"`
+	Context              types.Int64                      `queryParam:"style=form,explode=true,name=context" tfsdk:"context"`
+	Data                 []tfTypes.Model                  `tfsdk:"data"`
+	Distillable          types.String                     `queryParam:"style=form,explode=true,name=distillable" tfsdk:"distillable"`
+	InputModalities      types.String                     `queryParam:"style=form,explode=true,name=input_modalities" tfsdk:"input_modalities"`
+	Links                *tfTypes.ModelsListResponseLinks `tfsdk:"links"`
+	MaxAgeDays           types.Int64                      `queryParam:"style=form,explode=true,name=max_age_days" tfsdk:"max_age_days"`
+	MaxAgenticIndex      types.Float64                    `queryParam:"style=form,explode=true,name=max_agentic_index" tfsdk:"max_agentic_index"`
+	MaxCodingIndex       types.Float64                    `queryParam:"style=form,explode=true,name=max_coding_index" tfsdk:"max_coding_index"`
+	MaxIntelligenceIndex types.Float64                    `queryParam:"style=form,explode=true,name=max_intelligence_index" tfsdk:"max_intelligence_index"`
+	MaxOutputPrice       types.Float64                    `queryParam:"style=form,explode=true,name=max_output_price" tfsdk:"max_output_price"`
+	MaxPrice             types.Float64                    `queryParam:"style=form,explode=true,name=max_price" tfsdk:"max_price"`
+	MaxToolSuccessRate   types.Float64                    `queryParam:"style=form,explode=true,name=max_tool_success_rate" tfsdk:"max_tool_success_rate"`
+	MinAgeDays           types.Int64                      `queryParam:"style=form,explode=true,name=min_age_days" tfsdk:"min_age_days"`
+	MinAgenticIndex      types.Float64                    `queryParam:"style=form,explode=true,name=min_agentic_index" tfsdk:"min_agentic_index"`
+	MinCodingIndex       types.Float64                    `queryParam:"style=form,explode=true,name=min_coding_index" tfsdk:"min_coding_index"`
+	MinIntelligenceIndex types.Float64                    `queryParam:"style=form,explode=true,name=min_intelligence_index" tfsdk:"min_intelligence_index"`
+	MinOutputPrice       types.Float64                    `queryParam:"style=form,explode=true,name=min_output_price" tfsdk:"min_output_price"`
+	MinPrice             types.Float64                    `queryParam:"style=form,explode=true,name=min_price" tfsdk:"min_price"`
+	MinToolSuccessRate   types.Float64                    `queryParam:"style=form,explode=true,name=min_tool_success_rate" tfsdk:"min_tool_success_rate"`
+	ModelAuthors         types.String                     `queryParam:"style=form,explode=true,name=model_authors" tfsdk:"model_authors"`
+	OutputModalities     types.String                     `queryParam:"style=form,explode=true,name=output_modalities" tfsdk:"output_modalities"`
+	Providers            types.String                     `queryParam:"style=form,explode=true,name=providers" tfsdk:"providers"`
+	Q                    types.String                     `queryParam:"style=form,explode=true,name=q" tfsdk:"q"`
+	Region               types.String                     `queryParam:"style=form,explode=true,name=region" tfsdk:"region"`
+	Sort                 types.String                     `queryParam:"style=form,explode=true,name=sort" tfsdk:"sort"`
+	SupportedParameters  types.String                     `queryParam:"style=form,explode=true,name=supported_parameters" tfsdk:"supported_parameters"`
+	TotalCount           types.Int64                      `tfsdk:"total_count"`
+	UseRss               types.String                     `queryParam:"style=form,explode=true,name=use_rss" tfsdk:"use_rss"`
+	UseRssChatLinks      types.String                     `queryParam:"style=form,explode=true,name=use_rss_chat_links" tfsdk:"use_rss_chat_links"`
+	Zdr                  types.String                     `queryParam:"style=form,explode=true,name=zdr" tfsdk:"zdr"`
 }
 
 // Metadata returns the data source type name.
@@ -415,8 +415,7 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 							Computed: true,
 							Attributes: map[string]schema.Attribute{
 								"default_effort": schema.StringAttribute{
-									Computed:    true,
-									Description: `Default reasoning effort when the client enables reasoning without specifying effort. Maps to ` + "`" + `reasoning.effort` + "`" + ` in chat requests. When ` + "`" + `"none"` + "`" + `, prefer omitting effort unless the user explicitly disables reasoning.`,
+									Computed: true,
 								},
 								"default_enabled": schema.BoolAttribute{
 									Computed:    true,
@@ -700,6 +699,8 @@ func (r *ModelsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config)
+
 	request, requestDiags := data.ToOperationsGetModelsRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -708,7 +709,7 @@ func (r *ModelsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	res, err := r.client.Models.List(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -738,7 +739,7 @@ func (r *ModelsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		res, err = res.Next()
 
 		if err != nil {
-			resp.Diagnostics.AddError("failed to retrieve next page of results", err.Error())
+			resp.Diagnostics.AddError("failed to retrieve next page of results", redactSensitiveValues(ctx, err.Error()))
 			if res != nil && res.RawResponse != nil {
 				resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 			}
