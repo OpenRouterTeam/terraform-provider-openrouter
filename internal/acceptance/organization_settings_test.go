@@ -1,6 +1,7 @@
 package acceptance
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,9 +10,13 @@ import (
 	"sync"
 	"testing"
 
+	fwprovider "github.com/hashicorp/terraform-plugin-framework/provider"
+	fwresource "github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider"
 )
 
 const organizationSettingsOrgID = "org_2dHFtVWx2n56w6HkM0000000000"
@@ -19,6 +24,28 @@ const organizationSettingsOrgID = "org_2dHFtVWx2n56w6HkM0000000000"
 // Organization management keys belong to a Clerk organization, whose ID
 // carries the org_ prefix.
 var orgIDPattern = regexp.MustCompile(`^org_[A-Za-z0-9]+$`)
+
+// skipUntilOrganizationSettingsGenerated skips while the provider does not
+// register openrouter_organization_settings. The resource is generated from
+// the overlay entity by the Speakeasy regen PR that follows this one, so the
+// type is missing between the two merges; once the regen lands these tests
+// run automatically, and this guard can be deleted.
+func skipUntilOrganizationSettingsGenerated(t *testing.T) {
+	t.Helper()
+	const typeName = "openrouter_organization_settings"
+	ctx := context.Background()
+	p := provider.New("acctest")()
+	var meta fwprovider.MetadataResponse
+	p.Metadata(ctx, fwprovider.MetadataRequest{}, &meta)
+	for _, newResource := range p.Resources(ctx) {
+		var resp fwresource.MetadataResponse
+		newResource().Metadata(ctx, fwresource.MetadataRequest{ProviderTypeName: meta.TypeName}, &resp)
+		if resp.TypeName == typeName {
+			return
+		}
+	}
+	t.Skipf("%s is not generated yet; it arrives with the Speakeasy regen PR", typeName)
+}
 
 // stubOrganizationSettings serves GET/PATCH /organization/settings for one
 // organization and records every request so the tests can prove that
@@ -130,6 +157,7 @@ resource "openrouter_organization_settings" "test" {
 // Create and update both PATCH the singleton; a remote change is picked up by
 // refresh and planned as an in-place update; destroy sends no write.
 func TestStubOrganizationSettingsLifecycle(t *testing.T) {
+	skipUntilOrganizationSettingsGenerated(t)
 	srv, api := newStubOrganizationSettings(t, false)
 	check := func(filtered bool) resource.TestCheckFunc {
 		return resource.ComposeAggregateTestCheckFunc(
@@ -179,6 +207,7 @@ func TestStubOrganizationSettingsLifecycle(t *testing.T) {
 // toggle on and back off. Destroy does not reset the setting, so the last
 // step leaves it off.
 func TestAccOrganizationSettings_Lifecycle(t *testing.T) {
+	skipUntilOrganizationSettingsGenerated(t)
 	config := func(filtered bool) string {
 		return providerConfig() + fmt.Sprintf(`
 resource "openrouter_organization_settings" "test" {
