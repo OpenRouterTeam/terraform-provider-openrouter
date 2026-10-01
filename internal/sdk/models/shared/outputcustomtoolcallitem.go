@@ -38,29 +38,6 @@ func (e *OutputCustomToolCallItemStatus) UnmarshalJSON(data []byte) error {
 	}
 }
 
-type OutputCustomToolCallItemType string
-
-const (
-	OutputCustomToolCallItemTypeCustomToolCall OutputCustomToolCallItemType = "custom_tool_call"
-)
-
-func (e OutputCustomToolCallItemType) ToPointer() *OutputCustomToolCallItemType {
-	return &e
-}
-func (e *OutputCustomToolCallItemType) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "custom_tool_call":
-		*e = OutputCustomToolCallItemType(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for OutputCustomToolCallItemType: %v", v)
-	}
-}
-
 // OutputCustomToolCallItem - A call to a custom (freeform-grammar) tool created by the model — distinct from `function_call`. Used for tools like Codex CLI's `apply_patch` whose payload is opaque text rather than JSON arguments.
 type OutputCustomToolCallItem struct {
 	// True when the model called a tool declared with `async: true` and may continue its turn before the output is returned. Return the result in a later request as a `function_call_output` with this `call_id`.
@@ -72,7 +49,8 @@ type OutputCustomToolCallItem struct {
 	// Namespace qualifier for tools registered as part of a namespace tool group (e.g. an MCP server)
 	Namespace *string                         `json:"namespace,omitzero"`
 	Status    *OutputCustomToolCallItemStatus `json:"status,omitzero"`
-	Type      OutputCustomToolCallItemType    `json:"type"`
+	//lint:ignore U1000 accessed via reflection for JSON marshaling
+	type_ string `const:"custom_tool_call" json:"type"`
 }
 
 func (o OutputCustomToolCallItem) MarshalJSON() ([]byte, error) {
@@ -135,9 +113,6 @@ func (o *OutputCustomToolCallItem) GetStatus() *OutputCustomToolCallItemStatus {
 	return o.Status
 }
 
-func (o *OutputCustomToolCallItem) GetType() OutputCustomToolCallItemType {
-	if o == nil {
-		return OutputCustomToolCallItemType("")
-	}
-	return o.Type
+func (o *OutputCustomToolCallItem) GetType() string {
+	return "custom_tool_call"
 }

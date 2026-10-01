@@ -371,6 +371,8 @@ func (r *GuardrailResource) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
+
 	request, requestDiags := data.ToSharedCreateGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -379,7 +381,7 @@ func (r *GuardrailResource) Create(ctx context.Context, req resource.CreateReque
 	}
 	res, err := r.client.Guardrails.Create(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -431,6 +433,8 @@ func (r *GuardrailResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsGetGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -439,7 +443,7 @@ func (r *GuardrailResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 	res, err := r.client.Guardrails.GetGuardrail(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -485,6 +489,8 @@ func (r *GuardrailResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
+
 	request, requestDiags := data.ToOperationsUpdateGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -493,7 +499,7 @@ func (r *GuardrailResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 	res, err := r.client.Guardrails.Update(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -545,6 +551,8 @@ func (r *GuardrailResource) Delete(ctx context.Context, req resource.DeleteReque
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsDeleteGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -553,7 +561,7 @@ func (r *GuardrailResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 	res, err := r.client.Guardrails.Delete(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
