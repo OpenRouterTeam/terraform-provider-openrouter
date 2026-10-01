@@ -19,13 +19,17 @@ import (
 // accepts a slug or canonical slug in allowed_models/ignored_models and
 // stores canonical slugs, in order, without duplicates, rejecting unknown ids
 // (openrouter-web packages/guardrails/helpers/resolve-model-identifiers.ts).
-// GET /models serves real entries from the public models list.
+// GET /models serves real entries from the public models list. It records
+// the Authorization header of each request: the provider must list models
+// anonymously but call the guardrail endpoints with its key.
 type stubGuardrails struct {
-	mu         sync.Mutex
-	models     []map[string]any
-	canonical  map[string]string
-	guardrail  map[string]any
-	modelsGets int
+	mu             sync.Mutex
+	models         []map[string]any
+	canonical      map[string]string
+	guardrail      map[string]any
+	modelsGets     int
+	modelsAuth     map[string]bool
+	guardrailsAuth map[string]bool
 }
 
 const stubGuardrailID = "6f0d6c9e-2a43-4b8f-9a55-3c2b7f1d0e11"
@@ -36,7 +40,7 @@ func newStubGuardrails(t *testing.T) (*httptest.Server, *stubGuardrails) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	api := &stubGuardrails{canonical: map[string]string{}}
+	api := &stubGuardrails{canonical: map[string]string{}, modelsAuth: map[string]bool{}, guardrailsAuth: map[string]bool{}}
 	if err := json.Unmarshal(raw, &api.models); err != nil {
 		t.Fatal(err)
 	}
@@ -58,9 +62,13 @@ func (s *stubGuardrails) serveHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(status)
 		_ = json.NewEncoder(w).Encode(body)
 	}
+	if strings.HasPrefix(r.URL.Path, "/guardrails") {
+		s.guardrailsAuth[r.Header.Get("Authorization")] = true
+	}
 	switch {
 	case r.Method == http.MethodGet && r.URL.Path == "/models":
 		s.modelsGets++
+		s.modelsAuth[r.Header.Get("Authorization")] = true
 		write(http.StatusOK, map[string]any{"data": s.models, "total_count": len(s.models), "links": map[string]any{}})
 	case r.Method == http.MethodPost && r.URL.Path == "/guardrails":
 		body := map[string]any{}
@@ -215,4 +223,16 @@ func TestStubGuardrailModelIDsConverge(t *testing.T) {
 			},
 		},
 	})
+
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if api.modelsGets == 0 {
+		t.Fatal("the provider never listed models")
+	}
+	if fmt.Sprint(api.modelsAuth) != "map[:true]" {
+		t.Errorf("GET /models Authorization headers = %v, want only empty", api.modelsAuth)
+	}
+	if fmt.Sprint(api.guardrailsAuth) != "map[Bearer local-test-only:true]" {
+		t.Errorf("guardrail Authorization headers = %v, want only the provider key", api.guardrailsAuth)
+	}
 }

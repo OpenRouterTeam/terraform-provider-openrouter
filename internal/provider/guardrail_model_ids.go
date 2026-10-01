@@ -81,7 +81,11 @@ func keepEquivalentModelIDs(prior, got []types.String, lookup func() map[string]
 
 // modelIDForms lists the values the API may store for id: id itself, its
 // canonical slug and, for a variant such as "author/model:free", the
-// canonical slug with the variant suffix.
+// canonical slug with the variant suffix. The guardrail resolver stores a
+// variant id as its permaslug plus the variant
+// (openrouter-web packages/routing/endpoints/constructor.ts,
+// packages/models/variants/shared.ts), while /models reports canonical_slug
+// as the permaslug alone, so "x/y:free" is stored as "<canonical_slug>:free".
 func modelIDForms(id string, canonical map[string]string) []string {
 	forms := []string{id}
 	c, ok := canonical[id]
@@ -127,7 +131,11 @@ func canonicalModelSlugs(ctx context.Context, client *sdk.OpenRouter) (map[strin
 }
 
 // fetchCanonicalModelSlugs pages through GET /models. output_modalities=all
-// matters: the default lists only text-output models.
+// matters: the default lists only text-output models. The request is sent
+// without credentials: since openrouter-web #47740, a credentialed caller
+// whose account has the filtered model catalog enabled gets a list filtered
+// by its provider preferences and guardrails, which can omit the very models
+// a guardrail names (services/cfw-public-api/src/helpers/filtered-model-catalog.ts).
 func fetchCanonicalModelSlugs(ctx context.Context, client *sdk.OpenRouter) (map[string]string, error) {
 	all := "all"
 	limit := int64(500)
@@ -137,7 +145,7 @@ func fetchCanonicalModelSlugs(ctx context.Context, client *sdk.OpenRouter) (map[
 			OutputModalities: &all,
 			Offset:           &offset,
 			Limit:            &limit,
-		})
+		}, operations.WithSetHeaders(map[string]string{"Authorization": ""}))
 		if err != nil {
 			return nil, err
 		}
