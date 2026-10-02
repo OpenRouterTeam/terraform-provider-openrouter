@@ -32,11 +32,33 @@ func (e *AnthropicBase64PdfSourceMediaType) UnmarshalJSON(data []byte) error {
 	}
 }
 
+type AnthropicBase64PdfSourceType string
+
+const (
+	AnthropicBase64PdfSourceTypeBase64 AnthropicBase64PdfSourceType = "base64"
+)
+
+func (e AnthropicBase64PdfSourceType) ToPointer() *AnthropicBase64PdfSourceType {
+	return &e
+}
+func (e *AnthropicBase64PdfSourceType) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "base64":
+		*e = AnthropicBase64PdfSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for AnthropicBase64PdfSourceType: %v", v)
+	}
+}
+
 type AnthropicBase64PdfSource struct {
 	Data      string                            `json:"data"`
 	MediaType AnthropicBase64PdfSourceMediaType `json:"media_type"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"base64" json:"type"`
+	Type      AnthropicBase64PdfSourceType      `json:"type"`
 }
 
 func (a AnthropicBase64PdfSource) MarshalJSON() ([]byte, error) {
@@ -64,8 +86,11 @@ func (a *AnthropicBase64PdfSource) GetMediaType() AnthropicBase64PdfSourceMediaT
 	return a.MediaType
 }
 
-func (a *AnthropicBase64PdfSource) GetType() string {
-	return "base64"
+func (a *AnthropicBase64PdfSource) GetType() AnthropicBase64PdfSourceType {
+	if a == nil {
+		return AnthropicBase64PdfSourceType("")
+	}
+	return a.Type
 }
 
 // #region class-body-anthropicbase64pdfsource
