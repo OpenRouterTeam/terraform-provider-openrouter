@@ -84,6 +84,7 @@ func (p *OpenrouterProvider) Configure(ctx context.Context, req provider.Configu
 	if apiKeyEnvVar := os.Getenv("OPENROUTER_MANAGEMENT_KEY"); security.APIKey == nil && apiKeyEnvVar != "" {
 		security.APIKey = &apiKeyEnvVar
 	}
+	registerSensitiveValues(security.APIKey)
 
 	providerHTTPTransportOpts := ProviderHTTPTransportOpts{
 		SetHeaders: make(map[string]string),
@@ -121,11 +122,15 @@ func (p *OpenrouterProvider) Resources(ctx context.Context) []func() resource.Re
 		NewByokKeyResource,
 		NewGuardrailResource,
 		NewObservabilityDestinationResource,
+		NewOrganizationSettingsResource,
 		NewPrivateEndpointResource,
 		NewScimGroupMappingResource,
 		NewWorkspaceResource,
 		NewWorkspaceBudgetResource,
 		NewGuardrailMemberAssignmentResource,
+		NewWorkspaceDefaultGuardrailResource,
+		NewWorkspaceMemberResource,
+		NewGuardrailKeyAssignmentResource,
 	}
 }
 
@@ -145,11 +150,13 @@ func (p *OpenrouterProvider) DataSources(ctx context.Context) []func() datasourc
 		NewObservabilityDestinationDataSource,
 		NewObservabilityDestinationsDataSource,
 		NewOrganizationMembersDataSource,
+		NewOrganizationSettingsDataSource,
 		NewPresetDataSource,
 		NewPresetsDataSource,
 		NewPrivateEndpointDataSource,
 		NewProvidersDataSource,
 		NewScimGroupMappingDataSource,
+		NewScimGroupsDataSource,
 		NewWorkspaceDataSource,
 		NewWorkspaceBudgetDataSource,
 		NewWorkspaceBudgetsDataSource,
