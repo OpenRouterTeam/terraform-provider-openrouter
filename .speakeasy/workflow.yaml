@@ -1,3 +1,4 @@
+# e2e test of simplified regenerate.yaml (throwaway; do not merge)
 workflowVersion: 1.0.0
 speakeasyVersion: latest
 sources:
