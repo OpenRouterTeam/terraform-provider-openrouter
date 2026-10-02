@@ -736,11 +736,13 @@ func (m *MessagesRequestMetadata) GetUserID() *string {
 type MessagesRequestPluginType string
 
 const (
+	MessagesRequestPluginTypeAlignment          MessagesRequestPluginType = "alignment"
 	MessagesRequestPluginTypeAutoBetaRouter     MessagesRequestPluginType = "auto-beta-router"
 	MessagesRequestPluginTypeAutoRouter         MessagesRequestPluginType = "auto-router"
 	MessagesRequestPluginTypeContextCompression MessagesRequestPluginType = "context-compression"
 	MessagesRequestPluginTypeFileParser         MessagesRequestPluginType = "file-parser"
 	MessagesRequestPluginTypeFusion             MessagesRequestPluginType = "fusion"
+	MessagesRequestPluginTypeJevRouter          MessagesRequestPluginType = "jev-router"
 	MessagesRequestPluginTypeModeration         MessagesRequestPluginType = "moderation"
 	MessagesRequestPluginTypeParetoRouter       MessagesRequestPluginType = "pareto-router"
 	MessagesRequestPluginTypeResponseHealing    MessagesRequestPluginType = "response-healing"
@@ -761,8 +763,19 @@ type MessagesRequestPlugin struct {
 	ParetoRouterPlugin       *ParetoRouterPlugin       `queryParam:"inline" union:"member"`
 	FusionPlugin             *FusionPlugin             `queryParam:"inline" union:"member"`
 	SwitchyardRouterPlugin   *SwitchyardRouterPlugin   `queryParam:"inline" union:"member"`
+	JevRouterPlugin          *JevRouterPlugin          `queryParam:"inline" union:"member"`
+	AlignmentPlugin          *AlignmentPlugin          `queryParam:"inline" union:"member"`
 
 	Type MessagesRequestPluginType
+}
+
+func CreateMessagesRequestPluginAlignment(alignment AlignmentPlugin) MessagesRequestPlugin {
+	typ := MessagesRequestPluginTypeAlignment
+
+	return MessagesRequestPlugin{
+		AlignmentPlugin: &alignment,
+		Type:            typ,
+	}
 }
 
 func CreateMessagesRequestPluginAutoBetaRouter(autoBetaRouter AutoBetaRouterPlugin) MessagesRequestPlugin {
@@ -807,6 +820,15 @@ func CreateMessagesRequestPluginFusion(fusion FusionPlugin) MessagesRequestPlugi
 	return MessagesRequestPlugin{
 		FusionPlugin: &fusion,
 		Type:         typ,
+	}
+}
+
+func CreateMessagesRequestPluginJevRouter(jevRouter JevRouterPlugin) MessagesRequestPlugin {
+	typ := MessagesRequestPluginTypeJevRouter
+
+	return MessagesRequestPlugin{
+		JevRouterPlugin: &jevRouter,
+		Type:            typ,
 	}
 }
 
@@ -883,6 +905,15 @@ func (u *MessagesRequestPlugin) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	switch dis.ID {
+	case "alignment":
+		alignmentPlugin := new(AlignmentPlugin)
+		if err := utils.UnmarshalJSON(data, &alignmentPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == alignment) type AlignmentPlugin within MessagesRequestPlugin: %w", string(data), err)
+		}
+
+		u.AlignmentPlugin = alignmentPlugin
+		u.Type = MessagesRequestPluginTypeAlignment
+		return nil
 	case "auto-beta-router":
 		autoBetaRouterPlugin := new(AutoBetaRouterPlugin)
 		if err := utils.UnmarshalJSON(data, &autoBetaRouterPlugin, "", true, nil); err != nil {
@@ -927,6 +958,15 @@ func (u *MessagesRequestPlugin) UnmarshalJSON(data []byte) (err error) {
 
 		u.FusionPlugin = fusionPlugin
 		u.Type = MessagesRequestPluginTypeFusion
+		return nil
+	case "jev-router":
+		jevRouterPlugin := new(JevRouterPlugin)
+		if err := utils.UnmarshalJSON(data, &jevRouterPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == jev-router) type JevRouterPlugin within MessagesRequestPlugin: %w", string(data), err)
+		}
+
+		u.JevRouterPlugin = jevRouterPlugin
+		u.Type = MessagesRequestPluginTypeJevRouter
 		return nil
 	case "moderation":
 		moderationPlugin := new(ModerationPlugin)
@@ -1030,6 +1070,14 @@ func (u MessagesRequestPlugin) MarshalJSON() ([]byte, error) {
 
 	if u.SwitchyardRouterPlugin != nil {
 		return utils.MarshalJSON(u.SwitchyardRouterPlugin, "", true)
+	}
+
+	if u.JevRouterPlugin != nil {
+		return utils.MarshalJSON(u.JevRouterPlugin, "", true)
+	}
+
+	if u.AlignmentPlugin != nil {
+		return utils.MarshalJSON(u.AlignmentPlugin, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type MessagesRequestPlugin: all fields are null")
@@ -1158,6 +1206,26 @@ func (u System) MarshalJSON() ([]byte, error) {
 	return nil, errors.New("could not marshal union type System: all fields are null")
 }
 
+type ThinkingBetweenTools struct {
+	//lint:ignore U1000 accessed via reflection for JSON marshaling
+	type_ string `const:"between_tools" json:"type"`
+}
+
+func (t ThinkingBetweenTools) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(t, "", false)
+}
+
+func (t *ThinkingBetweenTools) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &t, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (t *ThinkingBetweenTools) GetType() string {
+	return "between_tools"
+}
+
 type ThinkingAdaptive struct {
 	BlockBinding *AnthropicThinkingBlockBinding `json:"block_binding,omitzero"`
 	Display      *AnthropicThinkingDisplay      `json:"display,omitzero"`
@@ -1264,12 +1332,14 @@ const (
 	ThinkingTypeEnabled       ThinkingType = "enabled"
 	ThinkingTypeDisabledValue ThinkingType = "disabled"
 	ThinkingTypeAdaptive      ThinkingType = "adaptive"
+	ThinkingTypeBetweenTools  ThinkingType = "between_tools"
 )
 
 type Thinking struct {
-	ThinkingEnabled  *ThinkingEnabled  `queryParam:"inline" union:"member"`
-	ThinkingDisabled *ThinkingDisabled `queryParam:"inline" union:"member"`
-	ThinkingAdaptive *ThinkingAdaptive `queryParam:"inline" union:"member"`
+	ThinkingEnabled      *ThinkingEnabled      `queryParam:"inline" union:"member"`
+	ThinkingDisabled     *ThinkingDisabled     `queryParam:"inline" union:"member"`
+	ThinkingAdaptive     *ThinkingAdaptive     `queryParam:"inline" union:"member"`
+	ThinkingBetweenTools *ThinkingBetweenTools `queryParam:"inline" union:"member"`
 
 	Type ThinkingType
 }
@@ -1298,6 +1368,15 @@ func CreateThinkingAdaptive(adaptive ThinkingAdaptive) Thinking {
 	return Thinking{
 		ThinkingAdaptive: &adaptive,
 		Type:             typ,
+	}
+}
+
+func CreateThinkingBetweenTools(betweenTools ThinkingBetweenTools) Thinking {
+	typ := ThinkingTypeBetweenTools
+
+	return Thinking{
+		ThinkingBetweenTools: &betweenTools,
+		Type:                 typ,
 	}
 }
 
@@ -1347,6 +1426,15 @@ func (u *Thinking) UnmarshalJSON(data []byte) (err error) {
 		u.ThinkingAdaptive = thinkingAdaptive
 		u.Type = ThinkingTypeAdaptive
 		return nil
+	case "between_tools":
+		thinkingBetweenTools := new(ThinkingBetweenTools)
+		if err := utils.UnmarshalJSON(data, &thinkingBetweenTools, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == between_tools) type ThinkingBetweenTools within Thinking: %w", string(data), err)
+		}
+
+		u.ThinkingBetweenTools = thinkingBetweenTools
+		u.Type = ThinkingTypeBetweenTools
+		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for Thinking", string(data))
@@ -1363,6 +1451,10 @@ func (u Thinking) MarshalJSON() ([]byte, error) {
 
 	if u.ThinkingAdaptive != nil {
 		return utils.MarshalJSON(u.ThinkingAdaptive, "", true)
+	}
+
+	if u.ThinkingBetweenTools != nil {
+		return utils.MarshalJSON(u.ThinkingBetweenTools, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type Thinking: all fields are null")
@@ -2272,6 +2364,7 @@ type ToolCustom struct {
 	Description  *string                         `json:"description,omitzero"`
 	InputSchema  InputSchema                     `json:"input_schema"`
 	Name         string                          `json:"name"`
+	Strict       *bool                           `json:"strict,omitzero"`
 	Type         *ToolTypeCustom                 `json:"type,omitzero"`
 }
 
@@ -2319,6 +2412,13 @@ func (t *ToolCustom) GetName() string {
 		return ""
 	}
 	return t.Name
+}
+
+func (t *ToolCustom) GetStrict() *bool {
+	if t == nil {
+		return nil
+	}
+	return t.Strict
 }
 
 func (t *ToolCustom) GetType() *ToolTypeCustom {
@@ -3029,6 +3129,13 @@ func (m *MessagesRequest) GetThinkingDisabled() *ThinkingDisabled {
 func (m *MessagesRequest) GetThinkingAdaptive() *ThinkingAdaptive {
 	if v := m.GetThinking(); v != nil {
 		return v.ThinkingAdaptive
+	}
+	return nil
+}
+
+func (m *MessagesRequest) GetThinkingBetweenTools() *ThinkingBetweenTools {
+	if v := m.GetThinking(); v != nil {
+		return v.ThinkingBetweenTools
 	}
 	return nil
 }
