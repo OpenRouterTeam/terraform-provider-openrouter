@@ -15,7 +15,8 @@ inputs:
   release-base:
     description: >-
       Git ref whose release the output must move past. The bump is skipped
-      when the checkout's release is already ahead of it.
+      when the checkout's release is already ahead of it, and generation
+      fails when it is behind.
     required: true
   set-version:
     description: Exact version to release instead of a patch bump
@@ -99,11 +100,18 @@ runs:
         fi
 
         git fetch --quiet origin main
+        CURRENT=$(release .speakeasy/gen.lock)
+        BASE=$(git show "$RELEASE_BASE:.speakeasy/gen.lock" | release /dev/stdin)
         if [ -n "$SET_VERSION" ]; then
           speakeasy bump -v "$SET_VERSION"
           generate
-        elif [ "$(release .speakeasy/gen.lock)" = "$(git show "$RELEASE_BASE:.speakeasy/gen.lock" | release /dev/stdin)" ]; then
+        elif [ "$CURRENT" = "$BASE" ]; then
           speakeasy bump patch
           generate
+        elif [ "$(printf '%s\n%s\n' "$CURRENT" "$BASE" | sort -V | tail -1)" != "$CURRENT" ]; then
+          # Behind the base: a patch bump could land on an already published
+          # release, which sdk_publish.yaml would then skip.
+          echo "::error::This branch is on release $CURRENT but $RELEASE_BASE is on $BASE. Merge main into the branch so the next push regenerates on top of it."
+          exit 1
         fi
         echo "changed=true" >> "$GITHUB_OUTPUT"

@@ -66,6 +66,13 @@ jobs:
             exit 1
           fi
 
+          # Workflow changes always get a human review.
+          FILES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --jq '.[].filename')
+          if grep -q '^\.github/' <<< "$FILES"; then
+            echo "::error::PR #$PR changes .github/; leaving it for review"
+            exit 1
+          fi
+
           # gh exits non-zero while checks are pending; the next completion
           # re-runs this job.
           PASSED=$(gh pr checks "$PR" --repo "$GITHUB_REPOSITORY" --json name,bucket \

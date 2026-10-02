@@ -21,13 +21,12 @@ on:
   push:
     branches:
       - main
+    # Same inputs as regenerate.yaml.
     paths:
-      - .speakeasy/in.openapi.yaml
-      - .speakeasy/workflow.yaml
-      - .speakeasy/gen.yaml
-      - .speakeasy/speakeasy-modifications-overlay.yaml
-      - .speakeasy/terraform-entities-overlay.yaml
-      - .speakeasy/patches/**
+      - .speakeasy/**
+      - "!.speakeasy/gen.lock"
+      - "!.speakeasy/workflow.lock"
+      - "!.speakeasy/out.openapi.yaml"
 
 permissions:
   contents: read
