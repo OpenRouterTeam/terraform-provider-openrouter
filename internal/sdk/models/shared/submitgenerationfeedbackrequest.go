@@ -8,23 +8,23 @@ import (
 	"fmt"
 )
 
-// Category - The category of feedback being reported
-type Category string
+// SubmitGenerationFeedbackRequestCategory - The category of feedback being reported
+type SubmitGenerationFeedbackRequestCategory string
 
 const (
-	CategoryLatency           Category = "latency"
-	CategoryIncoherence       Category = "incoherence"
-	CategoryIncorrectResponse Category = "incorrect_response"
-	CategoryFormatting        Category = "formatting"
-	CategoryBilling           Category = "billing"
-	CategoryAPIError          Category = "api_error"
-	CategoryOther             Category = "other"
+	SubmitGenerationFeedbackRequestCategoryLatency           SubmitGenerationFeedbackRequestCategory = "latency"
+	SubmitGenerationFeedbackRequestCategoryIncoherence       SubmitGenerationFeedbackRequestCategory = "incoherence"
+	SubmitGenerationFeedbackRequestCategoryIncorrectResponse SubmitGenerationFeedbackRequestCategory = "incorrect_response"
+	SubmitGenerationFeedbackRequestCategoryFormatting        SubmitGenerationFeedbackRequestCategory = "formatting"
+	SubmitGenerationFeedbackRequestCategoryBilling           SubmitGenerationFeedbackRequestCategory = "billing"
+	SubmitGenerationFeedbackRequestCategoryAPIError          SubmitGenerationFeedbackRequestCategory = "api_error"
+	SubmitGenerationFeedbackRequestCategoryOther             SubmitGenerationFeedbackRequestCategory = "other"
 )
 
-func (e Category) ToPointer() *Category {
+func (e SubmitGenerationFeedbackRequestCategory) ToPointer() *SubmitGenerationFeedbackRequestCategory {
 	return &e
 }
-func (e *Category) UnmarshalJSON(data []byte) error {
+func (e *SubmitGenerationFeedbackRequestCategory) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -43,26 +43,26 @@ func (e *Category) UnmarshalJSON(data []byte) error {
 	case "api_error":
 		fallthrough
 	case "other":
-		*e = Category(v)
+		*e = SubmitGenerationFeedbackRequestCategory(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for Category: %v", v)
+		return fmt.Errorf("invalid value for SubmitGenerationFeedbackRequestCategory: %v", v)
 	}
 }
 
 // SubmitGenerationFeedbackRequest - Structured feedback about a specific generation
 type SubmitGenerationFeedbackRequest struct {
 	// The category of feedback being reported
-	Category Category `json:"category"`
+	Category SubmitGenerationFeedbackRequestCategory `json:"category"`
 	// An optional free-text comment describing the feedback
 	Comment *string `json:"comment,omitzero"`
 	// The generation to submit feedback on
 	GenerationID string `json:"generation_id"`
 }
 
-func (s *SubmitGenerationFeedbackRequest) GetCategory() Category {
+func (s *SubmitGenerationFeedbackRequest) GetCategory() SubmitGenerationFeedbackRequestCategory {
 	if s == nil {
-		return Category("")
+		return SubmitGenerationFeedbackRequestCategory("")
 	}
 	return s.Category
 }
