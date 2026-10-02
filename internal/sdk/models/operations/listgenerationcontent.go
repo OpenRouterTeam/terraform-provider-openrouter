@@ -30,6 +30,8 @@ type ListGenerationContentResponse struct {
 	RawResponse *http.Response
 	// Returns the stored prompt and completion content, plus the failure error when the generation failed
 	GenerationContentResponse *shared.GenerationContentResponse
+	// Bad Request - Invalid request parameters or malformed input
+	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Forbidden - Authentication successful but insufficient permissions
@@ -85,6 +87,13 @@ func (l *ListGenerationContentResponse) GetGenerationContentResponse() *shared.G
 		return nil
 	}
 	return l.GenerationContentResponse
+}
+
+func (l *ListGenerationContentResponse) GetBadRequestResponse() *shared.BadRequestResponse {
+	if l == nil {
+		return nil
+	}
+	return l.BadRequestResponse
 }
 
 func (l *ListGenerationContentResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
