@@ -224,6 +224,7 @@ Read-Only:
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `host` (String)
 - `password` (String, Sensitive)
+- `should_include_cache_write_tokens` (Boolean) Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.
 - `table` (String)
 - `username` (String) If you have not set a specific username in ClickHouse, simply type in 'default' below.
 
@@ -1066,6 +1067,7 @@ Read-Only:
 - `database` (String)
 - `headers` (Map of String) Custom HTTP headers to include in requests to this destination.
 - `schema` (String)
+- `should_include_cache_write_tokens` (Boolean) Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.
 - `table` (String)
 - `token` (String, Sensitive)
 - `warehouse` (String)
