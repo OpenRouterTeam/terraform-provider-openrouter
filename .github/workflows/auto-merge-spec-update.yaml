@@ -4,17 +4,20 @@ name: Auto-merge spec update
 # (openrouter-web sdk-release-prs.yaml) opens with the GH_DOCS_SYNC app. That
 # flow only enables GitHub auto-merge, which waits for the approval the main
 # ruleset requires, so each spec PR sat open until the next release closed it
-# as superseded. Once CI passes, this job merges through the REST endpoint,
-# which honors the app's ruleset bypass. The merge then fires
-# sdk_generation_for_spec_change.yaml.
+# as superseded. regenerate.yaml commits the generated provider to the PR;
+# once Regenerate and CI pass, this job merges through the REST endpoint,
+# which honors the app's ruleset bypass. The merge ships a release through
+# sdk_publish.yaml.
 #
-# Only the exact commit the app opened the PR with is merged: the job runs on
-# events the app sent, the merge pins that head SHA (a later push makes the
-# merge fail), and the PR may change nothing but .speakeasy/in.openapi.yaml.
+# Only commits the app pushed are merged: the job runs on events the app sent,
+# every push to the branch must be the app's (the monorepo's spec commit and
+# Regenerate's commit), and the merge pins the event's head SHA, so a later
+# push makes it fail. The PR must update .speakeasy/in.openapi.yaml and may not
+# touch .github/.
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
     branches:
       - main
 
@@ -33,7 +36,7 @@ jobs:
       && github.event.pull_request.head.repo.full_name == github.repository
       && startsWith(github.event.pull_request.head.ref, 'sdk-bot/openapi-update-')
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     env:
       PR_NUM: ${{ github.event.pull_request.number }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -46,27 +49,42 @@ jobs:
           app-id: ${{ secrets.GH_DOCS_SYNC_APP_ID }}
           private-key: ${{ secrets.GH_DOCS_SYNC_APP_PRIVATE_KEY }}
 
-      - name: Check the PR only updates the spec
+      - name: Check who pushed and what changed
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           set -euo pipefail
-          FILES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUM/files" --jq '.[].filename')
-          if [ "$FILES" != ".speakeasy/in.openapi.yaml" ]; then
-            echo "::error::Spec PR #$PR_NUM changes more than .speakeasy/in.openapi.yaml; leaving it for review"
-            echo "$FILES"
+          OTHERS=$(gh api --paginate "repos/$GITHUB_REPOSITORY/activity?ref=refs/heads/$HEAD_REF" \
+            --jq '.[] | select(.actor.login != "openrouter-docs-sync[bot]") | "\(.activity_type) by \(.actor.login)"')
+          if [ -n "$OTHERS" ]; then
+            echo "::error::$HEAD_REF has updates from outside the app; leaving PR #$PR_NUM for review"
+            echo "$OTHERS"
             exit 1
           fi
 
-      # ci.yaml runs on this PR because the app token, unlike GITHUB_TOKEN,
-      # triggers pull_request workflows.
-      - name: Wait for CI
+          FILES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUM/files" --jq '.[].filename')
+          if ! grep -qx '.speakeasy/in.openapi.yaml' <<< "$FILES"; then
+            echo "::error::Spec PR #$PR_NUM does not update .speakeasy/in.openapi.yaml; leaving it for review"
+            exit 1
+          fi
+          if grep -q '^\.github/' <<< "$FILES"; then
+            echo "::error::Spec PR #$PR_NUM changes .github/; leaving it for review"
+            exit 1
+          fi
+
+      # Regenerate either pushes a commit, whose synchronize event starts a
+      # fresh run of this workflow, or leaves the head alone; on the app's own
+      # regen commit it confirms nothing changes. ci.yaml runs on each head
+      # because the app token, unlike GITHUB_TOKEN, triggers pull_request
+      # workflows.
+      - name: Wait for Regenerate and CI
+        id: wait
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           set -euo pipefail
-          deadline=$((SECONDS + 1200))
-          for name in "Build and test" "Lint config"; do
+          deadline=$((SECONDS + 1800))
+          for name in "Regenerate" "Build and test" "Lint config"; do
             while :; do
               RESULT=$(gh api -X GET "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/check-runs" \
                 -f check_name="$name" \
@@ -88,9 +106,19 @@ jobs:
               echo "$name: ${RESULT} — waiting 20s..."
               sleep 20
             done
+
+            if [ "$name" = "Regenerate" ]; then
+              CURRENT=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUM" --jq .head.sha)
+              if [ "$CURRENT" != "$HEAD_SHA" ]; then
+                echo "Head moved to $CURRENT; the run for that push merges it"
+                echo "superseded=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            fi
           done
 
       - name: Merge spec PR
+        if: steps.wait.outputs.superseded != 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
