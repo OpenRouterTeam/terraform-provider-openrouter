@@ -8,7 +8,6 @@ import (
 	"fmt"
 )
 
-// ReasoningEffort - Default reasoning effort when the client enables reasoning without specifying effort. Maps to `reasoning.effort` in chat requests. When `"none"`, prefer omitting effort unless the user explicitly disables reasoning.
 type ReasoningEffort string
 
 const (
