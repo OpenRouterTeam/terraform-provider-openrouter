@@ -9,7 +9,7 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// Algorithm - Routing algorithm for this request. "capability" calls a small judge model to rate how demanding the task is, then picks the efficient or capable candidate. "stage" reads the tool-result history (errors, repeated failures, edits landing) and calls the judge only when those signals are undecided. "auto" is "stage" without the judge call. "random" picks one candidate at random. "composite" keeps the tier chosen on the last human turn and re-evaluates tool turns with the stage signals. "passthrough" serves the eligible candidates in the order OpenRouter already ranked them, with no routing decision and no judge call. Omit this field to use the platform default, capability.
+// Algorithm - Routing algorithm for this request. "capability" calls a small judge model to rate how demanding the task is, then picks the efficient or capable candidate. "stage" reads the tool-result history (errors, repeated failures, edits landing) and calls the judge only when those signals are undecided. "auto" is "stage" without the judge call. "random" picks one candidate at random. "composite" keeps the tier chosen on the last human turn and re-evaluates tool turns with the stage signals. "passthrough" serves the eligible candidates in the order OpenRouter already ranked them, with no routing decision and no judge call. Omit this field to use the platform default, stage.
 type Algorithm string
 
 const (
@@ -49,7 +49,7 @@ func (e *Algorithm) UnmarshalJSON(data []byte) error {
 }
 
 type SwitchyardRouterPlugin struct {
-	// Routing algorithm for this request. "capability" calls a small judge model to rate how demanding the task is, then picks the efficient or capable candidate. "stage" reads the tool-result history (errors, repeated failures, edits landing) and calls the judge only when those signals are undecided. "auto" is "stage" without the judge call. "random" picks one candidate at random. "composite" keeps the tier chosen on the last human turn and re-evaluates tool turns with the stage signals. "passthrough" serves the eligible candidates in the order OpenRouter already ranked them, with no routing decision and no judge call. Omit this field to use the platform default, capability.
+	// Routing algorithm for this request. "capability" calls a small judge model to rate how demanding the task is, then picks the efficient or capable candidate. "stage" reads the tool-result history (errors, repeated failures, edits landing) and calls the judge only when those signals are undecided. "auto" is "stage" without the judge call. "random" picks one candidate at random. "composite" keeps the tier chosen on the last human turn and re-evaluates tool turns with the stage signals. "passthrough" serves the eligible candidates in the order OpenRouter already ranked them, with no routing decision and no judge call. Omit this field to use the platform default, stage.
 	Algorithm *Algorithm `json:"algorithm,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	id string `const:"switchyard-router" json:"id"`
