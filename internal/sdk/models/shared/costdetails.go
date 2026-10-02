@@ -3,6 +3,10 @@
 
 package shared
 
+import (
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
+)
+
 // CostDetails - Breakdown of upstream inference costs
 type CostDetails struct {
 	// Metered server-tool execution cost (for example, shell sandbox time) billed for this request, in USD. Matches the billed checkpoint and settlement amounts exactly. 0 when a metered server tool ran but settled at zero dollars; absent when no metered server tool ran.
@@ -10,6 +14,17 @@ type CostDetails struct {
 	UpstreamInferenceCompletionsCost float64  `json:"upstream_inference_completions_cost"`
 	UpstreamInferenceCost            *float64 `json:"upstream_inference_cost,omitzero"`
 	UpstreamInferencePromptCost      float64  `json:"upstream_inference_prompt_cost"`
+}
+
+func (c CostDetails) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(c, "", false)
+}
+
+func (c *CostDetails) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &c, "", false, nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *CostDetails) GetServerToolCost() *float64 {

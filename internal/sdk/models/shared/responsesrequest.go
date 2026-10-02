@@ -14,11 +14,13 @@ import (
 type ResponsesRequestPluginType string
 
 const (
+	ResponsesRequestPluginTypeAlignment          ResponsesRequestPluginType = "alignment"
 	ResponsesRequestPluginTypeAutoBetaRouter     ResponsesRequestPluginType = "auto-beta-router"
 	ResponsesRequestPluginTypeAutoRouter         ResponsesRequestPluginType = "auto-router"
 	ResponsesRequestPluginTypeContextCompression ResponsesRequestPluginType = "context-compression"
 	ResponsesRequestPluginTypeFileParser         ResponsesRequestPluginType = "file-parser"
 	ResponsesRequestPluginTypeFusion             ResponsesRequestPluginType = "fusion"
+	ResponsesRequestPluginTypeJevRouter          ResponsesRequestPluginType = "jev-router"
 	ResponsesRequestPluginTypeModeration         ResponsesRequestPluginType = "moderation"
 	ResponsesRequestPluginTypeParetoRouter       ResponsesRequestPluginType = "pareto-router"
 	ResponsesRequestPluginTypeResponseHealing    ResponsesRequestPluginType = "response-healing"
@@ -39,8 +41,19 @@ type ResponsesRequestPlugin struct {
 	ParetoRouterPlugin       *ParetoRouterPlugin       `queryParam:"inline" union:"member"`
 	FusionPlugin             *FusionPlugin             `queryParam:"inline" union:"member"`
 	SwitchyardRouterPlugin   *SwitchyardRouterPlugin   `queryParam:"inline" union:"member"`
+	JevRouterPlugin          *JevRouterPlugin          `queryParam:"inline" union:"member"`
+	AlignmentPlugin          *AlignmentPlugin          `queryParam:"inline" union:"member"`
 
 	Type ResponsesRequestPluginType
+}
+
+func CreateResponsesRequestPluginAlignment(alignment AlignmentPlugin) ResponsesRequestPlugin {
+	typ := ResponsesRequestPluginTypeAlignment
+
+	return ResponsesRequestPlugin{
+		AlignmentPlugin: &alignment,
+		Type:            typ,
+	}
 }
 
 func CreateResponsesRequestPluginAutoBetaRouter(autoBetaRouter AutoBetaRouterPlugin) ResponsesRequestPlugin {
@@ -85,6 +98,15 @@ func CreateResponsesRequestPluginFusion(fusion FusionPlugin) ResponsesRequestPlu
 	return ResponsesRequestPlugin{
 		FusionPlugin: &fusion,
 		Type:         typ,
+	}
+}
+
+func CreateResponsesRequestPluginJevRouter(jevRouter JevRouterPlugin) ResponsesRequestPlugin {
+	typ := ResponsesRequestPluginTypeJevRouter
+
+	return ResponsesRequestPlugin{
+		JevRouterPlugin: &jevRouter,
+		Type:            typ,
 	}
 }
 
@@ -161,6 +183,15 @@ func (u *ResponsesRequestPlugin) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	switch dis.ID {
+	case "alignment":
+		alignmentPlugin := new(AlignmentPlugin)
+		if err := utils.UnmarshalJSON(data, &alignmentPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == alignment) type AlignmentPlugin within ResponsesRequestPlugin: %w", string(data), err)
+		}
+
+		u.AlignmentPlugin = alignmentPlugin
+		u.Type = ResponsesRequestPluginTypeAlignment
+		return nil
 	case "auto-beta-router":
 		autoBetaRouterPlugin := new(AutoBetaRouterPlugin)
 		if err := utils.UnmarshalJSON(data, &autoBetaRouterPlugin, "", true, nil); err != nil {
@@ -205,6 +236,15 @@ func (u *ResponsesRequestPlugin) UnmarshalJSON(data []byte) (err error) {
 
 		u.FusionPlugin = fusionPlugin
 		u.Type = ResponsesRequestPluginTypeFusion
+		return nil
+	case "jev-router":
+		jevRouterPlugin := new(JevRouterPlugin)
+		if err := utils.UnmarshalJSON(data, &jevRouterPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == jev-router) type JevRouterPlugin within ResponsesRequestPlugin: %w", string(data), err)
+		}
+
+		u.JevRouterPlugin = jevRouterPlugin
+		u.Type = ResponsesRequestPluginTypeJevRouter
 		return nil
 	case "moderation":
 		moderationPlugin := new(ModerationPlugin)
@@ -310,6 +350,14 @@ func (u ResponsesRequestPlugin) MarshalJSON() ([]byte, error) {
 		return utils.MarshalJSON(u.SwitchyardRouterPlugin, "", true)
 	}
 
+	if u.JevRouterPlugin != nil {
+		return utils.MarshalJSON(u.JevRouterPlugin, "", true)
+	}
+
+	if u.AlignmentPlugin != nil {
+		return utils.MarshalJSON(u.AlignmentPlugin, "", true)
+	}
+
 	return nil, errors.New("could not marshal union type ResponsesRequestPlugin: all fields are null")
 }
 
@@ -366,16 +414,17 @@ func (r *ReasoningConfig) GetMaxTokens() *int64 {
 	return r.MaxTokens
 }
 
-// ResponsesRequestServiceTier - The service tier to use for processing this request. `fast` is accepted as an alias for `priority`.
+// ResponsesRequestServiceTier - The service tier to use for processing this request. `fast` is accepted as an alias for `priority`. `ultrafast` prefers ultrafast endpoints and falls back to `priority`, then default endpoints.
 type ResponsesRequestServiceTier string
 
 const (
-	ResponsesRequestServiceTierAuto     ResponsesRequestServiceTier = "auto"
-	ResponsesRequestServiceTierDefault  ResponsesRequestServiceTier = "default"
-	ResponsesRequestServiceTierFast     ResponsesRequestServiceTier = "fast"
-	ResponsesRequestServiceTierFlex     ResponsesRequestServiceTier = "flex"
-	ResponsesRequestServiceTierPriority ResponsesRequestServiceTier = "priority"
-	ResponsesRequestServiceTierScale    ResponsesRequestServiceTier = "scale"
+	ResponsesRequestServiceTierAuto      ResponsesRequestServiceTier = "auto"
+	ResponsesRequestServiceTierDefault   ResponsesRequestServiceTier = "default"
+	ResponsesRequestServiceTierFast      ResponsesRequestServiceTier = "fast"
+	ResponsesRequestServiceTierFlex      ResponsesRequestServiceTier = "flex"
+	ResponsesRequestServiceTierPriority  ResponsesRequestServiceTier = "priority"
+	ResponsesRequestServiceTierScale     ResponsesRequestServiceTier = "scale"
+	ResponsesRequestServiceTierUltrafast ResponsesRequestServiceTier = "ultrafast"
 )
 
 func (e ResponsesRequestServiceTier) ToPointer() *ResponsesRequestServiceTier {
@@ -398,6 +447,8 @@ func (e *ResponsesRequestServiceTier) UnmarshalJSON(data []byte) error {
 	case "priority":
 		fallthrough
 	case "scale":
+		fallthrough
+	case "ultrafast":
 		*e = ResponsesRequestServiceTier(v)
 		return nil
 	default:
@@ -1306,7 +1357,7 @@ type ResponsesRequest struct {
 	Reasoning *ReasoningConfig `json:"reasoning,omitzero"`
 	// Recommended per-end-user identifier for abuse isolation. Use a stable ID, hash, or pseudonym. When a provider requires a user identity, OpenRouter folds it into the hashed identity sent upstream and never forwards it raw. If omitted, requests use an account-level identity, so provider policy blocks can affect the whole account.
 	SafetyIdentifier *string `json:"safety_identifier,omitzero"`
-	// The service tier to use for processing this request. `fast` is accepted as an alias for `priority`.
+	// The service tier to use for processing this request. `fast` is accepted as an alias for `priority`. `ultrafast` prefers ultrafast endpoints and falls back to `priority`, then default endpoints.
 	ServiceTier *ResponsesRequestServiceTier `default:"auto" json:"service_tier"`
 	// A unique identifier for grouping related requests (e.g., a conversation or agent workflow). When provided, OpenRouter uses it as the sticky routing key, routing all requests in the session to the same provider to maximize prompt cache hits. Also used for observability grouping. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters.
 	SessionID *string `json:"session_id,omitzero"`

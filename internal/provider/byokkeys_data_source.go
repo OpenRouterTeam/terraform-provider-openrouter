@@ -72,6 +72,10 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 							Computed:    true,
 							Description: `ISO timestamp of when the credential was created.`,
 						},
+						"declared_region": schema.StringAttribute{
+							Computed:    true,
+							Description: `Your declaration of the data region in which the upstream provider account behind this credential processes requests, used for routing eligibility on OpenRouter's regional hosts. ` + "`" + `null` + "`" + ` means undeclared and ` + "`" + `global` + "`" + ` is behaviorally identical: the credential follows the region OpenRouter records for the endpoint. ` + "`" + `europe` + "`" + ` or ` + "`" + `us` + "`" + ` lets requests to ` + "`" + `eu.openrouter.ai` + "`" + ` or ` + "`" + `us.openrouter.ai` + "`" + ` use this credential for that provider (private endpoints, endpoints pinned to another cloud region, cross-region inference profiles and video models are excluded). Self-declared and not verified by OpenRouter. For OpenAI and Fireworks the region comes from the key material (a ` + "`" + `{"api_key": ..., "region": ...}` + "`" + ` key), so the value must match the key's region. Among other providers, only Azure accepts ` + "`" + `europe` + "`" + ` or ` + "`" + `us` + "`" + `.`,
+						},
 						"declared_zdr": schema.BoolAttribute{
 							Computed:    true,
 							Description: `Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). ` + "`" + `null` + "`" + ` inherits OpenRouter's data policy for the provider's endpoint; ` + "`" + `true` + "`" + ` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; ` + "`" + `false` + "`" + ` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter.`,
@@ -122,7 +126,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			},
 			"provider_slug": schema.StringAttribute{
 				Optional:    true,
-				Description: `Optional provider slug to filter by (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "primeintellect", "quiver", "recraft", "reka", "relace", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]`,
+				Description: `Optional provider slug to filter by (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "elevenlabs", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "primeintellect", "quiver", "recraft", "reka", "relace", "respan", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "scaledown", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]`,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"ai21",
@@ -162,6 +166,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 						"deepseek",
 						"dekallm",
 						"digitalocean",
+						"elevenlabs",
 						"featherless",
 						"fireworks",
 						"fish-audio",
@@ -211,11 +216,13 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 						"recraft",
 						"reka",
 						"relace",
+						"respan",
 						"runway",
 						"sail-research",
 						"sakana",
 						"sakana-ai",
 						"sambanova",
+						"scaledown",
 						"seed",
 						"siliconflow",
 						"sourceful",
@@ -290,6 +297,8 @@ func (r *ByokKeysDataSource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config)
+
 	request, requestDiags := data.ToOperationsListBYOKKeysRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -298,7 +307,7 @@ func (r *ByokKeysDataSource) Read(ctx context.Context, req datasource.ReadReques
 	}
 	res, err := r.client.Byok.List(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -328,7 +337,7 @@ func (r *ByokKeysDataSource) Read(ctx context.Context, req datasource.ReadReques
 		res, err = res.Next()
 
 		if err != nil {
-			resp.Diagnostics.AddError("failed to retrieve next page of results", err.Error())
+			resp.Diagnostics.AddError("failed to retrieve next page of results", redactSensitiveValues(ctx, err.Error()))
 			if res != nil && res.RawResponse != nil {
 				resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 			}

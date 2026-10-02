@@ -32,11 +32,33 @@ func (e *AnthropicPlainTextSourceMediaType) UnmarshalJSON(data []byte) error {
 	}
 }
 
+type AnthropicPlainTextSourceType string
+
+const (
+	AnthropicPlainTextSourceTypeText AnthropicPlainTextSourceType = "text"
+)
+
+func (e AnthropicPlainTextSourceType) ToPointer() *AnthropicPlainTextSourceType {
+	return &e
+}
+func (e *AnthropicPlainTextSourceType) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "text":
+		*e = AnthropicPlainTextSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for AnthropicPlainTextSourceType: %v", v)
+	}
+}
+
 type AnthropicPlainTextSource struct {
 	Data      string                            `json:"data"`
 	MediaType AnthropicPlainTextSourceMediaType `json:"media_type"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"text" json:"type"`
+	Type      AnthropicPlainTextSourceType      `json:"type"`
 }
 
 func (a AnthropicPlainTextSource) MarshalJSON() ([]byte, error) {
@@ -64,6 +86,9 @@ func (a *AnthropicPlainTextSource) GetMediaType() AnthropicPlainTextSourceMediaT
 	return a.MediaType
 }
 
-func (a *AnthropicPlainTextSource) GetType() string {
-	return "text"
+func (a *AnthropicPlainTextSource) GetType() AnthropicPlainTextSourceType {
+	if a == nil {
+		return AnthropicPlainTextSourceType("")
+	}
+	return a.Type
 }

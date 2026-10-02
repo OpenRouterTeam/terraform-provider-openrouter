@@ -8,13 +8,14 @@ resource "openrouter_byok_key" "my_byokkey" {
   allowed_user_ids = [
     "..."
   ]
-  declared_zdr  = true
-  disabled      = false
-  is_byok_only  = false
-  is_fallback   = false
-  is_required   = false
-  key           = "sk-proj-abc123..."
-  name          = "Production OpenAI Key"
-  provider_slug = "openai"
-  workspace_id  = "550e8400-e29b-41d4-a716-446655440000"
+  declared_region = "europe"
+  declared_zdr    = true
+  disabled        = false
+  is_byok_only    = false
+  is_fallback     = false
+  is_required     = false
+  key             = "sk-proj-abc123..."
+  name            = "Production OpenAI Key"
+  provider_slug   = "openai"
+  workspace_id    = "550e8400-e29b-41d4-a716-446655440000"
 }
