@@ -1,0 +1,109 @@
+name: Generate provider
+description: >-
+  Regenerates the provider with the Speakeasy CLI and go generate, preserving
+  custom code (persistentEdits), and bumps the release once when the output
+  changed. Expects a full checkout (fetch-depth 0) and leaves the result
+  uncommitted.
+
+inputs:
+  github-token:
+    description: Token for fetching and pushing the persistent-edits snapshot refs
+    required: true
+  speakeasy-api-key:
+    description: Speakeasy API key
+    required: true
+  release-base:
+    description: >-
+      Git ref whose release the output must move past. The bump is skipped
+      when the checkout's release is already ahead of it.
+    required: true
+  set-version:
+    description: Exact version to release instead of a patch bump
+    required: false
+    default: ""
+  upload-spec:
+    description: Upload the resolved spec to the Speakeasy registry ("true" on main only)
+    required: false
+    default: "false"
+
+outputs:
+  changed:
+    description: '"true" when anything besides .speakeasy/gen.lock changed'
+    value: ${{ steps.generate.outputs.changed }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-go@v6
+      with:
+        go-version-file: go.mod
+        cache: true
+
+    # go generate renders docs (tfplugindocs) through the Terraform CLI.
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_wrapper: false
+
+    # workflow.yaml pins speakeasyVersion; the CLI switches to it itself.
+    - name: Install Speakeasy CLI
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        set -euo pipefail
+        cd "$RUNNER_TEMP"
+        gh release download --repo speakeasy-api/speakeasy --pattern speakeasy_linux_amd64.zip --pattern checksums.txt
+        grep ' speakeasy_linux_amd64.zip$' checksums.txt | sha256sum -c -
+        unzip -q speakeasy_linux_amd64.zip speakeasy -d bin
+        echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+    # Generating with --skip-versioning is idempotent (a rerun changes only
+    # gen.lock), so "anything else changed" is the whole significance test.
+    # Then one bump, carried into the generated version strings by a second
+    # run.
+    - name: Generate
+      id: generate
+      shell: bash
+      env:
+        SPEAKEASY_API_KEY: ${{ inputs.speakeasy-api-key }}
+        GITHUB_TOKEN_FOR_REFS: ${{ inputs.github-token }}
+        RELEASE_BASE: ${{ inputs.release-base }}
+        SET_VERSION: ${{ inputs.set-version }}
+        UPLOAD_SPEC: ${{ inputs.upload-spec }}
+        # Generation may need a newer Go patch release than go.mod names.
+        GOTOOLCHAIN: auto
+      run: |
+        set -euo pipefail
+
+        # Persistent edits fetch the previous pristine snapshot from origin
+        # and push the new one (refs/speakeasy/gen/<generation_id>).
+        git remote set-url origin "https://x-access-token:${GITHUB_TOKEN_FOR_REFS}@github.com/${GITHUB_REPOSITORY}.git"
+
+        ARGS=(--target open-router --skip-versioning --skip-testing --auto-yes --output console)
+        if [ "$UPLOAD_SPEC" != true ]; then
+          ARGS+=(--skip-upload-spec)
+        fi
+        generate() {
+          speakeasy run "${ARGS[@]}"
+          go generate ./...
+        }
+        release() {
+          sed -n 's/^  releaseVersion: //p' "$1" | head -1
+        }
+
+        generate
+        if [ -z "$(git status --porcelain -- . ':!.speakeasy/gen.lock')" ]; then
+          echo "Regeneration made no changes"
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        git fetch --quiet origin main
+        if [ -n "$SET_VERSION" ]; then
+          speakeasy bump -v "$SET_VERSION"
+          generate
+        elif [ "$(release .speakeasy/gen.lock)" = "$(git show "$RELEASE_BASE:.speakeasy/gen.lock" | release /dev/stdin)" ]; then
+          speakeasy bump patch
+          generate
+        fi
+        echo "changed=true" >> "$GITHUB_OUTPUT"
