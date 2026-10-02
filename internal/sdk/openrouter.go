@@ -3,7 +3,7 @@
 
 package sdk
 
-// Generated from OpenAPI doc version 1.0.0 and generator version 2.941.0
+// Generated from OpenAPI doc version 1.0.0 and generator version 2.943.0
 
 import (
 	"context"
@@ -66,6 +66,8 @@ type OpenRouter struct {
 	// OAuth authentication endpoints
 	OAuth *OAuth1
 	Oauth *Oauth2
+	// Submit, list, poll, and delete asynchronous batches of inference requests. See https://openrouter.ai/docs/batch-quickstart.
+	Batch *Batch
 	// Benchmarks endpoints
 	Benchmarks *Benchmarks
 	Byok       *Byok
@@ -79,6 +81,8 @@ type OpenRouter struct {
 	Datasets *Datasets
 	// Text embedding endpoints
 	Embeddings *Embeddings
+	// End Users endpoints
+	EndUsers *EndUsers
 	// Endpoint information
 	Endpoints *Endpoints
 	// Files endpoints
@@ -108,6 +112,8 @@ type OpenRouter struct {
 	Scim *Scim
 	// System One endpoints for models such as Jev, compatible with the TypeSafe SDKs. See https://openrouter.ai/docs/guides/community/typesafe-sdk.
 	SystemOne *SystemOne
+	// The catalog of server tools OpenRouter runs on behalf of a model: accepted `tools[].type` spellings per API format, engines and pricing, and which endpoints run each tool natively. See https://openrouter.ai/docs/guides/features/server-tools.
+	Tools *Tools
 	// Store host-bound secrets for a workspace or for one intern. Scope is selected by the API key. Responses return metadata only, never secret values. See https://openrouter.ai/docs/guides/ori/vault.
 	Vault           *Vault
 	VideoGeneration *VideoGeneration
@@ -194,9 +200,9 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
 		SDKVersion: "0.3.19",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.3.19 2.941.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			UserAgent:         "speakeasy-sdk/terraform 0.3.19 2.943.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
 			SDKVersion:        "0.3.19",
-			GenVersion:        "2.941.0",
+			GenVersion:        "2.943.0",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
 		},
@@ -224,6 +230,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Stt = newStt(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.OAuth = newOAuth1(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Oauth = newOauth2(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.Batch = newBatch(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Benchmarks = newBenchmarks(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Byok = newByok(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Classifications = newClassifications(sdk, sdk.sdkConfiguration, sdk.hooks)
@@ -231,6 +238,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Credits = newCredits(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Datasets = newDatasets(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Embeddings = newEmbeddings(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.EndUsers = newEndUsers(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Endpoints = newEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Files = newFiles(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Generations = newGenerations(sdk, sdk.sdkConfiguration, sdk.hooks)
@@ -246,6 +254,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Rerank = newRerank(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Scim = newScim(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.SystemOne = newSystemOne(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.Tools = newTools(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Vault = newVault(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.VideoGeneration = newVideoGeneration(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Videos = newVideos(sdk, sdk.sdkConfiguration, sdk.hooks)
