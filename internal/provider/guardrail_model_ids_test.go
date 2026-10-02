@@ -1,8 +1,14 @@
 package provider
 
 import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"os"
 	"testing"
 
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -33,10 +39,16 @@ func TestKeepEquivalentModelIDs(t *testing.T) {
 			strs("anthropic/claude-sonnet-5.5-20260928", "deepseek/deepseek-v4-flash-0731"),
 			strs("anthropic/claude-sonnet-5.5-20260928", "deepseek/deepseek-v4-flash-20260731"), true, true},
 		{"duplicates collapsed by the API",
-			strs("anthropic/claude-sonnet-5.5", "deepseek/deepseek-v4-flash-0731", "anthropic/claude-sonnet-5.5:batch"),
+			strs("anthropic/claude-sonnet-5.5", "deepseek/deepseek-v4-flash-0731", "anthropic/claude-sonnet-5.5-20260928"),
 			strs("anthropic/claude-sonnet-5.5-20260928", "deepseek/deepseek-v4-flash-20260731"), true, true},
 		{"variant stored with its suffix", strs("apodex/apodex-1.1-mini:free"), strs("apodex/apodex-1.1-mini-20261001:free"), true, true},
-		{"variant stored without its suffix", strs("apodex/apodex-1.1-mini:free"), strs("apodex/apodex-1.1-mini-20261001"), true, true},
+		{"variant without its suffix is drift", strs("apodex/apodex-1.1-mini:free"), strs("apodex/apodex-1.1-mini-20261001"), false, true},
+		{"model and its variant are distinct",
+			strs("anthropic/claude-sonnet-5.5", "anthropic/claude-sonnet-5.5:batch"),
+			strs("anthropic/claude-sonnet-5.5-20260928", "anthropic/claude-sonnet-5.5-20260928:batch"), true, true},
+		{"variant removed remotely is drift",
+			strs("anthropic/claude-sonnet-5.5", "anthropic/claude-sonnet-5.5:batch"),
+			strs("anthropic/claude-sonnet-5.5-20260928"), false, true},
 		{"unknown id the API keeps as is", strs("old/delisted", "deepseek/deepseek-v4-flash-0731"), strs("old/delisted", "deepseek/deepseek-v4-flash-20260731"), true, true},
 		{"reordered is drift",
 			strs("deepseek/deepseek-v4-flash-0731", "anthropic/claude-sonnet-5.5"),
@@ -74,5 +86,47 @@ func TestKeepEquivalentModelIDsWithoutLookup(t *testing.T) {
 	out := keepEquivalentModelIDs(strs("deepseek/deepseek-v4-flash-0731"), got, func() map[string]string { return map[string]string{} })
 	if !equalStringLists(out, got) {
 		t.Fatalf("got %v, want %v", out, got)
+	}
+}
+
+// A failed models lookup is not cached: the next Read fetches again, and a
+// successful fetch is reused.
+func TestCanonicalModelSlugsRetriesAfterError(t *testing.T) {
+	raw, err := os.ReadFile("../acceptance/testdata/guardrail_models.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var models []json.RawMessage
+	if err := json.Unmarshal(raw, &models); err != nil {
+		t.Fatal(err)
+	}
+	page, _ := json.Marshal(map[string]any{"data": models, "total_count": len(models), "links": map[string]any{}})
+	gets := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gets++
+		w.Header().Set("Content-Type", "application/json")
+		if gets == 1 {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(`{"error":{"code":400,"message":"bad request"}}`))
+			return
+		}
+		_, _ = w.Write(page)
+	}))
+	defer srv.Close()
+	client := sdk.New(sdk.WithServerURL(srv.URL))
+
+	if _, err := canonicalModelSlugs(context.Background(), client); err == nil {
+		t.Fatal("first lookup succeeded, want the stub's error")
+	}
+	canonical, err := canonicalModelSlugs(context.Background(), client)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := canonical["anthropic/claude-sonnet-5.5"]; got != "anthropic/claude-sonnet-5.5-20260928" {
+		t.Fatalf("canonical slug = %q", got)
+	}
+	n := gets
+	if _, err := canonicalModelSlugs(context.Background(), client); err != nil || gets != n {
+		t.Fatalf("third lookup: err %v, %d new requests; want the cached map", err, gets-n)
 	}
 }

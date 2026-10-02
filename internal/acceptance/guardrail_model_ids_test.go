@@ -17,7 +17,8 @@ import (
 
 // stubGuardrails mimics the guardrail endpoints' model id handling: the API
 // accepts a slug or canonical slug in allowed_models/ignored_models and
-// stores canonical slugs, in order, without duplicates, rejecting unknown ids
+// stores canonical slugs (with any variant suffix), in order, without
+// duplicates, rejecting unknown ids
 // (openrouter-web packages/guardrails/helpers/resolve-model-identifiers.ts).
 // GET /models serves real entries from the public models list. It records
 // the Authorization header of each request: the provider must list models
@@ -45,7 +46,12 @@ func newStubGuardrails(t *testing.T) (*httptest.Server, *stubGuardrails) {
 		t.Fatal(err)
 	}
 	for _, m := range api.models {
+		// A variant id resolves to the permaslug plus the variant, like the
+		// endpoints' model_variant_permaslug.
 		id, slug := m["id"].(string), m["canonical_slug"].(string)
+		if _, variant, ok := strings.Cut(id, ":"); ok {
+			slug += ":" + variant
+		}
 		api.canonical[id] = slug
 		api.canonical[slug] = slug
 	}
@@ -195,19 +201,25 @@ func TestStubGuardrailModelIDsConverge(t *testing.T) {
 			{Config: config, PlanOnly: true},
 			// Two ids for one model: the API keeps one.
 			{
-				Config: stubGuardrailConfig(srv.URL, []string{"anthropic/claude-sonnet-5.5", "anthropic/claude-sonnet-5.5:batch"}, ignored),
+				Config: stubGuardrailConfig(srv.URL, []string{"anthropic/claude-sonnet-5.5", "anthropic/claude-sonnet-5.5-20260928"}, ignored),
 				Check:  api.checkStored("allowed_models", "anthropic/claude-sonnet-5.5-20260928"),
 			},
-			// An out-of-band change still shows as drift and is reverted.
+			// A model and its variant are stored separately.
 			{
-				PreConfig: func() { api.setAllowedModels("deepseek/deepseek-v4-pro-20260813") },
+				Config: stubGuardrailConfig(srv.URL, []string{"anthropic/claude-sonnet-5.5", "anthropic/claude-sonnet-5.5:batch"}, ignored),
+				Check:  api.checkStored("allowed_models", "anthropic/claude-sonnet-5.5-20260928", "anthropic/claude-sonnet-5.5-20260928:batch"),
+			},
+			// An out-of-band change still shows as drift and is reverted, even
+			// when it only drops the variant.
+			{
+				PreConfig: func() { api.setAllowedModels("anthropic/claude-sonnet-5.5-20260928") },
 				Config:    stubGuardrailConfig(srv.URL, []string{"anthropic/claude-sonnet-5.5", "anthropic/claude-sonnet-5.5:batch"}, ignored),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("openrouter_guardrail.test", plancheck.ResourceActionUpdate),
 					},
 				},
-				Check: api.checkStored("allowed_models", "anthropic/claude-sonnet-5.5-20260928"),
+				Check: api.checkStored("allowed_models", "anthropic/claude-sonnet-5.5-20260928", "anthropic/claude-sonnet-5.5-20260928:batch"),
 			},
 			// Import has no prior list, so it stores the API's canonical slugs.
 			{

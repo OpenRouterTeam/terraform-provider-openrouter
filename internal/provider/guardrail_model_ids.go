@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"slices"
 	"strings"
 	"sync"
 
@@ -44,7 +43,7 @@ func (r *GuardrailResource) keepConfiguredModelIDs(ctx context.Context, prior, d
 }
 
 // keepEquivalentModelIDs returns prior when got is the API's resolution of
-// prior: each prior id replaced by itself or its canonical slug, in order,
+// prior: each prior id replaced by the value the API stores for it, in order,
 // keeping the first of any duplicates. Otherwise it returns got. lookup is
 // called only when the lists differ.
 func keepEquivalentModelIDs(prior, got []types.String, lookup func() map[string]string) []types.String {
@@ -56,47 +55,46 @@ func keepEquivalentModelIDs(prior, got []types.String, lookup func() map[string]
 	}
 	canonical := lookup()
 
+	var want []string
 	seen := map[string]bool{}
-	i := 0
 	for _, p := range prior {
 		if p.IsNull() || p.IsUnknown() {
 			return got
 		}
-		forms := modelIDForms(p.ValueString(), canonical)
-		if slices.ContainsFunc(forms, func(f string) bool { return seen[f] }) {
-			// The API dropped this one as a duplicate of an earlier entry.
-			continue
+		id := storedModelID(p.ValueString(), canonical)
+		if !seen[id] {
+			seen[id] = true
+			want = append(want, id)
 		}
-		if i >= len(got) || !slices.Contains(forms, got[i].ValueString()) {
+	}
+	if len(want) != len(got) {
+		return got
+	}
+	for i, id := range want {
+		if got[i].ValueString() != id {
 			return got
 		}
-		seen[got[i].ValueString()] = true
-		i++
-	}
-	if i != len(got) {
-		return got
 	}
 	return prior
 }
 
-// modelIDForms lists the values the API may store for id: id itself, its
-// canonical slug and, for a variant such as "author/model:free", the
-// canonical slug with the variant suffix. The guardrail resolver stores a
-// variant id as its permaslug plus the variant
+// storedModelID is the value the API stores for id: its canonical slug, plus
+// the variant suffix for a variant such as "author/model:free". The guardrail
+// resolver stores a variant id as its permaslug plus the variant
 // (openrouter-web packages/routing/endpoints/constructor.ts,
 // packages/models/variants/shared.ts), while /models reports canonical_slug
 // as the permaslug alone, so "x/y:free" is stored as "<canonical_slug>:free".
-func modelIDForms(id string, canonical map[string]string) []string {
-	forms := []string{id}
+// An id /models doesn't list (a canonical slug, a hidden or delisted model)
+// is stored as given.
+func storedModelID(id string, canonical map[string]string) string {
 	c, ok := canonical[id]
-	if !ok || c == "" || c == id {
-		return forms
+	if !ok || c == "" {
+		return id
 	}
-	forms = append(forms, c)
 	if _, variant, found := strings.Cut(id, ":"); found && !strings.Contains(c, ":") {
-		forms = append(forms, c+":"+variant)
+		return c + ":" + variant
 	}
-	return forms
+	return c
 }
 
 func equalStringLists(a, b []types.String) bool {
@@ -112,22 +110,28 @@ func equalStringLists(a, b []types.String) bool {
 }
 
 // modelSlugCaches holds one model id -> canonical slug map per configured
-// client, fetched at most once per provider run.
+// client. Only a successful fetch is cached, so a failed lookup is retried by
+// the next Read.
 var modelSlugCaches sync.Map // *sdk.OpenRouter -> *modelSlugCache
 
 type modelSlugCache struct {
-	once      sync.Once
+	mu        sync.Mutex
 	canonical map[string]string
-	err       error
 }
 
 func canonicalModelSlugs(ctx context.Context, client *sdk.OpenRouter) (map[string]string, error) {
 	v, _ := modelSlugCaches.LoadOrStore(client, &modelSlugCache{})
 	c := v.(*modelSlugCache)
-	c.once.Do(func() {
-		c.canonical, c.err = fetchCanonicalModelSlugs(ctx, client)
-	})
-	return c.canonical, c.err
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.canonical == nil {
+		canonical, err := fetchCanonicalModelSlugs(ctx, client)
+		if err != nil {
+			return nil, err
+		}
+		c.canonical = canonical
+	}
+	return c.canonical, nil
 }
 
 // fetchCanonicalModelSlugs pages through GET /models. output_modalities=all
