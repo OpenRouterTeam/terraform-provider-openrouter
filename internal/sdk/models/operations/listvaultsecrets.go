@@ -56,7 +56,7 @@ type ListVaultSecretsResponse struct {
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Forbidden - The key has no usable workspace scope, or the request arrived on a regional hostname.
 	ForbiddenResponse *shared.ForbiddenResponse
-	// Not Found - The intern is not in the selected workspace, the secret does not exist in the selected scope, or the caller is outside the intern programme.
+	// Not Found - The intern is not in the selected workspace or is not visible to the key (a member key without an admin role sees only interns its member created or interns in workspaces they administer), the secret does not exist in the selected scope, or the caller is outside the intern programme.
 	NotFoundResponse *shared.NotFoundResponse
 	// Request Timeout - The route deadline passed before the request completed, or the request body stopped arriving.
 	RequestTimeoutResponse *shared.RequestTimeoutResponse
