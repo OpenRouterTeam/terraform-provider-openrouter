@@ -410,6 +410,11 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Computed:  true,
 								Sensitive: true,
 							},
+							"should_include_cache_write_tokens": schema.BoolAttribute{
+								Computed:    true,
+								Default:     booldefault.StaticBool(false),
+								Description: `Send the cache_write_tokens column (schema v2). Turn this on after the table has that column. Default: false`,
+							},
 							"table": schema.StringAttribute{
 								Computed: true,
 							},
@@ -2051,6 +2056,11 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							"schema": schema.StringAttribute{
 								Computed: true,
 							},
+							"should_include_cache_write_tokens": schema.BoolAttribute{
+								Computed:    true,
+								Default:     booldefault.StaticBool(false),
+								Description: `Send the cache_write_tokens column (schema v2). Turn this on after the table has that column. Default: false`,
+							},
 							"table": schema.StringAttribute{
 								Computed: true,
 							},
@@ -2474,6 +2484,8 @@ func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resou
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
+
 	request, requestDiags := data.ToSharedCreateObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -2482,7 +2494,7 @@ func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resou
 	}
 	res, err := r.client.Observability.CreateDestination(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -2541,6 +2553,8 @@ func (r *ObservabilityDestinationResource) Read(ctx context.Context, req resourc
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsGetObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -2549,7 +2563,7 @@ func (r *ObservabilityDestinationResource) Read(ctx context.Context, req resourc
 	}
 	res, err := r.client.Observability.GetDestination(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -2595,6 +2609,8 @@ func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resou
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
+
 	request, requestDiags := data.ToOperationsUpdateObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -2603,7 +2619,7 @@ func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resou
 	}
 	res, err := r.client.Observability.UpdateDestination(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -2655,6 +2671,8 @@ func (r *ObservabilityDestinationResource) Delete(ctx context.Context, req resou
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsDeleteObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -2663,7 +2681,7 @@ func (r *ObservabilityDestinationResource) Delete(ctx context.Context, req resou
 	}
 	res, err := r.client.Observability.DeleteDestination(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
