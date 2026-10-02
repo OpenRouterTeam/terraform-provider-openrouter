@@ -277,12 +277,14 @@ func guardrailKeyAssignmentID(guardrailID, keyHash string) string {
 	return guardrailID + "/" + keyHash
 }
 
+// parseGuardrailKeyAssignmentID splits on the last "/", since a key hash never
+// contains one.
 func parseGuardrailKeyAssignmentID(id string) (guardrailID, keyHash string, err error) {
-	parts := strings.Split(id, "/")
-	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+	i := strings.LastIndex(id, "/")
+	if i <= 0 || i == len(id)-1 {
 		return "", "", fmt.Errorf("expected import ID in the format <guardrail_id>/<key_hash>, got %q", id)
 	}
-	return parts[0], parts[1], nil
+	return id[:i], id[i+1:], nil
 }
 
 // notRawAPIKey rejects a secret API key given where its hash belongs, so the

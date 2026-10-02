@@ -10,18 +10,23 @@ import (
 )
 
 func TestParseGuardrailKeyAssignmentID(t *testing.T) {
-	guardrailID, keyHash, err := parseGuardrailKeyAssignmentID("gr-1/c56454edb818")
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if guardrailID != "gr-1" || keyHash != "c56454edb818" {
-		t.Fatalf("got (%q, %q)", guardrailID, keyHash)
-	}
-	if got := guardrailKeyAssignmentID(guardrailID, keyHash); got != "gr-1/c56454edb818" {
-		t.Fatalf("round trip = %q", got)
+	for id, want := range map[string][2]string{
+		"gr-1/c56454edb818":      {"gr-1", "c56454edb818"},
+		"ws-1/gr-1/c56454edb818": {"ws-1/gr-1", "c56454edb818"},
+	} {
+		guardrailID, keyHash, err := parseGuardrailKeyAssignmentID(id)
+		if err != nil {
+			t.Fatalf("parseGuardrailKeyAssignmentID(%q) unexpected error: %v", id, err)
+		}
+		if guardrailID != want[0] || keyHash != want[1] {
+			t.Fatalf("parseGuardrailKeyAssignmentID(%q) = (%q, %q), want (%q, %q)", id, guardrailID, keyHash, want[0], want[1])
+		}
+		if got := guardrailKeyAssignmentID(guardrailID, keyHash); got != id {
+			t.Fatalf("round trip = %q, want %q", got, id)
+		}
 	}
 
-	for _, id := range []string{"", "gr-1", "gr-1/", "/c56454edb818", "ws-1/gr-1/c56454edb818"} {
+	for _, id := range []string{"", "gr-1", "/", "gr-1/", "/c56454edb818", "ws-1/gr-1/"} {
 		if _, _, err := parseGuardrailKeyAssignmentID(id); err == nil {
 			t.Errorf("parseGuardrailKeyAssignmentID(%q) returned no error", id)
 		}
