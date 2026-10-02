@@ -14,9 +14,10 @@ inputs:
     required: true
   release-base:
     description: >-
-      Git ref whose release the output must move past. The bump is skipped
-      when the checkout's release is already ahead of it, and generation
-      fails when it is behind.
+      Git ref whose release the output must move past: main, as origin/main
+      or HEAD on a main checkout (only origin main is fetched). The bump is
+      skipped when the checkout's release is already ahead of it, and
+      generation fails when it is behind.
     required: true
   set-version:
     description: Exact version to release instead of a patch bump
