@@ -49,6 +49,7 @@ const (
 	BYOKProviderSlugDeepseek                 BYOKProviderSlug = "deepseek"
 	BYOKProviderSlugDekallm                  BYOKProviderSlug = "dekallm"
 	BYOKProviderSlugDigitalocean             BYOKProviderSlug = "digitalocean"
+	BYOKProviderSlugElevenlabs               BYOKProviderSlug = "elevenlabs"
 	BYOKProviderSlugFeatherless              BYOKProviderSlug = "featherless"
 	BYOKProviderSlugFireworks                BYOKProviderSlug = "fireworks"
 	BYOKProviderSlugFishAudio                BYOKProviderSlug = "fish-audio"
@@ -98,11 +99,13 @@ const (
 	BYOKProviderSlugRecraft                  BYOKProviderSlug = "recraft"
 	BYOKProviderSlugReka                     BYOKProviderSlug = "reka"
 	BYOKProviderSlugRelace                   BYOKProviderSlug = "relace"
+	BYOKProviderSlugRespan                   BYOKProviderSlug = "respan"
 	BYOKProviderSlugRunway                   BYOKProviderSlug = "runway"
 	BYOKProviderSlugSailResearch             BYOKProviderSlug = "sail-research"
 	BYOKProviderSlugSakana                   BYOKProviderSlug = "sakana"
 	BYOKProviderSlugSakanaAi                 BYOKProviderSlug = "sakana-ai"
 	BYOKProviderSlugSambanova                BYOKProviderSlug = "sambanova"
+	BYOKProviderSlugScaledown                BYOKProviderSlug = "scaledown"
 	BYOKProviderSlugSeed                     BYOKProviderSlug = "seed"
 	BYOKProviderSlugSiliconflow              BYOKProviderSlug = "siliconflow"
 	BYOKProviderSlugSourceful                BYOKProviderSlug = "sourceful"
@@ -209,6 +212,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "digitalocean":
 		fallthrough
+	case "elevenlabs":
+		fallthrough
 	case "featherless":
 		fallthrough
 	case "fireworks":
@@ -307,6 +312,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "relace":
 		fallthrough
+	case "respan":
+		fallthrough
 	case "runway":
 		fallthrough
 	case "sail-research":
@@ -316,6 +323,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "sakana-ai":
 		fallthrough
 	case "sambanova":
+		fallthrough
+	case "scaledown":
 		fallthrough
 	case "seed":
 		fallthrough
