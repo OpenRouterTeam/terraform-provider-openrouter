@@ -7,6 +7,18 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+type NativeTools struct {
+	// The provider tool type the request is translated to when this tool runs natively, e.g. `web_search_20260209` on Anthropic or `google_search` on Gemini.
+	Type string `json:"type"`
+}
+
+func (n *NativeTools) GetType() string {
+	if n == nil {
+		return ""
+	}
+	return n.Type
+}
+
 type Decisions struct {
 	Latency *PercentileStats `json:"latency"`
 	// Total requests admitted for this workload in the window.
@@ -519,14 +531,20 @@ type PublicEndpoint struct {
 	ModelID   string `json:"model_id"`
 	ModelName string `json:"model_name"`
 	Name      string `json:"name"`
+	// The server tools this endpoint accepts as the provider's own built-in tool (`engine: "native"`) instead of an OpenRouter engine, keyed by canonical `openrouter:*` name. Each value names the provider tool type the request is translated to. Where that tool runs (provider-side, or returned to the client as with Anthropic bash) is documented per tool. Empty when the provider has none.
+	NativeTools map[string]NativeTools `json:"native_tools"`
 	// Endpoint performance over the last 30 minutes, keyed by the kind of request served (e.g. `text_generation`, `image_generation`). Additive to the legacy singular latency and throughput fields; image and video generation report end-to-end latency. Only visible when authenticated with an API key or cookie.
-	PerfLast30mByWorkload   *PerfLast30mByWorkload `json:"perf_last_30m_by_workload,omitzero"`
-	Pricing                 Pricing                `json:"pricing"`
-	ProviderName            ProviderName           `json:"provider_name"`
-	Quantization            *Quantization          `json:"quantization"`
-	Status                  *EndpointStatus        `json:"status,omitzero"`
-	SupportedParameters     []Parameter            `json:"supported_parameters"`
-	SupportsImplicitCaching bool                   `json:"supports_implicit_caching"`
+	PerfLast30mByWorkload *PerfLast30mByWorkload `json:"perf_last_30m_by_workload,omitzero"`
+	Pricing               Pricing                `json:"pricing"`
+	ProviderName          ProviderName           `json:"provider_name"`
+	Quantization          *Quantization          `json:"quantization"`
+	Status                *EndpointStatus        `json:"status,omitzero"`
+	SupportedParameters   []Parameter            `json:"supported_parameters"`
+	// Whether this TTS endpoint accepts an `image_url` reference describing the desired voice. Requests carrying an image reference are only routed to endpoints where this is true.
+	SupportsImageReference  *bool `default:"false" json:"supports_image_reference"`
+	SupportsImplicitCaching bool  `json:"supports_implicit_caching"`
+	// Whether this TTS endpoint accepts more than one `input_audio` reference clip per request. Requests carrying several clips are only routed to endpoints where this is true.
+	SupportsMultipleAudioReferences *bool `default:"false" json:"supports_multiple_audio_references"`
 	// Per-variant `tool_choice` support. `tool_choice` in `supported_parameters` only says the parameter is accepted; these flags say which of its values passed testing.
 	SupportsToolChoice ToolChoiceSupport `json:"supports_tool_choice"`
 	// Whether this TTS endpoint accepts inline reference audio (`input_references`) for stateless voice cloning. Requests carrying reference audio are only routed to endpoints where this is true.
@@ -600,6 +618,13 @@ func (p *PublicEndpoint) GetName() string {
 	return p.Name
 }
 
+func (p *PublicEndpoint) GetNativeTools() map[string]NativeTools {
+	if p == nil {
+		return map[string]NativeTools{}
+	}
+	return p.NativeTools
+}
+
 func (p *PublicEndpoint) GetPerfLast30mByWorkload() *PerfLast30mByWorkload {
 	if p == nil {
 		return nil
@@ -642,11 +667,25 @@ func (p *PublicEndpoint) GetSupportedParameters() []Parameter {
 	return p.SupportedParameters
 }
 
+func (p *PublicEndpoint) GetSupportsImageReference() *bool {
+	if p == nil {
+		return nil
+	}
+	return p.SupportsImageReference
+}
+
 func (p *PublicEndpoint) GetSupportsImplicitCaching() bool {
 	if p == nil {
 		return false
 	}
 	return p.SupportsImplicitCaching
+}
+
+func (p *PublicEndpoint) GetSupportsMultipleAudioReferences() *bool {
+	if p == nil {
+		return nil
+	}
+	return p.SupportsMultipleAudioReferences
 }
 
 func (p *PublicEndpoint) GetSupportsToolChoice() ToolChoiceSupport {

@@ -181,6 +181,8 @@ func (r *WorkspaceDataSource) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config)
+
 	request, requestDiags := data.ToOperationsGetWorkspaceRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -189,7 +191,7 @@ func (r *WorkspaceDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 	res, err := r.client.Workspaces.Get(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}

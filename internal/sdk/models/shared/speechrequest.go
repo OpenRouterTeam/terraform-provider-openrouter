@@ -64,7 +64,7 @@ func (e *SpeechRequestResponseFormat) UnmarshalJSON(data []byte) error {
 type SpeechRequest struct {
 	// Text to synthesize
 	Input string `json:"input"`
-	// Reference content for stateless voice cloning: one `input_audio` part carrying the voice sample, optionally accompanied by one `text` part with its transcript. Only routed to endpoints that support voice cloning.
+	// Reference content for stateless voice cloning or voice design. Audio mode: one to three `input_audio` parts, each optionally paired with a `text` part carrying its transcript (a single clip accepts its transcript before or after it; with multiple clips each transcript immediately follows its clip); only routed to endpoints that support voice cloning (and multiple references when more than one part is sent). Image mode: exactly one `image_url` part; only routed to endpoints that support image references. The two modes cannot be mixed. An empty array is treated as no reference.
 	InputReferences []SpeechInputReference `json:"input_references,omitzero"`
 	// TTS model identifier
 	Model string `json:"model"`
@@ -74,7 +74,7 @@ type SpeechRequest struct {
 	ResponseFormat *SpeechRequestResponseFormat `default:"pcm" json:"response_format"`
 	// A unique identifier for grouping related requests (e.g., a conversation or agent workflow). Used for observability grouping in Broadcast and private logging; never sent to the provider. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters.
 	SessionID *string `json:"session_id,omitzero"`
-	// Playback speed multiplier. Only used by models that support it (e.g. OpenAI TTS). Ignored by other providers.
+	// Playback speed multiplier. Honored by models that support it (e.g. OpenAI TTS). Other providers either ignore it or return a 400 for a non-default value when the model has no speed control.
 	Speed *float64 `json:"speed,omitzero"`
 	// Metadata for observability and tracing. Known keys (trace_id, trace_name, span_name, generation_name, parent_span_id) have special handling. Additional keys are passed through as custom metadata to configured broadcast destinations.
 	Trace *TraceConfig `json:"trace,omitzero"`
