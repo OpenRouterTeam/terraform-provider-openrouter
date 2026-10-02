@@ -61,13 +61,35 @@ func (c *ChatFunctionToolFunctionFunction) GetStrict() *bool {
 	return c.Strict
 }
 
+type ChatFunctionToolType string
+
+const (
+	ChatFunctionToolTypeFunction ChatFunctionToolType = "function"
+)
+
+func (e ChatFunctionToolType) ToPointer() *ChatFunctionToolType {
+	return &e
+}
+func (e *ChatFunctionToolType) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "function":
+		*e = ChatFunctionToolType(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for ChatFunctionToolType: %v", v)
+	}
+}
+
 type ChatFunctionToolFunction struct {
 	// Anthropic-style cache breakpoint for the content part. Interchangeable with the OpenAI-style `prompt_cache_breakpoint` marker: OpenRouter converts between the two based on the provider serving the request.
 	CacheControl *ChatContentCacheControl `json:"cache_control,omitzero"`
 	// Function definition for tool calling
 	Function ChatFunctionToolFunctionFunction `json:"function"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"function" json:"type"`
+	Type     ChatFunctionToolType             `json:"type"`
 }
 
 func (c ChatFunctionToolFunction) MarshalJSON() ([]byte, error) {
@@ -95,28 +117,29 @@ func (c *ChatFunctionToolFunction) GetFunction() ChatFunctionToolFunctionFunctio
 	return c.Function
 }
 
-func (c *ChatFunctionToolFunction) GetType() string {
-	return "function"
+func (c *ChatFunctionToolFunction) GetType() ChatFunctionToolType {
+	if c == nil {
+		return ChatFunctionToolType("")
+	}
+	return c.Type
 }
 
 type ChatFunctionToolUnionType string
 
 const (
-	ChatFunctionToolUnionTypeFunction                           ChatFunctionToolUnionType = "function"
-	ChatFunctionToolUnionTypeOpenrouterAdvisor                  ChatFunctionToolUnionType = "openrouter:advisor"
-	ChatFunctionToolUnionTypeOpenrouterBash                     ChatFunctionToolUnionType = "openrouter:bash"
-	ChatFunctionToolUnionTypeOpenrouterDatetime                 ChatFunctionToolUnionType = "openrouter:datetime"
-	ChatFunctionToolUnionTypeOpenrouterFiles                    ChatFunctionToolUnionType = "openrouter:files"
-	ChatFunctionToolUnionTypeOpenrouterFusion                   ChatFunctionToolUnionType = "openrouter:fusion"
-	ChatFunctionToolUnionTypeOpenrouterImageGeneration          ChatFunctionToolUnionType = "openrouter:image_generation"
-	ChatFunctionToolUnionTypeOpenrouterExperimentalSearchModels ChatFunctionToolUnionType = "openrouter:experimental__search_models"
-	ChatFunctionToolUnionTypeOpenrouterSubagent                 ChatFunctionToolUnionType = "openrouter:subagent"
-	ChatFunctionToolUnionTypeOpenrouterWebFetch                 ChatFunctionToolUnionType = "openrouter:web_fetch"
-	ChatFunctionToolUnionTypeOpenrouterWebSearch                ChatFunctionToolUnionType = "openrouter:web_search"
-	ChatFunctionToolUnionTypeWebSearch                          ChatFunctionToolUnionType = "web_search"
-	ChatFunctionToolUnionTypeWebSearchPreview                   ChatFunctionToolUnionType = "web_search_preview"
-	ChatFunctionToolUnionTypeWebSearchPreview20250311           ChatFunctionToolUnionType = "web_search_preview_2025_03_11"
-	ChatFunctionToolUnionTypeWebSearch20250826                  ChatFunctionToolUnionType = "web_search_2025_08_26"
+	ChatFunctionToolUnionTypeChatFunctionToolFunction            ChatFunctionToolUnionType = "ChatFunctionTool_Function"
+	ChatFunctionToolUnionTypeAdvisorServerToolOpenRouter         ChatFunctionToolUnionType = "AdvisorServerTool_OpenRouter"
+	ChatFunctionToolUnionTypeBashServerTool                      ChatFunctionToolUnionType = "BashServerTool"
+	ChatFunctionToolUnionTypeDatetimeServerTool                  ChatFunctionToolUnionType = "DatetimeServerTool"
+	ChatFunctionToolUnionTypeFilesServerTool                     ChatFunctionToolUnionType = "FilesServerTool"
+	ChatFunctionToolUnionTypeFusionServerToolOpenRouter          ChatFunctionToolUnionType = "FusionServerTool_OpenRouter"
+	ChatFunctionToolUnionTypeImageGenerationServerToolOpenRouter ChatFunctionToolUnionType = "ImageGenerationServerTool_OpenRouter"
+	ChatFunctionToolUnionTypeChatSearchModelsServerTool          ChatFunctionToolUnionType = "ChatSearchModelsServerTool"
+	ChatFunctionToolUnionTypeSubagentServerToolOpenRouter        ChatFunctionToolUnionType = "SubagentServerTool_OpenRouter"
+	ChatFunctionToolUnionTypeWebFetchServerTool                  ChatFunctionToolUnionType = "WebFetchServerTool"
+	ChatFunctionToolUnionTypeOpenRouterWebSearchServerTool       ChatFunctionToolUnionType = "OpenRouterWebSearchServerTool"
+	ChatFunctionToolUnionTypeChatWebSearchShorthand              ChatFunctionToolUnionType = "ChatWebSearchShorthand"
+	ChatFunctionToolUnionTypeChatDynamicServerTool               ChatFunctionToolUnionType = "ChatDynamicServerTool"
 )
 
 // ChatFunctionTool - Tool definition for function calling (regular function or OpenRouter built-in server tool)
@@ -133,181 +156,125 @@ type ChatFunctionTool struct {
 	WebFetchServerTool                  *WebFetchServerTool                  `queryParam:"inline" union:"member"`
 	OpenRouterWebSearchServerTool       *OpenRouterWebSearchServerTool       `queryParam:"inline" union:"member"`
 	ChatWebSearchShorthand              *ChatWebSearchShorthand              `queryParam:"inline" union:"member"`
+	ChatDynamicServerTool               *ChatDynamicServerTool               `queryParam:"inline" union:"member"`
 
 	Type ChatFunctionToolUnionType
 }
 
-func CreateChatFunctionToolFunction(function ChatFunctionToolFunction) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeFunction
+func CreateChatFunctionToolChatFunctionToolFunction(chatFunctionToolFunction ChatFunctionToolFunction) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeChatFunctionToolFunction
 
 	return ChatFunctionTool{
-		ChatFunctionToolFunction: &function,
+		ChatFunctionToolFunction: &chatFunctionToolFunction,
 		Type:                     typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterAdvisor(openrouterAdvisor AdvisorServerToolOpenRouter) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterAdvisor
-
-	typStr := AdvisorServerToolOpenRouterType(typ)
-	openrouterAdvisor.Type = typStr
+func CreateChatFunctionToolAdvisorServerToolOpenRouter(advisorServerToolOpenRouter AdvisorServerToolOpenRouter) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeAdvisorServerToolOpenRouter
 
 	return ChatFunctionTool{
-		AdvisorServerToolOpenRouter: &openrouterAdvisor,
+		AdvisorServerToolOpenRouter: &advisorServerToolOpenRouter,
 		Type:                        typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterBash(openrouterBash BashServerTool) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterBash
-
-	typStr := BashServerToolType(typ)
-	openrouterBash.Type = typStr
+func CreateChatFunctionToolBashServerTool(bashServerTool BashServerTool) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeBashServerTool
 
 	return ChatFunctionTool{
-		BashServerTool: &openrouterBash,
+		BashServerTool: &bashServerTool,
 		Type:           typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterDatetime(openrouterDatetime DatetimeServerTool) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterDatetime
-
-	typStr := DatetimeServerToolType(typ)
-	openrouterDatetime.Type = typStr
+func CreateChatFunctionToolDatetimeServerTool(datetimeServerTool DatetimeServerTool) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeDatetimeServerTool
 
 	return ChatFunctionTool{
-		DatetimeServerTool: &openrouterDatetime,
+		DatetimeServerTool: &datetimeServerTool,
 		Type:               typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterFiles(openrouterFiles FilesServerTool) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterFiles
-
-	typStr := FilesServerToolType(typ)
-	openrouterFiles.Type = typStr
+func CreateChatFunctionToolFilesServerTool(filesServerTool FilesServerTool) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeFilesServerTool
 
 	return ChatFunctionTool{
-		FilesServerTool: &openrouterFiles,
+		FilesServerTool: &filesServerTool,
 		Type:            typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterFusion(openrouterFusion FusionServerToolOpenRouter) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterFusion
-
-	typStr := FusionServerToolOpenRouterType(typ)
-	openrouterFusion.Type = typStr
+func CreateChatFunctionToolFusionServerToolOpenRouter(fusionServerToolOpenRouter FusionServerToolOpenRouter) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeFusionServerToolOpenRouter
 
 	return ChatFunctionTool{
-		FusionServerToolOpenRouter: &openrouterFusion,
+		FusionServerToolOpenRouter: &fusionServerToolOpenRouter,
 		Type:                       typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterImageGeneration(openrouterImageGeneration ImageGenerationServerToolOpenRouter) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterImageGeneration
-
-	typStr := ImageGenerationServerToolOpenRouterType(typ)
-	openrouterImageGeneration.Type = typStr
+func CreateChatFunctionToolImageGenerationServerToolOpenRouter(imageGenerationServerToolOpenRouter ImageGenerationServerToolOpenRouter) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeImageGenerationServerToolOpenRouter
 
 	return ChatFunctionTool{
-		ImageGenerationServerToolOpenRouter: &openrouterImageGeneration,
+		ImageGenerationServerToolOpenRouter: &imageGenerationServerToolOpenRouter,
 		Type:                                typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterExperimentalSearchModels(openrouterExperimentalSearchModels ChatSearchModelsServerTool) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterExperimentalSearchModels
+func CreateChatFunctionToolChatSearchModelsServerTool(chatSearchModelsServerTool ChatSearchModelsServerTool) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeChatSearchModelsServerTool
 
 	return ChatFunctionTool{
-		ChatSearchModelsServerTool: &openrouterExperimentalSearchModels,
+		ChatSearchModelsServerTool: &chatSearchModelsServerTool,
 		Type:                       typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterSubagent(openrouterSubagent SubagentServerToolOpenRouter) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterSubagent
-
-	typStr := SubagentServerToolOpenRouterType(typ)
-	openrouterSubagent.Type = typStr
+func CreateChatFunctionToolSubagentServerToolOpenRouter(subagentServerToolOpenRouter SubagentServerToolOpenRouter) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeSubagentServerToolOpenRouter
 
 	return ChatFunctionTool{
-		SubagentServerToolOpenRouter: &openrouterSubagent,
+		SubagentServerToolOpenRouter: &subagentServerToolOpenRouter,
 		Type:                         typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterWebFetch(openrouterWebFetch WebFetchServerTool) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterWebFetch
-
-	typStr := WebFetchServerToolType(typ)
-	openrouterWebFetch.Type = typStr
+func CreateChatFunctionToolWebFetchServerTool(webFetchServerTool WebFetchServerTool) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeWebFetchServerTool
 
 	return ChatFunctionTool{
-		WebFetchServerTool: &openrouterWebFetch,
+		WebFetchServerTool: &webFetchServerTool,
 		Type:               typ,
 	}
 }
 
-func CreateChatFunctionToolOpenrouterWebSearch(openrouterWebSearch OpenRouterWebSearchServerTool) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeOpenrouterWebSearch
-
-	typStr := OpenRouterWebSearchServerToolType(typ)
-	openrouterWebSearch.Type = typStr
+func CreateChatFunctionToolOpenRouterWebSearchServerTool(openRouterWebSearchServerTool OpenRouterWebSearchServerTool) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeOpenRouterWebSearchServerTool
 
 	return ChatFunctionTool{
-		OpenRouterWebSearchServerTool: &openrouterWebSearch,
+		OpenRouterWebSearchServerTool: &openRouterWebSearchServerTool,
 		Type:                          typ,
 	}
 }
 
-func CreateChatFunctionToolWebSearch(webSearch ChatWebSearchShorthand) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeWebSearch
-
-	typStr := ChatWebSearchShorthandType(typ)
-	webSearch.Type = typStr
+func CreateChatFunctionToolChatWebSearchShorthand(chatWebSearchShorthand ChatWebSearchShorthand) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeChatWebSearchShorthand
 
 	return ChatFunctionTool{
-		ChatWebSearchShorthand: &webSearch,
+		ChatWebSearchShorthand: &chatWebSearchShorthand,
 		Type:                   typ,
 	}
 }
 
-func CreateChatFunctionToolWebSearchPreview(webSearchPreview ChatWebSearchShorthand) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeWebSearchPreview
-
-	typStr := ChatWebSearchShorthandType(typ)
-	webSearchPreview.Type = typStr
+func CreateChatFunctionToolChatDynamicServerTool(chatDynamicServerTool ChatDynamicServerTool) ChatFunctionTool {
+	typ := ChatFunctionToolUnionTypeChatDynamicServerTool
 
 	return ChatFunctionTool{
-		ChatWebSearchShorthand: &webSearchPreview,
-		Type:                   typ,
-	}
-}
-
-func CreateChatFunctionToolWebSearchPreview20250311(webSearchPreview20250311 ChatWebSearchShorthand) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeWebSearchPreview20250311
-
-	typStr := ChatWebSearchShorthandType(typ)
-	webSearchPreview20250311.Type = typStr
-
-	return ChatFunctionTool{
-		ChatWebSearchShorthand: &webSearchPreview20250311,
-		Type:                   typ,
-	}
-}
-
-func CreateChatFunctionToolWebSearch20250826(webSearch20250826 ChatWebSearchShorthand) ChatFunctionTool {
-	typ := ChatFunctionToolUnionTypeWebSearch20250826
-
-	typStr := ChatWebSearchShorthandType(typ)
-	webSearch20250826.Type = typStr
-
-	return ChatFunctionTool{
-		ChatWebSearchShorthand: &webSearch20250826,
-		Type:                   typ,
+		ChatDynamicServerTool: &chatDynamicServerTool,
+		Type:                  typ,
 	}
 }
 
@@ -320,150 +287,164 @@ func (u *ChatFunctionTool) UnmarshalJSON(data []byte) (err error) {
 		}
 	}()
 
-	type discriminator struct {
-		Type string `json:"type"`
+	var candidates []utils.UnionCandidate
+
+	// Collect all valid candidates
+	var chatFunctionToolFunction ChatFunctionToolFunction = ChatFunctionToolFunction{}
+	if err := utils.UnmarshalJSON(data, &chatFunctionToolFunction, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeChatFunctionToolFunction,
+			Value: &chatFunctionToolFunction,
+		})
 	}
 
-	dis := new(discriminator)
-	if err := json.Unmarshal(data, &dis); err != nil {
-		return fmt.Errorf("could not unmarshal discriminator: %w", err)
+	var advisorServerToolOpenRouter AdvisorServerToolOpenRouter = AdvisorServerToolOpenRouter{}
+	if err := utils.UnmarshalJSON(data, &advisorServerToolOpenRouter, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeAdvisorServerToolOpenRouter,
+			Value: &advisorServerToolOpenRouter,
+		})
 	}
 
-	switch dis.Type {
-	case "function":
-		chatFunctionToolFunction := new(ChatFunctionToolFunction)
-		if err := utils.UnmarshalJSON(data, &chatFunctionToolFunction, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == function) type ChatFunctionToolFunction within ChatFunctionTool: %w", string(data), err)
-		}
+	var bashServerTool BashServerTool = BashServerTool{}
+	if err := utils.UnmarshalJSON(data, &bashServerTool, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeBashServerTool,
+			Value: &bashServerTool,
+		})
+	}
 
-		u.ChatFunctionToolFunction = chatFunctionToolFunction
-		u.Type = ChatFunctionToolUnionTypeFunction
+	var datetimeServerTool DatetimeServerTool = DatetimeServerTool{}
+	if err := utils.UnmarshalJSON(data, &datetimeServerTool, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeDatetimeServerTool,
+			Value: &datetimeServerTool,
+		})
+	}
+
+	var filesServerTool FilesServerTool = FilesServerTool{}
+	if err := utils.UnmarshalJSON(data, &filesServerTool, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeFilesServerTool,
+			Value: &filesServerTool,
+		})
+	}
+
+	var fusionServerToolOpenRouter FusionServerToolOpenRouter = FusionServerToolOpenRouter{}
+	if err := utils.UnmarshalJSON(data, &fusionServerToolOpenRouter, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeFusionServerToolOpenRouter,
+			Value: &fusionServerToolOpenRouter,
+		})
+	}
+
+	var imageGenerationServerToolOpenRouter ImageGenerationServerToolOpenRouter = ImageGenerationServerToolOpenRouter{}
+	if err := utils.UnmarshalJSON(data, &imageGenerationServerToolOpenRouter, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeImageGenerationServerToolOpenRouter,
+			Value: &imageGenerationServerToolOpenRouter,
+		})
+	}
+
+	var chatSearchModelsServerTool ChatSearchModelsServerTool = ChatSearchModelsServerTool{}
+	if err := utils.UnmarshalJSON(data, &chatSearchModelsServerTool, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeChatSearchModelsServerTool,
+			Value: &chatSearchModelsServerTool,
+		})
+	}
+
+	var subagentServerToolOpenRouter SubagentServerToolOpenRouter = SubagentServerToolOpenRouter{}
+	if err := utils.UnmarshalJSON(data, &subagentServerToolOpenRouter, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeSubagentServerToolOpenRouter,
+			Value: &subagentServerToolOpenRouter,
+		})
+	}
+
+	var webFetchServerTool WebFetchServerTool = WebFetchServerTool{}
+	if err := utils.UnmarshalJSON(data, &webFetchServerTool, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeWebFetchServerTool,
+			Value: &webFetchServerTool,
+		})
+	}
+
+	var openRouterWebSearchServerTool OpenRouterWebSearchServerTool = OpenRouterWebSearchServerTool{}
+	if err := utils.UnmarshalJSON(data, &openRouterWebSearchServerTool, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeOpenRouterWebSearchServerTool,
+			Value: &openRouterWebSearchServerTool,
+		})
+	}
+
+	var chatWebSearchShorthand ChatWebSearchShorthand = ChatWebSearchShorthand{}
+	if err := utils.UnmarshalJSON(data, &chatWebSearchShorthand, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeChatWebSearchShorthand,
+			Value: &chatWebSearchShorthand,
+		})
+	}
+
+	var chatDynamicServerTool ChatDynamicServerTool = ChatDynamicServerTool{}
+	if err := utils.UnmarshalJSON(data, &chatDynamicServerTool, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  ChatFunctionToolUnionTypeChatDynamicServerTool,
+			Value: &chatDynamicServerTool,
+		})
+	}
+
+	if len(candidates) == 0 {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for ChatFunctionTool", string(data))
+	}
+
+	// Pick the best candidate using multi-stage filtering
+	best := utils.PickBestUnionCandidate(candidates, data)
+	if best == nil {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for ChatFunctionTool", string(data))
+	}
+
+	// Set the union type and value based on the best candidate
+	u.Type = best.Type.(ChatFunctionToolUnionType)
+	switch best.Type {
+	case ChatFunctionToolUnionTypeChatFunctionToolFunction:
+		u.ChatFunctionToolFunction = best.Value.(*ChatFunctionToolFunction)
 		return nil
-	case "openrouter:advisor":
-		advisorServerToolOpenRouter := new(AdvisorServerToolOpenRouter)
-		if err := utils.UnmarshalJSON(data, &advisorServerToolOpenRouter, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:advisor) type AdvisorServerToolOpenRouter within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.AdvisorServerToolOpenRouter = advisorServerToolOpenRouter
-		u.Type = ChatFunctionToolUnionTypeOpenrouterAdvisor
+	case ChatFunctionToolUnionTypeAdvisorServerToolOpenRouter:
+		u.AdvisorServerToolOpenRouter = best.Value.(*AdvisorServerToolOpenRouter)
 		return nil
-	case "openrouter:bash":
-		bashServerTool := new(BashServerTool)
-		if err := utils.UnmarshalJSON(data, &bashServerTool, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:bash) type BashServerTool within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.BashServerTool = bashServerTool
-		u.Type = ChatFunctionToolUnionTypeOpenrouterBash
+	case ChatFunctionToolUnionTypeBashServerTool:
+		u.BashServerTool = best.Value.(*BashServerTool)
 		return nil
-	case "openrouter:datetime":
-		datetimeServerTool := new(DatetimeServerTool)
-		if err := utils.UnmarshalJSON(data, &datetimeServerTool, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:datetime) type DatetimeServerTool within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.DatetimeServerTool = datetimeServerTool
-		u.Type = ChatFunctionToolUnionTypeOpenrouterDatetime
+	case ChatFunctionToolUnionTypeDatetimeServerTool:
+		u.DatetimeServerTool = best.Value.(*DatetimeServerTool)
 		return nil
-	case "openrouter:files":
-		filesServerTool := new(FilesServerTool)
-		if err := utils.UnmarshalJSON(data, &filesServerTool, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:files) type FilesServerTool within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.FilesServerTool = filesServerTool
-		u.Type = ChatFunctionToolUnionTypeOpenrouterFiles
+	case ChatFunctionToolUnionTypeFilesServerTool:
+		u.FilesServerTool = best.Value.(*FilesServerTool)
 		return nil
-	case "openrouter:fusion":
-		fusionServerToolOpenRouter := new(FusionServerToolOpenRouter)
-		if err := utils.UnmarshalJSON(data, &fusionServerToolOpenRouter, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:fusion) type FusionServerToolOpenRouter within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.FusionServerToolOpenRouter = fusionServerToolOpenRouter
-		u.Type = ChatFunctionToolUnionTypeOpenrouterFusion
+	case ChatFunctionToolUnionTypeFusionServerToolOpenRouter:
+		u.FusionServerToolOpenRouter = best.Value.(*FusionServerToolOpenRouter)
 		return nil
-	case "openrouter:image_generation":
-		imageGenerationServerToolOpenRouter := new(ImageGenerationServerToolOpenRouter)
-		if err := utils.UnmarshalJSON(data, &imageGenerationServerToolOpenRouter, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:image_generation) type ImageGenerationServerToolOpenRouter within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.ImageGenerationServerToolOpenRouter = imageGenerationServerToolOpenRouter
-		u.Type = ChatFunctionToolUnionTypeOpenrouterImageGeneration
+	case ChatFunctionToolUnionTypeImageGenerationServerToolOpenRouter:
+		u.ImageGenerationServerToolOpenRouter = best.Value.(*ImageGenerationServerToolOpenRouter)
 		return nil
-	case "openrouter:experimental__search_models":
-		chatSearchModelsServerTool := new(ChatSearchModelsServerTool)
-		if err := utils.UnmarshalJSON(data, &chatSearchModelsServerTool, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:experimental__search_models) type ChatSearchModelsServerTool within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.ChatSearchModelsServerTool = chatSearchModelsServerTool
-		u.Type = ChatFunctionToolUnionTypeOpenrouterExperimentalSearchModels
+	case ChatFunctionToolUnionTypeChatSearchModelsServerTool:
+		u.ChatSearchModelsServerTool = best.Value.(*ChatSearchModelsServerTool)
 		return nil
-	case "openrouter:subagent":
-		subagentServerToolOpenRouter := new(SubagentServerToolOpenRouter)
-		if err := utils.UnmarshalJSON(data, &subagentServerToolOpenRouter, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:subagent) type SubagentServerToolOpenRouter within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.SubagentServerToolOpenRouter = subagentServerToolOpenRouter
-		u.Type = ChatFunctionToolUnionTypeOpenrouterSubagent
+	case ChatFunctionToolUnionTypeSubagentServerToolOpenRouter:
+		u.SubagentServerToolOpenRouter = best.Value.(*SubagentServerToolOpenRouter)
 		return nil
-	case "openrouter:web_fetch":
-		webFetchServerTool := new(WebFetchServerTool)
-		if err := utils.UnmarshalJSON(data, &webFetchServerTool, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:web_fetch) type WebFetchServerTool within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.WebFetchServerTool = webFetchServerTool
-		u.Type = ChatFunctionToolUnionTypeOpenrouterWebFetch
+	case ChatFunctionToolUnionTypeWebFetchServerTool:
+		u.WebFetchServerTool = best.Value.(*WebFetchServerTool)
 		return nil
-	case "openrouter:web_search":
-		openRouterWebSearchServerTool := new(OpenRouterWebSearchServerTool)
-		if err := utils.UnmarshalJSON(data, &openRouterWebSearchServerTool, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:web_search) type OpenRouterWebSearchServerTool within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.OpenRouterWebSearchServerTool = openRouterWebSearchServerTool
-		u.Type = ChatFunctionToolUnionTypeOpenrouterWebSearch
+	case ChatFunctionToolUnionTypeOpenRouterWebSearchServerTool:
+		u.OpenRouterWebSearchServerTool = best.Value.(*OpenRouterWebSearchServerTool)
 		return nil
-	case "web_search":
-		chatWebSearchShorthand := new(ChatWebSearchShorthand)
-		if err := utils.UnmarshalJSON(data, &chatWebSearchShorthand, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == web_search) type ChatWebSearchShorthand within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.ChatWebSearchShorthand = chatWebSearchShorthand
-		u.Type = ChatFunctionToolUnionTypeWebSearch
+	case ChatFunctionToolUnionTypeChatWebSearchShorthand:
+		u.ChatWebSearchShorthand = best.Value.(*ChatWebSearchShorthand)
 		return nil
-	case "web_search_preview":
-		chatWebSearchShorthand := new(ChatWebSearchShorthand)
-		if err := utils.UnmarshalJSON(data, &chatWebSearchShorthand, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == web_search_preview) type ChatWebSearchShorthand within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.ChatWebSearchShorthand = chatWebSearchShorthand
-		u.Type = ChatFunctionToolUnionTypeWebSearchPreview
-		return nil
-	case "web_search_preview_2025_03_11":
-		chatWebSearchShorthand := new(ChatWebSearchShorthand)
-		if err := utils.UnmarshalJSON(data, &chatWebSearchShorthand, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == web_search_preview_2025_03_11) type ChatWebSearchShorthand within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.ChatWebSearchShorthand = chatWebSearchShorthand
-		u.Type = ChatFunctionToolUnionTypeWebSearchPreview20250311
-		return nil
-	case "web_search_2025_08_26":
-		chatWebSearchShorthand := new(ChatWebSearchShorthand)
-		if err := utils.UnmarshalJSON(data, &chatWebSearchShorthand, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == web_search_2025_08_26) type ChatWebSearchShorthand within ChatFunctionTool: %w", string(data), err)
-		}
-
-		u.ChatWebSearchShorthand = chatWebSearchShorthand
-		u.Type = ChatFunctionToolUnionTypeWebSearch20250826
+	case ChatFunctionToolUnionTypeChatDynamicServerTool:
+		u.ChatDynamicServerTool = best.Value.(*ChatDynamicServerTool)
 		return nil
 	}
 
@@ -517,6 +498,10 @@ func (u ChatFunctionTool) MarshalJSON() ([]byte, error) {
 
 	if u.ChatWebSearchShorthand != nil {
 		return utils.MarshalJSON(u.ChatWebSearchShorthand, "", true)
+	}
+
+	if u.ChatDynamicServerTool != nil {
+		return utils.MarshalJSON(u.ChatDynamicServerTool, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ChatFunctionTool: all fields are null")
