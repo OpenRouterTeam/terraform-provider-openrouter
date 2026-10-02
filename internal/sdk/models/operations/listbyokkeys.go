@@ -52,6 +52,7 @@ const (
 	ProviderDeepseek                 Provider = "deepseek"
 	ProviderDekallm                  Provider = "dekallm"
 	ProviderDigitalocean             Provider = "digitalocean"
+	ProviderElevenlabs               Provider = "elevenlabs"
 	ProviderFeatherless              Provider = "featherless"
 	ProviderFireworks                Provider = "fireworks"
 	ProviderFishAudio                Provider = "fish-audio"
@@ -101,11 +102,13 @@ const (
 	ProviderRecraft                  Provider = "recraft"
 	ProviderReka                     Provider = "reka"
 	ProviderRelace                   Provider = "relace"
+	ProviderRespan                   Provider = "respan"
 	ProviderRunway                   Provider = "runway"
 	ProviderSailResearch             Provider = "sail-research"
 	ProviderSakana                   Provider = "sakana"
 	ProviderSakanaAi                 Provider = "sakana-ai"
 	ProviderSambanova                Provider = "sambanova"
+	ProviderScaledown                Provider = "scaledown"
 	ProviderSeed                     Provider = "seed"
 	ProviderSiliconflow              Provider = "siliconflow"
 	ProviderSourceful                Provider = "sourceful"
@@ -212,6 +215,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "digitalocean":
 		fallthrough
+	case "elevenlabs":
+		fallthrough
 	case "featherless":
 		fallthrough
 	case "fireworks":
@@ -310,6 +315,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "relace":
 		fallthrough
+	case "respan":
+		fallthrough
 	case "runway":
 		fallthrough
 	case "sail-research":
@@ -319,6 +326,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "sakana-ai":
 		fallthrough
 	case "sambanova":
+		fallthrough
+	case "scaledown":
 		fallthrough
 	case "seed":
 		fallthrough
