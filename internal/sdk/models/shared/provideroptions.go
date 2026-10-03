@@ -52,6 +52,7 @@ type ProviderOptions struct {
 	Deepseek                 map[string]any `json:"deepseek,omitzero"`
 	Dekallm                  map[string]any `json:"dekallm,omitzero"`
 	Digitalocean             map[string]any `json:"digitalocean,omitzero"`
+	Elevenlabs               map[string]any `json:"elevenlabs,omitzero"`
 	Enfer                    map[string]any `json:"enfer,omitzero"`
 	FakeProvider             map[string]any `json:"fake-provider,omitzero"`
 	Featherless              map[string]any `json:"featherless,omitzero"`
@@ -120,12 +121,14 @@ type ProviderOptions struct {
 	Reka                     map[string]any `json:"reka,omitzero"`
 	Relace                   map[string]any `json:"relace,omitzero"`
 	Replicate                map[string]any `json:"replicate,omitzero"`
+	Respan                   map[string]any `json:"respan,omitzero"`
 	Runway                   map[string]any `json:"runway,omitzero"`
 	SailResearch             map[string]any `json:"sail-research,omitzero"`
 	Sakana                   map[string]any `json:"sakana,omitzero"`
 	SakanaAi                 map[string]any `json:"sakana-ai,omitzero"`
 	Sambanova                map[string]any `json:"sambanova,omitzero"`
 	SambanovaCloaked         map[string]any `json:"sambanova-cloaked,omitzero"`
+	Scaledown                map[string]any `json:"scaledown,omitzero"`
 	Seed                     map[string]any `json:"seed,omitzero"`
 	SfCompute                map[string]any `json:"sf-compute,omitzero"`
 	Siliconflow              map[string]any `json:"siliconflow,omitzero"`
@@ -464,6 +467,13 @@ func (p *ProviderOptions) GetDigitalocean() map[string]any {
 		return nil
 	}
 	return p.Digitalocean
+}
+
+func (p *ProviderOptions) GetElevenlabs() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Elevenlabs
 }
 
 func (p *ProviderOptions) GetEnfer() map[string]any {
@@ -942,6 +952,13 @@ func (p *ProviderOptions) GetReplicate() map[string]any {
 	return p.Replicate
 }
 
+func (p *ProviderOptions) GetRespan() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Respan
+}
+
 func (p *ProviderOptions) GetRunway() map[string]any {
 	if p == nil {
 		return nil
@@ -982,6 +999,13 @@ func (p *ProviderOptions) GetSambanovaCloaked() map[string]any {
 		return nil
 	}
 	return p.SambanovaCloaked
+}
+
+func (p *ProviderOptions) GetScaledown() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Scaledown
 }
 
 func (p *ProviderOptions) GetSeed() map[string]any {
