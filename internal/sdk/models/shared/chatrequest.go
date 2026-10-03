@@ -42,11 +42,13 @@ func (e *Modality) UnmarshalJSON(data []byte) error {
 type ChatRequestPluginType string
 
 const (
+	ChatRequestPluginTypeAlignment          ChatRequestPluginType = "alignment"
 	ChatRequestPluginTypeAutoBetaRouter     ChatRequestPluginType = "auto-beta-router"
 	ChatRequestPluginTypeAutoRouter         ChatRequestPluginType = "auto-router"
 	ChatRequestPluginTypeContextCompression ChatRequestPluginType = "context-compression"
 	ChatRequestPluginTypeFileParser         ChatRequestPluginType = "file-parser"
 	ChatRequestPluginTypeFusion             ChatRequestPluginType = "fusion"
+	ChatRequestPluginTypeJevRouter          ChatRequestPluginType = "jev-router"
 	ChatRequestPluginTypeModeration         ChatRequestPluginType = "moderation"
 	ChatRequestPluginTypeParetoRouter       ChatRequestPluginType = "pareto-router"
 	ChatRequestPluginTypeResponseHealing    ChatRequestPluginType = "response-healing"
@@ -67,8 +69,19 @@ type ChatRequestPlugin struct {
 	ParetoRouterPlugin       *ParetoRouterPlugin       `queryParam:"inline" union:"member"`
 	FusionPlugin             *FusionPlugin             `queryParam:"inline" union:"member"`
 	SwitchyardRouterPlugin   *SwitchyardRouterPlugin   `queryParam:"inline" union:"member"`
+	JevRouterPlugin          *JevRouterPlugin          `queryParam:"inline" union:"member"`
+	AlignmentPlugin          *AlignmentPlugin          `queryParam:"inline" union:"member"`
 
 	Type ChatRequestPluginType
+}
+
+func CreateChatRequestPluginAlignment(alignment AlignmentPlugin) ChatRequestPlugin {
+	typ := ChatRequestPluginTypeAlignment
+
+	return ChatRequestPlugin{
+		AlignmentPlugin: &alignment,
+		Type:            typ,
+	}
 }
 
 func CreateChatRequestPluginAutoBetaRouter(autoBetaRouter AutoBetaRouterPlugin) ChatRequestPlugin {
@@ -113,6 +126,15 @@ func CreateChatRequestPluginFusion(fusion FusionPlugin) ChatRequestPlugin {
 	return ChatRequestPlugin{
 		FusionPlugin: &fusion,
 		Type:         typ,
+	}
+}
+
+func CreateChatRequestPluginJevRouter(jevRouter JevRouterPlugin) ChatRequestPlugin {
+	typ := ChatRequestPluginTypeJevRouter
+
+	return ChatRequestPlugin{
+		JevRouterPlugin: &jevRouter,
+		Type:            typ,
 	}
 }
 
@@ -189,6 +211,15 @@ func (u *ChatRequestPlugin) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	switch dis.ID {
+	case "alignment":
+		alignmentPlugin := new(AlignmentPlugin)
+		if err := utils.UnmarshalJSON(data, &alignmentPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == alignment) type AlignmentPlugin within ChatRequestPlugin: %w", string(data), err)
+		}
+
+		u.AlignmentPlugin = alignmentPlugin
+		u.Type = ChatRequestPluginTypeAlignment
+		return nil
 	case "auto-beta-router":
 		autoBetaRouterPlugin := new(AutoBetaRouterPlugin)
 		if err := utils.UnmarshalJSON(data, &autoBetaRouterPlugin, "", true, nil); err != nil {
@@ -233,6 +264,15 @@ func (u *ChatRequestPlugin) UnmarshalJSON(data []byte) (err error) {
 
 		u.FusionPlugin = fusionPlugin
 		u.Type = ChatRequestPluginTypeFusion
+		return nil
+	case "jev-router":
+		jevRouterPlugin := new(JevRouterPlugin)
+		if err := utils.UnmarshalJSON(data, &jevRouterPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == jev-router) type JevRouterPlugin within ChatRequestPlugin: %w", string(data), err)
+		}
+
+		u.JevRouterPlugin = jevRouterPlugin
+		u.Type = ChatRequestPluginTypeJevRouter
 		return nil
 	case "moderation":
 		moderationPlugin := new(ModerationPlugin)
@@ -336,6 +376,14 @@ func (u ChatRequestPlugin) MarshalJSON() ([]byte, error) {
 
 	if u.SwitchyardRouterPlugin != nil {
 		return utils.MarshalJSON(u.SwitchyardRouterPlugin, "", true)
+	}
+
+	if u.JevRouterPlugin != nil {
+		return utils.MarshalJSON(u.JevRouterPlugin, "", true)
+	}
+
+	if u.AlignmentPlugin != nil {
+		return utils.MarshalJSON(u.AlignmentPlugin, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ChatRequestPlugin: all fields are null")
@@ -605,16 +653,17 @@ func (u ResponseFormat) MarshalJSON() ([]byte, error) {
 	return nil, errors.New("could not marshal union type ResponseFormat: all fields are null")
 }
 
-// ChatRequestServiceTier - The service tier to use for processing this request. `fast` is accepted as an alias for `priority`.
+// ChatRequestServiceTier - The service tier to use for processing this request. `fast` is accepted as an alias for `priority`. `ultrafast` prefers ultrafast endpoints and falls back to `priority`, then default endpoints.
 type ChatRequestServiceTier string
 
 const (
-	ChatRequestServiceTierAuto     ChatRequestServiceTier = "auto"
-	ChatRequestServiceTierDefault  ChatRequestServiceTier = "default"
-	ChatRequestServiceTierFast     ChatRequestServiceTier = "fast"
-	ChatRequestServiceTierFlex     ChatRequestServiceTier = "flex"
-	ChatRequestServiceTierPriority ChatRequestServiceTier = "priority"
-	ChatRequestServiceTierScale    ChatRequestServiceTier = "scale"
+	ChatRequestServiceTierAuto      ChatRequestServiceTier = "auto"
+	ChatRequestServiceTierDefault   ChatRequestServiceTier = "default"
+	ChatRequestServiceTierFast      ChatRequestServiceTier = "fast"
+	ChatRequestServiceTierFlex      ChatRequestServiceTier = "flex"
+	ChatRequestServiceTierPriority  ChatRequestServiceTier = "priority"
+	ChatRequestServiceTierScale     ChatRequestServiceTier = "scale"
+	ChatRequestServiceTierUltrafast ChatRequestServiceTier = "ultrafast"
 )
 
 func (e ChatRequestServiceTier) ToPointer() *ChatRequestServiceTier {
@@ -637,6 +686,8 @@ func (e *ChatRequestServiceTier) UnmarshalJSON(data []byte) error {
 	case "priority":
 		fallthrough
 	case "scale":
+		fallthrough
+	case "ultrafast":
 		*e = ChatRequestServiceTier(v)
 		return nil
 	default:
@@ -794,7 +845,7 @@ type ChatRequest struct {
 	ResponseFormat *ResponseFormat `json:"response_format,omitzero"`
 	// Random seed for deterministic outputs
 	Seed *int64 `json:"seed,omitzero"`
-	// The service tier to use for processing this request. `fast` is accepted as an alias for `priority`.
+	// The service tier to use for processing this request. `fast` is accepted as an alias for `priority`. `ultrafast` prefers ultrafast endpoints and falls back to `priority`, then default endpoints.
 	ServiceTier *ChatRequestServiceTier `json:"service_tier,omitzero"`
 	// A unique identifier for grouping related requests (e.g., a conversation or agent workflow). When provided, OpenRouter uses it as the sticky routing key, routing all requests in the session to the same provider to maximize prompt cache hits. Also used for observability grouping. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters.
 	SessionID *string `json:"session_id,omitzero"`
