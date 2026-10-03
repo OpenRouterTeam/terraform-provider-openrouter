@@ -2,19 +2,17 @@ name: Regenerate
 
 # Regenerates the provider on pull requests that change Speakeasy inputs (the
 # OpenAPI spec, overlays, gen/workflow config, patches) and commits the result
-# to the PR branch. CI, the `run-acceptance` label and review then cover the
-# generated code before merge, instead of a separate regen PR afterwards.
+# to the PR branch, so CI, the `run-acceptance` label and review cover the
+# generated code before merge. The first regen commit on a PR also bumps the
+# release, so merging publishes through sdk_publish.yaml; the post-merge
+# Generate workflow then finds nothing to change. It stays the fallback for
+# fork PRs (no secrets here) and Speakeasy generator updates.
 #
-# The commit also carries the release bump (releaseVersion in gen.lock), so
-# merging the PR triggers sdk_publish.yaml, and the post-merge Generate
-# workflows find nothing to change. Those stay the fallback for fork PRs,
-# which get no secrets here, and for Speakeasy generator updates.
-#
-# Pushes use the GH_DOCS_SYNC app token, because a GITHUB_TOKEN push does not
-# trigger CI on the new commit. The app's push fires this workflow again; that
-# run regenerates the new head, finds nothing to change (confirming the output
-# is stable) and pushes nothing. A run that would push a second regen commit in
-# a row fails instead.
+# speakeasy-api/sdk-generation-action can't do this: in direct mode on a
+# pull_request event it fails to check out the PR branch (v15). So this runs
+# the CLI and pushes with the GH_DOCS_SYNC app token, whose pushes (unlike
+# GITHUB_TOKEN's) trigger CI. That push re-runs this workflow, which finds
+# nothing to change.
 
 on:
   pull_request:
@@ -34,11 +32,8 @@ jobs:
   regenerate:
     name: Regenerate
     if: github.event.pull_request.head.repo.full_name == github.repository
-    # Runs for one PR queue rather than cancel each other: cancelling the run
-    # that just pushed would leave a cancelled check on that head. A run
-    # overtaken by a newer push exits early or skips its push (see the lease
-    # below), and `queue: max` keeps every push's run instead of replacing a
-    # pending one.
+    # Queue rather than cancel: cancelling the run that just pushed would
+    # leave a cancelled check on that head.
     concurrency:
       group: regenerate-${{ github.event.pull_request.number }}
       cancel-in-progress: false
@@ -56,126 +51,21 @@ jobs:
           app-id: ${{ secrets.GH_DOCS_SYNC_APP_ID }}
           private-key: ${{ secrets.GH_DOCS_SYNC_APP_PRIVATE_KEY }}
 
-      # Check out the branch (not the merge ref) so the result can be pushed.
+      # The event's head commit, not the branch: if the branch moved since,
+      # the push below is rejected and the newer push's run takes over.
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
-      - name: Confirm the branch has not moved
-        id: head
-        run: |
-          if [ "$(git rev-parse HEAD)" != "$HEAD_SHA" ]; then
-            echo "Branch moved past $HEAD_SHA; the run for the newer push regenerates it"
-            echo "stale=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - uses: actions/setup-go@v6
-        if: steps.head.outputs.stale != 'true'
-        with:
-          go-version-file: go.mod
-          cache: true
-
-      # tfplugindocs (go generate) renders docs from the provider schema
-      # through the Terraform CLI.
-      - uses: hashicorp/setup-terraform@v3
-        if: steps.head.outputs.stale != 'true'
-        with:
-          terraform_wrapper: false
-
-      # workflow.yaml pins speakeasyVersion; the CLI switches to that version
-      # itself when it is not "latest".
-      - name: Install Speakeasy CLI
-        if: steps.head.outputs.stale != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          cd "$RUNNER_TEMP"
-          gh release download --repo speakeasy-api/speakeasy \
-            --pattern speakeasy_linux_amd64.zip --pattern checksums.txt
-          grep ' speakeasy_linux_amd64.zip$' checksums.txt | sha256sum -c -
-          unzip -q speakeasy_linux_amd64.zip speakeasy -d "$RUNNER_TEMP/speakeasy-bin"
-          echo "$RUNNER_TEMP/speakeasy-bin" >> "$GITHUB_PATH"
-
-      # Speakeasy bumps releaseVersion on every versioned run, so a branch that
-      # is already ahead of main keeps its release and generates without
-      # versioning. Otherwise one versioned run bumps past main. Either way the
-      # result is kept only if it changes something besides the Speakeasy config
-      # and lock files and the version string itself (sdk-generation-action's
-      # rule).
       - name: Generate
         id: generate
-        if: steps.head.outputs.stale != 'true'
-        env:
-          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
-          # Generation may need a newer Go patch release than go.mod names.
-          GOTOOLCHAIN: auto
-        run: |
-          set -euo pipefail
-
-          # Persistent edits fetch the previous pristine snapshot from origin
-          # and push the new one (refs/speakeasy/gen/<generation_id>). Put the
-          # token in the remote URL so this works whether the CLI shells out
-          # to git or uses its own client.
-          git remote set-url origin "https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-
-          release_version() {
-            sed -n 's/^  releaseVersion: //p' | head -1
-          }
-
-          git fetch --quiet origin main
-          MAIN_VERSION=$(git show origin/main:.speakeasy/gen.lock | release_version)
-          PR_VERSION=$(release_version < .speakeasy/gen.lock)
-          HIGHEST=$(printf '%s\n%s\n' "$MAIN_VERSION" "$PR_VERSION" | sort -V | tail -1)
-          # Same arguments sdk-generation-action passes (the repo URL feeds the
-          # README installation section), plus no registry upload from PRs.
-          RUN_ARGS=(--target open-router --installationURLs '{}' --repo-subdirs '{"open-router":""}'
-            --repo "https://github.com/${GITHUB_REPOSITORY}.git" --skip-testing --skip-upload-spec
-            --auto-yes --output console)
-          if [ "$PR_VERSION" = "$MAIN_VERSION" ]; then
-            echo "Generating with a version bump past $MAIN_VERSION"
-          elif [ "$HIGHEST" = "$PR_VERSION" ]; then
-            echo "Branch is already on release $PR_VERSION (main: $MAIN_VERSION); generating without a bump"
-            RUN_ARGS+=(--skip-versioning)
-          else
-            echo "::error::This branch is on release $PR_VERSION but main is on $MAIN_VERSION. Merge main into the branch so the next push regenerates on top of it."
-            exit 1
-          fi
-
-          speakeasy run "${RUN_ARGS[@]}"
-          go generate ./...
-
-          # One side ("-" or "+") of a file's diff with version numbers removed.
-          # A versioned run rewrites several version strings (the README even
-          # shows the previous release), so compare lines without them.
-          diff_side() {
-            git diff -U0 --no-color -- "$2" \
-              | awk -v side="$1" '/^@@/ { body = 1; next } body && substr($0, 1, 1) == side { print substr($0, 2) }' \
-              | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+//g'
-          }
-
-          EXCLUDE=(':!.speakeasy/gen.yaml' ':!.speakeasy/gen.lock' ':!.speakeasy/workflow.yaml' ':!.speakeasy/workflow.lock')
-          significant=false
-          if git ls-files --others --exclude-standard -- . "${EXCLUDE[@]}" | grep -q .; then
-            significant=true
-          else
-            while IFS= read -r f; do
-              if [ ! -f "$f" ] || ! cmp -s <(diff_side - "$f") <(diff_side + "$f"); then
-                significant=true
-                break
-              fi
-            done < <(git diff --name-only -- . "${EXCLUDE[@]}")
-          fi
-
-          if [ "$significant" != true ]; then
-            echo "Regeneration made no significant changes"
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "changed=true" >> "$GITHUB_OUTPUT"
+        uses: ./.github/actions/generate-provider
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          speakeasy-api-key: ${{ secrets.SPEAKEASY_API_KEY }}
+          release-base: origin/main
 
       - name: Commit and push
         if: steps.generate.outputs.changed == 'true'
@@ -184,42 +74,21 @@ jobs:
           APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
         run: |
           set -euo pipefail
+          # A regen commit on top of this workflow's own regen commit means the
+          # output is not stable; stop rather than push in a loop.
+          if git log -1 --format=%s | grep -q '^chore: regenerate provider'; then
+            echo "::error::Regenerating the previous regen commit changed the output again; generation is not stable"
+            exit 1
+          fi
+
           BOT_ID=$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq .id)
           git config user.name "${APP_SLUG}[bot]"
           git config user.email "${BOT_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
-          git add -A
           VERSION=$(sed -n 's/^  releaseVersion: //p' .speakeasy/gen.lock | head -1)
-
-          # The next generation fetches this snapshot; without it on origin,
-          # persistent edits fail. Push it if the CLI did not.
-          GEN_REF="refs/speakeasy/gen/$(sed -n 's/^  generation_id: //p' .speakeasy/gen.lock | head -1)"
-          if ! git ls-remote --exit-code origin "$GEN_REF" > /dev/null; then
-            git push origin "$GEN_REF"
-          fi
-
-          # A regen commit on top of this workflow's own regen commit means the
-          # output is not stable; stop rather than push in a loop. (Spec
-          # commits from the monorepo are authored by "OpenRouter SDK Bot".)
-          if [ "$(git log -1 --format='%an|%s' HEAD)" = "${APP_SLUG}[bot]|chore: regenerate provider (v$(git show HEAD:.speakeasy/gen.lock | sed -n 's/^  releaseVersion: //p' | head -1))" ]; then
-            echo "::error::Regenerating the app's own commit changed the output again; generation is not stable"
-            git status --short | head -50
-            exit 1
-          fi
-
+          git add -A
           git commit --quiet -m "chore: regenerate provider (v$VERSION)"
-          # Push only if the branch is still where this run started.
-          if ! git push --force-with-lease="refs/heads/$HEAD_REF:$HEAD_SHA" origin "HEAD:refs/heads/$HEAD_REF"; then
-            if [ "$(git ls-remote origin "refs/heads/$HEAD_REF" | cut -f1)" != "$HEAD_SHA" ]; then
-              echo "::notice::$HEAD_REF moved past $HEAD_SHA; the run for the newer push regenerates it"
-              exit 0
-            fi
-            exit 1
+          if ! git push origin "HEAD:refs/heads/$HEAD_REF"; then
+            # Only a moved branch is expected; anything else is a real failure.
+            [ "$(git ls-remote origin "refs/heads/$HEAD_REF" | cut -f1)" != "$HEAD_SHA" ] || exit 1
+            echo "::notice::$HEAD_REF moved past $HEAD_SHA; the run for the newer push regenerates it"
           fi
-          {
-            echo "## Regenerated"
-            echo "Pushed $(git rev-parse --short HEAD) to \`$HEAD_REF\` (release v$VERSION)."
-            echo
-            echo '```'
-            git show --stat --format= HEAD | tail -25
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"

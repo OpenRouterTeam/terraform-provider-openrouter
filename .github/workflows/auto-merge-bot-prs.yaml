@@ -1,0 +1,88 @@
+name: Auto-merge bot PRs
+
+# Merges the PRs the GH_DOCS_SYNC app opens, once Regenerate and CI have
+# passed on the PR's head: the OpenAPI spec PRs from the monorepo SDK-release
+# flow (openrouter-web sdk-release-prs.yaml, sdk-bot/openapi-update-*) and the
+# regen PRs from sdk_generation.yaml (speakeasy-sdk-regen-*). It runs on workflow_run, so
+# it executes main's copy of this file, never the PR's, and re-checks every
+# time one of those workflows finishes: the last one to finish green merges.
+# The REST merge honors the app's ruleset bypass (GitHub auto-merge never
+# does) and is pinned to the head SHA. Merging ships a release through
+# sdk_publish.yaml, because the PR carries the regenerated gen.lock.
+
+on:
+  workflow_run:
+    workflows: [CI, Regenerate]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: auto-merge-bot-prs-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    if: >-
+      github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.event == 'pull_request'
+      && github.event.workflow_run.head_repository.full_name == github.repository
+      && (startsWith(github.event.workflow_run.head_branch, 'sdk-bot/openapi-update-')
+        || startsWith(github.event.workflow_run.head_branch, 'speakeasy-sdk-regen-'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.GH_DOCS_SYNC_APP_ID }}
+          private-key: ${{ secrets.GH_DOCS_SYNC_APP_PRIVATE_KEY }}
+
+      - name: Merge once the head passed Regenerate and CI
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+
+          # The app's open PR, still at the commit this workflow run tested.
+          PR=$(gh pr view "$BRANCH" --repo "$GITHUB_REPOSITORY" --json number,state,headRefOid,author \
+            --jq 'select(.state == "OPEN" and .headRefOid == env.SHA and .author.login == "app/openrouter-docs-sync") | .number')
+          if [ -z "$PR" ]; then
+            echo "No open app PR on $BRANCH at $SHA; nothing to do"
+            exit 0
+          fi
+
+          # Only the app may have pushed (the monorepo's spec commit,
+          # Regenerate's and Generate's commits). Anything else leaves the PR
+          # for review.
+          OTHERS=$(gh api --paginate "repos/$GITHUB_REPOSITORY/activity?ref=refs/heads/$BRANCH" \
+            --jq '.[] | select(.actor.login != "openrouter-docs-sync[bot]") | .actor.login')
+          if [ -n "$OTHERS" ]; then
+            echo "::error::$BRANCH has pushes from $OTHERS; leaving PR #$PR for review"
+            exit 1
+          fi
+
+          # Workflow changes always get a human review.
+          FILES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --jq '.[].filename')
+          if grep -q '^\.github/' <<< "$FILES"; then
+            echo "::error::PR #$PR changes .github/; leaving it for review"
+            exit 1
+          fi
+
+          # gh exits non-zero while checks are pending; the next completion
+          # re-runs this job.
+          PASSED=$(gh pr checks "$PR" --repo "$GITHUB_REPOSITORY" --json name,bucket \
+            --jq '[.[] | select(.bucket == "pass") | .name | select(. == "Regenerate" or . == "Build and test" or . == "Lint config")] | unique | length' || true)
+          if [ "$PASSED" != 3 ]; then
+            echo "Regenerate, Build and test and Lint config have not all passed on $SHA yet"
+            exit 0
+          fi
+
+          gh api -X PUT "repos/$GITHUB_REPOSITORY/pulls/$PR/merge" -f merge_method=squash -f sha="$SHA" > /dev/null
+          gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH" > /dev/null \
+            || echo "::warning::Merged PR #$PR but could not delete $BRANCH"
+          echo "::notice title=bot-pr-merged::Merged PR #$PR at $SHA"
