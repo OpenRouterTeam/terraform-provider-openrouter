@@ -461,7 +461,14 @@ func (r *GuardrailResource) Read(ctx context.Context, req resource.ReadRequest, 
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
+	prior := *data
 	resp.Diagnostics.Append(data.RefreshFromSharedGetGuardrailResponse(ctx, res.GetGuardrailResponse)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(r.keepConfiguredModelIDs(ctx, &prior, data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
