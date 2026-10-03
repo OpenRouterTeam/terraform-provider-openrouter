@@ -50,34 +50,34 @@ func (f *FailedModel) GetStatusCode() *int64 {
 	return f.StatusCode
 }
 
-type Response struct {
+type OutputFusionServerToolItemResponse struct {
 	Content *string `json:"content,omitzero"`
 	Model   string  `json:"model"`
 }
 
-func (r Response) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(r, "", false)
+func (o OutputFusionServerToolItemResponse) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(o, "", false)
 }
 
-func (r *Response) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &r, "", false, nil); err != nil {
+func (o *OutputFusionServerToolItemResponse) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &o, "", false, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *Response) GetContent() *string {
-	if r == nil {
+func (o *OutputFusionServerToolItemResponse) GetContent() *string {
+	if o == nil {
 		return nil
 	}
-	return r.Content
+	return o.Content
 }
 
-func (r *Response) GetModel() string {
-	if r == nil {
+func (o *OutputFusionServerToolItemResponse) GetModel() string {
+	if o == nil {
 		return ""
 	}
-	return r.Model
+	return o.Model
 }
 
 type OutputFusionServerToolItemType string
@@ -109,13 +109,13 @@ type OutputFusionServerToolItem struct {
 	Analysis *FusionAnalysisResult `json:"analysis,omitzero"`
 	// Error message when the fusion run did not produce an analysis result.
 	Error *string `json:"error,omitzero"`
-	// Models that were requested as part of the analysis panel but did not produce a response. Present when at least one requested analysis model failed. The fusion result is still usable but was produced from a degraded panel.
+	// Models that were requested as part of the analysis panel but did not produce a response. Present when at least one requested analysis model failed. On a completed item the fusion result is still usable but was produced from a degraded panel; on a failed item it lists the panels that failed before the run stopped, so the caller can see which models were attempted even though no analysis was produced.
 	FailedModels []FailedModel `json:"failed_models,omitzero"`
 	// Typed failure reason when the fusion run failed. Possible values include: all_panels_failed, insufficient_credits, rate_limited, invalid_model, judge_not_valid_json, judge_schema_mismatch, judge_upstream_error, judge_empty_completion. The four analysis-stage codes keep their pre-rename `judge_` spelling so existing consumers keep matching. The consumer-cancellation code is `cancelled`.
 	FailureReason *string `json:"failure_reason,omitzero"`
 	ID            *string `json:"id,omitzero"`
 	// Analysis models that produced a response in this fusion run, with each model's full panel content.
-	Responses []Response `json:"responses,omitzero"`
+	Responses []OutputFusionServerToolItemResponse `json:"responses,omitzero"`
 	// Web pages the analysis panels and analyst retrieved via web search during this fusion run, deduplicated by URL across the whole run. Present when at least one model cited a source.
 	Sources []FusionSource                 `json:"sources,omitzero"`
 	Status  ToolCallStatus                 `json:"status"`
@@ -168,7 +168,7 @@ func (o *OutputFusionServerToolItem) GetID() *string {
 	return o.ID
 }
 
-func (o *OutputFusionServerToolItem) GetResponses() []Response {
+func (o *OutputFusionServerToolItem) GetResponses() []OutputFusionServerToolItemResponse {
 	if o == nil {
 		return nil
 	}

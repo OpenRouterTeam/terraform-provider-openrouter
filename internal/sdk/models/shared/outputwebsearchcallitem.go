@@ -10,68 +10,68 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type ActionFindInPage struct {
+type OutputWebSearchCallItemActionFindInPage struct {
 	Pattern string `json:"pattern"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"find_in_page" json:"type"`
 	URL   string `json:"url"`
 }
 
-func (a ActionFindInPage) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(a, "", false)
+func (o OutputWebSearchCallItemActionFindInPage) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(o, "", false)
 }
 
-func (a *ActionFindInPage) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &a, "", false, nil); err != nil {
+func (o *OutputWebSearchCallItemActionFindInPage) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &o, "", false, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (a *ActionFindInPage) GetPattern() string {
-	if a == nil {
+func (o *OutputWebSearchCallItemActionFindInPage) GetPattern() string {
+	if o == nil {
 		return ""
 	}
-	return a.Pattern
+	return o.Pattern
 }
 
-func (a *ActionFindInPage) GetType() string {
+func (o *OutputWebSearchCallItemActionFindInPage) GetType() string {
 	return "find_in_page"
 }
 
-func (a *ActionFindInPage) GetURL() string {
-	if a == nil {
+func (o *OutputWebSearchCallItemActionFindInPage) GetURL() string {
+	if o == nil {
 		return ""
 	}
-	return a.URL
+	return o.URL
 }
 
-type ActionOpenPage struct {
+type OutputWebSearchCallItemActionOpenPage struct {
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string  `const:"open_page" json:"type"`
 	URL   *string `json:"url,omitzero"`
 }
 
-func (a ActionOpenPage) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(a, "", false)
+func (o OutputWebSearchCallItemActionOpenPage) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(o, "", false)
 }
 
-func (a *ActionOpenPage) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &a, "", false, nil); err != nil {
+func (o *OutputWebSearchCallItemActionOpenPage) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &o, "", false, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (a *ActionOpenPage) GetType() string {
+func (o *OutputWebSearchCallItemActionOpenPage) GetType() string {
 	return "open_page"
 }
 
-func (a *ActionOpenPage) GetURL() *string {
-	if a == nil {
+func (o *OutputWebSearchCallItemActionOpenPage) GetURL() *string {
+	if o == nil {
 		return nil
 	}
-	return a.URL
+	return o.URL
 }
 
 type OutputWebSearchCallItemActionSearch struct {
@@ -118,52 +118,52 @@ func (o *OutputWebSearchCallItemActionSearch) GetType() string {
 	return "search"
 }
 
-type ActionType string
+type OutputWebSearchCallItemActionUnionType string
 
 const (
-	ActionTypeSearchValue ActionType = "search"
-	ActionTypeOpenPage    ActionType = "open_page"
-	ActionTypeFindInPage  ActionType = "find_in_page"
+	OutputWebSearchCallItemActionUnionTypeSearch     OutputWebSearchCallItemActionUnionType = "search"
+	OutputWebSearchCallItemActionUnionTypeOpenPage   OutputWebSearchCallItemActionUnionType = "open_page"
+	OutputWebSearchCallItemActionUnionTypeFindInPage OutputWebSearchCallItemActionUnionType = "find_in_page"
 )
 
-type Action struct {
-	OutputWebSearchCallItemActionSearch *OutputWebSearchCallItemActionSearch `queryParam:"inline" union:"member"`
-	ActionOpenPage                      *ActionOpenPage                      `queryParam:"inline" union:"member"`
-	ActionFindInPage                    *ActionFindInPage                    `queryParam:"inline" union:"member"`
+type OutputWebSearchCallItemActionUnion struct {
+	OutputWebSearchCallItemActionSearch     *OutputWebSearchCallItemActionSearch     `queryParam:"inline" union:"member"`
+	OutputWebSearchCallItemActionOpenPage   *OutputWebSearchCallItemActionOpenPage   `queryParam:"inline" union:"member"`
+	OutputWebSearchCallItemActionFindInPage *OutputWebSearchCallItemActionFindInPage `queryParam:"inline" union:"member"`
 
-	Type ActionType
+	Type OutputWebSearchCallItemActionUnionType
 }
 
-func CreateActionSearch(search OutputWebSearchCallItemActionSearch) Action {
-	typ := ActionTypeSearchValue
+func CreateOutputWebSearchCallItemActionUnionSearch(search OutputWebSearchCallItemActionSearch) OutputWebSearchCallItemActionUnion {
+	typ := OutputWebSearchCallItemActionUnionTypeSearch
 
-	return Action{
+	return OutputWebSearchCallItemActionUnion{
 		OutputWebSearchCallItemActionSearch: &search,
 		Type:                                typ,
 	}
 }
 
-func CreateActionOpenPage(openPage ActionOpenPage) Action {
-	typ := ActionTypeOpenPage
+func CreateOutputWebSearchCallItemActionUnionOpenPage(openPage OutputWebSearchCallItemActionOpenPage) OutputWebSearchCallItemActionUnion {
+	typ := OutputWebSearchCallItemActionUnionTypeOpenPage
 
-	return Action{
-		ActionOpenPage: &openPage,
-		Type:           typ,
+	return OutputWebSearchCallItemActionUnion{
+		OutputWebSearchCallItemActionOpenPage: &openPage,
+		Type:                                  typ,
 	}
 }
 
-func CreateActionFindInPage(findInPage ActionFindInPage) Action {
-	typ := ActionTypeFindInPage
+func CreateOutputWebSearchCallItemActionUnionFindInPage(findInPage OutputWebSearchCallItemActionFindInPage) OutputWebSearchCallItemActionUnion {
+	typ := OutputWebSearchCallItemActionUnionTypeFindInPage
 
-	return Action{
-		ActionFindInPage: &findInPage,
-		Type:             typ,
+	return OutputWebSearchCallItemActionUnion{
+		OutputWebSearchCallItemActionFindInPage: &findInPage,
+		Type:                                    typ,
 	}
 }
 
-func (u *Action) UnmarshalJSON(data []byte) (err error) {
+func (u *OutputWebSearchCallItemActionUnion) UnmarshalJSON(data []byte) (err error) {
 	previous := *u
-	*u = Action{}
+	*u = OutputWebSearchCallItemActionUnion{}
 	defer func() {
 		if err != nil {
 			*u = previous
@@ -183,80 +183,80 @@ func (u *Action) UnmarshalJSON(data []byte) (err error) {
 	case "search":
 		outputWebSearchCallItemActionSearch := new(OutputWebSearchCallItemActionSearch)
 		if err := utils.UnmarshalJSON(data, &outputWebSearchCallItemActionSearch, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == search) type OutputWebSearchCallItemActionSearch within Action: %w", string(data), err)
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == search) type OutputWebSearchCallItemActionSearch within OutputWebSearchCallItemActionUnion: %w", string(data), err)
 		}
 
 		u.OutputWebSearchCallItemActionSearch = outputWebSearchCallItemActionSearch
-		u.Type = ActionTypeSearchValue
+		u.Type = OutputWebSearchCallItemActionUnionTypeSearch
 		return nil
 	case "open_page":
-		actionOpenPage := new(ActionOpenPage)
-		if err := utils.UnmarshalJSON(data, &actionOpenPage, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == open_page) type ActionOpenPage within Action: %w", string(data), err)
+		outputWebSearchCallItemActionOpenPage := new(OutputWebSearchCallItemActionOpenPage)
+		if err := utils.UnmarshalJSON(data, &outputWebSearchCallItemActionOpenPage, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == open_page) type OutputWebSearchCallItemActionOpenPage within OutputWebSearchCallItemActionUnion: %w", string(data), err)
 		}
 
-		u.ActionOpenPage = actionOpenPage
-		u.Type = ActionTypeOpenPage
+		u.OutputWebSearchCallItemActionOpenPage = outputWebSearchCallItemActionOpenPage
+		u.Type = OutputWebSearchCallItemActionUnionTypeOpenPage
 		return nil
 	case "find_in_page":
-		actionFindInPage := new(ActionFindInPage)
-		if err := utils.UnmarshalJSON(data, &actionFindInPage, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == find_in_page) type ActionFindInPage within Action: %w", string(data), err)
+		outputWebSearchCallItemActionFindInPage := new(OutputWebSearchCallItemActionFindInPage)
+		if err := utils.UnmarshalJSON(data, &outputWebSearchCallItemActionFindInPage, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == find_in_page) type OutputWebSearchCallItemActionFindInPage within OutputWebSearchCallItemActionUnion: %w", string(data), err)
 		}
 
-		u.ActionFindInPage = actionFindInPage
-		u.Type = ActionTypeFindInPage
+		u.OutputWebSearchCallItemActionFindInPage = outputWebSearchCallItemActionFindInPage
+		u.Type = OutputWebSearchCallItemActionUnionTypeFindInPage
 		return nil
 	}
 
-	return fmt.Errorf("could not unmarshal `%s` into any supported union types for Action", string(data))
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for OutputWebSearchCallItemActionUnion", string(data))
 }
 
-func (u Action) MarshalJSON() ([]byte, error) {
+func (u OutputWebSearchCallItemActionUnion) MarshalJSON() ([]byte, error) {
 	if u.OutputWebSearchCallItemActionSearch != nil {
 		return utils.MarshalJSON(u.OutputWebSearchCallItemActionSearch, "", true)
 	}
 
-	if u.ActionOpenPage != nil {
-		return utils.MarshalJSON(u.ActionOpenPage, "", true)
+	if u.OutputWebSearchCallItemActionOpenPage != nil {
+		return utils.MarshalJSON(u.OutputWebSearchCallItemActionOpenPage, "", true)
 	}
 
-	if u.ActionFindInPage != nil {
-		return utils.MarshalJSON(u.ActionFindInPage, "", true)
+	if u.OutputWebSearchCallItemActionFindInPage != nil {
+		return utils.MarshalJSON(u.OutputWebSearchCallItemActionFindInPage, "", true)
 	}
 
-	return nil, errors.New("could not marshal union type Action: all fields are null")
+	return nil, errors.New("could not marshal union type OutputWebSearchCallItemActionUnion: all fields are null")
 }
 
-type TypeWebSearchCall string
+type OutputWebSearchCallItemTypeWebSearchCall string
 
 const (
-	TypeWebSearchCallWebSearchCall TypeWebSearchCall = "web_search_call"
+	OutputWebSearchCallItemTypeWebSearchCallWebSearchCall OutputWebSearchCallItemTypeWebSearchCall = "web_search_call"
 )
 
-func (e TypeWebSearchCall) ToPointer() *TypeWebSearchCall {
+func (e OutputWebSearchCallItemTypeWebSearchCall) ToPointer() *OutputWebSearchCallItemTypeWebSearchCall {
 	return &e
 }
-func (e *TypeWebSearchCall) UnmarshalJSON(data []byte) error {
+func (e *OutputWebSearchCallItemTypeWebSearchCall) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
 	switch v {
 	case "web_search_call":
-		*e = TypeWebSearchCall(v)
+		*e = OutputWebSearchCallItemTypeWebSearchCall(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for TypeWebSearchCall: %v", v)
+		return fmt.Errorf("invalid value for OutputWebSearchCallItemTypeWebSearchCall: %v", v)
 	}
 }
 
 type OutputWebSearchCallItem struct {
-	Action               *Action           `json:"action,omitzero"`
-	ID                   string            `json:"id"`
-	Status               WebSearchStatus   `json:"status"`
-	Type                 TypeWebSearchCall `json:"type"`
-	AdditionalProperties map[string]any    `additionalProperties:"true" json:"-"`
+	Action               *OutputWebSearchCallItemActionUnion      `json:"action,omitzero"`
+	ID                   string                                   `json:"id"`
+	Status               WebSearchStatus                          `json:"status"`
+	Type                 OutputWebSearchCallItemTypeWebSearchCall `json:"type"`
+	AdditionalProperties map[string]any                           `additionalProperties:"true" json:"-"`
 }
 
 func (o OutputWebSearchCallItem) MarshalJSON() ([]byte, error) {
@@ -270,7 +270,7 @@ func (o *OutputWebSearchCallItem) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (o *OutputWebSearchCallItem) GetAction() *Action {
+func (o *OutputWebSearchCallItem) GetAction() *OutputWebSearchCallItemActionUnion {
 	if o == nil {
 		return nil
 	}
@@ -284,16 +284,16 @@ func (o *OutputWebSearchCallItem) GetActionSearch() *OutputWebSearchCallItemActi
 	return nil
 }
 
-func (o *OutputWebSearchCallItem) GetActionOpenPage() *ActionOpenPage {
+func (o *OutputWebSearchCallItem) GetActionOpenPage() *OutputWebSearchCallItemActionOpenPage {
 	if v := o.GetAction(); v != nil {
-		return v.ActionOpenPage
+		return v.OutputWebSearchCallItemActionOpenPage
 	}
 	return nil
 }
 
-func (o *OutputWebSearchCallItem) GetActionFindInPage() *ActionFindInPage {
+func (o *OutputWebSearchCallItem) GetActionFindInPage() *OutputWebSearchCallItemActionFindInPage {
 	if v := o.GetAction(); v != nil {
-		return v.ActionFindInPage
+		return v.OutputWebSearchCallItemActionFindInPage
 	}
 	return nil
 }
@@ -312,9 +312,9 @@ func (o *OutputWebSearchCallItem) GetStatus() WebSearchStatus {
 	return o.Status
 }
 
-func (o *OutputWebSearchCallItem) GetType() TypeWebSearchCall {
+func (o *OutputWebSearchCallItem) GetType() OutputWebSearchCallItemTypeWebSearchCall {
 	if o == nil {
-		return TypeWebSearchCall("")
+		return OutputWebSearchCallItemTypeWebSearchCall("")
 	}
 	return o.Type
 }
