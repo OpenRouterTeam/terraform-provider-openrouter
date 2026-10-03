@@ -199,7 +199,7 @@ func (r *ModelsDataSourceModel) RefreshFromSharedModelsListResponse(ctx context.
 
 			r.Data = append(r.Data, data)
 		}
-		r.Links = &tfTypes.Links{}
+		r.Links = &tfTypes.ModelsListResponseLinks{}
 		r.Links.Next = types.StringPointerValue(resp.Links.Next)
 		r.TotalCount = types.Int64Value(resp.TotalCount)
 	}
