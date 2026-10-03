@@ -441,11 +441,13 @@ type GetObservabilityDestinationResponseConfigSnowflake struct {
 	Account  string  `json:"account"`
 	Database *string `json:"database,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
-	Headers   map[string]string `json:"headers,omitzero"`
-	Schema    *string           `json:"schema,omitzero"`
-	Table     *string           `json:"table,omitzero"`
-	Token     string            `json:"token"`
-	Warehouse *string           `json:"warehouse,omitzero"`
+	Headers map[string]string `json:"headers,omitzero"`
+	Schema  *string           `json:"schema,omitzero"`
+	// Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.
+	ShouldIncludeCacheWriteTokens *bool   `default:"false" json:"shouldIncludeCacheWriteTokens"`
+	Table                         *string `json:"table,omitzero"`
+	Token                         string  `json:"token"`
+	Warehouse                     *string `json:"warehouse,omitzero"`
 }
 
 func (g GetObservabilityDestinationResponseConfigSnowflake) MarshalJSON() ([]byte, error) {
@@ -485,6 +487,13 @@ func (g *GetObservabilityDestinationResponseConfigSnowflake) GetSchema() *string
 		return nil
 	}
 	return g.Schema
+}
+
+func (g *GetObservabilityDestinationResponseConfigSnowflake) GetShouldIncludeCacheWriteTokens() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.ShouldIncludeCacheWriteTokens
 }
 
 func (g *GetObservabilityDestinationResponseConfigSnowflake) GetTable() *string {
@@ -2919,7 +2928,9 @@ type GetObservabilityDestinationResponseConfigClickhouse struct {
 	Headers  map[string]string `json:"headers,omitzero"`
 	Host     string            `json:"host"`
 	Password string            `json:"password"`
-	Table    *string           `json:"table,omitzero"`
+	// Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.
+	ShouldIncludeCacheWriteTokens *bool   `default:"false" json:"shouldIncludeCacheWriteTokens"`
+	Table                         *string `json:"table,omitzero"`
 	// If you have not set a specific username in ClickHouse, simply type in 'default' below.
 	Username string `json:"username"`
 }
@@ -2961,6 +2972,13 @@ func (g *GetObservabilityDestinationResponseConfigClickhouse) GetPassword() stri
 		return ""
 	}
 	return g.Password
+}
+
+func (g *GetObservabilityDestinationResponseConfigClickhouse) GetShouldIncludeCacheWriteTokens() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.ShouldIncludeCacheWriteTokens
 }
 
 func (g *GetObservabilityDestinationResponseConfigClickhouse) GetTable() *string {
