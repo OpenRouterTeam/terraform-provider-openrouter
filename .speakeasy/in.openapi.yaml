@@ -8759,7 +8759,7 @@ components:
               items:
                 maxLength: 253
                 minLength: 1
-                pattern: '^[a-z0-9*]([a-z0-9*-]{0,61}[a-z0-9*])?(\.[a-z0-9*]([a-z0-9*-]{0,61}[a-z0-9*])?)*$'
+                pattern: '^(?![-.])(?!.*[-.]$)(?!.*(?:\.\.|\.-|-\.))(?!.*[^.]{64})[a-z0-9*.-]+$'
                 type: 'string'
               maxItems: 50
               minItems: 1
@@ -13380,6 +13380,7 @@ components:
             - '512'
             - '768'
             - '1K'
+            - '1.5K'
             - '2K'
             - '4K'
           example: '2K'
@@ -19076,6 +19077,10 @@ components:
             password:
               minLength: 1
               type: 'string'
+            shouldIncludeCacheWriteTokens:
+              default: false
+              description: 'Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.'
+              type: 'boolean'
             table:
               default: 'OPENROUTER_TRACES'
               type: 'string'
@@ -20837,6 +20842,10 @@ components:
             schema:
               default: 'PUBLIC'
               type: 'string'
+            shouldIncludeCacheWriteTokens:
+              default: false
+              description: 'Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.'
+              type: 'boolean'
             table:
               default: 'OPENROUTER_TRACES'
               type: 'string'
@@ -28691,10 +28700,27 @@ components:
           example: 'mistralai/voxtral-mini-tts-2603'
           type: 'string'
         provider:
-          description: 'Provider-specific passthrough configuration'
+          description: 'Provider configuration: data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options'
           properties:
+            data_collection:
+              description: "Data collection setting. If no available model provider meets the requirement, your request will return an error.\n- allow: (default) allow providers which store user data non-transiently and may train on it\n\n- deny: use only providers which do not collect user data."
+              enum:
+                - 'deny'
+                - 'allow'
+                - null
+              example: 'allow'
+              title: 'SpeechRequestDataCollection'
+              type:
+                - 'string'
+                - 'null'
             options:
               $ref: '#/components/schemas/ProviderOptions'
+            zdr:
+              description: 'Whether to restrict routing to only ZDR (Zero Data Retention) endpoints. When true, only endpoints that do not retain prompts will be used.'
+              example: true
+              type:
+                - 'boolean'
+                - 'null'
           type: 'object'
         response_format:
           default: 'pcm'
@@ -29247,10 +29273,27 @@ components:
           example: 'openai/whisper-large-v3'
           type: 'string'
         provider:
-          description: 'Provider-specific passthrough configuration'
+          description: 'Provider configuration: data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options'
           properties:
+            data_collection:
+              description: "Data collection setting. If no available model provider meets the requirement, your request will return an error.\n- allow: (default) allow providers which store user data non-transiently and may train on it\n\n- deny: use only providers which do not collect user data."
+              enum:
+                - 'deny'
+                - 'allow'
+                - null
+              example: 'allow'
+              title: 'STTRequestDataCollection'
+              type:
+                - 'string'
+                - 'null'
             options:
               $ref: '#/components/schemas/ProviderOptions'
+            zdr:
+              description: 'Whether to restrict routing to only ZDR (Zero Data Retention) endpoints. When true, only endpoints that do not retain prompts will be used.'
+              example: true
+              type:
+                - 'boolean'
+                - 'null'
           type: 'object'
         response_format:
           description: 'Output format. "json" (default) returns { text, usage }. "verbose_json" additionally returns task, language, duration, and segment-level timestamps; only supported by OpenAI-compatible providers.'
@@ -33949,7 +33992,7 @@ paths:
                   description: 'The model to use for transcription.'
                   type: 'string'
                 provider:
-                  description: 'JSON-encoded provider preferences object, the same shape as the JSON body field: { "options": { "<provider-slug>": { ... } } }. Only options for the matched provider are forwarded. Must decode to a JSON object.'
+                  description: 'JSON-encoded provider preferences object, the same shape as the JSON body field: { "zdr": true, "data_collection": "deny", "options": { "<provider-slug>": { ... } } }. Only options for the matched provider are forwarded. Must decode to a JSON object.'
                   type: 'string'
                 response_format:
                   description: 'The response format. "json" (default) returns { text, usage }; "verbose_json" additionally returns task, language, duration, and segment-level timestamps (OpenAI-compatible providers only).'
@@ -43465,7 +43508,7 @@ paths:
         - 'API Keys'
       x-speakeasy-name-override: 'get'
     patch:
-      description: 'Update an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys).'
+      description: "Update an existing API key. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys).\n\n<Warning>\nYou can't change `workspace_id` through the API. The request body accepts only the fields listed below, and unrecognized fields are ignored. To move a key to another workspace, use the OpenRouter dashboard. If the body contains none of the accepted fields, the request fails with `400` and the message `No update fields provided`.\n</Warning>"
       operationId: 'updateKeys'
       parameters:
         - description: 'The hash identifier of the API key to update'
@@ -43747,10 +43790,20 @@ paths:
         '400':
           content:
             application/json:
-              example:
-                error:
-                  code: 400
-                  message: 'Invalid request parameters'
+              examples:
+                invalid_parameters:
+                  summary: 'Invalid request parameters'
+                  value:
+                    error:
+                      code: 400
+                      message: 'Invalid request parameters'
+                no_update_fields:
+                  description: 'Returned when the body contains none of the accepted fields, for example `{"workspace_id": "..."}`. `workspace_id` can''t be changed through the API.'
+                  summary: 'No accepted fields in the request body'
+                  value:
+                    error:
+                      code: 400
+                      message: 'No update fields provided'
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
           description: 'Bad Request - Invalid request parameters or malformed input'
