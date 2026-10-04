@@ -9,10 +9,47 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// STTRequestProvider - Provider-specific passthrough configuration
+// STTRequestDataCollection - Data collection setting. If no available model provider meets the requirement, your request will return an error.
+// - allow: (default) allow providers which store user data non-transiently and may train on it
+//
+// - deny: use only providers which do not collect user data.
+type STTRequestDataCollection string
+
+const (
+	STTRequestDataCollectionDeny  STTRequestDataCollection = "deny"
+	STTRequestDataCollectionAllow STTRequestDataCollection = "allow"
+)
+
+func (e STTRequestDataCollection) ToPointer() *STTRequestDataCollection {
+	return &e
+}
+func (e *STTRequestDataCollection) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "deny":
+		fallthrough
+	case "allow":
+		*e = STTRequestDataCollection(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for STTRequestDataCollection: %v", v)
+	}
+}
+
+// STTRequestProvider - Provider configuration: data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options
 type STTRequestProvider struct {
+	// Data collection setting. If no available model provider meets the requirement, your request will return an error.
+	// - allow: (default) allow providers which store user data non-transiently and may train on it
+	//
+	// - deny: use only providers which do not collect user data.
+	DataCollection *STTRequestDataCollection `json:"data_collection,omitzero"`
 	// Provider-specific options keyed by provider slug. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
 	Options *ProviderOptions `json:"options,omitzero"`
+	// Whether to restrict routing to only ZDR (Zero Data Retention) endpoints. When true, only endpoints that do not retain prompts will be used.
+	Zdr *bool `json:"zdr,omitzero"`
 }
 
 func (s STTRequestProvider) MarshalJSON() ([]byte, error) {
@@ -26,11 +63,25 @@ func (s *STTRequestProvider) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (s *STTRequestProvider) GetDataCollection() *STTRequestDataCollection {
+	if s == nil {
+		return nil
+	}
+	return s.DataCollection
+}
+
 func (s *STTRequestProvider) GetOptions() *ProviderOptions {
 	if s == nil {
 		return nil
 	}
 	return s.Options
+}
+
+func (s *STTRequestProvider) GetZdr() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.Zdr
 }
 
 // STTRequestResponseFormat - Output format. "json" (default) returns { text, usage }. "verbose_json" additionally returns task, language, duration, and segment-level timestamps; only supported by OpenAI-compatible providers.
@@ -60,15 +111,19 @@ func (e *STTRequestResponseFormat) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// STTRequest - Speech-to-text request input. Accepts a JSON body with input_audio containing base64-encoded audio.
+// STTRequest - Speech-to-text request input. Accepts a JSON body with input_audio containing base64-encoded audio or a URL the provider downloads.
 type STTRequest struct {
-	// Base64-encoded audio to transcribe
+	// Label each word with the speaker who said it. Speaker labels are returned on the words array (speaker, speaker_label), so response_format must be "verbose_json" (a "json" request is rejected with a 400) and word timestamps are included even when timestamp_granularities omits "word". Only supported by some providers; the request is rejected with a 400 when the selected model cannot diarize. Providers may charge extra.
+	Diarize *bool `json:"diarize,omitzero"`
+	// Audio to transcribe: inline base64 bytes, or a URL the provider downloads directly.
 	InputAudio STTInputAudio `json:"input_audio"`
+	// Domain terms, names, or phrases to bias recognition toward. Only supported by some providers; the request is rejected with a 400 when the selected model cannot use keyterms. Providers may cap the number of terms or characters per term and may charge extra.
+	Keyterms []string `json:"keyterms,omitzero"`
 	// ISO-639-1 language code (e.g., "en", "ja"). Auto-detected if omitted.
 	Language *string `json:"language,omitzero"`
 	// STT model identifier
 	Model string `json:"model"`
-	// Provider-specific passthrough configuration
+	// Provider configuration: data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options
 	Provider *STTRequestProvider `json:"provider,omitzero"`
 	// Output format. "json" (default) returns { text, usage }. "verbose_json" additionally returns task, language, duration, and segment-level timestamps; only supported by OpenAI-compatible providers.
 	ResponseFormat *STTRequestResponseFormat `json:"response_format,omitzero"`
@@ -95,11 +150,25 @@ func (s *STTRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (s *STTRequest) GetDiarize() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.Diarize
+}
+
 func (s *STTRequest) GetInputAudio() STTInputAudio {
 	if s == nil {
 		return STTInputAudio{}
 	}
 	return s.InputAudio
+}
+
+func (s *STTRequest) GetKeyterms() []string {
+	if s == nil {
+		return nil
+	}
+	return s.Keyterms
 }
 
 func (s *STTRequest) GetLanguage() *string {
