@@ -227,6 +227,7 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Clickhouse.Config.Host = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Host)
 		r.Clickhouse.Config.Password = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Password)
+		r.Clickhouse.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.ShouldIncludeCacheWriteTokens)
 		r.Clickhouse.Config.Table = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Table)
 		r.Clickhouse.Config.Username = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Username)
 		r.Clickhouse.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.CreatedAt)
@@ -1253,6 +1254,7 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 			}
 		}
 		r.Snowflake.Config.Schema = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Schema)
+		r.Snowflake.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.ShouldIncludeCacheWriteTokens)
 		r.Snowflake.Config.Table = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Table)
 		r.Snowflake.Config.Token = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Token)
 		r.Snowflake.Config.Warehouse = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Warehouse)

@@ -89,11 +89,11 @@ Available configuration:
 * [openrouter_byok_key](docs/resources/byok_key.md)
 * [openrouter_guardrail](docs/resources/guardrail.md)
 * [openrouter_observability_destination](docs/resources/observability_destination.md)
+* [openrouter_organization_settings](docs/resources/organization_settings.md)
 * [openrouter_private_endpoint](docs/resources/private_endpoint.md)
 * [openrouter_scim_group_mapping](docs/resources/scim_group_mapping.md)
 * [openrouter_workspace](docs/resources/workspace.md)
 * [openrouter_workspace_budget](docs/resources/workspace_budget.md)
-* [openrouter_workspace_default_guardrail](docs/resources/workspace_default_guardrail.md)
 
 ### Data Sources
 
@@ -111,11 +111,13 @@ Available configuration:
 * [openrouter_observability_destination](docs/data-sources/observability_destination.md)
 * [openrouter_observability_destinations](docs/data-sources/observability_destinations.md)
 * [openrouter_organization_members](docs/data-sources/organization_members.md)
+* [openrouter_organization_settings](docs/data-sources/organization_settings.md)
 * [openrouter_preset](docs/data-sources/preset.md)
 * [openrouter_presets](docs/data-sources/presets.md)
 * [openrouter_private_endpoint](docs/data-sources/private_endpoint.md)
 * [openrouter_providers](docs/data-sources/providers.md)
 * [openrouter_scim_group_mapping](docs/data-sources/scim_group_mapping.md)
+* [openrouter_scim_groups](docs/data-sources/scim_groups.md)
 * [openrouter_workspace](docs/data-sources/workspace.md)
 * [openrouter_workspace_budget](docs/data-sources/workspace_budget.md)
 * [openrouter_workspace_budgets](docs/data-sources/workspace_budgets.md)
