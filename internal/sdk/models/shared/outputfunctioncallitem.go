@@ -201,29 +201,6 @@ func (u OutputFunctionCallItemStatusUnion) MarshalJSON() ([]byte, error) {
 	return nil, errors.New("could not marshal union type OutputFunctionCallItemStatusUnion: all fields are null")
 }
 
-type OutputFunctionCallItemType string
-
-const (
-	OutputFunctionCallItemTypeFunctionCall OutputFunctionCallItemType = "function_call"
-)
-
-func (e OutputFunctionCallItemType) ToPointer() *OutputFunctionCallItemType {
-	return &e
-}
-func (e *OutputFunctionCallItemType) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "function_call":
-		*e = OutputFunctionCallItemType(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for OutputFunctionCallItemType: %v", v)
-	}
-}
-
 type OutputFunctionCallItemSubagentItem struct {
 	Type                 string         `json:"type"`
 	AdditionalProperties map[string]any `additionalProperties:"true" json:"-"`
@@ -264,7 +241,8 @@ type OutputFunctionCallItem struct {
 	// Namespace qualifier for tools registered as part of a namespace tool group (e.g. an MCP server)
 	Namespace *string                            `json:"namespace,omitzero"`
 	Status    *OutputFunctionCallItemStatusUnion `json:"status,omitzero"`
-	Type      OutputFunctionCallItemType         `json:"type"`
+	//lint:ignore U1000 accessed via reflection for JSON marshaling
+	type_ string `const:"function_call" json:"type"`
 	// EXPERIMENTAL — subject to change without notice. String id that matches the `call_id` of the `openrouter:subagent` server tool call that spawned the subagent. Present on every `function_call` item the subagent projects; absent on ordinary function calls.
 	SubagentID *string `json:"subagent_id,omitzero"`
 	// EXPERIMENTAL — subject to change without notice. The subagent's output items produced on this turn. Treat this as an opaque object; you must replay it in the request so that the subagent can continue execution of the tool with the same context. If a subagent created multiple parallel tool calls, only the first tool call will have this field. The other tool calls will only have `subagent_id`. Present only if the tool call originates from a subagent spawned by the `openrouter:subagent` server tool.
@@ -331,11 +309,8 @@ func (o *OutputFunctionCallItem) GetStatus() *OutputFunctionCallItemStatusUnion 
 	return o.Status
 }
 
-func (o *OutputFunctionCallItem) GetType() OutputFunctionCallItemType {
-	if o == nil {
-		return OutputFunctionCallItemType("")
-	}
-	return o.Type
+func (o *OutputFunctionCallItem) GetType() string {
+	return "function_call"
 }
 
 func (o *OutputFunctionCallItem) GetSubagentID() *string {
