@@ -53,19 +53,19 @@ func (e *APIType) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// DataRegion - The data region this generation was routed through: 'global', 'europe', or 'us'.
-type DataRegion string
+// GenerationResponseDataRegion - The data region this generation was routed through: 'global', 'europe', or 'us'.
+type GenerationResponseDataRegion string
 
 const (
-	DataRegionGlobal DataRegion = "global"
-	DataRegionEurope DataRegion = "europe"
-	DataRegionUs     DataRegion = "us"
+	GenerationResponseDataRegionGlobal GenerationResponseDataRegion = "global"
+	GenerationResponseDataRegionEurope GenerationResponseDataRegion = "europe"
+	GenerationResponseDataRegionUs     GenerationResponseDataRegion = "us"
 )
 
-func (e DataRegion) ToPointer() *DataRegion {
+func (e GenerationResponseDataRegion) ToPointer() *GenerationResponseDataRegion {
 	return &e
 }
-func (e *DataRegion) UnmarshalJSON(data []byte) error {
+func (e *GenerationResponseDataRegion) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -76,10 +76,10 @@ func (e *DataRegion) UnmarshalJSON(data []byte) error {
 	case "europe":
 		fallthrough
 	case "us":
-		*e = DataRegion(v)
+		*e = GenerationResponseDataRegion(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for DataRegion: %v", v)
+		return fmt.Errorf("invalid value for GenerationResponseDataRegion: %v", v)
 	}
 }
 
@@ -96,7 +96,7 @@ type GenerationResponseData struct {
 	// ISO 8601 timestamp of when the generation was created
 	CreatedAt string `json:"created_at"`
 	// The data region this generation was routed through: 'global', 'europe', or 'us'.
-	DataRegion DataRegion `json:"data_region"`
+	DataRegion GenerationResponseDataRegion `json:"data_region"`
 	// External user identifier
 	ExternalUser *string `json:"external_user"`
 	// Reason the generation finished
@@ -212,9 +212,9 @@ func (g *GenerationResponseData) GetCreatedAt() string {
 	return g.CreatedAt
 }
 
-func (g *GenerationResponseData) GetDataRegion() DataRegion {
+func (g *GenerationResponseData) GetDataRegion() GenerationResponseDataRegion {
 	if g == nil {
-		return DataRegion("")
+		return GenerationResponseDataRegion("")
 	}
 	return g.DataRegion
 }
