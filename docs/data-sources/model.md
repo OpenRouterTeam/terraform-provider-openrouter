@@ -185,7 +185,7 @@ Read-Only:
 
 Read-Only:
 
-- `default_effort` (String) Default reasoning effort when the client enables reasoning without specifying effort. Maps to `reasoning.effort` in chat requests. When `"none"`, prefer omitting effort unless the user explicitly disables reasoning.
+- `default_effort` (String)
 - `default_enabled` (Boolean) Default reasoning enabled state when the client does not set `reasoning.enabled`.
 - `mandatory` (Boolean) When true, reasoning cannot be disabled and effort "none" is rejected.
 - `supported_efforts` (List of String) Allowed reasoning effort values for this model, in descending effort order (highest first). Null means no allowlist — all gateway effort values are accepted.

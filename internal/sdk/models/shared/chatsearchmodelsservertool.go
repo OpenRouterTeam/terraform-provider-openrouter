@@ -4,15 +4,39 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
+
+type ChatSearchModelsServerToolType string
+
+const (
+	ChatSearchModelsServerToolTypeOpenrouterExperimentalSearchModels ChatSearchModelsServerToolType = "openrouter:experimental__search_models"
+)
+
+func (e ChatSearchModelsServerToolType) ToPointer() *ChatSearchModelsServerToolType {
+	return &e
+}
+func (e *ChatSearchModelsServerToolType) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "openrouter:experimental__search_models":
+		*e = ChatSearchModelsServerToolType(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for ChatSearchModelsServerToolType: %v", v)
+	}
+}
 
 // ChatSearchModelsServerTool - OpenRouter built-in server tool: searches and filters AI models available on OpenRouter
 type ChatSearchModelsServerTool struct {
 	// Configuration for the openrouter:experimental__search_models server tool
-	Parameters *SearchModelsServerToolConfig `json:"parameters,omitzero"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"openrouter:experimental__search_models" json:"type"`
+	Parameters *SearchModelsServerToolConfig  `json:"parameters,omitzero"`
+	Type       ChatSearchModelsServerToolType `json:"type"`
 }
 
 func (c ChatSearchModelsServerTool) MarshalJSON() ([]byte, error) {
@@ -33,6 +57,9 @@ func (c *ChatSearchModelsServerTool) GetParameters() *SearchModelsServerToolConf
 	return c.Parameters
 }
 
-func (c *ChatSearchModelsServerTool) GetType() string {
-	return "openrouter:experimental__search_models"
+func (c *ChatSearchModelsServerTool) GetType() ChatSearchModelsServerToolType {
+	if c == nil {
+		return ChatSearchModelsServerToolType("")
+	}
+	return c.Type
 }
