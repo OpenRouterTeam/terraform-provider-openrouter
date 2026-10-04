@@ -265,6 +265,9 @@ type AnthropicDocumentBlockParamSourceUnion struct {
 func CreateAnthropicDocumentBlockParamSourceUnionBase64(base64 AnthropicBase64PdfSource) AnthropicDocumentBlockParamSourceUnion {
 	typ := AnthropicDocumentBlockParamSourceUnionTypeBase64
 
+	typStr := AnthropicBase64PdfSourceType(typ)
+	base64.Type = typStr
+
 	return AnthropicDocumentBlockParamSourceUnion{
 		AnthropicBase64PdfSource: &base64,
 		Type:                     typ,
@@ -273,6 +276,9 @@ func CreateAnthropicDocumentBlockParamSourceUnionBase64(base64 AnthropicBase64Pd
 
 func CreateAnthropicDocumentBlockParamSourceUnionText(text AnthropicPlainTextSource) AnthropicDocumentBlockParamSourceUnion {
 	typ := AnthropicDocumentBlockParamSourceUnionTypeText
+
+	typStr := AnthropicPlainTextSourceType(typ)
+	text.Type = typStr
 
 	return AnthropicDocumentBlockParamSourceUnion{
 		AnthropicPlainTextSource: &text,
