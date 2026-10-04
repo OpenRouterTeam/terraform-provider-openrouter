@@ -13,16 +13,27 @@ import (
 type SpeechInputReferenceType string
 
 const (
+	SpeechInputReferenceTypeImageURL   SpeechInputReferenceType = "image_url"
 	SpeechInputReferenceTypeInputAudio SpeechInputReferenceType = "input_audio"
 	SpeechInputReferenceTypeText       SpeechInputReferenceType = "text"
 )
 
-// SpeechInputReference - Reference content part for stateless voice cloning
+// SpeechInputReference - Reference content part for stateless voice cloning or voice design
 type SpeechInputReference struct {
 	SpeechInputReferenceAudio *SpeechInputReferenceAudio `queryParam:"inline" union:"member"`
 	SpeechInputReferenceText  *SpeechInputReferenceText  `queryParam:"inline" union:"member"`
+	SpeechInputReferenceImage *SpeechInputReferenceImage `queryParam:"inline" union:"member"`
 
 	Type SpeechInputReferenceType
+}
+
+func CreateSpeechInputReferenceImageURL(imageURL SpeechInputReferenceImage) SpeechInputReference {
+	typ := SpeechInputReferenceTypeImageURL
+
+	return SpeechInputReference{
+		SpeechInputReferenceImage: &imageURL,
+		Type:                      typ,
+	}
 }
 
 func CreateSpeechInputReferenceInputAudio(inputAudio SpeechInputReferenceAudio) SpeechInputReference {
@@ -62,6 +73,15 @@ func (u *SpeechInputReference) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	switch dis.Type {
+	case "image_url":
+		speechInputReferenceImage := new(SpeechInputReferenceImage)
+		if err := utils.UnmarshalJSON(data, &speechInputReferenceImage, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == image_url) type SpeechInputReferenceImage within SpeechInputReference: %w", string(data), err)
+		}
+
+		u.SpeechInputReferenceImage = speechInputReferenceImage
+		u.Type = SpeechInputReferenceTypeImageURL
+		return nil
 	case "input_audio":
 		speechInputReferenceAudio := new(SpeechInputReferenceAudio)
 		if err := utils.UnmarshalJSON(data, &speechInputReferenceAudio, "", true, nil); err != nil {
@@ -92,6 +112,10 @@ func (u SpeechInputReference) MarshalJSON() ([]byte, error) {
 
 	if u.SpeechInputReferenceText != nil {
 		return utils.MarshalJSON(u.SpeechInputReferenceText, "", true)
+	}
+
+	if u.SpeechInputReferenceImage != nil {
+		return utils.MarshalJSON(u.SpeechInputReferenceImage, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type SpeechInputReference: all fields are null")

@@ -354,8 +354,7 @@ func (r *ModelDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"default_effort": schema.StringAttribute{
-								Computed:    true,
-								Description: `Default reasoning effort when the client enables reasoning without specifying effort. Maps to ` + "`" + `reasoning.effort` + "`" + ` in chat requests. When ` + "`" + `"none"` + "`" + `, prefer omitting effort unless the user explicitly disables reasoning.`,
+								Computed: true,
 							},
 							"default_enabled": schema.BoolAttribute{
 								Computed:    true,
@@ -454,6 +453,8 @@ func (r *ModelDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config)
+
 	request, requestDiags := data.ToOperationsGetModelRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -462,7 +463,7 @@ func (r *ModelDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 	res, err := r.client.Models.GetModel(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
