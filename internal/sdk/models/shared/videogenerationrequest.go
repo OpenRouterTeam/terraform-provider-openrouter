@@ -102,6 +102,7 @@ type VideoGenerationRequestOptions struct {
 	Deepseek                 map[string]any `json:"deepseek,omitzero"`
 	Dekallm                  map[string]any `json:"dekallm,omitzero"`
 	Digitalocean             map[string]any `json:"digitalocean,omitzero"`
+	Elevenlabs               map[string]any `json:"elevenlabs,omitzero"`
 	Enfer                    map[string]any `json:"enfer,omitzero"`
 	FakeProvider             map[string]any `json:"fake-provider,omitzero"`
 	Featherless              map[string]any `json:"featherless,omitzero"`
@@ -170,12 +171,14 @@ type VideoGenerationRequestOptions struct {
 	Reka                     map[string]any `json:"reka,omitzero"`
 	Relace                   map[string]any `json:"relace,omitzero"`
 	Replicate                map[string]any `json:"replicate,omitzero"`
+	Respan                   map[string]any `json:"respan,omitzero"`
 	Runway                   map[string]any `json:"runway,omitzero"`
 	SailResearch             map[string]any `json:"sail-research,omitzero"`
 	Sakana                   map[string]any `json:"sakana,omitzero"`
 	SakanaAi                 map[string]any `json:"sakana-ai,omitzero"`
 	Sambanova                map[string]any `json:"sambanova,omitzero"`
 	SambanovaCloaked         map[string]any `json:"sambanova-cloaked,omitzero"`
+	Scaledown                map[string]any `json:"scaledown,omitzero"`
 	Seed                     map[string]any `json:"seed,omitzero"`
 	SfCompute                map[string]any `json:"sf-compute,omitzero"`
 	Siliconflow              map[string]any `json:"siliconflow,omitzero"`
@@ -514,6 +517,13 @@ func (v *VideoGenerationRequestOptions) GetDigitalocean() map[string]any {
 		return nil
 	}
 	return v.Digitalocean
+}
+
+func (v *VideoGenerationRequestOptions) GetElevenlabs() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Elevenlabs
 }
 
 func (v *VideoGenerationRequestOptions) GetEnfer() map[string]any {
@@ -992,6 +1002,13 @@ func (v *VideoGenerationRequestOptions) GetReplicate() map[string]any {
 	return v.Replicate
 }
 
+func (v *VideoGenerationRequestOptions) GetRespan() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Respan
+}
+
 func (v *VideoGenerationRequestOptions) GetRunway() map[string]any {
 	if v == nil {
 		return nil
@@ -1032,6 +1049,13 @@ func (v *VideoGenerationRequestOptions) GetSambanovaCloaked() map[string]any {
 		return nil
 	}
 	return v.SambanovaCloaked
+}
+
+func (v *VideoGenerationRequestOptions) GetScaledown() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Scaledown
 }
 
 func (v *VideoGenerationRequestOptions) GetSeed() map[string]any {
