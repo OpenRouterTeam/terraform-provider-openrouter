@@ -8,9 +8,10 @@ name: Regenerate
 # Generate workflow then finds nothing to change. It stays the fallback for
 # fork PRs (no secrets here) and Speakeasy generator updates.
 #
-# speakeasy-api/sdk-generation-action can't do this: in direct mode on a
-# pull_request event it fails to check out the PR branch (v15). So this runs
-# the CLI and pushes with the GH_DOCS_SYNC app token, whose pushes (unlike
+# This is the one place that runs the Speakeasy CLI instead of
+# speakeasy-api/sdk-generation-action: the action's direct mode can't commit
+# to a PR branch (#633), and its PR mode would open a second PR against this
+# one. Pushes use the GH_DOCS_SYNC app token, whose pushes (unlike
 # GITHUB_TOKEN's) trigger CI. That push re-runs this workflow, which finds
 # nothing to change.
 
@@ -59,13 +60,72 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # go generate renders docs (tfplugindocs) through the Terraform CLI.
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      # workflow.yaml pins speakeasyVersion; the CLI switches to it itself.
+      - name: Install Speakeasy CLI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          gh release download --repo speakeasy-api/speakeasy --pattern speakeasy_linux_amd64.zip --pattern checksums.txt
+          grep ' speakeasy_linux_amd64.zip$' checksums.txt | sha256sum -c -
+          unzip -q speakeasy_linux_amd64.zip speakeasy -d bin
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      # Generating with --skip-versioning is idempotent (a rerun changes only
+      # gen.lock), so "anything else changed" is the whole significance test.
+      # A branch still on main's release then gets one patch bump, carried into
+      # the generated version strings by a second run. A branch behind main
+      # must merge main first: a bump there could land on a published release.
       - name: Generate
         id: generate
-        uses: ./.github/actions/generate-provider
-        with:
-          github-token: ${{ steps.app-token.outputs.token }}
-          speakeasy-api-key: ${{ secrets.SPEAKEASY_API_KEY }}
-          release-base: origin/main
+        env:
+          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          # Generation may need a newer Go patch release than go.mod names.
+          GOTOOLCHAIN: auto
+        run: |
+          set -euo pipefail
+
+          # Persistent edits fetch the previous pristine snapshot from origin
+          # and push the new one (refs/speakeasy/gen/<generation_id>).
+          git remote set-url origin "https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          generate() {
+            speakeasy run --target open-router --skip-versioning --skip-upload-spec --skip-testing --auto-yes --output console
+            go generate ./...
+          }
+          release() {
+            sed -n 's/^  releaseVersion: //p' "$1" | head -1
+          }
+
+          generate
+          if [ -z "$(git status --porcelain -- . ':!.speakeasy/gen.lock')" ]; then
+            echo "Regeneration made no changes"
+            exit 0
+          fi
+
+          git fetch --quiet origin main
+          CURRENT=$(release .speakeasy/gen.lock)
+          BASE=$(git show origin/main:.speakeasy/gen.lock | release /dev/stdin)
+          if [ "$CURRENT" = "$BASE" ]; then
+            speakeasy bump patch
+            generate
+          elif [ "$(printf '%s\n%s\n' "$CURRENT" "$BASE" | sort -V | tail -1)" != "$CURRENT" ]; then
+            echo "::error::This branch is on release $CURRENT but main is on $BASE. Merge main into the branch so the next push regenerates on top of it."
+            exit 1
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push
         if: steps.generate.outputs.changed == 'true'

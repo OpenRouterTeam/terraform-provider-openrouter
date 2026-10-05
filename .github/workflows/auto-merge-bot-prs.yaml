@@ -3,7 +3,8 @@ name: Auto-merge bot PRs
 # Merges the PRs the GH_DOCS_SYNC app opens, once Regenerate and CI have
 # passed on the PR's head: the OpenAPI spec PRs from the monorepo SDK-release
 # flow (openrouter-web sdk-release-prs.yaml, sdk-bot/openapi-update-*) and the
-# regen PRs from sdk_generation.yaml (speakeasy-sdk-regen-*). It runs on workflow_run, so
+# regen PRs Speakeasy's generation action opens from sdk_generation.yaml
+# (speakeasy-sdk-regen-*). It runs on workflow_run, so
 # it executes main's copy of this file, never the PR's, and re-checks every
 # time one of those workflows finishes: the last one to finish green merges.
 # The REST merge honors the app's ruleset bypass (GitHub auto-merge never
@@ -57,8 +58,8 @@ jobs:
           fi
 
           # Only the app may have pushed (the monorepo's spec commit,
-          # Regenerate's and Generate's commits). Anything else leaves the PR
-          # for review.
+          # Regenerate's commit, the generation action's commits). Anything
+          # else leaves the PR for review.
           OTHERS=$(gh api --paginate "repos/$GITHUB_REPOSITORY/activity?ref=refs/heads/$BRANCH" \
             --jq '.[] | select(.actor.login != "openrouter-docs-sync[bot]") | .actor.login')
           if [ -n "$OTHERS" ]; then
