@@ -370,6 +370,10 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 								Computed:  true,
 								Sensitive: true,
 							},
+							"should_include_cache_write_tokens": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.`,
+							},
 							"table": schema.StringAttribute{
 								Computed: true,
 							},
@@ -1874,6 +1878,10 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 							"schema": schema.StringAttribute{
 								Computed: true,
 							},
+							"should_include_cache_write_tokens": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.`,
+							},
 							"table": schema.StringAttribute{
 								Computed: true,
 							},
@@ -2260,6 +2268,8 @@ func (r *ObservabilityDestinationDataSource) Read(ctx context.Context, req datas
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config)
+
 	request, requestDiags := data.ToOperationsGetObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -2268,7 +2278,7 @@ func (r *ObservabilityDestinationDataSource) Read(ctx context.Context, req datas
 	}
 	res, err := r.client.Observability.GetDestination(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
