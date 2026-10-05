@@ -122,7 +122,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			},
 			"provider_slug": schema.StringAttribute{
 				Optional:    true,
-				Description: `Optional provider slug to filter by (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "primeintellect", "quiver", "recraft", "reka", "relace", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]`,
+				Description: `Optional provider slug to filter by (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "elevenlabs", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "primeintellect", "quiver", "recraft", "reka", "relace", "respan", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "scaledown", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]`,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"ai21",
@@ -162,6 +162,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 						"deepseek",
 						"dekallm",
 						"digitalocean",
+						"elevenlabs",
 						"featherless",
 						"fireworks",
 						"fish-audio",
@@ -211,11 +212,13 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 						"recraft",
 						"reka",
 						"relace",
+						"respan",
 						"runway",
 						"sail-research",
 						"sakana",
 						"sakana-ai",
 						"sambanova",
+						"scaledown",
 						"seed",
 						"siliconflow",
 						"sourceful",
@@ -290,6 +293,8 @@ func (r *ByokKeysDataSource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config)
+
 	request, requestDiags := data.ToOperationsListBYOKKeysRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -298,7 +303,7 @@ func (r *ByokKeysDataSource) Read(ctx context.Context, req datasource.ReadReques
 	}
 	res, err := r.client.Byok.List(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -328,7 +333,7 @@ func (r *ByokKeysDataSource) Read(ctx context.Context, req datasource.ReadReques
 		res, err = res.Next()
 
 		if err != nil {
-			resp.Diagnostics.AddError("failed to retrieve next page of results", err.Error())
+			resp.Diagnostics.AddError("failed to retrieve next page of results", redactSensitiveValues(ctx, err.Error()))
 			if res != nil && res.RawResponse != nil {
 				resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 			}
