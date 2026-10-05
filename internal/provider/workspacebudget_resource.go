@@ -144,6 +144,8 @@ func (r *WorkspaceBudgetResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
+
 	request, requestDiags := data.ToOperationsUpsertWorkspaceBudgetRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -152,7 +154,7 @@ func (r *WorkspaceBudgetResource) Create(ctx context.Context, req resource.Creat
 	}
 	res, err := r.client.Workspaces.SetBudget(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -204,6 +206,8 @@ func (r *WorkspaceBudgetResource) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsGetWorkspaceBudgetRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -212,7 +216,7 @@ func (r *WorkspaceBudgetResource) Read(ctx context.Context, req resource.ReadReq
 	}
 	res, err := r.client.Workspaces.GetBudget(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -258,6 +262,8 @@ func (r *WorkspaceBudgetResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
+
 	request, requestDiags := data.ToOperationsUpsertWorkspaceBudgetRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -266,7 +272,7 @@ func (r *WorkspaceBudgetResource) Update(ctx context.Context, req resource.Updat
 	}
 	res, err := r.client.Workspaces.SetBudget(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
@@ -318,6 +324,8 @@ func (r *WorkspaceBudgetResource) Delete(ctx context.Context, req resource.Delet
 		return
 	}
 
+	ctx = withSensitiveValues(ctx, req.State)
+
 	request, requestDiags := data.ToOperationsDeleteWorkspaceBudgetRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -326,7 +334,7 @@ func (r *WorkspaceBudgetResource) Delete(ctx context.Context, req resource.Delet
 	}
 	res, err := r.client.Workspaces.DeleteBudget(ctx, *request)
 	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
 			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
