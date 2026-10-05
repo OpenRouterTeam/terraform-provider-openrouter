@@ -9,10 +9,47 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// SpeechRequestProvider - Provider-specific passthrough configuration
+// SpeechRequestDataCollection - Data collection setting. If no available model provider meets the requirement, your request will return an error.
+// - allow: (default) allow providers which store user data non-transiently and may train on it
+//
+// - deny: use only providers which do not collect user data.
+type SpeechRequestDataCollection string
+
+const (
+	SpeechRequestDataCollectionDeny  SpeechRequestDataCollection = "deny"
+	SpeechRequestDataCollectionAllow SpeechRequestDataCollection = "allow"
+)
+
+func (e SpeechRequestDataCollection) ToPointer() *SpeechRequestDataCollection {
+	return &e
+}
+func (e *SpeechRequestDataCollection) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "deny":
+		fallthrough
+	case "allow":
+		*e = SpeechRequestDataCollection(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for SpeechRequestDataCollection: %v", v)
+	}
+}
+
+// SpeechRequestProvider - Provider configuration: data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options
 type SpeechRequestProvider struct {
+	// Data collection setting. If no available model provider meets the requirement, your request will return an error.
+	// - allow: (default) allow providers which store user data non-transiently and may train on it
+	//
+	// - deny: use only providers which do not collect user data.
+	DataCollection *SpeechRequestDataCollection `json:"data_collection,omitzero"`
 	// Provider-specific options keyed by provider slug. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
 	Options *ProviderOptions `json:"options,omitzero"`
+	// Whether to restrict routing to only ZDR (Zero Data Retention) endpoints. When true, only endpoints that do not retain prompts will be used.
+	Zdr *bool `json:"zdr,omitzero"`
 }
 
 func (s SpeechRequestProvider) MarshalJSON() ([]byte, error) {
@@ -26,11 +63,25 @@ func (s *SpeechRequestProvider) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (s *SpeechRequestProvider) GetDataCollection() *SpeechRequestDataCollection {
+	if s == nil {
+		return nil
+	}
+	return s.DataCollection
+}
+
 func (s *SpeechRequestProvider) GetOptions() *ProviderOptions {
 	if s == nil {
 		return nil
 	}
 	return s.Options
+}
+
+func (s *SpeechRequestProvider) GetZdr() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.Zdr
 }
 
 // SpeechRequestResponseFormat - Audio output format
@@ -68,7 +119,7 @@ type SpeechRequest struct {
 	InputReferences []SpeechInputReference `json:"input_references,omitzero"`
 	// TTS model identifier
 	Model string `json:"model"`
-	// Provider-specific passthrough configuration
+	// Provider configuration: data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options
 	Provider *SpeechRequestProvider `json:"provider,omitzero"`
 	// Audio output format
 	ResponseFormat *SpeechRequestResponseFormat `default:"pcm" json:"response_format"`

@@ -9,10 +9,47 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// STTRequestProvider - Provider-specific passthrough configuration
+// STTRequestDataCollection - Data collection setting. If no available model provider meets the requirement, your request will return an error.
+// - allow: (default) allow providers which store user data non-transiently and may train on it
+//
+// - deny: use only providers which do not collect user data.
+type STTRequestDataCollection string
+
+const (
+	STTRequestDataCollectionDeny  STTRequestDataCollection = "deny"
+	STTRequestDataCollectionAllow STTRequestDataCollection = "allow"
+)
+
+func (e STTRequestDataCollection) ToPointer() *STTRequestDataCollection {
+	return &e
+}
+func (e *STTRequestDataCollection) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "deny":
+		fallthrough
+	case "allow":
+		*e = STTRequestDataCollection(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for STTRequestDataCollection: %v", v)
+	}
+}
+
+// STTRequestProvider - Provider configuration: data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options
 type STTRequestProvider struct {
+	// Data collection setting. If no available model provider meets the requirement, your request will return an error.
+	// - allow: (default) allow providers which store user data non-transiently and may train on it
+	//
+	// - deny: use only providers which do not collect user data.
+	DataCollection *STTRequestDataCollection `json:"data_collection,omitzero"`
 	// Provider-specific options keyed by provider slug. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
 	Options *ProviderOptions `json:"options,omitzero"`
+	// Whether to restrict routing to only ZDR (Zero Data Retention) endpoints. When true, only endpoints that do not retain prompts will be used.
+	Zdr *bool `json:"zdr,omitzero"`
 }
 
 func (s STTRequestProvider) MarshalJSON() ([]byte, error) {
@@ -26,11 +63,25 @@ func (s *STTRequestProvider) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (s *STTRequestProvider) GetDataCollection() *STTRequestDataCollection {
+	if s == nil {
+		return nil
+	}
+	return s.DataCollection
+}
+
 func (s *STTRequestProvider) GetOptions() *ProviderOptions {
 	if s == nil {
 		return nil
 	}
 	return s.Options
+}
+
+func (s *STTRequestProvider) GetZdr() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.Zdr
 }
 
 // STTRequestResponseFormat - Output format. "json" (default) returns { text, usage }. "verbose_json" additionally returns task, language, duration, and segment-level timestamps; only supported by OpenAI-compatible providers.
@@ -72,7 +123,7 @@ type STTRequest struct {
 	Language *string `json:"language,omitzero"`
 	// STT model identifier
 	Model string `json:"model"`
-	// Provider-specific passthrough configuration
+	// Provider configuration: data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options
 	Provider *STTRequestProvider `json:"provider,omitzero"`
 	// Output format. "json" (default) returns { text, usage }. "verbose_json" additionally returns task, language, duration, and segment-level timestamps; only supported by OpenAI-compatible providers.
 	ResponseFormat *STTRequestResponseFormat `json:"response_format,omitzero"`

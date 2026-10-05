@@ -410,6 +410,11 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								Computed:  true,
 								Sensitive: true,
 							},
+							"should_include_cache_write_tokens": schema.BoolAttribute{
+								Computed:    true,
+								Default:     booldefault.StaticBool(false),
+								Description: `Send the cache_write_tokens column (schema v2). Turn this on after the table has that column. Default: false`,
+							},
 							"table": schema.StringAttribute{
 								Computed: true,
 							},
@@ -2050,6 +2055,11 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							},
 							"schema": schema.StringAttribute{
 								Computed: true,
+							},
+							"should_include_cache_write_tokens": schema.BoolAttribute{
+								Computed:    true,
+								Default:     booldefault.StaticBool(false),
+								Description: `Send the cache_write_tokens column (schema v2). Turn this on after the table has that column. Default: false`,
 							},
 							"table": schema.StringAttribute{
 								Computed: true,

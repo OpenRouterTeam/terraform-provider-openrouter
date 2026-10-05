@@ -337,6 +337,10 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 											Computed:  true,
 											Sensitive: true,
 										},
+										"should_include_cache_write_tokens": schema.BoolAttribute{
+											Computed:    true,
+											Description: `Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.`,
+										},
 										"table": schema.StringAttribute{
 											Computed: true,
 										},
@@ -1816,6 +1820,10 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 										},
 										"schema": schema.StringAttribute{
 											Computed: true,
+										},
+										"should_include_cache_write_tokens": schema.BoolAttribute{
+											Computed:    true,
+											Description: `Send the cache_write_tokens column (schema v2). Turn this on after the table has that column.`,
 										},
 										"table": schema.StringAttribute{
 											Computed: true,
