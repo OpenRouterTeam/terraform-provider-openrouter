@@ -2,7 +2,7 @@ name: Regenerate
 
 # Regenerates the provider on pull requests that change Speakeasy inputs (the
 # OpenAPI spec, overlays, gen/workflow config, patches) and commits the result
-# to the PR branch, so CI, the `run-acceptance` label and review cover the
+# to the PR branch, so CI, the live acceptance suite and review cover the
 # generated code before merge. The first regen commit on a PR also bumps the
 # release, so merging publishes through sdk_publish.yaml; the post-merge
 # Generate workflow then finds nothing to change. It stays the fallback for
