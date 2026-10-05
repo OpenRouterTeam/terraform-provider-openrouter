@@ -30,6 +30,8 @@ type GetGenerationResponse struct {
 	RawResponse *http.Response
 	// Returns the request metadata for this generation
 	GenerationResponse *shared.GenerationResponse
+	// Bad Request - Invalid request parameters or malformed input
+	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Payment Required - Insufficient credits or quota to complete request
@@ -85,6 +87,13 @@ func (g *GetGenerationResponse) GetGenerationResponse() *shared.GenerationRespon
 		return nil
 	}
 	return g.GenerationResponse
+}
+
+func (g *GetGenerationResponse) GetBadRequestResponse() *shared.BadRequestResponse {
+	if g == nil {
+		return nil
+	}
+	return g.BadRequestResponse
 }
 
 func (g *GetGenerationResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
