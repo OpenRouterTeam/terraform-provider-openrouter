@@ -6,6 +6,5 @@
 **/.speakeasy/logs/
 .env
 .env.local
-.agents/
 .pi/
 dist/

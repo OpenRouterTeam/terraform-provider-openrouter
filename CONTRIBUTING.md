@@ -58,6 +58,10 @@ Bot-driven updates merge without a human approval through the `openrouter-docs-s
 
 `.github/workflows/acceptance.yaml` runs the live suite nightly (01:30 UTC), on `workflow_dispatch`, and on pull requests from branches in this repository that carry the `run-acceptance` label (applying the label starts a run; each push re-runs it while the label stays on). Fork PRs never receive the secret. The label is a convenience gate, not a security boundary: anyone who can push a branch here can already dispatch the workflow on it. It uses the `acceptance-testing` environment's `OPENROUTER_MANAGEMENT_KEY` secret. The `tf-acceptance` concurrency group (`cancel-in-progress: false`), shared with the release gate in `sdk_publish.yaml`, serializes every live run: the sweeper deletes all `tf-acc-*` resources, including a concurrent run's. The group sets `queue: max`, so runs wait in line rather than a newly queued PR run cancelling a pending release gate. The job requests only the `contents: read` permission. It validates that the management key secret is non-empty before running any tests, and never prints the key. The full test log is uploaded as a workflow artifact on every run (`if: always()`), and never contains Terraform state or the management key. Do not set `TF_LOG` or `TF_LOG_PROVIDER` in this workflow: the generated HTTP transport (`internal/provider/utils.go`) redacts only the `Authorization` header, not response bodies, so provider debug logging would leak full HTTP responses — including newly created secret material — into that artifact.
 
+## Maintainers
+
+See [MAINTAINING.md](MAINTAINING.md) for how to build, test, regenerate with the Speakeasy CLI and cut a release. Speakeasy agent skills live in `.agents/skills/`.
+
 ## Contact
 
 If you have any questions or need further assistance, please feel free to reach out by opening an issue.
