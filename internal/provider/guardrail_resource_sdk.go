@@ -38,14 +38,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 	} else {
 		r.AllowedDataRegions = nil
 	}
-	if resp.AllowedModels != nil {
-		r.AllowedModels = make([]types.String, 0, len(resp.AllowedModels))
-		for _, v := range resp.AllowedModels {
-			r.AllowedModels = append(r.AllowedModels, types.StringValue(v))
-		}
-	} else {
-		r.AllowedModels = nil
-	}
+	r.AllowedModels = reconcileModelIDs(r.AllowedModels, resp.AllowedModels)
 	if resp.AllowedProviders != nil {
 		r.AllowedProviders = make([]types.String, 0, len(resp.AllowedProviders))
 		for _, v := range resp.AllowedProviders {
@@ -101,14 +94,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 	r.EnforceZdrOther = types.BoolPointerValue(resp.EnforceZdrOther)
 	r.EnforceZdrXai = types.BoolPointerValue(resp.EnforceZdrXai)
 	r.ID = types.StringValue(resp.ID)
-	if resp.IgnoredModels != nil {
-		r.IgnoredModels = make([]types.String, 0, len(resp.IgnoredModels))
-		for _, v := range resp.IgnoredModels {
-			r.IgnoredModels = append(r.IgnoredModels, types.StringValue(v))
-		}
-	} else {
-		r.IgnoredModels = nil
-	}
+	r.IgnoredModels = reconcileModelIDs(r.IgnoredModels, resp.IgnoredModels)
 	if resp.IgnoredProviders != nil {
 		r.IgnoredProviders = make([]types.String, 0, len(resp.IgnoredProviders))
 		for _, v := range resp.IgnoredProviders {
@@ -157,14 +143,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 	} else {
 		r.AllowedDataRegions = nil
 	}
-	if resp.AllowedModels != nil {
-		r.AllowedModels = make([]types.String, 0, len(resp.AllowedModels))
-		for _, v := range resp.AllowedModels {
-			r.AllowedModels = append(r.AllowedModels, types.StringValue(v))
-		}
-	} else {
-		r.AllowedModels = nil
-	}
+	r.AllowedModels = reconcileModelIDs(r.AllowedModels, resp.AllowedModels)
 	if resp.AllowedProviders != nil {
 		r.AllowedProviders = make([]types.String, 0, len(resp.AllowedProviders))
 		for _, v := range resp.AllowedProviders {
@@ -220,14 +199,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 	r.EnforceZdrOther = types.BoolPointerValue(resp.EnforceZdrOther)
 	r.EnforceZdrXai = types.BoolPointerValue(resp.EnforceZdrXai)
 	r.ID = types.StringValue(resp.ID)
-	if resp.IgnoredModels != nil {
-		r.IgnoredModels = make([]types.String, 0, len(resp.IgnoredModels))
-		for _, v := range resp.IgnoredModels {
-			r.IgnoredModels = append(r.IgnoredModels, types.StringValue(v))
-		}
-	} else {
-		r.IgnoredModels = nil
-	}
+	r.IgnoredModels = reconcileModelIDs(r.IgnoredModels, resp.IgnoredModels)
 	if resp.IgnoredProviders != nil {
 		r.IgnoredProviders = make([]types.String, 0, len(resp.IgnoredProviders))
 		for _, v := range resp.IgnoredProviders {
@@ -276,14 +248,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 	} else {
 		r.AllowedDataRegions = nil
 	}
-	if resp.AllowedModels != nil {
-		r.AllowedModels = make([]types.String, 0, len(resp.AllowedModels))
-		for _, v := range resp.AllowedModels {
-			r.AllowedModels = append(r.AllowedModels, types.StringValue(v))
-		}
-	} else {
-		r.AllowedModels = nil
-	}
+	r.AllowedModels = reconcileModelIDs(r.AllowedModels, resp.AllowedModels)
 	if resp.AllowedProviders != nil {
 		r.AllowedProviders = make([]types.String, 0, len(resp.AllowedProviders))
 		for _, v := range resp.AllowedProviders {
@@ -339,14 +304,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 	r.EnforceZdrOther = types.BoolPointerValue(resp.EnforceZdrOther)
 	r.EnforceZdrXai = types.BoolPointerValue(resp.EnforceZdrXai)
 	r.ID = types.StringValue(resp.ID)
-	if resp.IgnoredModels != nil {
-		r.IgnoredModels = make([]types.String, 0, len(resp.IgnoredModels))
-		for _, v := range resp.IgnoredModels {
-			r.IgnoredModels = append(r.IgnoredModels, types.StringValue(v))
-		}
-	} else {
-		r.IgnoredModels = nil
-	}
+	r.IgnoredModels = reconcileModelIDs(r.IgnoredModels, resp.IgnoredModels)
 	if resp.IgnoredProviders != nil {
 		r.IgnoredProviders = make([]types.String, 0, len(resp.IgnoredProviders))
 		for _, v := range resp.IgnoredProviders {
