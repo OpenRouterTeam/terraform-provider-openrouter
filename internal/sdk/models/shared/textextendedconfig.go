@@ -6,6 +6,7 @@ package shared
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type Verbosity string
@@ -48,6 +49,17 @@ type TextExtendedConfig struct {
 	// Text response format configuration
 	Format    *Formats   `json:"format,omitzero"`
 	Verbosity *Verbosity `json:"verbosity,omitzero"`
+}
+
+func (t TextExtendedConfig) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(t, "", false)
+}
+
+func (t *TextExtendedConfig) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &t, "", false, nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (t *TextExtendedConfig) GetFormat() *Formats {

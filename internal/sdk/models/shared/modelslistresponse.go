@@ -3,17 +3,17 @@
 
 package shared
 
-// Links - Pagination links
-type Links struct {
+// ModelsListResponseLinks - Pagination links
+type ModelsListResponseLinks struct {
 	// URL for the next page of results, or null if this is the last page
 	Next *string `json:"next"`
 }
 
-func (l *Links) GetNext() *string {
-	if l == nil {
+func (m *ModelsListResponseLinks) GetNext() *string {
+	if m == nil {
 		return nil
 	}
-	return l.Next
+	return m.Next
 }
 
 // ModelsListResponse - List of available models
@@ -21,7 +21,7 @@ type ModelsListResponse struct {
 	// List of available models
 	Data []Model `json:"data"`
 	// Pagination links
-	Links Links `json:"links"`
+	Links ModelsListResponseLinks `json:"links"`
 	// Total number of models matching the query
 	TotalCount int64 `json:"total_count"`
 }
@@ -33,9 +33,9 @@ func (m *ModelsListResponse) GetData() []Model {
 	return m.Data
 }
 
-func (m *ModelsListResponse) GetLinks() Links {
+func (m *ModelsListResponse) GetLinks() ModelsListResponseLinks {
 	if m == nil {
-		return Links{}
+		return ModelsListResponseLinks{}
 	}
 	return m.Links
 }
