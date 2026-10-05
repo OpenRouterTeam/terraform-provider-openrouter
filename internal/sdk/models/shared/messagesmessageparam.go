@@ -55,20 +55,21 @@ func (c *ContentCompaction) GetType() string {
 	return "compaction"
 }
 
-type ErrorCode string
+type MessagesMessageParamErrorCode string
 
 const (
-	ErrorCodeInvalidToolInput ErrorCode = "invalid_tool_input"
-	ErrorCodeUnavailable      ErrorCode = "unavailable"
-	ErrorCodeMaxUsesExceeded  ErrorCode = "max_uses_exceeded"
-	ErrorCodeTooManyRequests  ErrorCode = "too_many_requests"
-	ErrorCodeQueryTooLong     ErrorCode = "query_too_long"
+	MessagesMessageParamErrorCodeInvalidToolInput MessagesMessageParamErrorCode = "invalid_tool_input"
+	MessagesMessageParamErrorCodeUnavailable      MessagesMessageParamErrorCode = "unavailable"
+	MessagesMessageParamErrorCodeMaxUsesExceeded  MessagesMessageParamErrorCode = "max_uses_exceeded"
+	MessagesMessageParamErrorCodeTooManyRequests  MessagesMessageParamErrorCode = "too_many_requests"
+	MessagesMessageParamErrorCodeQueryTooLong     MessagesMessageParamErrorCode = "query_too_long"
+	MessagesMessageParamErrorCodeRequestTooLarge  MessagesMessageParamErrorCode = "request_too_large"
 )
 
-func (e ErrorCode) ToPointer() *ErrorCode {
+func (e MessagesMessageParamErrorCode) ToPointer() *MessagesMessageParamErrorCode {
 	return &e
 }
-func (e *ErrorCode) UnmarshalJSON(data []byte) error {
+func (e *MessagesMessageParamErrorCode) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -83,39 +84,41 @@ func (e *ErrorCode) UnmarshalJSON(data []byte) error {
 	case "too_many_requests":
 		fallthrough
 	case "query_too_long":
-		*e = ErrorCode(v)
+		fallthrough
+	case "request_too_large":
+		*e = MessagesMessageParamErrorCode(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for ErrorCode: %v", v)
+		return fmt.Errorf("invalid value for MessagesMessageParamErrorCode: %v", v)
 	}
 }
 
-type TypeWebSearchToolResultError string
+type MessagesMessageParamTypeWebSearchToolResultError string
 
 const (
-	TypeWebSearchToolResultErrorWebSearchToolResultError TypeWebSearchToolResultError = "web_search_tool_result_error"
+	MessagesMessageParamTypeWebSearchToolResultErrorWebSearchToolResultError MessagesMessageParamTypeWebSearchToolResultError = "web_search_tool_result_error"
 )
 
-func (e TypeWebSearchToolResultError) ToPointer() *TypeWebSearchToolResultError {
+func (e MessagesMessageParamTypeWebSearchToolResultError) ToPointer() *MessagesMessageParamTypeWebSearchToolResultError {
 	return &e
 }
-func (e *TypeWebSearchToolResultError) UnmarshalJSON(data []byte) error {
+func (e *MessagesMessageParamTypeWebSearchToolResultError) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
 	switch v {
 	case "web_search_tool_result_error":
-		*e = TypeWebSearchToolResultError(v)
+		*e = MessagesMessageParamTypeWebSearchToolResultError(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for TypeWebSearchToolResultError: %v", v)
+		return fmt.Errorf("invalid value for MessagesMessageParamTypeWebSearchToolResultError: %v", v)
 	}
 }
 
 type ContentWebSearchToolResultError struct {
-	ErrorCode ErrorCode                    `json:"error_code"`
-	Type      TypeWebSearchToolResultError `json:"type"`
+	ErrorCode MessagesMessageParamErrorCode                    `json:"error_code"`
+	Type      MessagesMessageParamTypeWebSearchToolResultError `json:"type"`
 }
 
 func (c ContentWebSearchToolResultError) MarshalJSON() ([]byte, error) {
@@ -129,16 +132,16 @@ func (c *ContentWebSearchToolResultError) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (c *ContentWebSearchToolResultError) GetErrorCode() ErrorCode {
+func (c *ContentWebSearchToolResultError) GetErrorCode() MessagesMessageParamErrorCode {
 	if c == nil {
-		return ErrorCode("")
+		return MessagesMessageParamErrorCode("")
 	}
 	return c.ErrorCode
 }
 
-func (c *ContentWebSearchToolResultError) GetType() TypeWebSearchToolResultError {
+func (c *ContentWebSearchToolResultError) GetType() MessagesMessageParamTypeWebSearchToolResultError {
 	if c == nil {
-		return TypeWebSearchToolResultError("")
+		return MessagesMessageParamTypeWebSearchToolResultError("")
 	}
 	return c.Type
 }
