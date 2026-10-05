@@ -396,7 +396,7 @@ actions:
   - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]
     update:
       x-speakeasy-entity: PrivateEndpoint
-      x-speakeasy-entity-description: |-
+      x-speakeasy-entity-description: |- (e2e test).
         A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
 
         Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
