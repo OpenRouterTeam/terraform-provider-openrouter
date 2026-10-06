@@ -50,6 +50,7 @@ Read-Only:
 - `hash` (String) Unique hash identifier for the API key
 - `include_byok_in_limit` (Boolean) Whether to include external BYOK usage in the credit limit
 - `label` (String) Human-readable label for the API key
+- `last_used_at` (String) ISO 8601 UTC timestamp of the most recent usage recorded for the API key, or null if no usage has been recorded since the end of 2025
 - `limit` (Number) Spending limit for the API key in USD
 - `limit_remaining` (Number) Remaining spending limit in USD
 - `limit_reset` (String) Type of limit reset for the API key

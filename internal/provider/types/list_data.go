@@ -20,6 +20,7 @@ type ListData struct {
 	Hash               types.String  `tfsdk:"hash"`
 	IncludeByokInLimit types.Bool    `tfsdk:"include_byok_in_limit"`
 	Label              types.String  `tfsdk:"label"`
+	LastUsedAt         types.String  `tfsdk:"last_used_at"`
 	Limit              types.Float64 `tfsdk:"limit"`
 	LimitRemaining     types.Float64 `tfsdk:"limit_remaining"`
 	LimitReset         types.String  `tfsdk:"limit_reset"`

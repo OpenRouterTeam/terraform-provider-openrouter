@@ -3,6 +3,41 @@
 
 package shared
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
+// UpdateBYOKKeyResponseDeclaredRegion - Your declaration of the data region in which the upstream provider account behind this credential processes requests, used for routing eligibility on OpenRouter's regional hosts. `null` means undeclared and `global` is behaviorally identical: the credential follows the region OpenRouter records for the endpoint. `europe` or `us` lets requests to `eu.openrouter.ai` or `us.openrouter.ai` use this credential for that provider (private endpoints, endpoints pinned to another cloud region, cross-region inference profiles and video models are excluded). Self-declared and not verified by OpenRouter. For OpenAI and Fireworks the region comes from the key material (a `{"api_key": ..., "region": ...}` key), so the value must match the key's region. Among other providers, only Azure accepts `europe` or `us`.
+type UpdateBYOKKeyResponseDeclaredRegion string
+
+const (
+	UpdateBYOKKeyResponseDeclaredRegionGlobal UpdateBYOKKeyResponseDeclaredRegion = "global"
+	UpdateBYOKKeyResponseDeclaredRegionEurope UpdateBYOKKeyResponseDeclaredRegion = "europe"
+	UpdateBYOKKeyResponseDeclaredRegionUs     UpdateBYOKKeyResponseDeclaredRegion = "us"
+)
+
+func (e UpdateBYOKKeyResponseDeclaredRegion) ToPointer() *UpdateBYOKKeyResponseDeclaredRegion {
+	return &e
+}
+func (e *UpdateBYOKKeyResponseDeclaredRegion) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "global":
+		fallthrough
+	case "europe":
+		fallthrough
+	case "us":
+		*e = UpdateBYOKKeyResponseDeclaredRegion(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UpdateBYOKKeyResponseDeclaredRegion: %v", v)
+	}
+}
+
 // UpdateBYOKKeyResponseData - The updated BYOK credential.
 type UpdateBYOKKeyResponseData struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction.
@@ -13,6 +48,8 @@ type UpdateBYOKKeyResponseData struct {
 	AllowedUserIds []string `json:"allowed_user_ids"`
 	// ISO timestamp of when the credential was created.
 	CreatedAt string `json:"created_at"`
+	// Your declaration of the data region in which the upstream provider account behind this credential processes requests, used for routing eligibility on OpenRouter's regional hosts. `null` means undeclared and `global` is behaviorally identical: the credential follows the region OpenRouter records for the endpoint. `europe` or `us` lets requests to `eu.openrouter.ai` or `us.openrouter.ai` use this credential for that provider (private endpoints, endpoints pinned to another cloud region, cross-region inference profiles and video models are excluded). Self-declared and not verified by OpenRouter. For OpenAI and Fireworks the region comes from the key material (a `{"api_key": ..., "region": ...}` key), so the value must match the key's region. Among other providers, only Azure accepts `europe` or `us`.
+	DeclaredRegion *UpdateBYOKKeyResponseDeclaredRegion `json:"declared_region"`
 	// Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). `null` inherits OpenRouter's data policy for the provider's endpoint; `true` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; `false` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter.
 	DeclaredZdr *bool `json:"declared_zdr"`
 	// Whether this credential is currently disabled.
@@ -63,6 +100,13 @@ func (u *UpdateBYOKKeyResponseData) GetCreatedAt() string {
 		return ""
 	}
 	return u.CreatedAt
+}
+
+func (u *UpdateBYOKKeyResponseData) GetDeclaredRegion() *UpdateBYOKKeyResponseDeclaredRegion {
+	if u == nil {
+		return nil
+	}
+	return u.DeclaredRegion
 }
 
 func (u *UpdateBYOKKeyResponseData) GetDeclaredZdr() *bool {

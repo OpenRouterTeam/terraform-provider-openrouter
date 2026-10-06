@@ -46,6 +46,8 @@ type UpdateBYOKKeyResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Conflict - Resource conflict or concurrent modification
+	ConflictResponse *shared.ConflictResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 }
@@ -115,6 +117,13 @@ func (u *UpdateBYOKKeyResponse) GetNotFoundResponse() *shared.NotFoundResponse {
 		return nil
 	}
 	return u.NotFoundResponse
+}
+
+func (u *UpdateBYOKKeyResponse) GetConflictResponse() *shared.ConflictResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ConflictResponse
 }
 
 func (u *UpdateBYOKKeyResponse) GetInternalServerResponse() *shared.InternalServerResponse {

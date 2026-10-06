@@ -4,8 +4,40 @@
 package shared
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
+
+// UpdateBYOKKeyRequestDeclaredRegion - Your declaration of the data region in which the upstream provider account behind this credential processes requests, used for routing eligibility on OpenRouter's regional hosts. `null` means undeclared and `global` is behaviorally identical: the credential follows the region OpenRouter records for the endpoint. `europe` or `us` lets requests to `eu.openrouter.ai` or `us.openrouter.ai` use this credential for that provider (private endpoints, endpoints pinned to another cloud region, cross-region inference profiles and video models are excluded). Self-declared and not verified by OpenRouter. For OpenAI and Fireworks the region comes from the key material (a `{"api_key": ..., "region": ...}` key), so the value must match the key's region. Among other providers, only Azure accepts `europe` or `us`. Omit to leave the stored value unchanged (rotating an OpenAI or Fireworks `key` re-derives it from the new key); `null` clears the declaration.
+type UpdateBYOKKeyRequestDeclaredRegion string
+
+const (
+	UpdateBYOKKeyRequestDeclaredRegionGlobal UpdateBYOKKeyRequestDeclaredRegion = "global"
+	UpdateBYOKKeyRequestDeclaredRegionEurope UpdateBYOKKeyRequestDeclaredRegion = "europe"
+	UpdateBYOKKeyRequestDeclaredRegionUs     UpdateBYOKKeyRequestDeclaredRegion = "us"
+)
+
+func (e UpdateBYOKKeyRequestDeclaredRegion) ToPointer() *UpdateBYOKKeyRequestDeclaredRegion {
+	return &e
+}
+func (e *UpdateBYOKKeyRequestDeclaredRegion) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "global":
+		fallthrough
+	case "europe":
+		fallthrough
+	case "us":
+		*e = UpdateBYOKKeyRequestDeclaredRegion(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UpdateBYOKKeyRequestDeclaredRegion: %v", v)
+	}
+}
 
 type UpdateBYOKKeyRequest struct {
 	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` clears the restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400.
@@ -14,6 +46,8 @@ type UpdateBYOKKeyRequest struct {
 	AllowedModels []string `json:"allowed_models,omitzero"`
 	// Optional allowlist of user IDs that may use this credential. `null` means no restriction.
 	AllowedUserIds []string `json:"allowed_user_ids,omitzero"`
+	// Your declaration of the data region in which the upstream provider account behind this credential processes requests, used for routing eligibility on OpenRouter's regional hosts. `null` means undeclared and `global` is behaviorally identical: the credential follows the region OpenRouter records for the endpoint. `europe` or `us` lets requests to `eu.openrouter.ai` or `us.openrouter.ai` use this credential for that provider (private endpoints, endpoints pinned to another cloud region, cross-region inference profiles and video models are excluded). Self-declared and not verified by OpenRouter. For OpenAI and Fireworks the region comes from the key material (a `{"api_key": ..., "region": ...}` key), so the value must match the key's region. Among other providers, only Azure accepts `europe` or `us`. Omit to leave the stored value unchanged (rotating an OpenAI or Fireworks `key` re-derives it from the new key); `null` clears the declaration.
+	DeclaredRegion *UpdateBYOKKeyRequestDeclaredRegion `json:"declared_region,omitzero"`
 	// Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). `null` inherits OpenRouter's data policy for the provider's endpoint; `true` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; `false` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter. Omit to leave the stored value unchanged; `null` clears the declaration.
 	DeclaredZdr *bool `json:"declared_zdr,omitzero"`
 	// Whether this credential is disabled.
@@ -60,6 +94,13 @@ func (u *UpdateBYOKKeyRequest) GetAllowedUserIds() []string {
 		return nil
 	}
 	return u.AllowedUserIds
+}
+
+func (u *UpdateBYOKKeyRequest) GetDeclaredRegion() *UpdateBYOKKeyRequestDeclaredRegion {
+	if u == nil {
+		return nil
+	}
+	return u.DeclaredRegion
 }
 
 func (u *UpdateBYOKKeyRequest) GetDeclaredZdr() *bool {
