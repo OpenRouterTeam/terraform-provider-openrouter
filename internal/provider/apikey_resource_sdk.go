@@ -27,6 +27,7 @@ func (r *APIKeyResourceModel) RefreshFromOperationsCreateKeysData(ctx context.Co
 	r.Hash = types.StringValue(resp.Hash)
 	r.IncludeByokInLimit = types.BoolValue(resp.IncludeByokInLimit)
 	r.Label = types.StringValue(resp.Label)
+	r.LastUsedAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(resp.LastUsedAt))
 	r.Limit = types.Float64PointerValue(resp.Limit)
 	r.LimitRemaining = types.Float64PointerValue(resp.LimitRemaining)
 	if resp.LimitReset != nil {
@@ -76,6 +77,7 @@ func (r *APIKeyResourceModel) RefreshFromOperationsGetKeyData(ctx context.Contex
 	r.Hash = types.StringValue(resp.Hash)
 	r.IncludeByokInLimit = types.BoolValue(resp.IncludeByokInLimit)
 	r.Label = types.StringValue(resp.Label)
+	r.LastUsedAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(resp.LastUsedAt))
 	r.Limit = types.Float64PointerValue(resp.Limit)
 	r.LimitRemaining = types.Float64PointerValue(resp.LimitRemaining)
 	if resp.LimitReset != nil {
@@ -124,6 +126,7 @@ func (r *APIKeyResourceModel) RefreshFromOperationsUpdateKeysData(ctx context.Co
 	r.Hash = types.StringValue(resp.Hash)
 	r.IncludeByokInLimit = types.BoolValue(resp.IncludeByokInLimit)
 	r.Label = types.StringValue(resp.Label)
+	r.LastUsedAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(resp.LastUsedAt))
 	r.Limit = types.Float64PointerValue(resp.Limit)
 	r.LimitRemaining = types.Float64PointerValue(resp.LimitRemaining)
 	if resp.LimitReset != nil {

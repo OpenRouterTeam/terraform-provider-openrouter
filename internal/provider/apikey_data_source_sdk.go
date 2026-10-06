@@ -26,6 +26,7 @@ func (r *APIKeyDataSourceModel) RefreshFromOperationsGetKeyData(ctx context.Cont
 	r.Hash = types.StringValue(resp.Hash)
 	r.IncludeByokInLimit = types.BoolValue(resp.IncludeByokInLimit)
 	r.Label = types.StringValue(resp.Label)
+	r.LastUsedAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(resp.LastUsedAt))
 	r.Limit = types.Float64PointerValue(resp.Limit)
 	r.LimitRemaining = types.Float64PointerValue(resp.LimitRemaining)
 	r.LimitReset = types.StringPointerValue(resp.LimitReset)
