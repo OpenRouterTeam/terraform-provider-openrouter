@@ -6348,6 +6348,7 @@ components:
         allowed_models: null
         allowed_user_ids: null
         created_at: '2025-08-24T10:30:00Z'
+        declared_region: null
         declared_zdr: null
         disabled: false
         id: '11111111-2222-3333-4444-555555555555'
@@ -6392,6 +6393,17 @@ components:
           description: 'ISO timestamp of when the credential was created.'
           example: '2025-08-24T10:30:00Z'
           type: 'string'
+        declared_region:
+          description: 'Your declaration of the data region in which the upstream provider account behind this credential processes requests, used for routing eligibility on OpenRouter''s regional hosts. `null` means undeclared and `global` is behaviorally identical: the credential follows the region OpenRouter records for the endpoint. `europe` or `us` lets requests to `eu.openrouter.ai` or `us.openrouter.ai` use this credential for that provider (private endpoints, endpoints pinned to another cloud region, cross-region inference profiles and video models are excluded). Self-declared and not verified by OpenRouter. For OpenAI and Fireworks the region comes from the key material (a `{"api_key": ..., "region": ...}` key), so the value must match the key''s region. Among other providers, only Azure accepts `europe` or `us`.'
+          enum:
+            - 'global'
+            - 'europe'
+            - 'us'
+            - null
+          example: null
+          type:
+            - 'string'
+            - 'null'
         declared_zdr:
           description: 'Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). `null` inherits OpenRouter''s data policy for the provider''s endpoint; `true` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; `false` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter.'
           example: null
@@ -6452,6 +6464,7 @@ components:
         - 'is_required'
         - 'is_byok_only'
         - 'declared_zdr'
+        - 'declared_region'
         - 'allowed_models'
         - 'allowed_api_key_hashes'
         - 'allowed_user_ids'
@@ -9175,6 +9188,17 @@ components:
           type:
             - 'array'
             - 'null'
+        declared_region:
+          description: 'Your declaration of the data region in which the upstream provider account behind this credential processes requests, used for routing eligibility on OpenRouter''s regional hosts. `null` means undeclared and `global` is behaviorally identical: the credential follows the region OpenRouter records for the endpoint. `europe` or `us` lets requests to `eu.openrouter.ai` or `us.openrouter.ai` use this credential for that provider (private endpoints, endpoints pinned to another cloud region, cross-region inference profiles and video models are excluded). Self-declared and not verified by OpenRouter. For OpenAI and Fireworks the region comes from the key material (a `{"api_key": ..., "region": ...}` key), so the value must match the key''s region. Among other providers, only Azure accepts `europe` or `us`. Defaults to the key''s region for OpenAI and Fireworks, otherwise `null`.'
+          enum:
+            - 'global'
+            - 'europe'
+            - 'us'
+            - null
+          example: null
+          type:
+            - 'string'
+            - 'null'
         declared_zdr:
           description: 'Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). `null` inherits OpenRouter''s data policy for the provider''s endpoint; `true` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; `false` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter. Defaults to `null`.'
           example: null
@@ -9227,6 +9251,7 @@ components:
           allowed_models: null
           allowed_user_ids: null
           created_at: '2025-08-24T10:30:00Z'
+          declared_region: null
           declared_zdr: null
           disabled: false
           id: '11111111-2222-3333-4444-555555555555'
@@ -12580,6 +12605,7 @@ components:
           allowed_models: null
           allowed_user_ids: null
           created_at: '2025-08-24T10:30:00Z'
+          declared_region: null
           declared_zdr: null
           disabled: false
           id: '11111111-2222-3333-4444-555555555555'
@@ -15416,6 +15442,7 @@ components:
             allowed_models: null
             allowed_user_ids: null
             created_at: '2025-08-24T10:30:00Z'
+            declared_region: null
             declared_zdr: null
             disabled: false
             id: '11111111-2222-3333-4444-555555555555'
@@ -28579,6 +28606,15 @@ components:
       oneOf:
         - $ref: '#/components/schemas/ContainerAutoEnvironment'
         - $ref: '#/components/schemas/ContainerReferenceEnvironment'
+    SpeechInput:
+      anyOf:
+        - type: 'string'
+        - items:
+            $ref: '#/components/schemas/SpeechTurn'
+          minItems: 1
+          type: 'array'
+      description: 'Text to synthesize, or a list of turns for multi-speaker input. Each turn has its own text, voice, and instructions. Multi-speaker input is currently supported by Gemini TTS models only.'
+      example: 'Hello world'
     SpeechInputReference:
       description: 'Reference content part for stateless voice cloning or voice design'
       discriminator:
@@ -28686,9 +28722,7 @@ components:
         voice: 'en_paul_neutral'
       properties:
         input:
-          description: 'Text to synthesize'
-          example: 'Hello world'
-          type: 'string'
+          $ref: '#/components/schemas/SpeechInput'
         input_references:
           description: 'Reference content for stateless voice cloning or voice design. Audio mode: one to three `input_audio` parts, each optionally paired with a `text` part carrying its transcript (a single clip accepts its transcript before or after it; with multiple clips each transcript immediately follows its clip); only routed to endpoints that support voice cloning (and multiple references when more than one part is sent). Image mode: exactly one `image_url` part; only routed to endpoints that support image references. The two modes cannot be mixed. An empty array is treated as no reference.'
           example:
@@ -28700,6 +28734,10 @@ components:
           items:
             $ref: '#/components/schemas/SpeechInputReference'
           type: 'array'
+        instructions:
+          description: 'Delivery instructions for the whole request, such as tone, pacing, or emotion. Supported by OpenAI gpt-4o-mini-tts and Gemini TTS models. Ignored by other providers.'
+          example: 'Speak in a warm and friendly tone.'
+          type: 'string'
         model:
           description: 'TTS model identifier'
           example: 'mistralai/voxtral-mini-tts-2603'
@@ -28760,6 +28798,24 @@ components:
       required:
         - 'model'
         - 'input'
+      type: 'object'
+    SpeechTurn:
+      properties:
+        instructions:
+          description: 'Delivery instructions for this turn, such as tone, pacing, or emotion. Overrides the top-level `instructions`.'
+          example: 'whispering'
+          type: 'string'
+        text:
+          description: 'Text to synthesize'
+          example: 'Hi Jane.'
+          type: 'string'
+        voice:
+          description: 'Voice for this turn. Defaults to the top-level `voice`.'
+          example: 'Kore'
+          minLength: 1
+          type: 'string'
+      required:
+        - 'text'
       type: 'object'
     StopServerToolsWhen:
       description: 'Stop conditions for the server-tool agent loop. Any condition firing halts the loop (OR logic). When set, this overrides `max_tool_calls`. When a condition fires while the model is still emitting tool calls, the pending tool calls are executed and one final turn is made with tool calls disabled so the response ends with a natural-language answer instead of an unfinished tool call.'
@@ -29785,6 +29841,11 @@ components:
         id:
           enum:
             - 'switchyard-router'
+          type: 'string'
+        judge_model:
+          description: 'The model that runs the judge call for the judge-backed algorithms ("capability", "stage", and "composite"). The model must support structured outputs and have a provider that your account and request settings allow. Otherwise, the request uses the platform default judge, google/gemini-2.5-flash-lite, and reports the reason in the routing metadata. The judge call is billed to you like any other request.'
+          example: 'openai/gpt-5.4-nano'
+          minLength: 1
           type: 'string'
       required:
         - 'id'
@@ -30885,6 +30946,17 @@ components:
           type:
             - 'array'
             - 'null'
+        declared_region:
+          description: 'Your declaration of the data region in which the upstream provider account behind this credential processes requests, used for routing eligibility on OpenRouter''s regional hosts. `null` means undeclared and `global` is behaviorally identical: the credential follows the region OpenRouter records for the endpoint. `europe` or `us` lets requests to `eu.openrouter.ai` or `us.openrouter.ai` use this credential for that provider (private endpoints, endpoints pinned to another cloud region, cross-region inference profiles and video models are excluded). Self-declared and not verified by OpenRouter. For OpenAI and Fireworks the region comes from the key material (a `{"api_key": ..., "region": ...}` key), so the value must match the key''s region. Among other providers, only Azure accepts `europe` or `us`. Omit to leave the stored value unchanged (rotating an OpenAI or Fireworks `key` re-derives it from the new key); `null` clears the declaration.'
+          enum:
+            - 'global'
+            - 'europe'
+            - 'us'
+            - null
+          example: null
+          type:
+            - 'string'
+            - 'null'
         declared_zdr:
           description: 'Your declaration of whether the upstream provider account behind this credential has zero data retention (ZDR). `null` inherits OpenRouter''s data policy for the provider''s endpoint; `true` declares the account ZDR so requests that require ZDR may route to this credential even when the shared endpoint retains data; `false` declares it non-ZDR so such requests never route to it. Self-declared and not verified by OpenRouter. Omit to leave the stored value unchanged; `null` clears the declaration.'
           example: null
@@ -30927,6 +30999,7 @@ components:
           allowed_models: null
           allowed_user_ids: null
           created_at: '2025-08-24T10:30:00Z'
+          declared_region: null
           declared_zdr: null
           disabled: false
           id: '11111111-2222-3333-4444-555555555555'
@@ -35287,6 +35360,7 @@ paths:
                     allowed_models: null
                     allowed_user_ids: null
                     created_at: '2025-08-24T10:30:00Z'
+                    declared_region: null
                     declared_zdr: null
                     disabled: false
                     id: '11111111-2222-3333-4444-555555555555'
@@ -35370,6 +35444,7 @@ paths:
                   allowed_models: null
                   allowed_user_ids: null
                   created_at: '2025-08-24T10:30:00Z'
+                  declared_region: null
                   declared_zdr: null
                   disabled: false
                   id: '11111111-2222-3333-4444-555555555555'
@@ -35508,6 +35583,7 @@ paths:
                   allowed_models: null
                   allowed_user_ids: null
                   created_at: '2025-08-24T10:30:00Z'
+                  declared_region: null
                   declared_zdr: null
                   disabled: false
                   id: '11111111-2222-3333-4444-555555555555'
@@ -35588,6 +35664,7 @@ paths:
                   allowed_models: null
                   allowed_user_ids: null
                   created_at: '2025-08-24T10:30:00Z'
+                  declared_region: null
                   declared_zdr: null
                   disabled: false
                   id: '11111111-2222-3333-4444-555555555555'
@@ -35642,6 +35719,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: 'Not Found - Resource does not exist'
+        '409':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 409
+                  message: 'Resource conflict. Please try again later.'
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+          description: 'Conflict - Resource conflict or concurrent modification'
         '500':
           content:
             application/json:
@@ -42545,6 +42632,7 @@ paths:
                     hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                     include_byok_in_limit: false
                     label: 'Production API Key'
+                    last_used_at: '2026-09-15T15:45:00Z'
                     limit: 100
                     limit_remaining: 74.5
                     limit_reset: 'monthly'
@@ -42570,6 +42658,7 @@ paths:
                       hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                       include_byok_in_limit: false
                       label: 'Production API Key'
+                      last_used_at: '2026-09-15T15:45:00Z'
                       limit: 100
                       limit_remaining: 74.5
                       limit_reset: 'monthly'
@@ -42597,6 +42686,7 @@ paths:
                         hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                         include_byok_in_limit: false
                         label: 'sk-or-v1-0e6...1c96'
+                        last_used_at: '2026-09-15T15:45:00Z'
                         limit: 100
                         limit_remaining: 74.5
                         limit_reset: 'monthly'
@@ -42667,6 +42757,13 @@ paths:
                           description: 'Human-readable label for the API key'
                           example: 'sk-or-v1-0e6...1c96'
                           type: 'string'
+                        last_used_at:
+                          description: 'ISO 8601 UTC timestamp of the most recent usage recorded for the API key, or null if no usage has been recorded since the end of 2025'
+                          example: '2026-09-15T15:45:00Z'
+                          format: 'date-time'
+                          type:
+                            - 'string'
+                            - 'null'
                         limit:
                           description: 'Spending limit for the API key in USD'
                           example: 100
@@ -42740,6 +42837,7 @@ paths:
                         - 'byok_usage_monthly'
                         - 'created_at'
                         - 'updated_at'
+                        - 'last_used_at'
                         - 'external_user'
                         - 'creator_user_id'
                         - 'workspace_id'
@@ -42898,6 +42996,7 @@ paths:
                   hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                   include_byok_in_limit: true
                   label: 'My New API Key'
+                  last_used_at: null
                   limit: 50
                   limit_remaining: 50
                   limit_reset: 'monthly'
@@ -42924,6 +43023,7 @@ paths:
                     hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                     include_byok_in_limit: true
                     label: 'My New API Key'
+                    last_used_at: null
                     limit: 50
                     limit_remaining: 50
                     limit_reset: 'monthly'
@@ -42951,6 +43051,7 @@ paths:
                       hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                       include_byok_in_limit: false
                       label: 'sk-or-v1-0e6...1c96'
+                      last_used_at: '2026-09-15T15:45:00Z'
                       limit: 100
                       limit_remaining: 74.5
                       limit_reset: 'monthly'
@@ -43021,6 +43122,13 @@ paths:
                         description: 'Human-readable label for the API key'
                         example: 'sk-or-v1-0e6...1c96'
                         type: 'string'
+                      last_used_at:
+                        description: 'ISO 8601 UTC timestamp of the most recent usage recorded for the API key, or null if no usage has been recorded since the end of 2025'
+                        example: '2026-09-15T15:45:00Z'
+                        format: 'date-time'
+                        type:
+                          - 'string'
+                          - 'null'
                       limit:
                         description: 'Spending limit for the API key in USD'
                         example: 100
@@ -43094,6 +43202,7 @@ paths:
                       - 'byok_usage_monthly'
                       - 'created_at'
                       - 'updated_at'
+                      - 'last_used_at'
                       - 'external_user'
                       - 'creator_user_id'
                       - 'workspace_id'
@@ -43266,6 +43375,7 @@ paths:
                   hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                   include_byok_in_limit: false
                   label: 'Production API Key'
+                  last_used_at: '2026-09-15T15:45:00Z'
                   limit: 100
                   limit_remaining: 74.5
                   limit_reset: 'monthly'
@@ -43291,6 +43401,7 @@ paths:
                     hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                     include_byok_in_limit: false
                     label: 'Production API Key'
+                    last_used_at: '2026-09-15T15:45:00Z'
                     limit: 100
                     limit_remaining: 74.5
                     limit_reset: 'monthly'
@@ -43317,6 +43428,7 @@ paths:
                       hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                       include_byok_in_limit: false
                       label: 'sk-or-v1-0e6...1c96'
+                      last_used_at: '2026-09-15T15:45:00Z'
                       limit: 100
                       limit_remaining: 74.5
                       limit_reset: 'monthly'
@@ -43387,6 +43499,13 @@ paths:
                         description: 'Human-readable label for the API key'
                         example: 'sk-or-v1-0e6...1c96'
                         type: 'string'
+                      last_used_at:
+                        description: 'ISO 8601 UTC timestamp of the most recent usage recorded for the API key, or null if no usage has been recorded since the end of 2025'
+                        example: '2026-09-15T15:45:00Z'
+                        format: 'date-time'
+                        type:
+                          - 'string'
+                          - 'null'
                       limit:
                         description: 'Spending limit for the API key in USD'
                         example: 100
@@ -43460,6 +43579,7 @@ paths:
                       - 'byok_usage_monthly'
                       - 'created_at'
                       - 'updated_at'
+                      - 'last_used_at'
                       - 'external_user'
                       - 'creator_user_id'
                       - 'workspace_id'
@@ -43590,6 +43710,7 @@ paths:
                   hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                   include_byok_in_limit: true
                   label: 'Updated API Key Name'
+                  last_used_at: '2026-09-15T15:45:00Z'
                   limit: 75
                   limit_remaining: 49.5
                   limit_reset: 'daily'
@@ -43615,6 +43736,7 @@ paths:
                     hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                     include_byok_in_limit: true
                     label: 'Updated API Key Name'
+                    last_used_at: '2026-09-15T15:45:00Z'
                     limit: 75
                     limit_remaining: 49.5
                     limit_reset: 'daily'
@@ -43641,6 +43763,7 @@ paths:
                       hash: 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
                       include_byok_in_limit: false
                       label: 'sk-or-v1-0e6...1c96'
+                      last_used_at: '2026-09-15T15:45:00Z'
                       limit: 100
                       limit_remaining: 74.5
                       limit_reset: 'monthly'
@@ -43711,6 +43834,13 @@ paths:
                         description: 'Human-readable label for the API key'
                         example: 'sk-or-v1-0e6...1c96'
                         type: 'string'
+                      last_used_at:
+                        description: 'ISO 8601 UTC timestamp of the most recent usage recorded for the API key, or null if no usage has been recorded since the end of 2025'
+                        example: '2026-09-15T15:45:00Z'
+                        format: 'date-time'
+                        type:
+                          - 'string'
+                          - 'null'
                       limit:
                         description: 'Spending limit for the API key in USD'
                         example: 100
@@ -43784,6 +43914,7 @@ paths:
                       - 'byok_usage_monthly'
                       - 'created_at'
                       - 'updated_at'
+                      - 'last_used_at'
                       - 'external_user'
                       - 'creator_user_id'
                       - 'workspace_id'
