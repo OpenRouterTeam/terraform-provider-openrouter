@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 8f10030a292c255a1abf376c57d52516
+  docChecksum: 3265d736f4fde77eac0cea1f914735a0
   docVersion: 1.0.0
   speakeasyVersion: 1.800.1
   generationVersion: 2.943.0
-  releaseVersion: 0.3.21
-  configChecksum: 9aa0a3d520299fd39e73ef0c9448074d
+  releaseVersion: 0.3.22
+  configChecksum: 807d192e709b8e669a3430d3a493623c
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 8dce21a5-eda6-4880-88cf-2cae1b82eaed
-  pristine_commit_hash: eacd660799688f2c4bc0ffe676b6ed9203e95ab3
-  pristine_tree_hash: 6b9c2b7a231444a5d0b3576b3ff9490f038560a7
+  generation_id: 52307dfd-000c-4f55-aa52-9c6ae05d517f
+  pristine_commit_hash: 346ccb5f0cf4f61d8c9e4112e45d3de112fb0ac8
+  pristine_tree_hash: 483e6d465fcc20f94a75a6f404948dca08784454
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -149,8 +149,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:3cab4550dffc55fe1553af8b19ed15056c807829
-    pristine_git_object: 343d25b16ddec142fd241f6fa04a7660483d0359
+    last_write_checksum: sha1:8dbedebd46ae4aae3a9eaa81250897f2cd767e87
+    pristine_git_object: 91232f2b213180a25b6b083566fbb42101716fa8
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -581,8 +581,8 @@ trackedFiles:
     pristine_git_object: 8b7ab4914feec5fe42771595ff16620b8536b537
   internal/provider/privateendpoint_resource.go:
     id: a64a2acbf118
-    last_write_checksum: sha1:0d4558cdcb0318ea58be53471b2ebca58d30cef7
-    pristine_git_object: 99c55192c27b28bccac9aa74acf9680ecc94abf2
+    last_write_checksum: sha1:d9481e7015a0ac8a281f73940d03cb5243ed54f9
+    pristine_git_object: 50a9ca4042093d7a48091c6bb3612528577ecbcc
   internal/provider/privateendpoint_resource_sdk.go:
     id: f78a28b90402
     last_write_checksum: sha1:4a16d5f632bb36b15a8f905a6705368f16481c81
@@ -4925,8 +4925,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:f8af522364253fb67b205fb1f25800bfd915704d
-    pristine_git_object: 35fadfe2d134a61f04300854a7638a4ecba6dbfe
+    last_write_checksum: sha1:72a2a3d37ba00df2297fa01d82d96b4bfff3d174
+    pristine_git_object: d15721258a906557325f3a4d071f67882f520cda
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -8941,4 +8941,3 @@ examples:
         "504":
           application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
 examplesVersion: 1.0.2
-releaseNotes: "## Terraform SDK Changes:\n* `OpenRouter.Private Endpoints.create()`: \n  *  `request` **Changed** (Breaking ⚠️)\n  *  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.create()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.Private Endpoints.validate()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.Private Endpoints.updatePricing()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.Private Endpoints.enable()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.Private Endpoints.disable()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.update()`:  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.Private Endpoints.update()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.Private Endpoints.get()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.Private Endpoints.delete()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.Private Endpoints.list()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.Presets.createResponse()`: \n  *  `request.body` **Changed** (Breaking ⚠️)\n* `OpenRouter.Embeddings.generate()`: \n  *  `request.provider` **Changed**\n  *  `response.status[504]` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.get()`:  `response.data.provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.Presets.createMessage()`: \n  *  `request.body` **Changed** (Breaking ⚠️)\n* `OpenRouter.Presets.createChatCompletion()`: \n  *  `request.body` **Changed** (Breaking ⚠️)\n* `OpenRouter.Generations.listContent()`:  `response.status[400]` **Added** (Breaking ⚠️)\n* `OpenRouter.Generations.get()`:  `response` **Changed** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listForModel()`:  `response.data.endpoints[]` **Changed** (Breaking ⚠️)\n* `OpenRouter.Endpoints.listZdr()`:  `response.data[]` **Changed** (Breaking ⚠️)\n* `OpenRouter.stt.createTranscription()`: \n  *  `request` **Changed** (Breaking ⚠️)\n  *  `response` **Changed**\n* `OpenRouter.Private Endpoints.activate()`:  `response.status[408]` **Added** (Breaking ⚠️)\n* `OpenRouter.byok.list()`: \n  *  `request.provider_slug` **Changed**\n  *  `response.data[].provider_slug` **Changed** (Breaking ⚠️)\n* `OpenRouter.Organization.updateSettings()`: **Added**\n* `OpenRouter.Interns.getInternDaemonAccess()`: **Added**\n* `OpenRouter.stt.createTranscription_multipart()`: \n  *  `request` **Changed**\n  *  `response` **Changed**\n* `OpenRouter.Organization.getSettings()`: **Added**\n* `OpenRouter.tts.createSpeech()`:  `request` **Changed**\n* `OpenRouter.alpha.decisions.create()`: \n  *  `request.provider` **Changed**\n* `OpenRouter.Analytics.getUserActivity()`:  `response.data[].cached_tokens` **Added**\n* `OpenRouter.Vault.listInternEffectiveVaultSecrets()`: **Added**\n* `OpenRouter.Observability.listDestinations()`:  `response.data[]` **Changed**\n* `OpenRouter.Observability.createDestination()`:  `response.data` **Changed**\n* `OpenRouter.Observability.getDestination()`:  `response.data` **Changed**\n* `OpenRouter.Observability.updateDestination()`:  `response.data` **Changed**\n* `OpenRouter.Tools.getTool()`: **Added**\n* `OpenRouter.Tools.listTools()`: **Added**\n* `OpenRouter.Interns.invoke()`: **Added**\n* `OpenRouter.Batch.createBatches()`: **Added**\n* `OpenRouter.Batch.list()`: **Added**\n* `OpenRouter.Interns.getInternDaemon()`: **Added**\n* `OpenRouter.End Users.update()`: **Added**\n* `OpenRouter.End Users.get()`: **Added**\n* `OpenRouter.End Users.delete()`: **Added**\n* `OpenRouter.End Users.create()`: **Added**\n* `OpenRouter.End Users.list()`: **Added**\n* `OpenRouter.Batch.getBatches()`: **Added**\n* `OpenRouter.Batch.delete()`: **Added**\n* `OpenRouter.Rerank.submit()`: \n  *  `request.provider` **Changed**\n* `OpenRouter.SCIM.listGroups()`:  `request` **Changed**\n* `OpenRouter.SystemOne.create()`: \n  *  `request.provider` **Changed**\n* `OpenRouter.videoGeneration.generate()`: \n  *  `request.provider.options` **Changed**\n"
