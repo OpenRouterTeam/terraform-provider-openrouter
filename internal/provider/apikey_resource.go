@@ -52,6 +52,7 @@ type APIKeyResourceModel struct {
 	IncludeByokInLimit types.Bool        `tfsdk:"include_byok_in_limit"`
 	Key                types.String      `tfsdk:"key"`
 	Label              types.String      `tfsdk:"label"`
+	LastUsedAt         types.String      `tfsdk:"last_used_at"`
 	Limit              types.Float64     `tfsdk:"limit"`
 	LimitRemaining     types.Float64     `tfsdk:"limit_remaining"`
 	LimitReset         types.String      `tfsdk:"limit_reset"`
@@ -171,6 +172,10 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			"label": schema.StringAttribute{
 				Computed:    true,
 				Description: `Human-readable label for the API key`,
+			},
+			"last_used_at": schema.StringAttribute{
+				Computed:    true,
+				Description: `ISO 8601 UTC timestamp of the most recent usage recorded for the API key, or null if no usage has been recorded since the end of 2025`,
 			},
 			"limit": schema.Float64Attribute{
 				Computed:    true,

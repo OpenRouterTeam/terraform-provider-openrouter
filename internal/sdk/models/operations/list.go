@@ -65,6 +65,8 @@ type ListData struct {
 	IncludeByokInLimit bool `json:"include_byok_in_limit"`
 	// Human-readable label for the API key
 	Label string `json:"label"`
+	// ISO 8601 UTC timestamp of the most recent usage recorded for the API key, or null if no usage has been recorded since the end of 2025
+	LastUsedAt *time.Time `json:"last_used_at"`
 	// Spending limit for the API key in USD
 	Limit *float64 `json:"limit"`
 	// Remaining spending limit in USD
@@ -180,6 +182,13 @@ func (l *ListData) GetLabel() string {
 		return ""
 	}
 	return l.Label
+}
+
+func (l *ListData) GetLastUsedAt() *time.Time {
+	if l == nil {
+		return nil
+	}
+	return l.LastUsedAt
 }
 
 func (l *ListData) GetLimit() *float64 {

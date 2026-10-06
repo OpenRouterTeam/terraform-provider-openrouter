@@ -54,6 +54,11 @@ func (r *ByokKeyResourceModel) RefreshFromSharedCreateBYOKKeyResponseData(ctx co
 		r.AllowedUserIds = nil
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
+	if resp.DeclaredRegion != nil {
+		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))
+	} else {
+		r.DeclaredRegion = types.StringNull()
+	}
 	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
@@ -112,6 +117,11 @@ func (r *ByokKeyResourceModel) RefreshFromSharedGetBYOKKeyResponseData(ctx conte
 		r.AllowedUserIds = nil
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
+	if resp.DeclaredRegion != nil {
+		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))
+	} else {
+		r.DeclaredRegion = types.StringNull()
+	}
 	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
@@ -170,6 +180,11 @@ func (r *ByokKeyResourceModel) RefreshFromSharedUpdateBYOKKeyResponseData(ctx co
 		r.AllowedUserIds = nil
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
+	if resp.DeclaredRegion != nil {
+		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))
+	} else {
+		r.DeclaredRegion = types.StringNull()
+	}
 	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
@@ -256,6 +271,12 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 			allowedUserIds = append(allowedUserIds, r.AllowedUserIds[allowedUserIdsIndex].ValueString())
 		}
 	}
+	declaredRegion := new(shared.CreateBYOKKeyRequestDeclaredRegion)
+	if !r.DeclaredRegion.IsUnknown() && !r.DeclaredRegion.IsNull() {
+		*declaredRegion = shared.CreateBYOKKeyRequestDeclaredRegion(r.DeclaredRegion.ValueString())
+	} else {
+		declaredRegion = nil
+	}
 	declaredZdr := new(bool)
 	if !r.DeclaredZdr.IsUnknown() && !r.DeclaredZdr.IsNull() {
 		*declaredZdr = r.DeclaredZdr.ValueBool()
@@ -306,6 +327,7 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 		AllowedAPIKeyHashes: allowedAPIKeyHashes,
 		AllowedModels:       allowedModels,
 		AllowedUserIds:      allowedUserIds,
+		DeclaredRegion:      declaredRegion,
 		DeclaredZdr:         declaredZdr,
 		Disabled:            disabled,
 		IsByokOnly:          isByokOnly,
@@ -343,6 +365,12 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 		for allowedUserIdsIndex := range r.AllowedUserIds {
 			allowedUserIds = append(allowedUserIds, r.AllowedUserIds[allowedUserIdsIndex].ValueString())
 		}
+	}
+	declaredRegion := new(shared.UpdateBYOKKeyRequestDeclaredRegion)
+	if !r.DeclaredRegion.IsUnknown() && !r.DeclaredRegion.IsNull() {
+		*declaredRegion = shared.UpdateBYOKKeyRequestDeclaredRegion(r.DeclaredRegion.ValueString())
+	} else {
+		declaredRegion = nil
 	}
 	declaredZdr := new(bool)
 	if !r.DeclaredZdr.IsUnknown() && !r.DeclaredZdr.IsNull() {
@@ -390,6 +418,7 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 		AllowedAPIKeyHashes: allowedAPIKeyHashes,
 		AllowedModels:       allowedModels,
 		AllowedUserIds:      allowedUserIds,
+		DeclaredRegion:      declaredRegion,
 		DeclaredZdr:         declaredZdr,
 		Disabled:            disabled,
 		IsByokOnly:          isByokOnly,
