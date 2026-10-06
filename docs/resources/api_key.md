@@ -58,6 +58,7 @@ resource "openrouter_api_key" "my_apikey" {
 - `hash` (String) The hash identifier of the API key to update
 - `key` (String, Sensitive) The actual API key string (only shown once)
 - `label` (String) Human-readable label for the API key
+- `last_used_at` (String) ISO 8601 UTC timestamp of the most recent usage recorded for the API key, or null if no usage has been recorded since the end of 2025
 - `limit_remaining` (Number) Remaining spending limit in USD
 - `updated_at` (String) ISO 8601 timestamp of when the API key was last updated
 - `usage` (Number) Total OpenRouter credit usage (in USD) for the API key

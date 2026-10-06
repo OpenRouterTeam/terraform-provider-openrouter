@@ -33,6 +33,7 @@ func (r *APIKeysDataSourceModel) RefreshFromOperationsListResponseBody(ctx conte
 			data.Hash = types.StringValue(dataItem.Hash)
 			data.IncludeByokInLimit = types.BoolValue(dataItem.IncludeByokInLimit)
 			data.Label = types.StringValue(dataItem.Label)
+			data.LastUsedAt = types.StringPointerValue(typeconvert.TimePointerToStringPointer(dataItem.LastUsedAt))
 			data.Limit = types.Float64PointerValue(dataItem.Limit)
 			data.LimitRemaining = types.Float64PointerValue(dataItem.LimitRemaining)
 			data.LimitReset = types.StringPointerValue(dataItem.LimitReset)
