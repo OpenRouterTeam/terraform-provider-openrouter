@@ -130,3 +130,58 @@ func TestCanonicalModelSlugsRetriesAfterError(t *testing.T) {
 		t.Fatalf("third lookup: err %v, %d new requests; want the cached map", err, gets-n)
 	}
 }
+
+// keepConfiguredModelIDs is what Read calls after refreshing from the API: it
+// restores both configured lists when the response is their canonical form,
+// and keeps the API's values when the models lookup fails.
+func TestKeepConfiguredModelIDs(t *testing.T) {
+	raw, err := os.ReadFile("../acceptance/testdata/guardrail_models.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var models []json.RawMessage
+	if err := json.Unmarshal(raw, &models); err != nil {
+		t.Fatal(err)
+	}
+	page, _ := json.Marshal(map[string]any{"data": models, "total_count": len(models), "links": map[string]any{}})
+	fail := true
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if fail {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(`{"error":{"code":400,"message":"bad request"}}`))
+			return
+		}
+		_, _ = w.Write(page)
+	}))
+	defer srv.Close()
+	r := &GuardrailResource{client: sdk.New(sdk.WithServerURL(srv.URL))}
+
+	prior := GuardrailResourceModel{
+		AllowedModels: strs("deepseek/deepseek-v4-flash-0731"),
+		IgnoredModels: strs("anthropic/claude-sonnet-5.5"),
+	}
+	refreshed := func() *GuardrailResourceModel {
+		return &GuardrailResourceModel{
+			AllowedModels: strs("deepseek/deepseek-v4-flash-20260731"),
+			IgnoredModels: strs("anthropic/claude-sonnet-5.5-20260928"),
+		}
+	}
+
+	data := refreshed()
+	if diags := r.keepConfiguredModelIDs(context.Background(), &prior, data); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if want := refreshed(); !equalStringLists(data.AllowedModels, want.AllowedModels) || !equalStringLists(data.IgnoredModels, want.IgnoredModels) {
+		t.Fatalf("failed lookup: got %v / %v, want the API's values", data.AllowedModels, data.IgnoredModels)
+	}
+
+	fail = false
+	data = refreshed()
+	if diags := r.keepConfiguredModelIDs(context.Background(), &prior, data); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if !equalStringLists(data.AllowedModels, prior.AllowedModels) || !equalStringLists(data.IgnoredModels, prior.IgnoredModels) {
+		t.Fatalf("got %v / %v, want the configured ids", data.AllowedModels, data.IgnoredModels)
+	}
+}
