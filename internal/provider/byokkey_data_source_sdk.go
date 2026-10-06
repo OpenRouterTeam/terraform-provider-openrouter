@@ -54,6 +54,11 @@ func (r *ByokKeyDataSourceModel) RefreshFromSharedGetBYOKKeyResponseData(ctx con
 		r.AllowedUserIds = nil
 	}
 	r.CreatedAt = types.StringValue(resp.CreatedAt)
+	if resp.DeclaredRegion != nil {
+		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))
+	} else {
+		r.DeclaredRegion = types.StringNull()
+	}
 	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
