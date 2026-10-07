@@ -7,6 +7,7 @@ import (
 	"context"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
+	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
@@ -88,11 +89,10 @@ func (p *OpenrouterProvider) Configure(ctx context.Context, req provider.Configu
 
 	providerHTTPTransportOpts := ProviderHTTPTransportOpts{
 		SetHeaders: make(map[string]string),
-		Transport:  http.DefaultTransport,
+		Transport:  cleanhttp.DefaultPooledTransport(),
 	}
 
-	httpClient := http.DefaultClient
-	httpClient.Transport = NewProviderHTTPTransport(providerHTTPTransportOpts)
+	httpClient := &http.Client{Transport: NewProviderHTTPTransport(providerHTTPTransportOpts)}
 
 	opts := []sdk.SDKOption{
 		sdk.WithServerURL(serverUrl),
