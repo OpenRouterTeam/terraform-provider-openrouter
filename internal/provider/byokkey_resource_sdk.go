@@ -11,6 +11,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+// ByokKeyResourceModelOptions enables patch sdk method construction.
+type ByokKeyResourceModelOptions struct {
+	Config *ByokKeyResourceModel
+	State  *ByokKeyResourceModel
+}
+
 func (r *ByokKeyResourceModel) RefreshFromSharedCreateBYOKKeyResponse(ctx context.Context, resp *shared.CreateBYOKKeyResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -200,7 +206,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedUpdateBYOKKeyResponseData(ctx co
 	return diags
 }
 
-func (r *ByokKeyResourceModel) ToOperationsDeleteBYOKKeyRequest(ctx context.Context) (*operations.DeleteBYOKKeyRequest, diag.Diagnostics) {
+func (r *ByokKeyResourceModel) ToOperationsDeleteBYOKKeyRequest(ctx context.Context, opts *ByokKeyResourceModelOptions) (*operations.DeleteBYOKKeyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
@@ -213,7 +219,7 @@ func (r *ByokKeyResourceModel) ToOperationsDeleteBYOKKeyRequest(ctx context.Cont
 	return &out, diags
 }
 
-func (r *ByokKeyResourceModel) ToOperationsGetBYOKKeyRequest(ctx context.Context) (*operations.GetBYOKKeyRequest, diag.Diagnostics) {
+func (r *ByokKeyResourceModel) ToOperationsGetBYOKKeyRequest(ctx context.Context, opts *ByokKeyResourceModelOptions) (*operations.GetBYOKKeyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
@@ -226,13 +232,13 @@ func (r *ByokKeyResourceModel) ToOperationsGetBYOKKeyRequest(ctx context.Context
 	return &out, diags
 }
 
-func (r *ByokKeyResourceModel) ToOperationsUpdateBYOKKeyRequest(ctx context.Context) (*operations.UpdateBYOKKeyRequest, diag.Diagnostics) {
+func (r *ByokKeyResourceModel) ToOperationsUpdateBYOKKeyRequest(ctx context.Context, opts *ByokKeyResourceModelOptions) (*operations.UpdateBYOKKeyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
 	id = r.ID.ValueString()
 
-	body, bodyDiags := r.ToSharedUpdateBYOKKeyRequest(ctx)
+	body, bodyDiags := r.ToSharedUpdateBYOKKeyRequest(ctx, opts)
 	diags.Append(bodyDiags...)
 
 	if diags.HasError() {
@@ -247,7 +253,7 @@ func (r *ByokKeyResourceModel) ToOperationsUpdateBYOKKeyRequest(ctx context.Cont
 	return &out, diags
 }
 
-func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context) (*shared.CreateBYOKKeyRequest, diag.Diagnostics) {
+func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context, opts *ByokKeyResourceModelOptions) (*shared.CreateBYOKKeyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var allowedAPIKeyHashes []string
@@ -308,7 +314,7 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 		isRequired = nil
 	}
 	var key string
-	key = r.Key.ValueString()
+	key = opts.Config.Key.ValueString()
 
 	name := new(string)
 	if !r.Name.IsUnknown() && !r.Name.IsNull() {
@@ -342,7 +348,7 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 	return &out, diags
 }
 
-func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context) (*shared.UpdateBYOKKeyRequest, diag.Diagnostics) {
+func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context, opts *ByokKeyResourceModelOptions) (*shared.UpdateBYOKKeyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var allowedAPIKeyHashes []string
