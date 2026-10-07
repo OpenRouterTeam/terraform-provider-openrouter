@@ -9,12 +9,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type contextKey struct{}
 
-// WithFields returns a context that makes Apply set the given top-level JSON
-// body fields to null on the request issued with it.
+// WithFields returns a context that makes Apply set the given JSON body fields
+// to null on the request issued with it. A field is either top-level ("name")
+// or one level into an object the body already sends ("parent.name").
 func WithFields(ctx context.Context, fields ...string) context.Context {
 	if len(fields) == 0 {
 		return ctx
@@ -44,7 +46,9 @@ func Apply(req *http.Request) (*http.Request, error) {
 		}
 	}
 	for _, field := range fields {
-		body[field] = json.RawMessage("null")
+		if err := setNull(body, field); err != nil {
+			return nil, err
+		}
 	}
 	out, err := json.Marshal(body)
 	if err != nil {
@@ -57,4 +61,29 @@ func Apply(req *http.Request) (*http.Request, error) {
 		return io.NopCloser(bytes.NewReader(out)), nil
 	}
 	return req, nil
+}
+
+// setNull sets field to null in body. A nested field is only set when its
+// parent object is present, so a request that leaves the parent out keeps it.
+func setNull(body map[string]json.RawMessage, field string) error {
+	parent, child, isNested := strings.Cut(field, ".")
+	if !isNested {
+		body[field] = json.RawMessage("null")
+		return nil
+	}
+	raw, ok := body[parent]
+	if !ok || bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		return nil
+	}
+	object := map[string]json.RawMessage{}
+	if err := json.Unmarshal(raw, &object); err != nil {
+		return fmt.Errorf("explicitnull: %s is not a JSON object: %w", parent, err)
+	}
+	object[child] = json.RawMessage("null")
+	encoded, err := json.Marshal(object)
+	if err != nil {
+		return fmt.Errorf("explicitnull: encode %s: %w", parent, err)
+	}
+	body[parent] = encoded
+	return nil
 }

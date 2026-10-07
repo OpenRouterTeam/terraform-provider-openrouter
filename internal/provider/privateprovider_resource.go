@@ -6,6 +6,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/explicitnull"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
@@ -156,7 +157,7 @@ func (r *PrivateProviderResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	res, err := r.client.PrivateProviders.Create(ctx, *request)
+	res, err := r.client.PrivateProviders.Create(explicitnull.WithFields(ctx, privateProviderClearedFields(data, false)...), *request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
@@ -281,7 +282,7 @@ func (r *PrivateProviderResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	res, err := r.client.PrivateProviders.Update(ctx, *request)
+	res, err := r.client.PrivateProviders.Update(explicitnull.WithFields(ctx, privateProviderClearedFields(data, true)...), *request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
