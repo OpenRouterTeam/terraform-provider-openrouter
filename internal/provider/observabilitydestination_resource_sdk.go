@@ -13,12 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// ObservabilityDestinationResourceModelOptions enables patch sdk method construction.
-type ObservabilityDestinationResourceModelOptions struct {
-	Config *ObservabilityDestinationResourceModel
-	State  *ObservabilityDestinationResourceModel
-}
-
 func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabilityDestinationResponse(ctx context.Context, resp *shared.CreateObservabilityDestinationResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -4105,7 +4099,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 	return diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToOperationsDeleteObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*operations.DeleteObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToOperationsDeleteObservabilityDestinationRequest(ctx context.Context) (*operations.DeleteObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
@@ -4118,7 +4112,7 @@ func (r *ObservabilityDestinationResourceModel) ToOperationsDeleteObservabilityD
 	return &out, diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToOperationsGetObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*operations.GetObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToOperationsGetObservabilityDestinationRequest(ctx context.Context) (*operations.GetObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
@@ -4131,13 +4125,13 @@ func (r *ObservabilityDestinationResourceModel) ToOperationsGetObservabilityDest
 	return &out, diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToOperationsUpdateObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*operations.UpdateObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToOperationsUpdateObservabilityDestinationRequest(ctx context.Context) (*operations.UpdateObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
 	id = r.ID.ValueString()
 
-	body, bodyDiags := r.ToSharedUpdateObservabilityDestinationRequest(ctx, opts)
+	body, bodyDiags := r.ToSharedUpdateObservabilityDestinationRequest(ctx)
 	diags.Append(bodyDiags...)
 
 	if diags.HasError() {
@@ -4152,7 +4146,7 @@ func (r *ObservabilityDestinationResourceModel) ToOperationsUpdateObservabilityD
 	return &out, diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*shared.CreateObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDestinationRequest(ctx context.Context) (*shared.CreateObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var apiKeyHashes []string
@@ -4298,7 +4292,7 @@ func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDesti
 	return &out, diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToSharedUpdateObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*shared.UpdateObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToSharedUpdateObservabilityDestinationRequest(ctx context.Context) (*shared.UpdateObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var apiKeyHashes []string

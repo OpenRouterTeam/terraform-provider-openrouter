@@ -478,7 +478,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 			"config": schema.MapAttribute{
 				Required:    true,
 				Sensitive:   true,
-				WriteOnly:   true,
 				ElementType: jsontypes.NormalizedType{},
 				Description: `Provider-specific configuration. The shape depends on ` + "`" + `type` + "`" + ` and is validated server-side.`,
 				Validators: []validator.Map{
@@ -2306,21 +2305,8 @@ func (r *ObservabilityDestinationResource) Configure(ctx context.Context, req re
 }
 
 func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var (
-		configData ObservabilityDestinationResourceModel
-		data       ObservabilityDestinationResourceModel
-		plan       types.Object
-	)
-
-	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	opts := &ObservabilityDestinationResourceModelOptions{
-		Config: &configData,
-	}
+	var data *ObservabilityDestinationResourceModel
+	var plan types.Object
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
@@ -2338,7 +2324,7 @@ func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resou
 
 	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
 
-	request, requestDiags := data.ToSharedCreateObservabilityDestinationRequest(ctx, opts)
+	request, requestDiags := data.ToSharedCreateObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -2407,7 +2393,7 @@ func (r *ObservabilityDestinationResource) Read(ctx context.Context, req resourc
 
 	ctx = withSensitiveValues(ctx, req.State)
 
-	request, requestDiags := data.ToOperationsGetObservabilityDestinationRequest(ctx, nil)
+	request, requestDiags := data.ToOperationsGetObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -2448,29 +2434,8 @@ func (r *ObservabilityDestinationResource) Read(ctx context.Context, req resourc
 }
 
 func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var (
-		configData ObservabilityDestinationResourceModel
-		data       ObservabilityDestinationResourceModel
-		plan       types.Object
-		stateData  ObservabilityDestinationResourceModel
-	)
-
-	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &stateData)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	opts := &ObservabilityDestinationResourceModelOptions{
-		Config: &configData,
-		State:  &stateData,
-	}
+	var data *ObservabilityDestinationResourceModel
+	var plan types.Object
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
@@ -2484,7 +2449,7 @@ func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resou
 
 	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
 
-	request, requestDiags := data.ToOperationsUpdateObservabilityDestinationRequest(ctx, opts)
+	request, requestDiags := data.ToOperationsUpdateObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -2546,7 +2511,7 @@ func (r *ObservabilityDestinationResource) Delete(ctx context.Context, req resou
 
 	ctx = withSensitiveValues(ctx, req.State)
 
-	request, requestDiags := data.ToOperationsDeleteObservabilityDestinationRequest(ctx, nil)
+	request, requestDiags := data.ToOperationsDeleteObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
