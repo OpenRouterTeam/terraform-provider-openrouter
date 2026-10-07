@@ -48,6 +48,8 @@ type ByokKeyResourceModel struct {
 	IsFallback          types.Bool     `tfsdk:"is_fallback"`
 	IsRequired          types.Bool     `tfsdk:"is_required"`
 	Key                 types.String   `tfsdk:"key"`
+	KeyWo               types.String   `tfsdk:"key_wo"`
+	KeyWoVersion        types.Int64    `tfsdk:"key_wo_version"`
 	Label               types.String   `tfsdk:"label"`
 	Name                types.String   `tfsdk:"name"`
 	ProviderSlug        types.String   `tfsdk:"provider_slug"`
@@ -298,6 +300,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 			},
 		},
 	}
+	addByokKeyWriteOnlyAttributes(&resp.Schema)
 }
 
 func (r *ByokKeyResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -343,6 +346,10 @@ func (r *ByokKeyResource) Create(ctx context.Context, req resource.CreateRequest
 	request, requestDiags := data.ToSharedCreateBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(applyByokWriteOnlyKeyOnCreate(ctx, req.Config, request)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -461,6 +468,10 @@ func (r *ByokKeyResource) Update(ctx context.Context, req resource.UpdateRequest
 	request, requestDiags := data.ToOperationsUpdateBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(applyByokWriteOnlyKeyOnUpdate(ctx, req, request)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}

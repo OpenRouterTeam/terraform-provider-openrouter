@@ -41,6 +41,7 @@ type ObservabilityDestinationDataSourceModel struct {
 	Enabled                           types.Bool                                                                        `tfsdk:"enabled"`
 	Grafana                           *tfTypes.GetObservabilityDestinationResponseObservabilityGrafanaDestination       `queryParam:"inline" tfsdk:"grafana"`
 	ID                                types.String                                                                      `tfsdk:"id"`
+	IncludeSensitiveConfig            types.Bool                                                                        `tfsdk:"include_sensitive_config"`
 	Langfuse                          *tfTypes.GetObservabilityDestinationResponseObservabilityLangfuseDestination      `queryParam:"inline" tfsdk:"langfuse"`
 	Langsmith                         *tfTypes.GetObservabilityDestinationResponseObservabilityLangsmithDestination     `queryParam:"inline" tfsdk:"langsmith"`
 	Name                              types.String                                                                      `tfsdk:"name"`
@@ -2228,6 +2229,7 @@ func (r *ObservabilityDestinationDataSource) Schema(ctx context.Context, req dat
 			},
 		},
 	}
+	addIncludeSensitiveConfigAttribute(&resp.Schema)
 }
 
 func (r *ObservabilityDestinationDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -2301,6 +2303,7 @@ func (r *ObservabilityDestinationDataSource) Read(ctx context.Context, req datas
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	scrubObservabilityDataSource(data.IncludeSensitiveConfig, data)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
