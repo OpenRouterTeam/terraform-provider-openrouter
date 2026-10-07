@@ -982,6 +982,8 @@ const (
 	InputsUnion1TypeAdditionalToolsItem                 InputsUnion1Type = "AdditionalToolsItem"
 	InputsUnion1TypeAgentMessageItem                    InputsUnion1Type = "AgentMessageItem"
 	InputsUnion1TypeConfigurationUpdateItem             InputsUnion1Type = "ConfigurationUpdateItem"
+	InputsUnion1TypeToolSearchCallItem                  InputsUnion1Type = "ToolSearchCallItem"
+	InputsUnion1TypeToolSearchOutputItem                InputsUnion1Type = "ToolSearchOutputItem"
 )
 
 type InputsUnion1 struct {
@@ -1034,6 +1036,8 @@ type InputsUnion1 struct {
 	AdditionalToolsItem                 *AdditionalToolsItem                 `queryParam:"inline" union:"member"`
 	AgentMessageItem                    *AgentMessageItem                    `queryParam:"inline" union:"member"`
 	ConfigurationUpdateItem             *ConfigurationUpdateItem             `queryParam:"inline" union:"member"`
+	ToolSearchCallItem                  *ToolSearchCallItem                  `queryParam:"inline" union:"member"`
+	ToolSearchOutputItem                *ToolSearchOutputItem                `queryParam:"inline" union:"member"`
 
 	Type InputsUnion1Type
 }
@@ -1479,6 +1483,24 @@ func CreateInputsUnion1ConfigurationUpdateItem(configurationUpdateItem Configura
 	}
 }
 
+func CreateInputsUnion1ToolSearchCallItem(toolSearchCallItem ToolSearchCallItem) InputsUnion1 {
+	typ := InputsUnion1TypeToolSearchCallItem
+
+	return InputsUnion1{
+		ToolSearchCallItem: &toolSearchCallItem,
+		Type:               typ,
+	}
+}
+
+func CreateInputsUnion1ToolSearchOutputItem(toolSearchOutputItem ToolSearchOutputItem) InputsUnion1 {
+	typ := InputsUnion1TypeToolSearchOutputItem
+
+	return InputsUnion1{
+		ToolSearchOutputItem: &toolSearchOutputItem,
+		Type:                 typ,
+	}
+}
+
 func (u *InputsUnion1) UnmarshalJSON(data []byte) (err error) {
 	previous := *u
 	*u = InputsUnion1{}
@@ -1883,6 +1905,22 @@ func (u *InputsUnion1) UnmarshalJSON(data []byte) (err error) {
 		})
 	}
 
+	var toolSearchCallItem ToolSearchCallItem = ToolSearchCallItem{}
+	if err := utils.UnmarshalJSON(data, &toolSearchCallItem, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  InputsUnion1TypeToolSearchCallItem,
+			Value: &toolSearchCallItem,
+		})
+	}
+
+	var toolSearchOutputItem ToolSearchOutputItem = ToolSearchOutputItem{}
+	if err := utils.UnmarshalJSON(data, &toolSearchOutputItem, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  InputsUnion1TypeToolSearchOutputItem,
+			Value: &toolSearchOutputItem,
+		})
+	}
+
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for InputsUnion1", string(data))
 	}
@@ -2042,6 +2080,12 @@ func (u *InputsUnion1) UnmarshalJSON(data []byte) (err error) {
 		return nil
 	case InputsUnion1TypeConfigurationUpdateItem:
 		u.ConfigurationUpdateItem = best.Value.(*ConfigurationUpdateItem)
+		return nil
+	case InputsUnion1TypeToolSearchCallItem:
+		u.ToolSearchCallItem = best.Value.(*ToolSearchCallItem)
+		return nil
+	case InputsUnion1TypeToolSearchOutputItem:
+		u.ToolSearchOutputItem = best.Value.(*ToolSearchOutputItem)
 		return nil
 	}
 
@@ -2243,6 +2287,14 @@ func (u InputsUnion1) MarshalJSON() ([]byte, error) {
 
 	if u.ConfigurationUpdateItem != nil {
 		return utils.MarshalJSON(u.ConfigurationUpdateItem, "", true)
+	}
+
+	if u.ToolSearchCallItem != nil {
+		return utils.MarshalJSON(u.ToolSearchCallItem, "", true)
+	}
+
+	if u.ToolSearchOutputItem != nil {
+		return utils.MarshalJSON(u.ToolSearchOutputItem, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type InputsUnion1: all fields are null")
