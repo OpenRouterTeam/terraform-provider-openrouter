@@ -16,8 +16,9 @@ import (
 )
 
 // stubPrivateProviders mirrors the /private-providers API: the slug is derived
-// from the name, PATCH merges fields and the data policy over the stored
-// provider, and delete is refused while a private endpoint runs under it.
+// from the name, create requires every data policy key, PATCH merges fields and
+// the data policy over the stored provider and rejects retention days without
+// retention, and delete is refused while a private endpoint runs under it.
 type stubPrivateProviders struct {
 	mu            sync.Mutex
 	providers     map[string]map[string]any
@@ -97,6 +98,13 @@ func (s *stubPrivateProviders) create(w http.ResponseWriter, r *http.Request, wr
 		writeError(http.StatusBadRequest, "Invalid body")
 		return
 	}
+	policy, _ := body["data_policy"].(map[string]any)
+	for _, field := range []string{"training", "retains_prompts", "prompt_retention_days"} {
+		if _, ok := policy[field]; !ok {
+			writeError(http.StatusBadRequest, "data_policy."+field+" is required")
+			return
+		}
+	}
 	name, _ := body["name"].(string)
 	slug := strings.Trim(stubSlugSeparators.ReplaceAllString(strings.ToLower(strings.TrimSpace(name)), "-"), "-")
 	if _, taken := s.providers[slug]; taken {
@@ -123,7 +131,8 @@ func (s *stubPrivateProviders) create(w http.ResponseWriter, r *http.Request, wr
 }
 
 // stubPatchProvider applies a PATCH body the way the API does and returns the
-// 400 message for a policy that keeps retention days without retaining prompts.
+// 400 message for a merged policy that keeps retention days without retaining
+// prompts. Like the API, it never clears stored days on its own.
 func stubPatchProvider(provider, body map[string]any) string {
 	for _, field := range []string{"display_name", "base_url", "privacy_policy_url", "headquarters", "datacenters"} {
 		if value, ok := body[field]; ok {
@@ -140,10 +149,6 @@ func stubPatchProvider(provider, body map[string]any) string {
 	}
 	for field, value := range patch {
 		merged[field] = value
-	}
-	_, hasDays := patch["prompt_retention_days"]
-	if patch["retains_prompts"] == false && !hasDays {
-		merged["prompt_retention_days"] = nil
 	}
 	if merged["retains_prompts"] == false && merged["prompt_retention_days"] != nil {
 		return "prompt_retention_days must be null unless retains_prompts is true"
@@ -225,8 +230,8 @@ func TestStubPrivateProviderLifecycle(t *testing.T) {
 			},
 			{Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme", privateProviderRetains30Days), PlanOnly: true},
 			{
-				// Turning retention off without restating the days must clear
-				// them rather than fail with "retention days without retention".
+				// Turning retention off without configuring the days must send
+				// them as an explicit null rather than resend the stored 30.
 				Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme Labs", privateProviderRetainsNothing),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{

@@ -10,10 +10,11 @@ import (
 var _ planmodifier.Int64 = Int64PrivateProviderRetentionDaysPlanModifier{}
 
 // Int64PrivateProviderRetentionDaysPlanModifier plans an unconfigured
-// prompt_retention_days as null when its sibling retains_prompts is false,
-// matching the API, which clears the days when retention is turned off.
-// Otherwise the stored days would be sent back with retains_prompts = false
-// and the API would reject the update.
+// prompt_retention_days as null when its sibling retains_prompts is false.
+// Otherwise the plan keeps the stored days, they are sent back with
+// retains_prompts = false, and the API rejects the update. The SDK hook in
+// internal/sdk/internal/hooks/private_provider_retention_days.go then sends
+// the null explicitly.
 type Int64PrivateProviderRetentionDaysPlanModifier struct{}
 
 // Description describes the plan modification in plain text formatting.
