@@ -3,22 +3,22 @@ id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
   docChecksum: e58a5fe2f288442b357ddf4b063b9837
   docVersion: 1.0.0
-  speakeasyVersion: 1.800.1
-  generationVersion: 2.943.0
-  releaseVersion: 0.3.33
-  configChecksum: c81ccaee6b1bcdfcb9247dc3c9e1282e
+  speakeasyVersion: 1.801.0
+  generationVersion: 2.946.0
+  releaseVersion: 0.3.34
+  configChecksum: 39cef4114c293d10a59ff4a7dbc84542
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 7676db8a-83c0-4273-8d9f-094c04c75938
-  pristine_commit_hash: 89555f263cfa279b3083fae99ccb85b2b2839f25
-  pristine_tree_hash: d00a4ac289ce91234921eb23b8e9daedeeec2000
+  generation_id: 1dfcffbe-daa9-4c4f-99a4-6c6142d06f81
+  pristine_commit_hash: 098fbf330961ae414ba9c6a9322872fc6d251687
+  pristine_tree_hash: 0ded81f0ad0e157a5589f5674b5f4cbf3cd34ae6
 features:
   terraform:
     additionalDependencies: 0.1.0
     additionalProperties: 0.1.5
     constsAndDefaults: 0.3.2
-    core: 3.48.3
+    core: 3.48.4
     deprecations: 2.82.0
     flattening: 2.81.2
     formatBinary: 0.2.0
@@ -32,7 +32,7 @@ features:
     nullables: 0.0.0
     openEnums: 0.1.0
     pagination: 2.83.7
-    retries: 2.81.6
+    retries: 2.81.7
     serverIDs: 2.81.1
     unions: 2.82.20
 trackedFiles:
@@ -158,8 +158,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:d4aa116f642533d483c7b35e7af87b2e0edfb22a
-    pristine_git_object: b55a341d5f505b91165cb809964487cb3492811a
+    last_write_checksum: sha1:0d506494f0fd197fc89a1bc050b1ee59417555d7
+    pristine_git_object: e9c1c0721fa97c71c5a59a499ab094693d7f9187
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -274,8 +274,8 @@ trackedFiles:
     pristine_git_object: b97ff2ffeff454ededad08f3e0f08373e7b7d156
   go.mod:
     id: c47645c391ad
-    last_write_checksum: sha1:8d86c6b9d8c2303434b79aaed8f9c8f66fca6a41
-    pristine_git_object: ce59f9b82b2642ea873902bafa728316af194ad0
+    last_write_checksum: sha1:8538fc768e9e4a6c18e6931e2fef740cdb8eee64
+    pristine_git_object: a7c7c8d74c636f4814089f0ef7d8760f76314736
   internal/planmodifiers/boolplanmodifier/suppress_diff.go:
     id: 3cf85b98963e
     last_write_checksum: sha1:69fe11dbe8d6b874d28105fc3de0add7b89f2f23
@@ -634,8 +634,8 @@ trackedFiles:
     pristine_git_object: 40fac0c46fc45802460fb08da3cf5313b9c52b74
   internal/provider/provider.go:
     id: 1e7e86841cf3
-    last_write_checksum: sha1:fbe5acbe25c8faf46b7d38a38dece6e16c1f1597
-    pristine_git_object: aa8a41a0f9508b0736e5739a4ae86df3174e097c
+    last_write_checksum: sha1:bf862e757175911318284325d2da520558cfd2b2
+    pristine_git_object: 6ce56767f3068856b08982213542f330d3db72d4
   internal/provider/providers_data_source.go:
     id: f86d43a8ffda
     last_write_checksum: sha1:2af0044d2aee910b91046d19c2427364733ed86a
@@ -1378,8 +1378,8 @@ trackedFiles:
     pristine_git_object: 59c91d53fc767ed797490f6b67702c1ed2a87d05
   internal/sdk/internal/utils/retries.go:
     id: 6832c2142453
-    last_write_checksum: sha1:375077cb7b3842f49a74c85fe191066efa219348
-    pristine_git_object: 274522bdd1a0d44c0e0961ec8ea9b35fdce5291f
+    last_write_checksum: sha1:ad537472c167a9288643956e2e8969840eb45be1
+    pristine_git_object: 7ebfae1282d1ef8b0f85eb45d65cca732f29aede
   internal/sdk/internal/utils/security.go:
     id: 6ebe9eaeb99b
     last_write_checksum: sha1:1e48c45ce4c682b462fa9dbf8ad59900f75e6844
@@ -5054,8 +5054,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:d955ccbac8963bd3ac2a779c4770baebf14ffe27
-    pristine_git_object: 3df90741dacb065047ae496af412b1862580830d
+    last_write_checksum: sha1:9208d41f28ced788280f7551fd81baf15a9852ba
+    pristine_git_object: 056bb4978c852fb02aa0db0a233abe818bcc757e
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
