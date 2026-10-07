@@ -8,12 +8,10 @@ import (
 )
 
 type ObservabilityDestinationConfigSnowflake struct {
-	Account                       types.String            `tfsdk:"account"`
-	Database                      types.String            `tfsdk:"database"`
-	Headers                       map[string]types.String `tfsdk:"headers"`
-	Schema                        types.String            `tfsdk:"schema"`
-	ShouldIncludeCacheWriteTokens types.Bool              `tfsdk:"should_include_cache_write_tokens"`
-	Table                         types.String            `tfsdk:"table"`
-	Token                         types.String            `tfsdk:"token"`
-	Warehouse                     types.String            `tfsdk:"warehouse"`
+	Account                       types.String `tfsdk:"account"`
+	Database                      types.String `tfsdk:"database"`
+	Schema                        types.String `tfsdk:"schema"`
+	ShouldIncludeCacheWriteTokens types.Bool   `tfsdk:"should_include_cache_write_tokens"`
+	Table                         types.String `tfsdk:"table"`
+	Warehouse                     types.String `tfsdk:"warehouse"`
 }

@@ -8,9 +8,6 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigArize struct {
-	APIKey   types.String            `tfsdk:"api_key"`
-	BaseURL  types.String            `tfsdk:"base_url"`
-	Headers  map[string]types.String `tfsdk:"headers"`
-	ModelID  types.String            `tfsdk:"model_id"`
-	SpaceKey types.String            `tfsdk:"space_key"`
+	BaseURL types.String `tfsdk:"base_url"`
+	ModelID types.String `tfsdk:"model_id"`
 }

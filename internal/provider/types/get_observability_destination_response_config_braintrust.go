@@ -8,8 +8,6 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigBraintrust struct {
-	APIKey    types.String            `tfsdk:"api_key"`
-	BaseURL   types.String            `tfsdk:"base_url"`
-	Headers   map[string]types.String `tfsdk:"headers"`
-	ProjectID types.String            `tfsdk:"project_id"`
+	BaseURL   types.String `tfsdk:"base_url"`
+	ProjectID types.String `tfsdk:"project_id"`
 }

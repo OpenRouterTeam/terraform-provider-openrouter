@@ -8,6 +8,5 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigOtelCollector struct {
-	Endpoint types.String            `tfsdk:"endpoint"`
-	Headers  map[string]types.String `tfsdk:"headers"`
+	Endpoint types.String `tfsdk:"endpoint"`
 }

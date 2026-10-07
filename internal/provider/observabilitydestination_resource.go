@@ -122,25 +122,12 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 							"base_url": schema.StringAttribute{
 								Computed: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
 							},
 							"model_id": schema.StringAttribute{
 								Computed:    true,
 								Description: `The name of the tracing project in Arize AX`,
-							},
-							"space_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
 							},
 						},
 					},
@@ -249,17 +236,8 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 							"base_url": schema.StringAttribute{
 								Computed: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
 							},
 							"project_id": schema.StringAttribute{
 								Computed: true,
@@ -398,17 +376,8 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							"database": schema.StringAttribute{
 								Computed: true,
 							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
-							},
 							"host": schema.StringAttribute{
 								Computed: true,
-							},
-							"password": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
 							},
 							"should_include_cache_write_tokens": schema.BoolAttribute{
 								Computed:    true,
@@ -509,6 +478,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 			"config": schema.MapAttribute{
 				Required:    true,
 				Sensitive:   true,
+				WriteOnly:   true,
 				ElementType: jsontypes.NormalizedType{},
 				Description: `Provider-specific configuration. The shape depends on ` + "`" + `type` + "`" + ` and is validated server-side.`,
 				Validators: []validator.Map{
@@ -545,16 +515,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:    true,
-								Sensitive:   true,
-								Description: `Datadog API key must have LLM Observability permissions. Create at:`,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
-							},
 							"ml_app": schema.StringAttribute{
 								Computed:    true,
 								Description: `Name to identify your application in Datadog LLM Observability`,
@@ -778,17 +738,8 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 							"base_url": schema.StringAttribute{
 								Computed: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
 							},
 							"instance_id": schema.StringAttribute{
 								Computed: true,
@@ -910,19 +861,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							"base_url": schema.StringAttribute{
 								Computed: true,
 							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
-							},
-							"public_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
-							"secret_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 						},
 					},
 					"created_at": schema.StringAttribute{
@@ -1030,17 +968,8 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 							"endpoint": schema.StringAttribute{
 								Computed: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
 							},
 							"project": schema.StringAttribute{
 								Computed:    true,
@@ -1161,15 +1090,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
-							},
-							"license_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 							"region": schema.StringAttribute{
 								Computed: true,
 							},
@@ -1280,15 +1200,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
-							},
 							"project_name": schema.StringAttribute{
 								Computed: true,
 							},
@@ -1405,11 +1316,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							"endpoint": schema.StringAttribute{
 								Computed: true,
 							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers as a JSON object. For Axiom, use {"Authorization": "Bearer xaat-xxx", "X-Axiom-Dataset": "your-dataset"}`,
-							},
 						},
 					},
 					"created_at": schema.StringAttribute{
@@ -1517,17 +1423,8 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 							"endpoint": schema.StringAttribute{
 								Computed: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
 							},
 						},
 					},
@@ -1644,18 +1541,8 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:    true,
-								Sensitive:   true,
-								Description: `Generate this in your Ramp integration settings.`,
-							},
 							"base_url": schema.StringAttribute{
 								Computed: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to Ramp.`,
 							},
 						},
 					},
@@ -1774,21 +1661,12 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"access_key_id": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 							"bucket_name": schema.StringAttribute{
 								Computed: true,
 							},
 							"endpoint": schema.StringAttribute{
 								Computed:    true,
 								Description: `Only for S3-compatible services like Cloudflare R2 (https://account-id.r2.cloudflarestorage.com) or MinIO. Leave blank for standard AWS S3.`,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
 							},
 							"path_template": schema.StringAttribute{
 								Computed:    true,
@@ -1799,14 +1677,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							},
 							"region": schema.StringAttribute{
 								Computed: true,
-							},
-							"secret_access_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
-							"session_token": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
 							},
 						},
 					},
@@ -1923,15 +1793,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"dsn": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
-							},
 							"otlp_endpoint": schema.StringAttribute{
 								Computed: true,
 							},
@@ -2048,11 +1909,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							"database": schema.StringAttribute{
 								Computed: true,
 							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
-							},
 							"schema": schema.StringAttribute{
 								Computed: true,
 							},
@@ -2063,10 +1919,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 							},
 							"table": schema.StringAttribute{
 								Computed: true,
-							},
-							"token": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
 							},
 							"warehouse": schema.StringAttribute{
 								Computed: true,
@@ -2214,20 +2066,11 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"api_key": schema.StringAttribute{
-								Computed:  true,
-								Sensitive: true,
-							},
 							"base_url": schema.StringAttribute{
 								Computed: true,
 							},
 							"entity": schema.StringAttribute{
 								Computed: true,
-							},
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-								Description: `Custom HTTP headers to include in requests to this destination.`,
 							},
 							"project": schema.StringAttribute{
 								Computed: true,
@@ -2339,10 +2182,6 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"config": schema.SingleNestedAttribute{
 						Computed: true,
 						Attributes: map[string]schema.Attribute{
-							"headers": schema.MapAttribute{
-								Computed:    true,
-								ElementType: types.StringType,
-							},
 							"method": schema.StringAttribute{
 								Computed: true,
 							},
@@ -2467,8 +2306,21 @@ func (r *ObservabilityDestinationResource) Configure(ctx context.Context, req re
 }
 
 func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data *ObservabilityDestinationResourceModel
-	var plan types.Object
+	var (
+		configData ObservabilityDestinationResourceModel
+		data       ObservabilityDestinationResourceModel
+		plan       types.Object
+	)
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	opts := &ObservabilityDestinationResourceModelOptions{
+		Config: &configData,
+	}
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
@@ -2486,7 +2338,7 @@ func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resou
 
 	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
 
-	request, requestDiags := data.ToSharedCreateObservabilityDestinationRequest(ctx)
+	request, requestDiags := data.ToSharedCreateObservabilityDestinationRequest(ctx, opts)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -2555,7 +2407,7 @@ func (r *ObservabilityDestinationResource) Read(ctx context.Context, req resourc
 
 	ctx = withSensitiveValues(ctx, req.State)
 
-	request, requestDiags := data.ToOperationsGetObservabilityDestinationRequest(ctx)
+	request, requestDiags := data.ToOperationsGetObservabilityDestinationRequest(ctx, nil)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -2596,8 +2448,29 @@ func (r *ObservabilityDestinationResource) Read(ctx context.Context, req resourc
 }
 
 func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data *ObservabilityDestinationResourceModel
-	var plan types.Object
+	var (
+		configData ObservabilityDestinationResourceModel
+		data       ObservabilityDestinationResourceModel
+		plan       types.Object
+		stateData  ObservabilityDestinationResourceModel
+	)
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &stateData)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	opts := &ObservabilityDestinationResourceModelOptions{
+		Config: &configData,
+		State:  &stateData,
+	}
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
@@ -2611,7 +2484,7 @@ func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resou
 
 	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
 
-	request, requestDiags := data.ToOperationsUpdateObservabilityDestinationRequest(ctx)
+	request, requestDiags := data.ToOperationsUpdateObservabilityDestinationRequest(ctx, opts)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -2673,7 +2546,7 @@ func (r *ObservabilityDestinationResource) Delete(ctx context.Context, req resou
 
 	ctx = withSensitiveValues(ctx, req.State)
 
-	request, requestDiags := data.ToOperationsDeleteObservabilityDestinationRequest(ctx)
+	request, requestDiags := data.ToOperationsDeleteObservabilityDestinationRequest(ctx, nil)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {

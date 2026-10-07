@@ -8,8 +8,6 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigOpik struct {
-	APIKey      types.String            `tfsdk:"api_key"`
-	Headers     map[string]types.String `tfsdk:"headers"`
-	ProjectName types.String            `tfsdk:"project_name"`
-	Workspace   types.String            `tfsdk:"workspace"`
+	ProjectName types.String `tfsdk:"project_name"`
+	Workspace   types.String `tfsdk:"workspace"`
 }

@@ -8,7 +8,6 @@ import (
 )
 
 type ObservabilityDestinationConfigWebhook struct {
-	Headers map[string]types.String `tfsdk:"headers"`
-	Method  types.String            `tfsdk:"method"`
-	URL     types.String            `tfsdk:"url"`
+	Method types.String `tfsdk:"method"`
+	URL    types.String `tfsdk:"url"`
 }

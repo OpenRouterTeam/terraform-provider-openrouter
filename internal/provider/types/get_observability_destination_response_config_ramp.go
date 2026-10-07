@@ -8,7 +8,5 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigRamp struct {
-	APIKey  types.String            `tfsdk:"api_key"`
-	BaseURL types.String            `tfsdk:"base_url"`
-	Headers map[string]types.String `tfsdk:"headers"`
+	BaseURL types.String `tfsdk:"base_url"`
 }

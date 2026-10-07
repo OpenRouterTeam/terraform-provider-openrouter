@@ -8,11 +8,9 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigClickhouse struct {
-	Database                      types.String            `tfsdk:"database"`
-	Headers                       map[string]types.String `tfsdk:"headers"`
-	Host                          types.String            `tfsdk:"host"`
-	Password                      types.String            `tfsdk:"password"`
-	ShouldIncludeCacheWriteTokens types.Bool              `tfsdk:"should_include_cache_write_tokens"`
-	Table                         types.String            `tfsdk:"table"`
-	Username                      types.String            `tfsdk:"username"`
+	Database                      types.String `tfsdk:"database"`
+	Host                          types.String `tfsdk:"host"`
+	ShouldIncludeCacheWriteTokens types.Bool   `tfsdk:"should_include_cache_write_tokens"`
+	Table                         types.String `tfsdk:"table"`
+	Username                      types.String `tfsdk:"username"`
 }

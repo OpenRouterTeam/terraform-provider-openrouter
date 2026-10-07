@@ -8,13 +8,9 @@ import (
 )
 
 type ObservabilityDestinationConfigS3 struct {
-	AccessKeyID     types.String            `tfsdk:"access_key_id"`
-	BucketName      types.String            `tfsdk:"bucket_name"`
-	Endpoint        types.String            `tfsdk:"endpoint"`
-	Headers         map[string]types.String `tfsdk:"headers"`
-	PathTemplate    types.String            `tfsdk:"path_template"`
-	Prefix          types.String            `tfsdk:"prefix"`
-	Region          types.String            `tfsdk:"region"`
-	SecretAccessKey types.String            `tfsdk:"secret_access_key"`
-	SessionToken    types.String            `tfsdk:"session_token"`
+	BucketName   types.String `tfsdk:"bucket_name"`
+	Endpoint     types.String `tfsdk:"endpoint"`
+	PathTemplate types.String `tfsdk:"path_template"`
+	Prefix       types.String `tfsdk:"prefix"`
+	Region       types.String `tfsdk:"region"`
 }

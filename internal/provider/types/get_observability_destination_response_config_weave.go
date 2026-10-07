@@ -8,9 +8,7 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigWeave struct {
-	APIKey  types.String            `tfsdk:"api_key"`
-	BaseURL types.String            `tfsdk:"base_url"`
-	Entity  types.String            `tfsdk:"entity"`
-	Headers map[string]types.String `tfsdk:"headers"`
-	Project types.String            `tfsdk:"project"`
+	BaseURL types.String `tfsdk:"base_url"`
+	Entity  types.String `tfsdk:"entity"`
+	Project types.String `tfsdk:"project"`
 }

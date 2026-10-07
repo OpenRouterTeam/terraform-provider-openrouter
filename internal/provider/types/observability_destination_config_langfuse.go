@@ -8,8 +8,5 @@ import (
 )
 
 type ObservabilityDestinationConfigLangfuse struct {
-	BaseURL   types.String            `tfsdk:"base_url"`
-	Headers   map[string]types.String `tfsdk:"headers"`
-	PublicKey types.String            `tfsdk:"public_key"`
-	SecretKey types.String            `tfsdk:"secret_key"`
+	BaseURL types.String `tfsdk:"base_url"`
 }

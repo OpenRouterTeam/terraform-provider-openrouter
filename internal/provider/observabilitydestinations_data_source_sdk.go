@@ -39,16 +39,8 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Arize.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.BroadcastGenerationIdentity)
 				data.Arize.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.BroadcastGenerationRequestContext)
 				data.Arize.Config = &tfTypes.ObservabilityDestinationConfigArize{}
-				data.Arize.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.APIKey)
 				data.Arize.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.BaseURL)
-				if len(dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.Headers) > 0 {
-					data.Arize.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.Headers))
-					for key, value := range dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.Headers {
-						data.Arize.Config.Headers[key] = types.StringValue(value)
-					}
-				}
 				data.Arize.Config.ModelID = types.StringValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.ModelID)
-				data.Arize.Config.SpaceKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.Config.SpaceKey)
 				data.Arize.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.CreatedAt)
 				data.Arize.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityArizeDestination.Enabled)
 				if dataItem.ObservabilityDestinationObservabilityArizeDestination.FilterRules == nil {
@@ -122,14 +114,7 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Braintrust.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.BroadcastGenerationIdentity)
 				data.Braintrust.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.BroadcastGenerationRequestContext)
 				data.Braintrust.Config = &tfTypes.ObservabilityDestinationConfigBraintrust{}
-				data.Braintrust.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Config.APIKey)
 				data.Braintrust.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Config.BaseURL)
-				if len(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Config.Headers) > 0 {
-					data.Braintrust.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Config.Headers))
-					for key1, value1 := range dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Config.Headers {
-						data.Braintrust.Config.Headers[key1] = types.StringValue(value1)
-					}
-				}
 				data.Braintrust.Config.ProjectID = types.StringValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Config.ProjectID)
 				data.Braintrust.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.CreatedAt)
 				data.Braintrust.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityBraintrustDestination.Enabled)
@@ -205,14 +190,7 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Clickhouse.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.BroadcastGenerationRequestContext)
 				data.Clickhouse.Config = &tfTypes.ObservabilityDestinationConfigClickhouse{}
 				data.Clickhouse.Config.Database = types.StringValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Database)
-				if len(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Headers) > 0 {
-					data.Clickhouse.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Headers))
-					for key2, value2 := range dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Headers {
-						data.Clickhouse.Config.Headers[key2] = types.StringValue(value2)
-					}
-				}
 				data.Clickhouse.Config.Host = types.StringValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Host)
-				data.Clickhouse.Config.Password = types.StringValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Password)
 				data.Clickhouse.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.ShouldIncludeCacheWriteTokens)
 				data.Clickhouse.Config.Table = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Table)
 				data.Clickhouse.Config.Username = types.StringValue(dataItem.ObservabilityDestinationObservabilityClickhouseDestination.Config.Username)
@@ -289,13 +267,6 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Datadog.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.BroadcastGenerationIdentity)
 				data.Datadog.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.BroadcastGenerationRequestContext)
 				data.Datadog.Config = &tfTypes.ObservabilityDestinationConfigDatadog{}
-				data.Datadog.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Config.APIKey)
-				if len(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Config.Headers) > 0 {
-					data.Datadog.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Config.Headers))
-					for key3, value3 := range dataItem.ObservabilityDestinationObservabilityDatadogDestination.Config.Headers {
-						data.Datadog.Config.Headers[key3] = types.StringValue(value3)
-					}
-				}
 				data.Datadog.Config.MlApp = types.StringValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Config.MlApp)
 				data.Datadog.Config.URL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.Config.URL)
 				data.Datadog.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityDatadogDestination.CreatedAt)
@@ -371,14 +342,7 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Grafana.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.BroadcastGenerationIdentity)
 				data.Grafana.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.BroadcastGenerationRequestContext)
 				data.Grafana.Config = &tfTypes.ObservabilityDestinationConfigGrafana{}
-				data.Grafana.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Config.APIKey)
 				data.Grafana.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Config.BaseURL)
-				if len(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Config.Headers) > 0 {
-					data.Grafana.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Config.Headers))
-					for key4, value4 := range dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Config.Headers {
-						data.Grafana.Config.Headers[key4] = types.StringValue(value4)
-					}
-				}
 				data.Grafana.Config.InstanceID = types.StringValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Config.InstanceID)
 				data.Grafana.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.CreatedAt)
 				data.Grafana.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityGrafanaDestination.Enabled)
@@ -454,14 +418,6 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Langfuse.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.BroadcastGenerationRequestContext)
 				data.Langfuse.Config = &tfTypes.ObservabilityDestinationConfigLangfuse{}
 				data.Langfuse.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Config.BaseURL)
-				if len(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Config.Headers) > 0 {
-					data.Langfuse.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Config.Headers))
-					for key5, value5 := range dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Config.Headers {
-						data.Langfuse.Config.Headers[key5] = types.StringValue(value5)
-					}
-				}
-				data.Langfuse.Config.PublicKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Config.PublicKey)
-				data.Langfuse.Config.SecretKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Config.SecretKey)
 				data.Langfuse.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.CreatedAt)
 				data.Langfuse.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangfuseDestination.Enabled)
 				if dataItem.ObservabilityDestinationObservabilityLangfuseDestination.FilterRules == nil {
@@ -535,14 +491,7 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Langsmith.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.BroadcastGenerationIdentity)
 				data.Langsmith.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.BroadcastGenerationRequestContext)
 				data.Langsmith.Config = &tfTypes.ObservabilityDestinationConfigLangsmith{}
-				data.Langsmith.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.APIKey)
 				data.Langsmith.Config.Endpoint = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.Endpoint)
-				if len(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.Headers) > 0 {
-					data.Langsmith.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.Headers))
-					for key6, value6 := range dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.Headers {
-						data.Langsmith.Config.Headers[key6] = types.StringValue(value6)
-					}
-				}
 				data.Langsmith.Config.Project = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.Project)
 				data.Langsmith.Config.WorkspaceID = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.Config.WorkspaceID)
 				data.Langsmith.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityLangsmithDestination.CreatedAt)
@@ -618,13 +567,6 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Newrelic.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.BroadcastGenerationIdentity)
 				data.Newrelic.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.BroadcastGenerationRequestContext)
 				data.Newrelic.Config = &tfTypes.ObservabilityDestinationConfigNewrelic{}
-				if len(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Config.Headers) > 0 {
-					data.Newrelic.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Config.Headers))
-					for key7, value7 := range dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Config.Headers {
-						data.Newrelic.Config.Headers[key7] = types.StringValue(value7)
-					}
-				}
-				data.Newrelic.Config.LicenseKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Config.LicenseKey)
 				if dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Config.Region != nil {
 					data.Newrelic.Config.Region = types.StringValue(string(*dataItem.ObservabilityDestinationObservabilityNewrelicDestination.Config.Region))
 				} else {
@@ -703,13 +645,6 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Opik.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.BroadcastGenerationIdentity)
 				data.Opik.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.BroadcastGenerationRequestContext)
 				data.Opik.Config = &tfTypes.ObservabilityDestinationConfigOpik{}
-				data.Opik.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.Config.APIKey)
-				if len(dataItem.ObservabilityDestinationObservabilityOpikDestination.Config.Headers) > 0 {
-					data.Opik.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityOpikDestination.Config.Headers))
-					for key8, value8 := range dataItem.ObservabilityDestinationObservabilityOpikDestination.Config.Headers {
-						data.Opik.Config.Headers[key8] = types.StringValue(value8)
-					}
-				}
 				data.Opik.Config.ProjectName = types.StringValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.Config.ProjectName)
 				data.Opik.Config.Workspace = types.StringValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.Config.Workspace)
 				data.Opik.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityOpikDestination.CreatedAt)
@@ -786,12 +721,6 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.OtelCollector.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.BroadcastGenerationRequestContext)
 				data.OtelCollector.Config = &tfTypes.ObservabilityDestinationConfigOtelCollector{}
 				data.OtelCollector.Config.Endpoint = types.StringValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Config.Endpoint)
-				if len(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Config.Headers) > 0 {
-					data.OtelCollector.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Config.Headers))
-					for key9, value9 := range dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Config.Headers {
-						data.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
-					}
-				}
 				data.OtelCollector.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.CreatedAt)
 				data.OtelCollector.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Enabled)
 				if dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.FilterRules == nil {
@@ -865,14 +794,7 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Posthog.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.BroadcastGenerationIdentity)
 				data.Posthog.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.BroadcastGenerationRequestContext)
 				data.Posthog.Config = &tfTypes.ObservabilityDestinationConfigPosthog{}
-				data.Posthog.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Config.APIKey)
 				data.Posthog.Config.Endpoint = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Config.Endpoint)
-				if len(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Config.Headers) > 0 {
-					data.Posthog.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Config.Headers))
-					for key10, value10 := range dataItem.ObservabilityDestinationObservabilityPosthogDestination.Config.Headers {
-						data.Posthog.Config.Headers[key10] = types.StringValue(value10)
-					}
-				}
 				data.Posthog.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.CreatedAt)
 				data.Posthog.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityPosthogDestination.Enabled)
 				if dataItem.ObservabilityDestinationObservabilityPosthogDestination.FilterRules == nil {
@@ -946,14 +868,7 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Ramp.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityRampDestination.BroadcastGenerationIdentity)
 				data.Ramp.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityRampDestination.BroadcastGenerationRequestContext)
 				data.Ramp.Config = &tfTypes.ObservabilityDestinationConfigRamp{}
-				data.Ramp.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityRampDestination.Config.APIKey)
 				data.Ramp.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityRampDestination.Config.BaseURL)
-				if len(dataItem.ObservabilityDestinationObservabilityRampDestination.Config.Headers) > 0 {
-					data.Ramp.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityRampDestination.Config.Headers))
-					for key11, value11 := range dataItem.ObservabilityDestinationObservabilityRampDestination.Config.Headers {
-						data.Ramp.Config.Headers[key11] = types.StringValue(value11)
-					}
-				}
 				data.Ramp.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityRampDestination.CreatedAt)
 				data.Ramp.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityRampDestination.Enabled)
 				if dataItem.ObservabilityDestinationObservabilityRampDestination.FilterRules == nil {
@@ -1027,20 +942,11 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.S3.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.BroadcastGenerationIdentity)
 				data.S3.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.BroadcastGenerationRequestContext)
 				data.S3.Config = &tfTypes.ObservabilityDestinationConfigS3{}
-				data.S3.Config.AccessKeyID = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.AccessKeyID)
 				data.S3.Config.BucketName = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.BucketName)
 				data.S3.Config.Endpoint = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Endpoint)
-				if len(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Headers) > 0 {
-					data.S3.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Headers))
-					for key12, value12 := range dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Headers {
-						data.S3.Config.Headers[key12] = types.StringValue(value12)
-					}
-				}
 				data.S3.Config.PathTemplate = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.PathTemplate)
 				data.S3.Config.Prefix = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Prefix)
 				data.S3.Config.Region = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Region)
-				data.S3.Config.SecretAccessKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.SecretAccessKey)
-				data.S3.Config.SessionToken = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.SessionToken)
 				data.S3.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.CreatedAt)
 				data.S3.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Enabled)
 				if dataItem.ObservabilityDestinationObservabilityS3Destination.FilterRules == nil {
@@ -1114,13 +1020,6 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Sentry.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.BroadcastGenerationIdentity)
 				data.Sentry.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.BroadcastGenerationRequestContext)
 				data.Sentry.Config = &tfTypes.ObservabilityDestinationConfigSentry{}
-				data.Sentry.Config.Dsn = types.StringValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.Config.Dsn)
-				if len(dataItem.ObservabilityDestinationObservabilitySentryDestination.Config.Headers) > 0 {
-					data.Sentry.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilitySentryDestination.Config.Headers))
-					for key13, value13 := range dataItem.ObservabilityDestinationObservabilitySentryDestination.Config.Headers {
-						data.Sentry.Config.Headers[key13] = types.StringValue(value13)
-					}
-				}
 				data.Sentry.Config.OtlpEndpoint = types.StringValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.Config.OtlpEndpoint)
 				data.Sentry.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.CreatedAt)
 				data.Sentry.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySentryDestination.Enabled)
@@ -1197,16 +1096,9 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Snowflake.Config = &tfTypes.ObservabilityDestinationConfigSnowflake{}
 				data.Snowflake.Config.Account = types.StringValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Account)
 				data.Snowflake.Config.Database = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Database)
-				if len(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Headers) > 0 {
-					data.Snowflake.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Headers))
-					for key14, value14 := range dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Headers {
-						data.Snowflake.Config.Headers[key14] = types.StringValue(value14)
-					}
-				}
 				data.Snowflake.Config.Schema = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Schema)
 				data.Snowflake.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.ShouldIncludeCacheWriteTokens)
 				data.Snowflake.Config.Table = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Table)
-				data.Snowflake.Config.Token = types.StringValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Token)
 				data.Snowflake.Config.Warehouse = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Config.Warehouse)
 				data.Snowflake.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.CreatedAt)
 				data.Snowflake.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilitySnowflakeDestination.Enabled)
@@ -1281,15 +1173,8 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Weave.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.BroadcastGenerationIdentity)
 				data.Weave.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.BroadcastGenerationRequestContext)
 				data.Weave.Config = &tfTypes.ObservabilityDestinationConfigWeave{}
-				data.Weave.Config.APIKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.APIKey)
 				data.Weave.Config.BaseURL = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.BaseURL)
 				data.Weave.Config.Entity = types.StringValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.Entity)
-				if len(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.Headers) > 0 {
-					data.Weave.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.Headers))
-					for key15, value15 := range dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.Headers {
-						data.Weave.Config.Headers[key15] = types.StringValue(value15)
-					}
-				}
 				data.Weave.Config.Project = types.StringValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Config.Project)
 				data.Weave.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.CreatedAt)
 				data.Weave.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWeaveDestination.Enabled)
@@ -1364,12 +1249,6 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.Webhook.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.BroadcastGenerationIdentity)
 				data.Webhook.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityWebhookDestination.BroadcastGenerationRequestContext)
 				data.Webhook.Config = &tfTypes.ObservabilityDestinationConfigWebhook{}
-				if len(dataItem.ObservabilityDestinationObservabilityWebhookDestination.Config.Headers) > 0 {
-					data.Webhook.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityWebhookDestination.Config.Headers))
-					for key16, value16 := range dataItem.ObservabilityDestinationObservabilityWebhookDestination.Config.Headers {
-						data.Webhook.Config.Headers[key16] = types.StringValue(value16)
-					}
-				}
 				if dataItem.ObservabilityDestinationObservabilityWebhookDestination.Config.Method != nil {
 					data.Webhook.Config.Method = types.StringValue(string(*dataItem.ObservabilityDestinationObservabilityWebhookDestination.Config.Method))
 				} else {

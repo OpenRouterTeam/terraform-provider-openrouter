@@ -8,7 +8,5 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigSentry struct {
-	Dsn          types.String            `tfsdk:"dsn"`
-	Headers      map[string]types.String `tfsdk:"headers"`
-	OtlpEndpoint types.String            `tfsdk:"otlp_endpoint"`
+	OtlpEndpoint types.String `tfsdk:"otlp_endpoint"`
 }

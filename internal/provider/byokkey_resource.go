@@ -139,6 +139,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 			"key": schema.StringAttribute{
 				Required:    true,
 				Sensitive:   true,
+				WriteOnly:   true,
 				Description: `The raw provider API key or credential. This value is encrypted at rest and never returned in API responses.`,
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
@@ -321,8 +322,21 @@ func (r *ByokKeyResource) Configure(ctx context.Context, req resource.ConfigureR
 }
 
 func (r *ByokKeyResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data *ByokKeyResourceModel
-	var plan types.Object
+	var (
+		configData ByokKeyResourceModel
+		data       ByokKeyResourceModel
+		plan       types.Object
+	)
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	opts := &ByokKeyResourceModelOptions{
+		Config: &configData,
+	}
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
@@ -340,7 +354,7 @@ func (r *ByokKeyResource) Create(ctx context.Context, req resource.CreateRequest
 
 	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
 
-	request, requestDiags := data.ToSharedCreateBYOKKeyRequest(ctx)
+	request, requestDiags := data.ToSharedCreateBYOKKeyRequest(ctx, opts)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -402,7 +416,7 @@ func (r *ByokKeyResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	ctx = withSensitiveValues(ctx, req.State)
 
-	request, requestDiags := data.ToOperationsGetBYOKKeyRequest(ctx)
+	request, requestDiags := data.ToOperationsGetBYOKKeyRequest(ctx, nil)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -443,8 +457,29 @@ func (r *ByokKeyResource) Read(ctx context.Context, req resource.ReadRequest, re
 }
 
 func (r *ByokKeyResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data *ByokKeyResourceModel
-	var plan types.Object
+	var (
+		configData ByokKeyResourceModel
+		data       ByokKeyResourceModel
+		plan       types.Object
+		stateData  ByokKeyResourceModel
+	)
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &stateData)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	opts := &ByokKeyResourceModelOptions{
+		Config: &configData,
+		State:  &stateData,
+	}
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
@@ -458,7 +493,7 @@ func (r *ByokKeyResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
 
-	request, requestDiags := data.ToOperationsUpdateBYOKKeyRequest(ctx)
+	request, requestDiags := data.ToOperationsUpdateBYOKKeyRequest(ctx, opts)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -520,7 +555,7 @@ func (r *ByokKeyResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 	ctx = withSensitiveValues(ctx, req.State)
 
-	request, requestDiags := data.ToOperationsDeleteBYOKKeyRequest(ctx)
+	request, requestDiags := data.ToOperationsDeleteBYOKKeyRequest(ctx, nil)
 	resp.Diagnostics.Append(requestDiags...)
 
 	if resp.Diagnostics.HasError() {

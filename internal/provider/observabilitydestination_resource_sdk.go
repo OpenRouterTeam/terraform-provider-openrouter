@@ -13,6 +13,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+// ObservabilityDestinationResourceModelOptions enables patch sdk method construction.
+type ObservabilityDestinationResourceModelOptions struct {
+	Config *ObservabilityDestinationResourceModel
+	State  *ObservabilityDestinationResourceModel
+}
+
 func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabilityDestinationResponse(ctx context.Context, resp *shared.CreateObservabilityDestinationResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -48,16 +54,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Arize.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Arize.BroadcastGenerationRequestContext
 		r.Arize.Config = &tfTypes.GetObservabilityDestinationResponseConfigArize{}
-		r.Arize.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.Config.APIKey)
 		r.Arize.Config.BaseURL = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.Config.BaseURL)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers) > 0 {
-			r.Arize.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers))
-			for key, value := range resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers {
-				r.Arize.Config.Headers[key] = types.StringValue(value)
-			}
-		}
 		r.Arize.Config.ModelID = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.Config.ModelID)
-		r.Arize.Config.SpaceKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.Config.SpaceKey)
 		r.Arize.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.CreatedAt)
 		r.CreatedAt = r.Arize.CreatedAt
 		r.Arize.Enabled = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityArizeDestination.Enabled)
@@ -134,14 +132,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Braintrust.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Braintrust.BroadcastGenerationRequestContext
 		r.Braintrust.Config = &tfTypes.GetObservabilityDestinationResponseConfigBraintrust{}
-		r.Braintrust.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.APIKey)
 		r.Braintrust.Config.BaseURL = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.BaseURL)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers) > 0 {
-			r.Braintrust.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers))
-			for key1, value1 := range resp.CreateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers {
-				r.Braintrust.Config.Headers[key1] = types.StringValue(value1)
-			}
-		}
 		r.Braintrust.Config.ProjectID = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.ProjectID)
 		r.Braintrust.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityBraintrustDestination.CreatedAt)
 		r.CreatedAt = r.Braintrust.CreatedAt
@@ -220,14 +211,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.BroadcastGenerationRequestContext = r.Clickhouse.BroadcastGenerationRequestContext
 		r.Clickhouse.Config = &tfTypes.GetObservabilityDestinationResponseConfigClickhouse{}
 		r.Clickhouse.Config.Database = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Database)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers) > 0 {
-			r.Clickhouse.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers))
-			for key2, value2 := range resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers {
-				r.Clickhouse.Config.Headers[key2] = types.StringValue(value2)
-			}
-		}
 		r.Clickhouse.Config.Host = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Host)
-		r.Clickhouse.Config.Password = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Password)
 		r.Clickhouse.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.ShouldIncludeCacheWriteTokens)
 		r.Clickhouse.Config.Table = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Table)
 		r.Clickhouse.Config.Username = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Username)
@@ -307,13 +291,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Datadog.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Datadog.BroadcastGenerationRequestContext
 		r.Datadog.Config = &tfTypes.GetObservabilityDestinationResponseConfigDatadog{}
-		r.Datadog.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityDatadogDestination.Config.APIKey)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers) > 0 {
-			r.Datadog.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers))
-			for key3, value3 := range resp.CreateObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers {
-				r.Datadog.Config.Headers[key3] = types.StringValue(value3)
-			}
-		}
 		r.Datadog.Config.MlApp = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityDatadogDestination.Config.MlApp)
 		r.Datadog.Config.URL = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityDatadogDestination.Config.URL)
 		r.Datadog.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityDatadogDestination.CreatedAt)
@@ -392,14 +369,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Grafana.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Grafana.BroadcastGenerationRequestContext
 		r.Grafana.Config = &tfTypes.GetObservabilityDestinationResponseConfigGrafana{}
-		r.Grafana.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.APIKey)
 		r.Grafana.Config.BaseURL = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.BaseURL)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers) > 0 {
-			r.Grafana.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers))
-			for key4, value4 := range resp.CreateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers {
-				r.Grafana.Config.Headers[key4] = types.StringValue(value4)
-			}
-		}
 		r.Grafana.Config.InstanceID = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.InstanceID)
 		r.Grafana.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityGrafanaDestination.CreatedAt)
 		r.CreatedAt = r.Grafana.CreatedAt
@@ -478,14 +448,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.BroadcastGenerationRequestContext = r.Langfuse.BroadcastGenerationRequestContext
 		r.Langfuse.Config = &tfTypes.GetObservabilityDestinationResponseConfigLangfuse{}
 		r.Langfuse.Config.BaseURL = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.BaseURL)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers) > 0 {
-			r.Langfuse.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers))
-			for key5, value5 := range resp.CreateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers {
-				r.Langfuse.Config.Headers[key5] = types.StringValue(value5)
-			}
-		}
-		r.Langfuse.Config.PublicKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.PublicKey)
-		r.Langfuse.Config.SecretKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.SecretKey)
 		r.Langfuse.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityLangfuseDestination.CreatedAt)
 		r.CreatedAt = r.Langfuse.CreatedAt
 		r.Langfuse.Enabled = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityLangfuseDestination.Enabled)
@@ -562,14 +524,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Langsmith.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Langsmith.BroadcastGenerationRequestContext
 		r.Langsmith.Config = &tfTypes.GetObservabilityDestinationResponseConfigLangsmith{}
-		r.Langsmith.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.APIKey)
 		r.Langsmith.Config.Endpoint = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Endpoint)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers) > 0 {
-			r.Langsmith.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers))
-			for key6, value6 := range resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers {
-				r.Langsmith.Config.Headers[key6] = types.StringValue(value6)
-			}
-		}
 		r.Langsmith.Config.Project = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Project)
 		r.Langsmith.Config.WorkspaceID = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.WorkspaceID)
 		r.Langsmith.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityLangsmithDestination.CreatedAt)
@@ -648,13 +603,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Newrelic.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Newrelic.BroadcastGenerationRequestContext
 		r.Newrelic.Config = &tfTypes.GetObservabilityDestinationResponseConfigNewrelic{}
-		if len(resp.CreateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers) > 0 {
-			r.Newrelic.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers))
-			for key7, value7 := range resp.CreateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers {
-				r.Newrelic.Config.Headers[key7] = types.StringValue(value7)
-			}
-		}
-		r.Newrelic.Config.LicenseKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.LicenseKey)
 		if resp.CreateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Region != nil {
 			r.Newrelic.Config.Region = types.StringValue(string(*resp.CreateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Region))
 		} else {
@@ -736,13 +684,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Opik.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Opik.BroadcastGenerationRequestContext
 		r.Opik.Config = &tfTypes.GetObservabilityDestinationResponseConfigOpik{}
-		r.Opik.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityOpikDestination.Config.APIKey)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers) > 0 {
-			r.Opik.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers))
-			for key8, value8 := range resp.CreateObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers {
-				r.Opik.Config.Headers[key8] = types.StringValue(value8)
-			}
-		}
 		r.Opik.Config.ProjectName = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityOpikDestination.Config.ProjectName)
 		r.Opik.Config.Workspace = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityOpikDestination.Config.Workspace)
 		r.Opik.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityOpikDestination.CreatedAt)
@@ -822,12 +763,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.BroadcastGenerationRequestContext = r.OtelCollector.BroadcastGenerationRequestContext
 		r.OtelCollector.Config = &tfTypes.GetObservabilityDestinationResponseConfigOtelCollector{}
 		r.OtelCollector.Config.Endpoint = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Endpoint)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers) > 0 {
-			r.OtelCollector.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers))
-			for key9, value9 := range resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers {
-				r.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
-			}
-		}
 		r.OtelCollector.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.CreatedAt)
 		r.CreatedAt = r.OtelCollector.CreatedAt
 		r.OtelCollector.Enabled = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Enabled)
@@ -904,14 +839,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Posthog.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Posthog.BroadcastGenerationRequestContext
 		r.Posthog.Config = &tfTypes.GetObservabilityDestinationResponseConfigPosthog{}
-		r.Posthog.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityPosthogDestination.Config.APIKey)
 		r.Posthog.Config.Endpoint = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityPosthogDestination.Config.Endpoint)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers) > 0 {
-			r.Posthog.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers))
-			for key10, value10 := range resp.CreateObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers {
-				r.Posthog.Config.Headers[key10] = types.StringValue(value10)
-			}
-		}
 		r.Posthog.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityPosthogDestination.CreatedAt)
 		r.CreatedAt = r.Posthog.CreatedAt
 		r.Posthog.Enabled = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityPosthogDestination.Enabled)
@@ -988,14 +916,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Ramp.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Ramp.BroadcastGenerationRequestContext
 		r.Ramp.Config = &tfTypes.GetObservabilityDestinationResponseConfigRamp{}
-		r.Ramp.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityRampDestination.Config.APIKey)
 		r.Ramp.Config.BaseURL = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityRampDestination.Config.BaseURL)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityRampDestination.Config.Headers) > 0 {
-			r.Ramp.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityRampDestination.Config.Headers))
-			for key11, value11 := range resp.CreateObservabilityDestinationResponseObservabilityRampDestination.Config.Headers {
-				r.Ramp.Config.Headers[key11] = types.StringValue(value11)
-			}
-		}
 		r.Ramp.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityRampDestination.CreatedAt)
 		r.CreatedAt = r.Ramp.CreatedAt
 		r.Ramp.Enabled = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityRampDestination.Enabled)
@@ -1072,20 +993,11 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.S3.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.S3.BroadcastGenerationRequestContext
 		r.S3.Config = &tfTypes.GetObservabilityDestinationResponseConfigS3{}
-		r.S3.Config.AccessKeyID = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.AccessKeyID)
 		r.S3.Config.BucketName = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.BucketName)
 		r.S3.Config.Endpoint = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.Endpoint)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.Headers) > 0 {
-			r.S3.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.Headers))
-			for key12, value12 := range resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.Headers {
-				r.S3.Config.Headers[key12] = types.StringValue(value12)
-			}
-		}
 		r.S3.Config.PathTemplate = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.PathTemplate)
 		r.S3.Config.Prefix = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.Prefix)
 		r.S3.Config.Region = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.Region)
-		r.S3.Config.SecretAccessKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.SecretAccessKey)
-		r.S3.Config.SessionToken = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Config.SessionToken)
 		r.S3.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.CreatedAt)
 		r.CreatedAt = r.S3.CreatedAt
 		r.S3.Enabled = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityS3Destination.Enabled)
@@ -1162,13 +1074,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Sentry.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Sentry.BroadcastGenerationRequestContext
 		r.Sentry.Config = &tfTypes.GetObservabilityDestinationResponseConfigSentry{}
-		r.Sentry.Config.Dsn = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilitySentryDestination.Config.Dsn)
-		if len(resp.CreateObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers) > 0 {
-			r.Sentry.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers))
-			for key13, value13 := range resp.CreateObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers {
-				r.Sentry.Config.Headers[key13] = types.StringValue(value13)
-			}
-		}
 		r.Sentry.Config.OtlpEndpoint = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilitySentryDestination.Config.OtlpEndpoint)
 		r.Sentry.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilitySentryDestination.CreatedAt)
 		r.CreatedAt = r.Sentry.CreatedAt
@@ -1248,16 +1153,9 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Snowflake.Config = &tfTypes.GetObservabilityDestinationResponseConfigSnowflake{}
 		r.Snowflake.Config.Account = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Account)
 		r.Snowflake.Config.Database = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Database)
-		if len(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers) > 0 {
-			r.Snowflake.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers))
-			for key14, value14 := range resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers {
-				r.Snowflake.Config.Headers[key14] = types.StringValue(value14)
-			}
-		}
 		r.Snowflake.Config.Schema = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Schema)
 		r.Snowflake.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.ShouldIncludeCacheWriteTokens)
 		r.Snowflake.Config.Table = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Table)
-		r.Snowflake.Config.Token = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Token)
 		r.Snowflake.Config.Warehouse = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Warehouse)
 		r.Snowflake.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilitySnowflakeDestination.CreatedAt)
 		r.CreatedAt = r.Snowflake.CreatedAt
@@ -1335,15 +1233,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Weave.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Weave.BroadcastGenerationRequestContext
 		r.Weave.Config = &tfTypes.GetObservabilityDestinationResponseConfigWeave{}
-		r.Weave.Config.APIKey = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.Config.APIKey)
 		r.Weave.Config.BaseURL = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.Config.BaseURL)
 		r.Weave.Config.Entity = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Entity)
-		if len(resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers) > 0 {
-			r.Weave.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers))
-			for key15, value15 := range resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers {
-				r.Weave.Config.Headers[key15] = types.StringValue(value15)
-			}
-		}
 		r.Weave.Config.Project = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Project)
 		r.Weave.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityWeaveDestination.CreatedAt)
 		r.CreatedAt = r.Weave.CreatedAt
@@ -1421,12 +1312,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 		r.Webhook.BroadcastGenerationRequestContext = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Webhook.BroadcastGenerationRequestContext
 		r.Webhook.Config = &tfTypes.GetObservabilityDestinationResponseConfigWebhook{}
-		if len(resp.CreateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers) > 0 {
-			r.Webhook.Config.Headers = make(map[string]types.String, len(resp.CreateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers))
-			for key16, value16 := range resp.CreateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers {
-				r.Webhook.Config.Headers[key16] = types.StringValue(value16)
-			}
-		}
 		if resp.CreateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Method != nil {
 			r.Webhook.Config.Method = types.StringValue(string(*resp.CreateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Method))
 		} else {
@@ -1531,16 +1416,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Arize.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Arize.BroadcastGenerationRequestContext
 		r.Arize.Config = &tfTypes.GetObservabilityDestinationResponseConfigArize{}
-		r.Arize.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.APIKey)
 		r.Arize.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.BaseURL)
-		if len(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers) > 0 {
-			r.Arize.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers))
-			for key, value := range resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers {
-				r.Arize.Config.Headers[key] = types.StringValue(value)
-			}
-		}
 		r.Arize.Config.ModelID = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.ModelID)
-		r.Arize.Config.SpaceKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Config.SpaceKey)
 		r.Arize.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.CreatedAt)
 		r.CreatedAt = r.Arize.CreatedAt
 		r.Arize.Enabled = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.Enabled)
@@ -1617,14 +1494,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Braintrust.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Braintrust.BroadcastGenerationRequestContext
 		r.Braintrust.Config = &tfTypes.GetObservabilityDestinationResponseConfigBraintrust{}
-		r.Braintrust.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Config.APIKey)
 		r.Braintrust.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Config.BaseURL)
-		if len(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers) > 0 {
-			r.Braintrust.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers))
-			for key1, value1 := range resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers {
-				r.Braintrust.Config.Headers[key1] = types.StringValue(value1)
-			}
-		}
 		r.Braintrust.Config.ProjectID = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.Config.ProjectID)
 		r.Braintrust.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.CreatedAt)
 		r.CreatedAt = r.Braintrust.CreatedAt
@@ -1703,14 +1573,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.BroadcastGenerationRequestContext = r.Clickhouse.BroadcastGenerationRequestContext
 		r.Clickhouse.Config = &tfTypes.GetObservabilityDestinationResponseConfigClickhouse{}
 		r.Clickhouse.Config.Database = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Database)
-		if len(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers) > 0 {
-			r.Clickhouse.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers))
-			for key2, value2 := range resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers {
-				r.Clickhouse.Config.Headers[key2] = types.StringValue(value2)
-			}
-		}
 		r.Clickhouse.Config.Host = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Host)
-		r.Clickhouse.Config.Password = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Password)
 		r.Clickhouse.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.ShouldIncludeCacheWriteTokens)
 		r.Clickhouse.Config.Table = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Table)
 		r.Clickhouse.Config.Username = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Username)
@@ -1790,13 +1653,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Datadog.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Datadog.BroadcastGenerationRequestContext
 		r.Datadog.Config = &tfTypes.GetObservabilityDestinationResponseConfigDatadog{}
-		r.Datadog.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Config.APIKey)
-		if len(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers) > 0 {
-			r.Datadog.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers))
-			for key3, value3 := range resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers {
-				r.Datadog.Config.Headers[key3] = types.StringValue(value3)
-			}
-		}
 		r.Datadog.Config.MlApp = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Config.MlApp)
 		r.Datadog.Config.URL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.Config.URL)
 		r.Datadog.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.CreatedAt)
@@ -1875,14 +1731,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Grafana.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Grafana.BroadcastGenerationRequestContext
 		r.Grafana.Config = &tfTypes.GetObservabilityDestinationResponseConfigGrafana{}
-		r.Grafana.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Config.APIKey)
 		r.Grafana.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Config.BaseURL)
-		if len(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers) > 0 {
-			r.Grafana.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers))
-			for key4, value4 := range resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers {
-				r.Grafana.Config.Headers[key4] = types.StringValue(value4)
-			}
-		}
 		r.Grafana.Config.InstanceID = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.Config.InstanceID)
 		r.Grafana.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.CreatedAt)
 		r.CreatedAt = r.Grafana.CreatedAt
@@ -1961,14 +1810,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.BroadcastGenerationRequestContext = r.Langfuse.BroadcastGenerationRequestContext
 		r.Langfuse.Config = &tfTypes.GetObservabilityDestinationResponseConfigLangfuse{}
 		r.Langfuse.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Config.BaseURL)
-		if len(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers) > 0 {
-			r.Langfuse.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers))
-			for key5, value5 := range resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers {
-				r.Langfuse.Config.Headers[key5] = types.StringValue(value5)
-			}
-		}
-		r.Langfuse.Config.PublicKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Config.PublicKey)
-		r.Langfuse.Config.SecretKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Config.SecretKey)
 		r.Langfuse.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.CreatedAt)
 		r.CreatedAt = r.Langfuse.CreatedAt
 		r.Langfuse.Enabled = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.Enabled)
@@ -2045,14 +1886,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Langsmith.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Langsmith.BroadcastGenerationRequestContext
 		r.Langsmith.Config = &tfTypes.GetObservabilityDestinationResponseConfigLangsmith{}
-		r.Langsmith.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.APIKey)
 		r.Langsmith.Config.Endpoint = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Endpoint)
-		if len(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers) > 0 {
-			r.Langsmith.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers))
-			for key6, value6 := range resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers {
-				r.Langsmith.Config.Headers[key6] = types.StringValue(value6)
-			}
-		}
 		r.Langsmith.Config.Project = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Project)
 		r.Langsmith.Config.WorkspaceID = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.Config.WorkspaceID)
 		r.Langsmith.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.CreatedAt)
@@ -2131,13 +1965,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Newrelic.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Newrelic.BroadcastGenerationRequestContext
 		r.Newrelic.Config = &tfTypes.GetObservabilityDestinationResponseConfigNewrelic{}
-		if len(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers) > 0 {
-			r.Newrelic.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers))
-			for key7, value7 := range resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers {
-				r.Newrelic.Config.Headers[key7] = types.StringValue(value7)
-			}
-		}
-		r.Newrelic.Config.LicenseKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Config.LicenseKey)
 		if resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Region != nil {
 			r.Newrelic.Config.Region = types.StringValue(string(*resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Region))
 		} else {
@@ -2219,13 +2046,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Opik.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Opik.BroadcastGenerationRequestContext
 		r.Opik.Config = &tfTypes.GetObservabilityDestinationResponseConfigOpik{}
-		r.Opik.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Config.APIKey)
-		if len(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers) > 0 {
-			r.Opik.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers))
-			for key8, value8 := range resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers {
-				r.Opik.Config.Headers[key8] = types.StringValue(value8)
-			}
-		}
 		r.Opik.Config.ProjectName = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Config.ProjectName)
 		r.Opik.Config.Workspace = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.Config.Workspace)
 		r.Opik.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.CreatedAt)
@@ -2305,12 +2125,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.BroadcastGenerationRequestContext = r.OtelCollector.BroadcastGenerationRequestContext
 		r.OtelCollector.Config = &tfTypes.GetObservabilityDestinationResponseConfigOtelCollector{}
 		r.OtelCollector.Config.Endpoint = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Endpoint)
-		if len(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers) > 0 {
-			r.OtelCollector.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers))
-			for key9, value9 := range resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers {
-				r.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
-			}
-		}
 		r.OtelCollector.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.CreatedAt)
 		r.CreatedAt = r.OtelCollector.CreatedAt
 		r.OtelCollector.Enabled = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Enabled)
@@ -2387,14 +2201,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Posthog.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Posthog.BroadcastGenerationRequestContext
 		r.Posthog.Config = &tfTypes.GetObservabilityDestinationResponseConfigPosthog{}
-		r.Posthog.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Config.APIKey)
 		r.Posthog.Config.Endpoint = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Config.Endpoint)
-		if len(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers) > 0 {
-			r.Posthog.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers))
-			for key10, value10 := range resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers {
-				r.Posthog.Config.Headers[key10] = types.StringValue(value10)
-			}
-		}
 		r.Posthog.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.CreatedAt)
 		r.CreatedAt = r.Posthog.CreatedAt
 		r.Posthog.Enabled = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.Enabled)
@@ -2471,14 +2278,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Ramp.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Ramp.BroadcastGenerationRequestContext
 		r.Ramp.Config = &tfTypes.GetObservabilityDestinationResponseConfigRamp{}
-		r.Ramp.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.Config.APIKey)
 		r.Ramp.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.Config.BaseURL)
-		if len(resp.GetObservabilityDestinationResponseObservabilityRampDestination.Config.Headers) > 0 {
-			r.Ramp.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityRampDestination.Config.Headers))
-			for key11, value11 := range resp.GetObservabilityDestinationResponseObservabilityRampDestination.Config.Headers {
-				r.Ramp.Config.Headers[key11] = types.StringValue(value11)
-			}
-		}
 		r.Ramp.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.CreatedAt)
 		r.CreatedAt = r.Ramp.CreatedAt
 		r.Ramp.Enabled = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.Enabled)
@@ -2555,20 +2355,11 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.S3.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.S3.BroadcastGenerationRequestContext
 		r.S3.Config = &tfTypes.GetObservabilityDestinationResponseConfigS3{}
-		r.S3.Config.AccessKeyID = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.AccessKeyID)
 		r.S3.Config.BucketName = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.BucketName)
 		r.S3.Config.Endpoint = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.Endpoint)
-		if len(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.Headers) > 0 {
-			r.S3.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.Headers))
-			for key12, value12 := range resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.Headers {
-				r.S3.Config.Headers[key12] = types.StringValue(value12)
-			}
-		}
 		r.S3.Config.PathTemplate = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.PathTemplate)
 		r.S3.Config.Prefix = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.Prefix)
 		r.S3.Config.Region = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.Region)
-		r.S3.Config.SecretAccessKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.SecretAccessKey)
-		r.S3.Config.SessionToken = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Config.SessionToken)
 		r.S3.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.CreatedAt)
 		r.CreatedAt = r.S3.CreatedAt
 		r.S3.Enabled = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.Enabled)
@@ -2645,13 +2436,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Sentry.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Sentry.BroadcastGenerationRequestContext
 		r.Sentry.Config = &tfTypes.GetObservabilityDestinationResponseConfigSentry{}
-		r.Sentry.Config.Dsn = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Config.Dsn)
-		if len(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers) > 0 {
-			r.Sentry.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers))
-			for key13, value13 := range resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers {
-				r.Sentry.Config.Headers[key13] = types.StringValue(value13)
-			}
-		}
 		r.Sentry.Config.OtlpEndpoint = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.Config.OtlpEndpoint)
 		r.Sentry.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.CreatedAt)
 		r.CreatedAt = r.Sentry.CreatedAt
@@ -2731,16 +2515,9 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Snowflake.Config = &tfTypes.GetObservabilityDestinationResponseConfigSnowflake{}
 		r.Snowflake.Config.Account = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Account)
 		r.Snowflake.Config.Database = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Database)
-		if len(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers) > 0 {
-			r.Snowflake.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers))
-			for key14, value14 := range resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers {
-				r.Snowflake.Config.Headers[key14] = types.StringValue(value14)
-			}
-		}
 		r.Snowflake.Config.Schema = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Schema)
 		r.Snowflake.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.ShouldIncludeCacheWriteTokens)
 		r.Snowflake.Config.Table = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Table)
-		r.Snowflake.Config.Token = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Token)
 		r.Snowflake.Config.Warehouse = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Warehouse)
 		r.Snowflake.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.CreatedAt)
 		r.CreatedAt = r.Snowflake.CreatedAt
@@ -2818,15 +2595,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Weave.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Weave.BroadcastGenerationRequestContext
 		r.Weave.Config = &tfTypes.GetObservabilityDestinationResponseConfigWeave{}
-		r.Weave.Config.APIKey = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.APIKey)
 		r.Weave.Config.BaseURL = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.BaseURL)
 		r.Weave.Config.Entity = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.Entity)
-		if len(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers) > 0 {
-			r.Weave.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers))
-			for key15, value15 := range resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers {
-				r.Weave.Config.Headers[key15] = types.StringValue(value15)
-			}
-		}
 		r.Weave.Config.Project = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.Config.Project)
 		r.Weave.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.CreatedAt)
 		r.CreatedAt = r.Weave.CreatedAt
@@ -2904,12 +2674,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 		r.Webhook.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Webhook.BroadcastGenerationRequestContext
 		r.Webhook.Config = &tfTypes.GetObservabilityDestinationResponseConfigWebhook{}
-		if len(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers) > 0 {
-			r.Webhook.Config.Headers = make(map[string]types.String, len(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers))
-			for key16, value16 := range resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers {
-				r.Webhook.Config.Headers[key16] = types.StringValue(value16)
-			}
-		}
 		if resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Config.Method != nil {
 			r.Webhook.Config.Method = types.StringValue(string(*resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.Config.Method))
 		} else {
@@ -3014,16 +2778,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Arize.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Arize.BroadcastGenerationRequestContext
 		r.Arize.Config = &tfTypes.GetObservabilityDestinationResponseConfigArize{}
-		r.Arize.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.Config.APIKey)
 		r.Arize.Config.BaseURL = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.Config.BaseURL)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers) > 0 {
-			r.Arize.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers))
-			for key, value := range resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.Config.Headers {
-				r.Arize.Config.Headers[key] = types.StringValue(value)
-			}
-		}
 		r.Arize.Config.ModelID = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.Config.ModelID)
-		r.Arize.Config.SpaceKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.Config.SpaceKey)
 		r.Arize.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.CreatedAt)
 		r.CreatedAt = r.Arize.CreatedAt
 		r.Arize.Enabled = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityArizeDestination.Enabled)
@@ -3100,14 +2856,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Braintrust.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Braintrust.BroadcastGenerationRequestContext
 		r.Braintrust.Config = &tfTypes.GetObservabilityDestinationResponseConfigBraintrust{}
-		r.Braintrust.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.APIKey)
 		r.Braintrust.Config.BaseURL = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.BaseURL)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers) > 0 {
-			r.Braintrust.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers))
-			for key1, value1 := range resp.UpdateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.Headers {
-				r.Braintrust.Config.Headers[key1] = types.StringValue(value1)
-			}
-		}
 		r.Braintrust.Config.ProjectID = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityBraintrustDestination.Config.ProjectID)
 		r.Braintrust.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityBraintrustDestination.CreatedAt)
 		r.CreatedAt = r.Braintrust.CreatedAt
@@ -3186,14 +2935,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.BroadcastGenerationRequestContext = r.Clickhouse.BroadcastGenerationRequestContext
 		r.Clickhouse.Config = &tfTypes.GetObservabilityDestinationResponseConfigClickhouse{}
 		r.Clickhouse.Config.Database = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Database)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers) > 0 {
-			r.Clickhouse.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers))
-			for key2, value2 := range resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Headers {
-				r.Clickhouse.Config.Headers[key2] = types.StringValue(value2)
-			}
-		}
 		r.Clickhouse.Config.Host = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Host)
-		r.Clickhouse.Config.Password = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Password)
 		r.Clickhouse.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.ShouldIncludeCacheWriteTokens)
 		r.Clickhouse.Config.Table = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Table)
 		r.Clickhouse.Config.Username = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityClickhouseDestination.Config.Username)
@@ -3273,13 +3015,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Datadog.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Datadog.BroadcastGenerationRequestContext
 		r.Datadog.Config = &tfTypes.GetObservabilityDestinationResponseConfigDatadog{}
-		r.Datadog.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityDatadogDestination.Config.APIKey)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers) > 0 {
-			r.Datadog.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers))
-			for key3, value3 := range resp.UpdateObservabilityDestinationResponseObservabilityDatadogDestination.Config.Headers {
-				r.Datadog.Config.Headers[key3] = types.StringValue(value3)
-			}
-		}
 		r.Datadog.Config.MlApp = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityDatadogDestination.Config.MlApp)
 		r.Datadog.Config.URL = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityDatadogDestination.Config.URL)
 		r.Datadog.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityDatadogDestination.CreatedAt)
@@ -3358,14 +3093,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Grafana.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Grafana.BroadcastGenerationRequestContext
 		r.Grafana.Config = &tfTypes.GetObservabilityDestinationResponseConfigGrafana{}
-		r.Grafana.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.APIKey)
 		r.Grafana.Config.BaseURL = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.BaseURL)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers) > 0 {
-			r.Grafana.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers))
-			for key4, value4 := range resp.UpdateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.Headers {
-				r.Grafana.Config.Headers[key4] = types.StringValue(value4)
-			}
-		}
 		r.Grafana.Config.InstanceID = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityGrafanaDestination.Config.InstanceID)
 		r.Grafana.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityGrafanaDestination.CreatedAt)
 		r.CreatedAt = r.Grafana.CreatedAt
@@ -3444,14 +3172,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.BroadcastGenerationRequestContext = r.Langfuse.BroadcastGenerationRequestContext
 		r.Langfuse.Config = &tfTypes.GetObservabilityDestinationResponseConfigLangfuse{}
 		r.Langfuse.Config.BaseURL = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.BaseURL)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers) > 0 {
-			r.Langfuse.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers))
-			for key5, value5 := range resp.UpdateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.Headers {
-				r.Langfuse.Config.Headers[key5] = types.StringValue(value5)
-			}
-		}
-		r.Langfuse.Config.PublicKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.PublicKey)
-		r.Langfuse.Config.SecretKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityLangfuseDestination.Config.SecretKey)
 		r.Langfuse.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityLangfuseDestination.CreatedAt)
 		r.CreatedAt = r.Langfuse.CreatedAt
 		r.Langfuse.Enabled = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityLangfuseDestination.Enabled)
@@ -3528,14 +3248,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Langsmith.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Langsmith.BroadcastGenerationRequestContext
 		r.Langsmith.Config = &tfTypes.GetObservabilityDestinationResponseConfigLangsmith{}
-		r.Langsmith.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.APIKey)
 		r.Langsmith.Config.Endpoint = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Endpoint)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers) > 0 {
-			r.Langsmith.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers))
-			for key6, value6 := range resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Headers {
-				r.Langsmith.Config.Headers[key6] = types.StringValue(value6)
-			}
-		}
 		r.Langsmith.Config.Project = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.Project)
 		r.Langsmith.Config.WorkspaceID = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.Config.WorkspaceID)
 		r.Langsmith.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityLangsmithDestination.CreatedAt)
@@ -3614,13 +3327,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Newrelic.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Newrelic.BroadcastGenerationRequestContext
 		r.Newrelic.Config = &tfTypes.GetObservabilityDestinationResponseConfigNewrelic{}
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers) > 0 {
-			r.Newrelic.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers))
-			for key7, value7 := range resp.UpdateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Headers {
-				r.Newrelic.Config.Headers[key7] = types.StringValue(value7)
-			}
-		}
-		r.Newrelic.Config.LicenseKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.LicenseKey)
 		if resp.UpdateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Region != nil {
 			r.Newrelic.Config.Region = types.StringValue(string(*resp.UpdateObservabilityDestinationResponseObservabilityNewrelicDestination.Config.Region))
 		} else {
@@ -3702,13 +3408,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Opik.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Opik.BroadcastGenerationRequestContext
 		r.Opik.Config = &tfTypes.GetObservabilityDestinationResponseConfigOpik{}
-		r.Opik.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityOpikDestination.Config.APIKey)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers) > 0 {
-			r.Opik.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers))
-			for key8, value8 := range resp.UpdateObservabilityDestinationResponseObservabilityOpikDestination.Config.Headers {
-				r.Opik.Config.Headers[key8] = types.StringValue(value8)
-			}
-		}
 		r.Opik.Config.ProjectName = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityOpikDestination.Config.ProjectName)
 		r.Opik.Config.Workspace = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityOpikDestination.Config.Workspace)
 		r.Opik.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityOpikDestination.CreatedAt)
@@ -3788,12 +3487,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.BroadcastGenerationRequestContext = r.OtelCollector.BroadcastGenerationRequestContext
 		r.OtelCollector.Config = &tfTypes.GetObservabilityDestinationResponseConfigOtelCollector{}
 		r.OtelCollector.Config.Endpoint = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Endpoint)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers) > 0 {
-			r.OtelCollector.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers))
-			for key9, value9 := range resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.Headers {
-				r.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
-			}
-		}
 		r.OtelCollector.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.CreatedAt)
 		r.CreatedAt = r.OtelCollector.CreatedAt
 		r.OtelCollector.Enabled = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Enabled)
@@ -3870,14 +3563,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Posthog.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Posthog.BroadcastGenerationRequestContext
 		r.Posthog.Config = &tfTypes.GetObservabilityDestinationResponseConfigPosthog{}
-		r.Posthog.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityPosthogDestination.Config.APIKey)
 		r.Posthog.Config.Endpoint = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityPosthogDestination.Config.Endpoint)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers) > 0 {
-			r.Posthog.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers))
-			for key10, value10 := range resp.UpdateObservabilityDestinationResponseObservabilityPosthogDestination.Config.Headers {
-				r.Posthog.Config.Headers[key10] = types.StringValue(value10)
-			}
-		}
 		r.Posthog.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityPosthogDestination.CreatedAt)
 		r.CreatedAt = r.Posthog.CreatedAt
 		r.Posthog.Enabled = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityPosthogDestination.Enabled)
@@ -3954,14 +3640,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Ramp.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Ramp.BroadcastGenerationRequestContext
 		r.Ramp.Config = &tfTypes.GetObservabilityDestinationResponseConfigRamp{}
-		r.Ramp.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityRampDestination.Config.APIKey)
 		r.Ramp.Config.BaseURL = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityRampDestination.Config.BaseURL)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityRampDestination.Config.Headers) > 0 {
-			r.Ramp.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityRampDestination.Config.Headers))
-			for key11, value11 := range resp.UpdateObservabilityDestinationResponseObservabilityRampDestination.Config.Headers {
-				r.Ramp.Config.Headers[key11] = types.StringValue(value11)
-			}
-		}
 		r.Ramp.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityRampDestination.CreatedAt)
 		r.CreatedAt = r.Ramp.CreatedAt
 		r.Ramp.Enabled = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityRampDestination.Enabled)
@@ -4038,20 +3717,11 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.S3.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.S3.BroadcastGenerationRequestContext
 		r.S3.Config = &tfTypes.GetObservabilityDestinationResponseConfigS3{}
-		r.S3.Config.AccessKeyID = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.AccessKeyID)
 		r.S3.Config.BucketName = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.BucketName)
 		r.S3.Config.Endpoint = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.Endpoint)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.Headers) > 0 {
-			r.S3.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.Headers))
-			for key12, value12 := range resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.Headers {
-				r.S3.Config.Headers[key12] = types.StringValue(value12)
-			}
-		}
 		r.S3.Config.PathTemplate = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.PathTemplate)
 		r.S3.Config.Prefix = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.Prefix)
 		r.S3.Config.Region = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.Region)
-		r.S3.Config.SecretAccessKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.SecretAccessKey)
-		r.S3.Config.SessionToken = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Config.SessionToken)
 		r.S3.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.CreatedAt)
 		r.CreatedAt = r.S3.CreatedAt
 		r.S3.Enabled = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityS3Destination.Enabled)
@@ -4128,13 +3798,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Sentry.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Sentry.BroadcastGenerationRequestContext
 		r.Sentry.Config = &tfTypes.GetObservabilityDestinationResponseConfigSentry{}
-		r.Sentry.Config.Dsn = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilitySentryDestination.Config.Dsn)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers) > 0 {
-			r.Sentry.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers))
-			for key13, value13 := range resp.UpdateObservabilityDestinationResponseObservabilitySentryDestination.Config.Headers {
-				r.Sentry.Config.Headers[key13] = types.StringValue(value13)
-			}
-		}
 		r.Sentry.Config.OtlpEndpoint = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilitySentryDestination.Config.OtlpEndpoint)
 		r.Sentry.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilitySentryDestination.CreatedAt)
 		r.CreatedAt = r.Sentry.CreatedAt
@@ -4214,16 +3877,9 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Snowflake.Config = &tfTypes.GetObservabilityDestinationResponseConfigSnowflake{}
 		r.Snowflake.Config.Account = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Account)
 		r.Snowflake.Config.Database = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Database)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers) > 0 {
-			r.Snowflake.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers))
-			for key14, value14 := range resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Headers {
-				r.Snowflake.Config.Headers[key14] = types.StringValue(value14)
-			}
-		}
 		r.Snowflake.Config.Schema = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Schema)
 		r.Snowflake.Config.ShouldIncludeCacheWriteTokens = types.BoolPointerValue(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.ShouldIncludeCacheWriteTokens)
 		r.Snowflake.Config.Table = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Table)
-		r.Snowflake.Config.Token = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Token)
 		r.Snowflake.Config.Warehouse = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.Config.Warehouse)
 		r.Snowflake.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilitySnowflakeDestination.CreatedAt)
 		r.CreatedAt = r.Snowflake.CreatedAt
@@ -4301,15 +3957,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Weave.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Weave.BroadcastGenerationRequestContext
 		r.Weave.Config = &tfTypes.GetObservabilityDestinationResponseConfigWeave{}
-		r.Weave.Config.APIKey = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.Config.APIKey)
 		r.Weave.Config.BaseURL = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.Config.BaseURL)
 		r.Weave.Config.Entity = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Entity)
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers) > 0 {
-			r.Weave.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers))
-			for key15, value15 := range resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Headers {
-				r.Weave.Config.Headers[key15] = types.StringValue(value15)
-			}
-		}
 		r.Weave.Config.Project = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.Config.Project)
 		r.Weave.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityWeaveDestination.CreatedAt)
 		r.CreatedAt = r.Weave.CreatedAt
@@ -4387,12 +4036,6 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 		r.Webhook.BroadcastGenerationRequestContext = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationRequestContext)
 		r.BroadcastGenerationRequestContext = r.Webhook.BroadcastGenerationRequestContext
 		r.Webhook.Config = &tfTypes.GetObservabilityDestinationResponseConfigWebhook{}
-		if len(resp.UpdateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers) > 0 {
-			r.Webhook.Config.Headers = make(map[string]types.String, len(resp.UpdateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers))
-			for key16, value16 := range resp.UpdateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Headers {
-				r.Webhook.Config.Headers[key16] = types.StringValue(value16)
-			}
-		}
 		if resp.UpdateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Method != nil {
 			r.Webhook.Config.Method = types.StringValue(string(*resp.UpdateObservabilityDestinationResponseObservabilityWebhookDestination.Config.Method))
 		} else {
@@ -4462,7 +4105,7 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 	return diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToOperationsDeleteObservabilityDestinationRequest(ctx context.Context) (*operations.DeleteObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToOperationsDeleteObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*operations.DeleteObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
@@ -4475,7 +4118,7 @@ func (r *ObservabilityDestinationResourceModel) ToOperationsDeleteObservabilityD
 	return &out, diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToOperationsGetObservabilityDestinationRequest(ctx context.Context) (*operations.GetObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToOperationsGetObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*operations.GetObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
@@ -4488,13 +4131,13 @@ func (r *ObservabilityDestinationResourceModel) ToOperationsGetObservabilityDest
 	return &out, diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToOperationsUpdateObservabilityDestinationRequest(ctx context.Context) (*operations.UpdateObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToOperationsUpdateObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*operations.UpdateObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
 	id = r.ID.ValueString()
 
-	body, bodyDiags := r.ToSharedUpdateObservabilityDestinationRequest(ctx)
+	body, bodyDiags := r.ToSharedUpdateObservabilityDestinationRequest(ctx, opts)
 	diags.Append(bodyDiags...)
 
 	if diags.HasError() {
@@ -4509,7 +4152,7 @@ func (r *ObservabilityDestinationResourceModel) ToOperationsUpdateObservabilityD
 	return &out, diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDestinationRequest(ctx context.Context) (*shared.CreateObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*shared.CreateObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var apiKeyHashes []string
@@ -4655,7 +4298,7 @@ func (r *ObservabilityDestinationResourceModel) ToSharedCreateObservabilityDesti
 	return &out, diags
 }
 
-func (r *ObservabilityDestinationResourceModel) ToSharedUpdateObservabilityDestinationRequest(ctx context.Context) (*shared.UpdateObservabilityDestinationRequest, diag.Diagnostics) {
+func (r *ObservabilityDestinationResourceModel) ToSharedUpdateObservabilityDestinationRequest(ctx context.Context, opts *ObservabilityDestinationResourceModelOptions) (*shared.UpdateObservabilityDestinationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var apiKeyHashes []string

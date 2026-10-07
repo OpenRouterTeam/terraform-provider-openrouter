@@ -8,9 +8,7 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigLangsmith struct {
-	APIKey      types.String            `tfsdk:"api_key"`
-	Endpoint    types.String            `tfsdk:"endpoint"`
-	Headers     map[string]types.String `tfsdk:"headers"`
-	Project     types.String            `tfsdk:"project"`
-	WorkspaceID types.String            `tfsdk:"workspace_id"`
+	Endpoint    types.String `tfsdk:"endpoint"`
+	Project     types.String `tfsdk:"project"`
+	WorkspaceID types.String `tfsdk:"workspace_id"`
 }

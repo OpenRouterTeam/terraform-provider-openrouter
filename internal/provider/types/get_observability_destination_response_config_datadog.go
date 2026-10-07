@@ -8,8 +8,6 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigDatadog struct {
-	APIKey  types.String            `tfsdk:"api_key"`
-	Headers map[string]types.String `tfsdk:"headers"`
-	MlApp   types.String            `tfsdk:"ml_app"`
-	URL     types.String            `tfsdk:"url"`
+	MlApp types.String `tfsdk:"ml_app"`
+	URL   types.String `tfsdk:"url"`
 }

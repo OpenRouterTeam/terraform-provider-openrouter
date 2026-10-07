@@ -8,7 +8,5 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigPosthog struct {
-	APIKey   types.String            `tfsdk:"api_key"`
-	Endpoint types.String            `tfsdk:"endpoint"`
-	Headers  map[string]types.String `tfsdk:"headers"`
+	Endpoint types.String `tfsdk:"endpoint"`
 }

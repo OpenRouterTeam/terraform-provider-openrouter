@@ -8,7 +8,5 @@ import (
 )
 
 type GetObservabilityDestinationResponseConfigNewrelic struct {
-	Headers    map[string]types.String `tfsdk:"headers"`
-	LicenseKey types.String            `tfsdk:"license_key"`
-	Region     types.String            `tfsdk:"region"`
+	Region types.String `tfsdk:"region"`
 }
