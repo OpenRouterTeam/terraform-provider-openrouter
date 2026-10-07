@@ -476,16 +476,39 @@ actions:
     update:
       x-speakeasy-entity: PrivateProvider
 
-  # Without this, an unconfigured prompt_retention_days keeps its stored value
-  # in the plan, so turning retains_prompts off would send the old days back
-  # and the API would reject the update. The modifier lives in
-  # internal/planmodifiers/int64planmodifier/private_provider_retention_days.go;
-  # the SDK hook in internal/sdk/internal/hooks/private_provider_retention_days.go
-  # sends the planned null explicitly.
+  # Optional private provider fields are plain optional (not computed), so
+  # removing one from configuration plans null and clears it. The generated
+  # models omit nil values, so the SDK hook in
+  # internal/sdk/internal/hooks/private_provider_explicit_nulls.go sends the
+  # nulls explicitly. datacenters stays computed: the API returns [] when unset,
+  # and `datacenters = []` clears it.
+  - target: $["components"]["schemas"]["PrivateProvider"]["properties"]["privacy_policy_url"]
+    update:
+      x-speakeasy-param-computed: false
+  - target: $["components"]["schemas"]["PrivateProvider"]["properties"]["headquarters"]
+    update:
+      x-speakeasy-param-computed: false
+  - target: $["components"]["schemas"]["CreatePrivateProviderRequest"]["properties"]["privacy_policy_url"]
+    update:
+      x-speakeasy-param-computed: false
+  - target: $["components"]["schemas"]["CreatePrivateProviderRequest"]["properties"]["headquarters"]
+    update:
+      x-speakeasy-param-computed: false
+  - target: $["components"]["schemas"]["UpdatePrivateProviderRequest"]["properties"]["privacy_policy_url"]
+    update:
+      x-speakeasy-param-computed: false
+  - target: $["components"]["schemas"]["UpdatePrivateProviderRequest"]["properties"]["headquarters"]
+    update:
+      x-speakeasy-param-computed: false
   - target: $["components"]["schemas"]["PrivateProviderDataPolicy"]["properties"]["prompt_retention_days"]
     update:
-      x-speakeasy-plan-modifiers: PrivateProviderRetentionDays
-      # Generated docs and examples need days that agree with retains_prompts.
+      x-speakeasy-param-computed: false
+  - target: $["components"]["schemas"]["UpdatePrivateProviderRequest"]["properties"]["data_policy"]["properties"]["prompt_retention_days"]
+    update:
+      x-speakeasy-param-computed: false
+  # Generated docs and examples need days that agree with retains_prompts.
+  - target: $["components"]["schemas"]["PrivateProviderDataPolicy"]["properties"]["prompt_retention_days"]
+    update:
       example: 30
   - target: $["components"]["schemas"]["PrivateProviderDataPolicy"]["properties"]["retains_prompts"]
     update:

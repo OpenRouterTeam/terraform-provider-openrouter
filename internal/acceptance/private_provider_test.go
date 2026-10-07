@@ -177,6 +177,29 @@ func (s *stubPrivateProviders) checkLastPatchOmits(field string) resource.TestCh
 	}
 }
 
+// checkStoredNull fails unless the stored provider has each field set to null.
+// A field under the data policy is named "data_policy.<field>".
+func (s *stubPrivateProviders) checkStoredNull(slug string, fields ...string) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		provider, ok := s.providers[slug]
+		if !ok {
+			return fmt.Errorf("private provider %q is not stored", slug)
+		}
+		for _, field := range fields {
+			object, key := provider, field
+			if policyField, isPolicy := strings.CutPrefix(field, "data_policy."); isPolicy {
+				object, key = provider["data_policy"].(map[string]any), policyField
+			}
+			if value := object[key]; value != nil {
+				return fmt.Errorf("stored %s is %v, want null", field, value)
+			}
+		}
+		return nil
+	}
+}
+
 func (s *stubPrivateProviders) checkDestroyed(*terraform.State) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -186,17 +209,17 @@ func (s *stubPrivateProviders) checkDestroyed(*terraform.State) error {
 	return nil
 }
 
-func privateProviderConfig(serverURL, name, displayName, dataPolicy string) string {
+func privateProviderConfig(serverURL, name, displayName, details, dataPolicy string) string {
 	return stubBudgetProviderConfig(serverURL) + fmt.Sprintf(`
 resource "openrouter_private_provider" "test" {
   name         = %q
   display_name = %q
   base_url     = "https://inference.example.com/v1"
-  headquarters = "US"
   datacenters  = ["US"]
+  %s
   data_policy  = %s
 }
-`, name, displayName, dataPolicy)
+`, name, displayName, details, dataPolicy)
 }
 
 const (
@@ -205,10 +228,16 @@ const (
     retains_prompts       = true
     prompt_retention_days = 30
   }`
+	privateProviderRetainsWithoutLimit = `{
+    training        = false
+    retains_prompts = true
+  }`
 	privateProviderRetainsNothing = `{
     training        = false
     retains_prompts = false
   }`
+	privateProviderDetails = `headquarters       = "US"
+  privacy_policy_url = "https://acme.example/privacy"`
 )
 
 // UnitTest intentionally bypasses TF_ACC: every request goes to a local fixture.
@@ -220,19 +249,34 @@ func TestStubPrivateProviderLifecycle(t *testing.T) {
 		CheckDestroy:             api.checkDestroyed,
 		Steps: []resource.TestStep{
 			{
-				Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme", privateProviderRetains30Days),
+				Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme", privateProviderDetails, privateProviderRetains30Days),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(name, "slug", "acme-inference"),
+					resource.TestCheckResourceAttr(name, "headquarters", "US"),
 					resource.TestCheckResourceAttr(name, "data_policy.prompt_retention_days", "30"),
 					resource.TestCheckResourceAttr(name, "datacenters.0", "US"),
 					resource.TestCheckResourceAttrSet(name, "created_at"),
 				),
 			},
-			{Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme", privateProviderRetains30Days), PlanOnly: true},
+			{Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme", privateProviderDetails, privateProviderRetains30Days), PlanOnly: true},
 			{
-				// Turning retention off without configuring the days must send
-				// them as an explicit null rather than resend the stored 30.
-				Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme Labs", privateProviderRetainsNothing),
+				// Removing the days while retention stays on clears them.
+				Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme", privateProviderDetails, privateProviderRetainsWithoutLimit),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate),
+					},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "data_policy.retains_prompts", "true"),
+					resource.TestCheckNoResourceAttr(name, "data_policy.prompt_retention_days"),
+					api.checkStoredNull("acme-inference", "data_policy.prompt_retention_days"),
+				),
+			},
+			{
+				// Turning retention off and removing the optional details sends
+				// explicit nulls, so the stored values clear.
+				Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme Labs", "", privateProviderRetainsNothing),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate),
@@ -242,14 +286,16 @@ func TestStubPrivateProviderLifecycle(t *testing.T) {
 					resource.TestCheckResourceAttr(name, "slug", "acme-inference"),
 					resource.TestCheckResourceAttr(name, "display_name", "Acme Labs"),
 					resource.TestCheckResourceAttr(name, "data_policy.retains_prompts", "false"),
-					resource.TestCheckNoResourceAttr(name, "data_policy.prompt_retention_days"),
+					resource.TestCheckNoResourceAttr(name, "headquarters"),
+					resource.TestCheckNoResourceAttr(name, "privacy_policy_url"),
+					api.checkStoredNull("acme-inference", "headquarters", "privacy_policy_url"),
 					api.checkLastPatchOmits("name"),
 					api.checkLastPatchOmits("slug"),
 				),
 			},
-			{Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme Labs", privateProviderRetainsNothing), PlanOnly: true},
+			{Config: privateProviderConfig(srv.URL, "Acme Inference", "Acme Labs", "", privateProviderRetainsNothing), PlanOnly: true},
 			{
-				Config: privateProviderConfig(srv.URL, "Acme Labs", "Acme Labs", privateProviderRetainsNothing),
+				Config: privateProviderConfig(srv.URL, "Acme Labs", "Acme Labs", "", privateProviderRetainsNothing),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction(name, plancheck.ResourceActionDestroyBeforeCreate),
@@ -272,7 +318,7 @@ func TestStubPrivateProviderLifecycle(t *testing.T) {
 // and stays in state until the endpoint is gone.
 func TestStubPrivateProviderDeleteConflictKeepsProvider(t *testing.T) {
 	srv, api := newStubPrivateProviders(t)
-	config := privateProviderConfig(srv.URL, "Acme Inference", "Acme", privateProviderRetainsNothing)
+	config := privateProviderConfig(srv.URL, "Acme Inference", "Acme", "", privateProviderRetainsNothing)
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
 		CheckDestroy:             api.checkDestroyed,

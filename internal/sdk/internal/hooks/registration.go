@@ -33,7 +33,7 @@ func initHooks(h *Hooks) {
 	// h.registerAfterSuccessHook(exampleHook)
 
 	h.registerBeforeRequestHook(explicitNullHook{})
-	h.registerBeforeRequestHook(privateProviderRetentionDaysHook{})
+	h.registerBeforeRequestHook(privateProviderExplicitNullsHook{})
 }
 
 // explicitNullHook sends the explicit JSON nulls requested through

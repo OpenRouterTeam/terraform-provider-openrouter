@@ -33411,6 +33411,7 @@ components:
           type:
             - string
             - "null"
+          x-speakeasy-param-computed: false
         name:
           description: Provider name, shown in your activity, logs and Broadcast output. 2-64 letters, numbers, spaces, dots, underscores or hyphens. Cannot be changed later. Neither the name nor its slug may match an existing provider name or slug (case-insensitive).
           example: WCIE
@@ -33420,6 +33421,7 @@ components:
           type:
             - string
             - "null"
+          x-speakeasy-param-computed: false
       required:
         - name
         - display_name
@@ -33494,6 +33496,7 @@ components:
           type:
             - string
             - "null"
+          x-speakeasy-param-computed: false
         name:
           description: Provider name, shown in your activity, logs and Broadcast output. 2-64 letters, numbers, spaces, dots, underscores or hyphens. Cannot be changed later. Neither the name nor its slug may match an existing provider name or slug (case-insensitive).
           example: WCIE
@@ -33503,6 +33506,7 @@ components:
           type:
             - string
             - "null"
+          x-speakeasy-param-computed: false
         slug:
           description: "Derived from the name: lowercased, with every run of other characters replaced by a hyphen (`Acme Inference` becomes `acme-inference`). Use it as `provider_slug` when creating private endpoints and BYOK keys."
           example: wcie
@@ -33531,8 +33535,7 @@ components:
           type:
             - integer
             - "null"
-          x-speakeasy-plan-modifiers: PrivateProviderRetentionDays
-          # Generated docs and examples need days that agree with retains_prompts.
+          x-speakeasy-param-computed: false
           example: 30
         retains_prompts:
           description: Whether the provider retains prompts or completions.
@@ -33559,6 +33562,7 @@ components:
               type:
                 - integer
                 - "null"
+              x-speakeasy-param-computed: false
             retains_prompts:
               description: Whether the provider retains prompts or completions.
               type: boolean
@@ -33582,11 +33586,13 @@ components:
           type:
             - string
             - "null"
+          x-speakeasy-param-computed: false
         privacy_policy_url:
           example: https://example.com/privacy
           type:
             - string
             - "null"
+          x-speakeasy-param-computed: false
       type: object
       x-speakeasy-entity: PrivateProvider
     ObservabilityFilterRuleGroupNullable:
