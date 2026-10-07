@@ -87,6 +87,7 @@ func knownStrings(v tftypes.Value) []string {
 		var s string
 		if leaf.Type().Is(tftypes.String) && leaf.IsKnown() && !leaf.IsNull() && leaf.As(&s) == nil && s != "" {
 			values = append(values, s)
+			values = append(values, jsonStringLeaves(s)...)
 		}
 		return true, nil
 	})

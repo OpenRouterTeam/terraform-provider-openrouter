@@ -25,6 +25,10 @@ data "openrouter_observability_destination" "my_observabilitydestination" {
 
 - `id` (String) Stable public identifier for this destination.
 
+### Optional
+
+- `include_sensitive_config` (Boolean) Whether to include credential-bearing fields in the `config` blocks. Set to `false` to omit credentials, headers, and URLs, so they are not stored in state. Defaults to `true`.
+
 ### Read-Only
 
 - `arize` (Attributes) (see [below for nested schema](#nestedatt--arize))
