@@ -6,6 +6,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	custom_int64planmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/int64planmodifier"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
@@ -64,8 +65,11 @@ func (r *PrivateProviderResource) Schema(ctx context.Context, req resource.Schem
 				Required: true,
 				Attributes: map[string]schema.Attribute{
 					"prompt_retention_days": schema.Int64Attribute{
-						Computed:    true,
-						Optional:    true,
+						Computed: true,
+						Optional: true,
+						PlanModifiers: []planmodifier.Int64{
+							custom_int64planmodifier.PrivateProviderRetentionDays(),
+						},
 						Description: `Days prompts are retained. Must be ` + "`" + `null` + "`" + ` unless ` + "`" + `retains_prompts` + "`" + ` is true.`,
 					},
 					"retains_prompts": schema.BoolAttribute{
