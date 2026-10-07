@@ -1,0 +1,1 @@
+terraform import openrouter_private_provider.my_openrouter_private_provider "wcie"

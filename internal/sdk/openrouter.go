@@ -122,6 +122,8 @@ type OpenRouter struct {
 	Workspaces *Workspaces
 	// Private Endpoints endpoints
 	PrivateEndpoints *PrivateEndpoints
+	// Private Providers endpoints
+	PrivateProviders *PrivateProviders
 
 	sdkConfiguration config.SDKConfiguration
 	hooks            *hooks.Hooks
@@ -260,6 +262,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Videos = newVideos(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Workspaces = newWorkspaces(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.PrivateProviders = newPrivateProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 
 	return sdk
 }
