@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 9c3aac2a870a536ca8b41f198fe07aea
+  docChecksum: 86d823aacdc267d39ba98e78b251b3a5
   docVersion: 1.0.0
   speakeasyVersion: 1.800.1
   generationVersion: 2.943.0
-  releaseVersion: 0.3.29
-  configChecksum: 648b5690830333d87d39471279562671
+  releaseVersion: 0.3.30
+  configChecksum: 40d5a0a48ddcaf6034697a32325c815e
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 1ab0e24c-5c68-44a3-9eab-c9a95698fb42
-  pristine_commit_hash: faa1fb5305568bc78f1ade150b20da2412bb6452
-  pristine_tree_hash: 579c78eec0f870eac02a4b56380eb136761fcce0
+  generation_id: b2e15b5f-e6a4-4b41-a159-ba8996c81781
+  pristine_commit_hash: 5e9cbeb7405eb300dc087a1b198df17b91ffd070
+  pristine_tree_hash: 24536eada995509f4e2a1b496616eecd9b22ee88
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:8e7e123a1bc803e827d41e0fa675f38d7b2ce356
-    pristine_git_object: 28ea5467112f1712432909bf6184eb134359bb80
+    last_write_checksum: sha1:b8bc4e8d73366594bf8b5a6f628b486093825c98
+    pristine_git_object: 21c2387ddb966d084ba22b34053acf220ee692da
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1342,8 +1342,8 @@ trackedFiles:
     pristine_git_object: f4e680a34bec8ee10522007c0328af4ffd945d1b
   internal/sdk/interns.go:
     id: 29c37e85fb2b
-    last_write_checksum: sha1:b3bd769800031bd981c23b653099954040e1d497
-    pristine_git_object: 65ed0326d12ac8e7607c711a47e51feb2d1cb4c6
+    last_write_checksum: sha1:a76dbf0f5ac25e3dd10cc6fb07ddbb347968dd1f
+    pristine_git_object: ae1a7c527d54c84ea17ef929521dd3154abe0f4b
   internal/sdk/models.go:
     id: 7b13b8162cf6
     last_write_checksum: sha1:5a64b1311ee4c95050fb7caf9a1e5b2acb47f66d
@@ -1864,6 +1864,14 @@ trackedFiles:
     id: 8220db2e9ee1
     last_write_checksum: sha1:0c9ec65be37e84381e6dac5bc96d2f10af75b3fe
     pristine_git_object: 52c915fc58f0a4f0298d582c31a082489adfac73
+  internal/sdk/models/operations/signinterndaemonaccessrequest.go:
+    id: 7ad60cfc262f
+    last_write_checksum: sha1:6b7bb56d4d5621060a2c18ec304946778a376807
+    pristine_git_object: 0045bd99a2cc47da09273722d0d2565603fda1f0
+  internal/sdk/models/operations/signinterndaemonrequest.go:
+    id: c62b696846b9
+    last_write_checksum: sha1:ead8a96a20de45573c694008790ab5cdc0cfcb60
+    pristine_git_object: 4239d0ac127a9256bb795e87d06c2143c91882ac
   internal/sdk/models/operations/storeinternvaultsecret.go:
     id: cc9b945040bf
     last_write_checksum: sha1:e1d2f3b5687897956c664212acd80b7aa0b56fec
@@ -4452,6 +4460,14 @@ trackedFiles:
     id: f3f54cd86a4c
     last_write_checksum: sha1:a4b1fdac33201a96def39145be0fe1e130be5139
     pristine_git_object: 851cab02b75f2e73efa38a209b0f1bc2f1abe4ce
+  internal/sdk/models/shared/signinterndaemonrequest.go:
+    id: b9c1a6653af1
+    last_write_checksum: sha1:90b92334f4a832570f9325ea3d57b87e9dd79cc0
+    pristine_git_object: 33dff0a762ca2eb04edfb7dec13975155014615a
+  internal/sdk/models/shared/signinterndaemonresponse.go:
+    id: bdd82c0e8e32
+    last_write_checksum: sha1:1008d858c24acaf102642e596d9843b8e3b2cebc
+    pristine_git_object: aef4a0b235c9656728637f3e5f5013f83c2589f6
   internal/sdk/models/shared/speechinput.go:
     id: b9ddd21c3f10
     last_write_checksum: sha1:248adb31e35e2af35e92c32ce4bf33cdd0c673d9
@@ -4942,8 +4958,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:bab4f1e3b4d595b34b599da66684e5baa673287f
-    pristine_git_object: 2ec34ad48ef9f6ebc7bbd60061b69499b429f884
+    last_write_checksum: sha1:e6a1fe069f92955890576e2801fc276f8fbc373f
+    pristine_git_object: 21618a4447811a0b12c65510cc2b736159c3e391
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -8959,4 +8975,36 @@ examples:
       responses:
         "504":
           application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
+  signInternDaemonAccessRequest:
+    speakeasy-default-sign-intern-daemon-access-request:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+      responses:
+        "200":
+          application/json: {"x-ori-invoke-signature": "MEUCIQ...", "x-ori-invoke-timestamp": "1789000000", "x-ori-invoke-user": "user_2abc"}
+        "400":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+        "429":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+        "500":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+  signInternDaemonRequest:
+    speakeasy-default-sign-intern-daemon-request:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      requestBody:
+        application/json: {"bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+      responses:
+        "200":
+          application/json: {"x-ori-invoke-signature": "MEUCIQ...", "x-ori-invoke-timestamp": "1789000000", "x-ori-invoke-user": "user_2abc"}
+        "400":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+        "429":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+        "500":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
 examplesVersion: 1.0.2
