@@ -33387,6 +33387,208 @@ components:
       required:
         - workspace_id
       type: object
+    CreatePrivateProviderRequest:
+      properties:
+        base_url:
+          description: HTTPS base URL of an OpenAI-compatible API. Private endpoints under this provider use it unless they set their own. Private, internal, metadata and OpenRouter hosts are rejected.
+          example: https://inference.example.com/v1
+          type: string
+        data_policy:
+          $ref: "#/components/schemas/PrivateProviderDataPolicy"
+        datacenters:
+          description: ISO 3166-1 alpha-2 country codes of the datacenters serving requests.
+          example:
+            - US
+          items:
+            type: string
+          type: array
+        display_name:
+          example: WCIE
+          type: string
+        headquarters:
+          description: ISO 3166-1 alpha-2 country code.
+          example: US
+          type:
+            - string
+            - "null"
+        name:
+          description: Provider name, shown in your activity, logs and Broadcast output. 2-64 letters, numbers, spaces, dots, underscores or hyphens. Cannot be changed later. Neither the name nor its slug may match an existing provider name or slug (case-insensitive).
+          example: WCIE
+          type: string
+        privacy_policy_url:
+          example: https://example.com/privacy
+          type:
+            - string
+            - "null"
+      required:
+        - name
+        - display_name
+        - base_url
+        - data_policy
+      type: object
+      x-speakeasy-entity: PrivateProvider
+      x-speakeasy-entity-description: |-
+        A private provider: your own inference provider, visible only to your organization. Its `name` shows in your activity, logs and Broadcast output. Use its `slug` as `provider_slug` on `openrouter_byok_key` and `openrouter_private_endpoint`; private endpoints under it use its `base_url` unless they set their own.
+
+        Changing `name` destroys the provider and creates a new one with a new `slug`. The API refuses to delete a provider while any private endpoint still runs under it, so destroy those first (Terraform does this when the endpoints reference `slug`).
+
+        `data_policy` is your own declaration for your own traffic; OpenRouter does not verify it.
+    PrivateProvider:
+      example:
+        base_url: https://inference.example.com/v1
+        created_at: 2026-10-06T12:00:00.000Z
+        data_policy:
+          prompt_retention_days: null
+          retains_prompts: false
+          training: false
+        datacenters:
+          - US
+        display_name: WCIE
+        headquarters: US
+        name: WCIE
+        privacy_policy_url: https://example.com/privacy
+        slug: wcie
+      properties:
+        base_url:
+          description: HTTPS base URL of an OpenAI-compatible API. Private endpoints under this provider use it unless they set their own. Private, internal, metadata and OpenRouter hosts are rejected.
+          example: https://inference.example.com/v1
+          type:
+            - string
+            - "null"
+        created_at:
+          type: string
+        data_policy:
+          description: Your declared data policy, or `null` when none was declared.
+          properties:
+            prompt_retention_days:
+              description: Days prompts are retained. Must be `null` unless `retains_prompts` is true.
+              type:
+                - integer
+                - "null"
+            retains_prompts:
+              description: Whether the provider retains prompts or completions.
+              type: boolean
+            training:
+              description: Whether the provider trains on prompts.
+              type: boolean
+          required:
+            - training
+            - retains_prompts
+            - prompt_retention_days
+          type:
+            - object
+            - "null"
+        datacenters:
+          description: ISO 3166-1 alpha-2 country codes of the datacenters serving requests.
+          example:
+            - US
+          items:
+            type: string
+          type: array
+        display_name:
+          example: WCIE
+          type: string
+        headquarters:
+          description: ISO 3166-1 alpha-2 country code.
+          example: US
+          type:
+            - string
+            - "null"
+        name:
+          description: Provider name, shown in your activity, logs and Broadcast output. 2-64 letters, numbers, spaces, dots, underscores or hyphens. Cannot be changed later. Neither the name nor its slug may match an existing provider name or slug (case-insensitive).
+          example: WCIE
+          type: string
+        privacy_policy_url:
+          example: https://example.com/privacy
+          type:
+            - string
+            - "null"
+        slug:
+          description: "Derived from the name: lowercased, with every run of other characters replaced by a hyphen (`Acme Inference` becomes `acme-inference`). Use it as `provider_slug` when creating private endpoints and BYOK keys."
+          example: wcie
+          type: string
+      required:
+        - name
+        - slug
+        - display_name
+        - base_url
+        - privacy_policy_url
+        - headquarters
+        - datacenters
+        - data_policy
+        - created_at
+      type: object
+      x-speakeasy-entity: PrivateProvider
+    PrivateProviderDataPolicy:
+      description: Your own declaration of how the provider handles data. It applies to your own traffic; OpenRouter does not verify it.
+      example:
+        prompt_retention_days: null
+        retains_prompts: false
+        training: false
+      properties:
+        prompt_retention_days:
+          description: Days prompts are retained. Must be `null` unless `retains_prompts` is true.
+          type:
+            - integer
+            - "null"
+          x-speakeasy-plan-modifiers: PrivateProviderRetentionDays
+          # Generated docs and examples need days that agree with retains_prompts.
+          example: 30
+        retains_prompts:
+          description: Whether the provider retains prompts or completions.
+          type: boolean
+          example: true
+        training:
+          description: Whether the provider trains on prompts.
+          type: boolean
+      required:
+        - training
+        - retains_prompts
+        - prompt_retention_days
+      type: object
+    UpdatePrivateProviderRequest:
+      properties:
+        base_url:
+          description: HTTPS base URL of an OpenAI-compatible API. Private endpoints under this provider use it unless they set their own. Private, internal, metadata and OpenRouter hosts are rejected.
+          example: https://inference.example.com/v1
+          type: string
+        data_policy:
+          properties:
+            prompt_retention_days:
+              description: Days prompts are retained. Must be `null` unless `retains_prompts` is true.
+              type:
+                - integer
+                - "null"
+            retains_prompts:
+              description: Whether the provider retains prompts or completions.
+              type: boolean
+            training:
+              description: Whether the provider trains on prompts.
+              type: boolean
+          type: object
+        datacenters:
+          description: ISO 3166-1 alpha-2 country codes of the datacenters serving requests.
+          example:
+            - US
+          items:
+            type: string
+          type: array
+        display_name:
+          example: WCIE
+          type: string
+        headquarters:
+          description: ISO 3166-1 alpha-2 country code.
+          example: US
+          type:
+            - string
+            - "null"
+        privacy_policy_url:
+          example: https://example.com/privacy
+          type:
+            - string
+            - "null"
+      type: object
+      x-speakeasy-entity: PrivateProvider
     ObservabilityFilterRuleGroupNullable:
       example:
         logic: 'and'
@@ -53565,6 +53767,520 @@ paths:
       tags:
         - Private Endpoints
       x-speakeasy-name-override: validate
+  /private-providers:
+    get:
+      description: List the organization's private providers. Requires the private endpoints entitlement. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+      operationId: listPrivateProviders
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/PrivateProvider"
+                    type: array
+                required:
+                  - data
+                type: object
+          description: Private providers for the organization
+        "401":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 401
+                  message: Missing Authentication header
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+          description: Unauthorized - Authentication required or invalid credentials
+        "403":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: Only management keys can perform this operation
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+          description: Forbidden - Authentication successful but insufficient permissions
+        "500":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 500
+                  message: Internal Server Error
+              schema:
+                $ref: "#/components/schemas/InternalServerResponse"
+          description: Internal Server Error - Unexpected server error
+      summary: List private providers
+      tags:
+        - Private Providers
+      x-speakeasy-name-override: list
+      x-speakeasy-entity-operation: PrivateProviders#read
+    post:
+      description: Create a private, bring-your-own-key provider visible only to your organization. Use its slug as `provider_slug` when creating private endpoints. Requires the private endpoints entitlement. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+      operationId: createPrivateProvider
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePrivateProviderRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PrivateProvider"
+                required:
+                  - data
+                type: object
+          description: The provider was created
+        "400":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 400
+                  message: Invalid request parameters
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+          description: Bad Request - Invalid request parameters or malformed input
+        "401":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 401
+                  message: Missing Authentication header
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+          description: Unauthorized - Authentication required or invalid credentials
+        "403":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: Only management keys can perform this operation
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+          description: Forbidden - Authentication successful but insufficient permissions
+        "404":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 404
+                  message: Resource not found
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+          description: Not Found - Resource does not exist
+        "408":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 408
+                  message: Operation timed out. Please try again later.
+              schema:
+                $ref: "#/components/schemas/RequestTimeoutResponse"
+          description: Request Timeout - Operation exceeded time limit
+        "409":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 409
+                  message: Resource conflict. Please try again later.
+              schema:
+                $ref: "#/components/schemas/ConflictResponse"
+          description: Conflict - Resource conflict or concurrent modification
+        "422":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 422
+                  message: Invalid argument
+              schema:
+                $ref: "#/components/schemas/UnprocessableEntityResponse"
+          description: Unprocessable Entity - Semantic validation failure
+        "429":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 429
+                  message: Rate limit exceeded
+              schema:
+                $ref: "#/components/schemas/TooManyRequestsResponse"
+          description: Too Many Requests - Rate limit exceeded
+        "500":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 500
+                  message: Internal Server Error
+              schema:
+                $ref: "#/components/schemas/InternalServerResponse"
+          description: Internal Server Error - Unexpected server error
+        "502":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 502
+                  message: Provider returned error
+              schema:
+                $ref: "#/components/schemas/BadGatewayResponse"
+          description: Bad Gateway - Provider/upstream API failure
+      summary: Create a private provider
+      tags:
+        - Private Providers
+      x-speakeasy-name-override: create
+      x-speakeasy-entity-operation: PrivateProvider#create
+  /private-providers/{slug}:
+    delete:
+      description: Delete a private provider. Refuses (409) while any private endpoint still runs under it. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+      operationId: deletePrivateProvider
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            example: wcie
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    properties:
+                      slug:
+                        description: "Derived from the name: lowercased, with every run of other characters replaced by a hyphen (`Acme Inference` becomes `acme-inference`). Use it as `provider_slug` when creating private endpoints and BYOK keys."
+                        example: wcie
+                        type: string
+                    required:
+                      - slug
+                    type: object
+                required:
+                  - data
+                type: object
+          description: The provider was deleted
+        "400":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 400
+                  message: Invalid request parameters
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+          description: Bad Request - Invalid request parameters or malformed input
+        "401":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 401
+                  message: Missing Authentication header
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+          description: Unauthorized - Authentication required or invalid credentials
+        "403":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: Only management keys can perform this operation
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+          description: Forbidden - Authentication successful but insufficient permissions
+        "404":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 404
+                  message: Resource not found
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+          description: Not Found - Resource does not exist
+        "408":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 408
+                  message: Operation timed out. Please try again later.
+              schema:
+                $ref: "#/components/schemas/RequestTimeoutResponse"
+          description: Request Timeout - Operation exceeded time limit
+        "409":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 409
+                  message: Resource conflict. Please try again later.
+              schema:
+                $ref: "#/components/schemas/ConflictResponse"
+          description: Conflict - Resource conflict or concurrent modification
+        "422":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 422
+                  message: Invalid argument
+              schema:
+                $ref: "#/components/schemas/UnprocessableEntityResponse"
+          description: Unprocessable Entity - Semantic validation failure
+        "429":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 429
+                  message: Rate limit exceeded
+              schema:
+                $ref: "#/components/schemas/TooManyRequestsResponse"
+          description: Too Many Requests - Rate limit exceeded
+        "500":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 500
+                  message: Internal Server Error
+              schema:
+                $ref: "#/components/schemas/InternalServerResponse"
+          description: Internal Server Error - Unexpected server error
+        "502":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 502
+                  message: Provider returned error
+              schema:
+                $ref: "#/components/schemas/BadGatewayResponse"
+          description: Bad Gateway - Provider/upstream API failure
+      summary: Delete a private provider
+      tags:
+        - Private Providers
+      x-speakeasy-name-override: delete
+      x-speakeasy-entity-operation: PrivateProvider#delete
+    get:
+      description: Get one of the organization’s private providers by slug. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+      operationId: getPrivateProvider
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            example: wcie
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PrivateProvider"
+                required:
+                  - data
+                type: object
+          description: The private provider
+        "401":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 401
+                  message: Missing Authentication header
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+          description: Unauthorized - Authentication required or invalid credentials
+        "403":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: Only management keys can perform this operation
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+          description: Forbidden - Authentication successful but insufficient permissions
+        "404":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 404
+                  message: Resource not found
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+          description: Not Found - Resource does not exist
+        "500":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 500
+                  message: Internal Server Error
+              schema:
+                $ref: "#/components/schemas/InternalServerResponse"
+          description: Internal Server Error - Unexpected server error
+      summary: Get a private provider
+      tags:
+        - Private Providers
+      x-speakeasy-name-override: get
+      x-speakeasy-entity-operation: PrivateProvider#read
+    patch:
+      description: Update a private provider’s details or declared data policy. The name and slug cannot change. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+      operationId: updatePrivateProvider
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            example: wcie
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePrivateProviderRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PrivateProvider"
+                required:
+                  - data
+                type: object
+          description: The updated provider
+        "400":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 400
+                  message: Invalid request parameters
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+          description: Bad Request - Invalid request parameters or malformed input
+        "401":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 401
+                  message: Missing Authentication header
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+          description: Unauthorized - Authentication required or invalid credentials
+        "403":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: Only management keys can perform this operation
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+          description: Forbidden - Authentication successful but insufficient permissions
+        "404":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 404
+                  message: Resource not found
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+          description: Not Found - Resource does not exist
+        "408":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 408
+                  message: Operation timed out. Please try again later.
+              schema:
+                $ref: "#/components/schemas/RequestTimeoutResponse"
+          description: Request Timeout - Operation exceeded time limit
+        "409":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 409
+                  message: Resource conflict. Please try again later.
+              schema:
+                $ref: "#/components/schemas/ConflictResponse"
+          description: Conflict - Resource conflict or concurrent modification
+        "422":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 422
+                  message: Invalid argument
+              schema:
+                $ref: "#/components/schemas/UnprocessableEntityResponse"
+          description: Unprocessable Entity - Semantic validation failure
+        "429":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 429
+                  message: Rate limit exceeded
+              schema:
+                $ref: "#/components/schemas/TooManyRequestsResponse"
+          description: Too Many Requests - Rate limit exceeded
+        "500":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 500
+                  message: Internal Server Error
+              schema:
+                $ref: "#/components/schemas/InternalServerResponse"
+          description: Internal Server Error - Unexpected server error
+        "502":
+          content:
+            application/json:
+              example:
+                error:
+                  code: 502
+                  message: Provider returned error
+              schema:
+                $ref: "#/components/schemas/BadGatewayResponse"
+          description: Bad Gateway - Provider/upstream API failure
+      summary: Update a private provider
+      tags:
+        - Private Providers
+      x-speakeasy-name-override: update
+      x-speakeasy-entity-operation: PrivateProvider#update
 security:
   - apiKey: []
 servers:
@@ -53649,6 +54365,8 @@ tags:
     name: 'alpha.decisions'
   - description: Private Endpoints endpoints
     name: Private Endpoints
+  - description: Private Providers endpoints
+    name: Private Providers
 x-retry-strategy:
   initialDelay: 500
   maxAttempts: 3

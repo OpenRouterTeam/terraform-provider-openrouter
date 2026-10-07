@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 42a92ed4acdff2e1f0d25456901577dd
+  docChecksum: e58a5fe2f288442b357ddf4b063b9837
   docVersion: 1.0.0
   speakeasyVersion: 1.800.1
   generationVersion: 2.943.0
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 428c1b34-35a2-40e3-94e5-c207d5df9629
-  pristine_commit_hash: da71db1057c814be48f813647bdd588b6f1bb938
-  pristine_tree_hash: c0a2b21db946daea0e4b89f46aa373e3abfb56fe
+  generation_id: 7676db8a-83c0-4273-8d9f-094c04c75938
+  pristine_commit_hash: 89555f263cfa279b3083fae99ccb85b2b2839f25
+  pristine_tree_hash: d00a4ac289ce91234921eb23b8e9daedeeec2000
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -116,6 +116,14 @@ trackedFiles:
     id: 73471b88b900
     last_write_checksum: sha1:7baeb949cb07f9c2f6801b1dabe658b99a08d11d
     pristine_git_object: e7c71351e4b8b87654f1c694deb1579084e4b5d5
+  examples/data-sources/openrouter_private_provider/data-source.tf:
+    id: 184fbad9eef7
+    last_write_checksum: sha1:43863f0ff8e41f7a3020dbb59a006bda7361131c
+    pristine_git_object: f6507e69c0304284b8fd448fd3cc800bb2aee352
+  examples/data-sources/openrouter_private_providers/data-source.tf:
+    id: 13a6705f95bb
+    last_write_checksum: sha1:43829a57f846fc5aa0b8d4496ac6c0aa6752abef
+    pristine_git_object: bc7c8f38a56b366f538d369d6bba4af69af2d11a
   examples/data-sources/openrouter_providers/data-source.tf:
     id: b3cd5d64bcf4
     last_write_checksum: sha1:f68144fb749cf694f90524b14b2dd9032a8f5e39
@@ -216,6 +224,18 @@ trackedFiles:
     id: 2b1c7d4b04ce
     last_write_checksum: sha1:5d05446a0eeeff44e7f0a9b2a6d4550ddcb6ca9a
     pristine_git_object: c8f642f220be322bdcb17e4070076f0b1e9d352d
+  examples/resources/openrouter_private_provider/import-by-string-id.tf:
+    id: 13bc6de0f50e
+    last_write_checksum: sha1:c288047f991016e2823b69d52b5ed682bf897abe
+    pristine_git_object: a24d8836e369e2eaf3660fc1f916bb92a5cf1d88
+  examples/resources/openrouter_private_provider/import.sh:
+    id: 6c2a89fbe1f3
+    last_write_checksum: sha1:aa975589b76f523942d2336ba3846c25724fe0e6
+    pristine_git_object: 494a1f2ee6d3e37f5718ae539708333e24bdd1ed
+  examples/resources/openrouter_private_provider/resource.tf:
+    id: 3be1bfb60177
+    last_write_checksum: sha1:a376e05e797867dc359e3735e73f7954abebe015
+    pristine_git_object: 059344dc4060c103150d77db072cd549c20fbb7c
   examples/resources/openrouter_scim_group_mapping/import-by-string-id.tf:
     id: aaa905f58c19
     last_write_checksum: sha1:8315cd1b1c896fb14c49ff9295d8a92210c367a0
@@ -588,10 +608,34 @@ trackedFiles:
     id: f78a28b90402
     last_write_checksum: sha1:4a16d5f632bb36b15a8f905a6705368f16481c81
     pristine_git_object: 2652d92aeec0657925bc01c67a0ffa7046132ffe
+  internal/provider/privateprovider_data_source.go:
+    id: daf5d64fb60a
+    last_write_checksum: sha1:b677b9a22b6bbf76b7e7d2fb462c37549829b21b
+    pristine_git_object: db0b0df71d6f2fd231c6931f92dc229745c8d893
+  internal/provider/privateprovider_data_source_sdk.go:
+    id: 5672b301dcb9
+    last_write_checksum: sha1:24b347bd37f7003a9424453d9bc85be146322238
+    pristine_git_object: 6c3ce480271bfb54eab619d33603bdc56f559cca
+  internal/provider/privateprovider_resource.go:
+    id: f3d28a6d20bd
+    last_write_checksum: sha1:f49dda87d267f8fd975df9b9828116d70960a2c4
+    pristine_git_object: 2e33c3d97a652bb40fa7c6c458e02cbfdbe72c5a
+  internal/provider/privateprovider_resource_sdk.go:
+    id: 57ef75e5a63c
+    last_write_checksum: sha1:cee23e7637e22c4f2614812560a841742fbc75e4
+    pristine_git_object: 80b73e925b4c688f471537ebfa56b5ce8bf467ca
+  internal/provider/privateproviders_data_source.go:
+    id: 85c16911333a
+    last_write_checksum: sha1:96d9f7efb98e8c94d5f4dfb3201cc17790e0b6df
+    pristine_git_object: a402b14c6c62b4dda3d42ee96ac36eca3bdad1a9
+  internal/provider/privateproviders_data_source_sdk.go:
+    id: 14b6058f9fe9
+    last_write_checksum: sha1:c1a9d03f319d8dbc54872b30ecd5b2961465265c
+    pristine_git_object: 40fac0c46fc45802460fb08da3cf5313b9c52b74
   internal/provider/provider.go:
     id: 1e7e86841cf3
-    last_write_checksum: sha1:df341a3f7f606c6e10a84455cddf50e31ded8993
-    pristine_git_object: 02cce434473bda9eb18db38bbbfd8cc35c258717
+    last_write_checksum: sha1:fbe5acbe25c8faf46b7d38a38dece6e16c1f1597
+    pristine_git_object: aa8a41a0f9508b0736e5739a4ae86df3174e097c
   internal/provider/providers_data_source.go:
     id: f86d43a8ffda
     last_write_checksum: sha1:2af0044d2aee910b91046d19c2427364733ed86a
@@ -1116,6 +1160,18 @@ trackedFiles:
     id: c881af7ca432
     last_write_checksum: sha1:cc806382ffa1ce9cefd3bc7893b609f950597adc
     pristine_git_object: 7620fd5dfd4159eafbcfb4131d15b1c8a5d30028
+  internal/provider/types/private_provider.go:
+    id: 80cc3c76b4e7
+    last_write_checksum: sha1:7c7acf694e5bf7e638b8a4c767539261c485f099
+    pristine_git_object: a3d1b1076122d9a0a201be255b1b04c638cf85f4
+  internal/provider/types/private_provider_data_policy.go:
+    id: db4f91806a1f
+    last_write_checksum: sha1:9d458b1c16b999953b499d3c42bd154481b76ab4
+    pristine_git_object: 84d2a64428bc5e911ee0db9eebeb95ff1b842326
+  internal/provider/types/private_provider_data_policy1.go:
+    id: a0fa652ee052
+    last_write_checksum: sha1:88a17f516def392387b98db5b08ca76b6a8b6115
+    pristine_git_object: 2f54ec3ab841f7bacca522253ce36c1e8b537f2e
   internal/provider/types/public_pricing.go:
     id: 0cc0514e2922
     last_write_checksum: sha1:d0d5892dea80d6eda4feb71a21713013f9ec3ca4
@@ -1460,6 +1516,10 @@ trackedFiles:
     id: 74e31e3d39ce
     last_write_checksum: sha1:f27e7473a897136d2ddcc6d042e912c49fa03683
     pristine_git_object: 0588191e5eeaa90916b3861fc3ce3f708956bf57
+  internal/sdk/models/operations/createprivateprovider.go:
+    id: 68a0d7576f0c
+    last_write_checksum: sha1:020070e45c9badb4937dc009802b96cbddf7da41
+    pristine_git_object: 219a8a35e7bf20d09a71eb144a2e270ec4019808
   internal/sdk/models/operations/creatererank.go:
     id: fda06b3cd6fe
     last_write_checksum: sha1:3530ac9f52a422bc1dbf5ec3db4a3a01aa1e721c
@@ -1524,6 +1584,10 @@ trackedFiles:
     id: 7303c9b0b69e
     last_write_checksum: sha1:323a39a9004db4cee701487d6a779f017b42395f
     pristine_git_object: 0767fa40c62a4304ed9ce426bc77f406086f406c
+  internal/sdk/models/operations/deleteprivateprovider.go:
+    id: d23227a07b06
+    last_write_checksum: sha1:43e93cf346bf40b92e6ca68a998a410fbe16d073
+    pristine_git_object: cef6421dab07e604eac5d2701b3f2ea82e528abe
   internal/sdk/models/operations/deletescimgroupmapping.go:
     id: bc7adc2e526f
     last_write_checksum: sha1:1133d71c45c2d620372de8d9ae8ad25e023422fd
@@ -1652,6 +1716,10 @@ trackedFiles:
     id: 45ed29867613
     last_write_checksum: sha1:6ee9f512e56125b0f2ba065751b844b4b91a8e91
     pristine_git_object: 08293886040062427a8029431507e862f73e543d
+  internal/sdk/models/operations/getprivateprovider.go:
+    id: a7fee878931b
+    last_write_checksum: sha1:5be6b7e7aa745e0c374d3211b692b65100aeab71
+    pristine_git_object: a68369d1ccd355162146b06195823836593762e9
   internal/sdk/models/operations/getrankingsdaily.go:
     id: fbdc2ec534ff
     last_write_checksum: sha1:9c45debae657b14eeddd1ec288b75216e0268335
@@ -1808,6 +1876,10 @@ trackedFiles:
     id: 4dbf54ccc30e
     last_write_checksum: sha1:7fd813b0cc2fe420795c0d2baee0f95814944fdb
     pristine_git_object: 2519771bfb7294aaa5ec59f886e0a7e9bfbe57e9
+  internal/sdk/models/operations/listprivateproviders.go:
+    id: ff08ed4076f6
+    last_write_checksum: sha1:87355662fe3fc544401da37cafa1b1ee25156aff
+    pristine_git_object: f7763614b46a7471b191b57f6e08770cc0277097
   internal/sdk/models/operations/listproviders.go:
     id: b665031c7add
     last_write_checksum: sha1:d83baf28a87c7f225f4c6f2984ac8c6b4be9da93
@@ -1924,6 +1996,10 @@ trackedFiles:
     id: db422401e293
     last_write_checksum: sha1:fcf8f7d4ba35b469a7dbb1e76534b91f7b964849
     pristine_git_object: 52bb2c375ec5820edf05130368be93f99bcf0e75
+  internal/sdk/models/operations/updateprivateprovider.go:
+    id: 9e48645b3102
+    last_write_checksum: sha1:e4c6acd78b05f12b0e52e53f7dd802a92b0bd2c8
+    pristine_git_object: f621995eda59435d43683b8bdd46067117920eb8
   internal/sdk/models/operations/updatescimgroupmapping.go:
     id: 02599722cab7
     last_write_checksum: sha1:2a0ce065cb52807d96ffea5429950d144de540e3
@@ -2956,6 +3032,10 @@ trackedFiles:
     id: 2f3602659007
     last_write_checksum: sha1:a19bab34f667a9689200d656e7801f53bed8e0f8
     pristine_git_object: 1d2242c486ad21a7c7f90ad2ddff554a1ef9c9f9
+  internal/sdk/models/shared/createprivateproviderrequest.go:
+    id: 655d9c66c7d5
+    last_write_checksum: sha1:ffedc2fa12711232832dd2225f57d65ac24c3d72
+    pristine_git_object: c3b824dc2893705be99e6c866424fdeccf3d52eb
   internal/sdk/models/shared/createscimgroupmappingrequest.go:
     id: 848b3abcf061
     last_write_checksum: sha1:d862f07d8d1c0d3537e35fc3fa680c68cea29cbc
@@ -4172,6 +4252,14 @@ trackedFiles:
     id: 944ac10b22c7
     last_write_checksum: sha1:0c3852ac306003c998e56c25f6fd60328434d7fd
     pristine_git_object: ba79074cf750ddd620165737f768b141f7dc4afd
+  internal/sdk/models/shared/privateprovider.go:
+    id: bff00452c0fe
+    last_write_checksum: sha1:3b6a6d90c3d319c48a817e558225cf17bb4453ae
+    pristine_git_object: 0c461b70cf6710f1e352581963eb8e50c2c1b32c
+  internal/sdk/models/shared/privateproviderdatapolicy.go:
+    id: d4f4a6ac07e9
+    last_write_checksum: sha1:bc2614d19b7d3f47fc33e083b3556187774525cc
+    pristine_git_object: 5ea303e6de70a5b5b46fe2f09259e2fa31e42698
   internal/sdk/models/shared/promptcachebreakpoint.go:
     id: 5344f3e55f1d
     last_write_checksum: sha1:a3dbc998b43be62602b18026affc3d2d67e33d13
@@ -4776,6 +4864,10 @@ trackedFiles:
     id: 0f798d733d36
     last_write_checksum: sha1:b73f89fbbd7968bb4418b9fae028c3a0caa4dd86
     pristine_git_object: a44ae084d86715a5d76706940f87f52944a1dd7b
+  internal/sdk/models/shared/updateprivateproviderrequest.go:
+    id: 47bf55019cce
+    last_write_checksum: sha1:3b8cc6437ce72390fc673bdd9f5b393bd987f359
+    pristine_git_object: a39bb1dbaea5950d3a385343eec5bb06607fbced
   internal/sdk/models/shared/updatescimgroupmappingrequest.go:
     id: 3d012b229426
     last_write_checksum: sha1:832365e0394b820bf7ecaabb44af9707d5cb2856
@@ -4962,8 +5054,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:73fe03b2dce184f79902a5cda97fc66f053eb2fa
-    pristine_git_object: d398c8c73aa42dc8c0356132531b400fccb10678
+    last_write_checksum: sha1:d955ccbac8963bd3ac2a779c4770baebf14ffe27
+    pristine_git_object: 3df90741dacb065047ae496af412b1862580830d
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -4984,6 +5076,10 @@ trackedFiles:
     id: c9211a390c27
     last_write_checksum: sha1:04aab136fec7fc48d19069a6d0015187765a60de
     pristine_git_object: eefdea44fb37aef6c4b5741aa0e84f4a6cc8509c
+  internal/sdk/privateproviders.go:
+    id: 316e9fc19b0d
+    last_write_checksum: sha1:76a8472cb5ec7204f86587859823454ed4858fac
+    pristine_git_object: cb356f1911633d4c25e208fe936d70255fe3deca
   internal/sdk/providers.go:
     id: 3c6c5c46b0f8
     last_write_checksum: sha1:11db9cebc5018f96e8c15af884bf457b25516550
@@ -9011,4 +9107,116 @@ examples:
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+  listPrivateProviders:
+    speakeasy-default-list-private-providers:
+      responses:
+        "200":
+          application/json: {"data": [{"base_url": "https://inference.example.com/v1", "created_at": "2026-10-06T12:00:00Z", "data_policy": {"prompt_retention_days": null, "retains_prompts": false, "training": false}, "datacenters": ["US"], "display_name": "WCIE", "headquarters": "US", "name": "WCIE", "privacy_policy_url": "https://example.com/privacy", "slug": "wcie"}]}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  createPrivateProvider:
+    speakeasy-default-create-private-provider:
+      requestBody:
+        application/json: {"base_url": "https://inference.example.com/v1", "data_policy": {"prompt_retention_days": null, "retains_prompts": false, "training": false}, "datacenters": ["US"], "display_name": "WCIE", "headquarters": "US", "name": "WCIE", "privacy_policy_url": "https://example.com/privacy"}
+      responses:
+        "201":
+          application/json: {"data": {"base_url": "https://inference.example.com/v1", "created_at": "2026-10-06T12:00:00Z", "data_policy": {"prompt_retention_days": null, "retains_prompts": false, "training": false}, "datacenters": ["US"], "display_name": "WCIE", "headquarters": "US", "name": "WCIE", "privacy_policy_url": "https://example.com/privacy", "slug": "wcie"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "422":
+          application/json: {"error": {"code": 422, "message": "Invalid argument"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+  deletePrivateProvider:
+    speakeasy-default-delete-private-provider:
+      parameters:
+        path:
+          slug: "wcie"
+      responses:
+        "200":
+          application/json: {"data": {"slug": "wcie"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "422":
+          application/json: {"error": {"code": 422, "message": "Invalid argument"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+  getPrivateProvider:
+    speakeasy-default-get-private-provider:
+      parameters:
+        path:
+          slug: "wcie"
+      responses:
+        "200":
+          application/json: {"data": {"base_url": "https://inference.example.com/v1", "created_at": "2026-10-06T12:00:00Z", "data_policy": {"prompt_retention_days": null, "retains_prompts": false, "training": false}, "datacenters": ["US"], "display_name": "WCIE", "headquarters": "US", "name": "WCIE", "privacy_policy_url": "https://example.com/privacy", "slug": "wcie"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  updatePrivateProvider:
+    speakeasy-default-update-private-provider:
+      parameters:
+        path:
+          slug: "wcie"
+      requestBody:
+        application/json: {"base_url": "https://inference.example.com/v1", "datacenters": ["US"], "display_name": "WCIE", "headquarters": "US", "privacy_policy_url": "https://example.com/privacy"}
+      responses:
+        "200":
+          application/json: {"data": {"base_url": "https://inference.example.com/v1", "created_at": "2026-10-06T12:00:00Z", "data_policy": {"prompt_retention_days": null, "retains_prompts": false, "training": false}, "datacenters": ["US"], "display_name": "WCIE", "headquarters": "US", "name": "WCIE", "privacy_policy_url": "https://example.com/privacy", "slug": "wcie"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "422":
+          application/json: {"error": {"code": 422, "message": "Invalid argument"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
 examplesVersion: 1.0.2

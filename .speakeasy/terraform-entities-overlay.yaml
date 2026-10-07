@@ -7,7 +7,8 @@ info:
     Maps OpenRouter management API operations to Terraform entities via
     x-speakeasy-entity / x-speakeasy-entity-operation. Resources: ApiKey,
     Guardrail, Workspace, ByokKey, ObservabilityDestination,
-    ScimGroupMapping, WorkspaceBudget, PrivateEndpoint, OrganizationSettings.
+    ScimGroupMapping, WorkspaceBudget, PrivateEndpoint, PrivateProvider,
+    OrganizationSettings.
     Plus read-only
     data-source entities for management lists and the model/provider/preset
     /credits catalog.
@@ -453,6 +454,56 @@ actions:
   - target: $["paths"]["/private-endpoints/{id}"]["delete"]
     update:
       x-speakeasy-entity-operation: PrivateEndpoint#delete
+
+  # ---------------------------------------------------------------------------
+  # PrivateProvider  (POST /private-providers, GET/PATCH/DELETE
+  # /private-providers/{slug}). The API derives `slug` from `name`, and `name`
+  # is not in the update request, so changing it replaces the provider.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["PrivateProvider"]
+    update:
+      x-speakeasy-entity: PrivateProvider
+  - target: $["components"]["schemas"]["CreatePrivateProviderRequest"]
+    update:
+      x-speakeasy-entity: PrivateProvider
+      x-speakeasy-entity-description: |-
+        A private provider: your own inference provider, visible only to your organization. Its `name` shows in your activity, logs and Broadcast output. Use its `slug` as `provider_slug` on `openrouter_byok_key` and `openrouter_private_endpoint`; private endpoints under it use its `base_url` unless they set their own.
+
+        Changing `name` destroys the provider and creates a new one with a new `slug`. The API refuses to delete a provider while any private endpoint still runs under it, so destroy those first (Terraform does this when the endpoints reference `slug`).
+
+        `data_policy` is your own declaration for your own traffic; OpenRouter does not verify it.
+  - target: $["components"]["schemas"]["UpdatePrivateProviderRequest"]
+    update:
+      x-speakeasy-entity: PrivateProvider
+
+  # Without this, an unconfigured prompt_retention_days keeps its stored value
+  # in the plan, so turning retains_prompts off would send the old days back
+  # and the API would reject the update. The modifier lives in
+  # internal/planmodifiers/int64planmodifier/private_provider_retention_days.go.
+  - target: $["components"]["schemas"]["PrivateProviderDataPolicy"]["properties"]["prompt_retention_days"]
+    update:
+      x-speakeasy-plan-modifiers: PrivateProviderRetentionDays
+      # Generated docs and examples need days that agree with retains_prompts.
+      example: 30
+  - target: $["components"]["schemas"]["PrivateProviderDataPolicy"]["properties"]["retains_prompts"]
+    update:
+      example: true
+
+  - target: $["paths"]["/private-providers"]["post"]
+    update:
+      x-speakeasy-entity-operation: PrivateProvider#create
+  - target: $["paths"]["/private-providers/{slug}"]["get"]
+    update:
+      x-speakeasy-entity-operation: PrivateProvider#read
+  - target: $["paths"]["/private-providers/{slug}"]["patch"]
+    update:
+      x-speakeasy-entity-operation: PrivateProvider#update
+  - target: $["paths"]["/private-providers/{slug}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: PrivateProvider#delete
+  - target: $["paths"]["/private-providers"]["get"]
+    update:
+      x-speakeasy-entity-operation: PrivateProviders#read
 
   # DEV-856: drop doc-only `default` values from destination config schemas.
   # These defaults come from Zod `.default()` in the server-side broadcast
