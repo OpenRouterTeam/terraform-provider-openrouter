@@ -43,6 +43,7 @@ const (
 	OutputItemsTypeReasoning                          OutputItemsType = "reasoning"
 	OutputItemsTypeShellCall                          OutputItemsType = "shell_call"
 	OutputItemsTypeShellCallOutput                    OutputItemsType = "shell_call_output"
+	OutputItemsTypeToolSearchCall                     OutputItemsType = "tool_search_call"
 	OutputItemsTypeWebSearchCall                      OutputItemsType = "web_search_call"
 )
 
@@ -79,6 +80,7 @@ type OutputItems struct {
 	OutputSubagentServerToolItem        *OutputSubagentServerToolItem        `queryParam:"inline" union:"member"`
 	OutputFilesServerToolItem           *OutputFilesServerToolItem           `queryParam:"inline" union:"member"`
 	OutputCustomToolCallItem            *OutputCustomToolCallItem            `queryParam:"inline" union:"member"`
+	OutputToolSearchCallItem            *OutputToolSearchCallItem            `queryParam:"inline" union:"member"`
 
 	Type OutputItemsType
 }
@@ -422,6 +424,15 @@ func CreateOutputItemsShellCallOutput(shellCallOutput OutputShellCallOutputItem)
 	}
 }
 
+func CreateOutputItemsToolSearchCall(toolSearchCall OutputToolSearchCallItem) OutputItems {
+	typ := OutputItemsTypeToolSearchCall
+
+	return OutputItems{
+		OutputToolSearchCallItem: &toolSearchCall,
+		Type:                     typ,
+	}
+}
+
 func CreateOutputItemsWebSearchCall(webSearchCall OutputWebSearchCallItem) OutputItems {
 	typ := OutputItemsTypeWebSearchCall
 
@@ -723,6 +734,15 @@ func (u *OutputItems) UnmarshalJSON(data []byte) (err error) {
 		u.OutputShellCallOutputItem = outputShellCallOutputItem
 		u.Type = OutputItemsTypeShellCallOutput
 		return nil
+	case "tool_search_call":
+		outputToolSearchCallItem := new(OutputToolSearchCallItem)
+		if err := utils.UnmarshalJSON(data, &outputToolSearchCallItem, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == tool_search_call) type OutputToolSearchCallItem within OutputItems: %w", string(data), err)
+		}
+
+		u.OutputToolSearchCallItem = outputToolSearchCallItem
+		u.Type = OutputItemsTypeToolSearchCall
+		return nil
 	case "web_search_call":
 		outputWebSearchCallItem := new(OutputWebSearchCallItem)
 		if err := utils.UnmarshalJSON(data, &outputWebSearchCallItem, "", true, nil); err != nil {
@@ -860,6 +880,10 @@ func (u OutputItems) MarshalJSON() ([]byte, error) {
 
 	if u.OutputCustomToolCallItem != nil {
 		return utils.MarshalJSON(u.OutputCustomToolCallItem, "", true)
+	}
+
+	if u.OutputToolSearchCallItem != nil {
+		return utils.MarshalJSON(u.OutputToolSearchCallItem, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type OutputItems: all fields are null")
