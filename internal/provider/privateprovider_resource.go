@@ -6,7 +6,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	custom_int64planmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/int64planmodifier"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
@@ -65,11 +64,7 @@ func (r *PrivateProviderResource) Schema(ctx context.Context, req resource.Schem
 				Required: true,
 				Attributes: map[string]schema.Attribute{
 					"prompt_retention_days": schema.Int64Attribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.Int64{
-							custom_int64planmodifier.PrivateProviderRetentionDays(),
-						},
+						Optional:    true,
 						Description: `Days prompts are retained. Must be ` + "`" + `null` + "`" + ` unless ` + "`" + `retains_prompts` + "`" + ` is true.`,
 					},
 					"retains_prompts": schema.BoolAttribute{
@@ -93,7 +88,6 @@ func (r *PrivateProviderResource) Schema(ctx context.Context, req resource.Schem
 				Required: true,
 			},
 			"headquarters": schema.StringAttribute{
-				Computed:    true,
 				Optional:    true,
 				Description: `ISO 3166-1 alpha-2 country code.`,
 			},
@@ -106,7 +100,6 @@ func (r *PrivateProviderResource) Schema(ctx context.Context, req resource.Schem
 				Description: `Provider name, shown in your activity, logs and Broadcast output. 2-64 letters, numbers, spaces, dots, underscores or hyphens. Cannot be changed later. Neither the name nor its slug may match an existing provider name or slug (case-insensitive). Requires replacement if changed.`,
 			},
 			"privacy_policy_url": schema.StringAttribute{
-				Computed: true,
 				Optional: true,
 			},
 			"slug": schema.StringAttribute{
