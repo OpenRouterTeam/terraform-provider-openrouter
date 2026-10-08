@@ -1,8 +1,9 @@
 # Pinned copy of the /private-providers API (openrouter-web #49419), applied
 # on top of the monorepo-synced .speakeasy/in.openapi.yaml.
 #
-# The routes are not in the synced public spec until #49419 merges. Keeping
-# them here lets the openrouter_private_provider resource build before then.
+# #49419 marks the routes `hide: true`, so the synced public spec leaves them
+# out until private providers launch. Keeping them here lets the
+# openrouter_private_provider resource build before then.
 # Every action removes whatever the synced spec has for a path or schema
 # before adding the pinned copy, so the result is identical whether or not
 # the sync already carries the routes.
