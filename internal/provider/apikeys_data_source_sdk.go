@@ -61,6 +61,12 @@ func (r *APIKeysDataSourceModel) ToOperationsListRequest(ctx context.Context) (*
 	} else {
 		includeDisabled = nil
 	}
+	includeExpired := new(string)
+	if !r.IncludeExpired.IsUnknown() && !r.IncludeExpired.IsNull() {
+		*includeExpired = r.IncludeExpired.ValueString()
+	} else {
+		includeExpired = nil
+	}
 	offset := new(int64)
 	if !r.Offset.IsUnknown() && !r.Offset.IsNull() {
 		*offset = r.Offset.ValueInt64()
@@ -75,6 +81,7 @@ func (r *APIKeysDataSourceModel) ToOperationsListRequest(ctx context.Context) (*
 	}
 	out := operations.ListRequest{
 		IncludeDisabled: includeDisabled,
+		IncludeExpired:  includeExpired,
 		Offset:          offset,
 		WorkspaceID:     workspaceID,
 	}

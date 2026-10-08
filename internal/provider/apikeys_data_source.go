@@ -34,6 +34,7 @@ type APIKeysDataSource struct {
 type APIKeysDataSourceModel struct {
 	Data            []tfTypes.ListData `tfsdk:"data"`
 	IncludeDisabled types.String       `queryParam:"style=form,explode=true,name=include_disabled" tfsdk:"include_disabled"`
+	IncludeExpired  types.String       `queryParam:"style=form,explode=true,name=include_expired" tfsdk:"include_expired"`
 	Offset          types.Int64        `queryParam:"style=form,explode=true,name=offset" tfsdk:"offset"`
 	WorkspaceID     types.String       `queryParam:"style=form,explode=true,name=workspace_id" tfsdk:"workspace_id"`
 }
@@ -152,6 +153,10 @@ func (r *APIKeysDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			"include_disabled": schema.StringAttribute{
 				Optional:    true,
 				Description: `Whether to include disabled API keys in the response`,
+			},
+			"include_expired": schema.StringAttribute{
+				Optional:    true,
+				Description: `Whether to include expired API keys in the response. Expired keys are excluded by default and returned only when this is true.`,
 			},
 			"offset": schema.Int64Attribute{
 				Optional:    true,
