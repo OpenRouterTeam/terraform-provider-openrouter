@@ -3,8 +3,8 @@ name: CI
 # Offline PR gate: build, static checks and every test that needs no
 # credentials (unit tests plus the httptest-backed stub acceptance tests in
 # internal/acceptance). Live acceptance tests skip here because TF_ACC is
-# unset; they run in acceptance.yaml (nightly, dispatch, or a PR carrying the
-# `run-acceptance` label) and as the release gate in sdk_publish.yaml.
+# unset; they run in acceptance.yaml (nightly, dispatch, and every same-repo
+# PR after its regeneration) and as the release gate in sdk_publish.yaml.
 #
 # Speakeasy regen PRs are opened with GITHUB_TOKEN, which does not trigger
 # pull_request workflows, so the push-to-main run is their validation.
