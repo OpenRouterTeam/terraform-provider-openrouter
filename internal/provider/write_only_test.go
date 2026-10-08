@@ -2,6 +2,9 @@ package provider
 
 import (
 	"context"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"strings"
 	"testing"
@@ -11,10 +14,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resourceschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
@@ -165,11 +171,23 @@ func TestObservabilityConfigAllowlistsMatchGeneratedFields(t *testing.T) {
 }
 
 func TestScrubObservabilityResourceOnlyInWriteOnlyMode(t *testing.T) {
-	legacy := &ObservabilityDestinationResourceModel{}
+	legacy := &ObservabilityDestinationResourceModel{Config: map[string]jsontypes.Normalized{"apiKey": jsontypes.NewNormalizedValue(`"` + writeOnlyMarker + `"`)}}
 	fillObservabilityConfigBlocks(reflect.ValueOf(legacy))
 	scrubObservabilityResource(legacy.ConfigSecretsWoVersion, legacy.Config, legacy)
 	if legacy.Datadog.Config.APIKey.IsNull() {
 		t.Fatal("legacy mode (no config_secrets_wo_version) must keep today's behavior")
+	}
+
+	// Right after an import neither `config` nor the version is known, so the
+	// response is filtered as if write-only.
+	imported := &ObservabilityDestinationResourceModel{}
+	fillObservabilityConfigBlocks(reflect.ValueOf(imported))
+	scrubObservabilityResource(imported.ConfigSecretsWoVersion, imported.Config, imported)
+	if !imported.Datadog.Config.APIKey.IsNull() || imported.Webhook.Config.Headers != nil || !imported.Webhook.Config.URL.IsNull() {
+		t.Fatal("imported state must drop credentials, headers and URLs from computed config")
+	}
+	if imported.Datadog.Config.MlApp.IsNull() {
+		t.Fatal("imported state must keep non-credential settings")
 	}
 
 	writeOnly := &ObservabilityDestinationResourceModel{ConfigSecretsWoVersion: types.Int64Value(1)}
@@ -205,10 +223,10 @@ func TestScrubObservabilityDataSource(t *testing.T) {
 }
 
 func TestMergeSecretValues(t *testing.T) {
-	json := jsontypes.NewNormalizedValue
+	json := types.StringValue
 
 	t.Run("merges and decodes like config", func(t *testing.T) {
-		got, diags := mergeSecretValues(map[string]any{"mlApp": "app"}, map[string]jsontypes.Normalized{
+		got, diags := mergeSecretValues(map[string]any{"mlApp": "app"}, map[string]types.String{
 			"apiKey":  json(`"` + writeOnlyMarker + `"`),
 			"headers": json(`{"Authorization":"Bearer ` + writeOnlyMarker + `"}`),
 		})
@@ -224,19 +242,26 @@ func TestMergeSecretValues(t *testing.T) {
 	})
 
 	t.Run("overlap names the key, not the value", func(t *testing.T) {
-		_, diags := mergeSecretValues(map[string]any{"apiKey": "public"}, map[string]jsontypes.Normalized{"apiKey": json(`"` + writeOnlyMarker + `"`)})
+		_, diags := mergeSecretValues(map[string]any{"apiKey": "public"}, map[string]types.String{"apiKey": json(`"` + writeOnlyMarker + `"`)})
 		assertDiagsHideMarker(t, diags, `"apiKey"`)
 	})
 
 	t.Run("invalid JSON never echoes the value", func(t *testing.T) {
-		_, diags := mergeSecretValues(nil, map[string]jsontypes.Normalized{"apiKey": json(writeOnlyMarker + " not json")})
+		_, diags := mergeSecretValues(nil, map[string]types.String{"apiKey": json(writeOnlyMarker + " not json")})
 		assertDiagsHideMarker(t, diags, `"apiKey"`)
 	})
 
 	t.Run("unknown credential is an error", func(t *testing.T) {
-		_, diags := mergeSecretValues(nil, map[string]jsontypes.Normalized{"apiKey": jsontypes.NewNormalizedUnknown()})
+		_, diags := mergeSecretValues(nil, map[string]types.String{"apiKey": types.StringUnknown()})
 		if !diags.HasError() {
 			t.Fatal("expected an error for an unknown credential")
+		}
+	})
+
+	t.Run("public key is rejected", func(t *testing.T) {
+		for _, key := range []string{"username", "mlApp", "ml_app"} {
+			_, diags := mergeSecretValues(nil, map[string]types.String{key: json(`"` + writeOnlyMarker + `"`)})
+			assertDiagsHideMarker(t, diags, `"`+key+`"`)
 		}
 	})
 }
@@ -427,5 +452,180 @@ func TestObservabilityValidateConfigRejectsOverlap(t *testing.T) {
 				assertDiagsHideMarker(t, resp.Diagnostics, `"headers"`)
 			}
 		})
+	}
+}
+
+func TestJSONStringLeavesTrimsLeadingWhitespace(t *testing.T) {
+	for name, value := range map[string]string{
+		"string": " \n\t\"" + writeOnlyMarker + `"`,
+		"object": "\r\n " + `{"Authorization":"` + writeOnlyMarker + `"}`,
+		"array":  "  " + `["` + writeOnlyMarker + `"]`,
+	} {
+		t.Run(name, func(t *testing.T) {
+			leaves := jsonStringLeaves(value)
+			if len(leaves) != 1 || leaves[0] != writeOnlyMarker {
+				t.Fatalf("jsonStringLeaves(%q) = %q, want the decoded credential", value, leaves)
+			}
+		})
+	}
+	if leaves := jsonStringLeaves("   "); leaves != nil {
+		t.Fatalf("whitespace-only value: got %q", leaves)
+	}
+}
+
+func TestSecretJSONValidator(t *testing.T) {
+	ctx := context.Background()
+	for name, tc := range map[string]struct {
+		value   string
+		wantErr string
+	}{
+		"valid string":         {`"` + writeOnlyMarker + `"`, ""},
+		"valid object":         {`{"Authorization":"Bearer ` + writeOnlyMarker + `","X-Empty":""}`, ""},
+		"invalid JSON":         {writeOnlyMarker + " not json", "Invalid JSON"},
+		"short string":         {`"abc"`, "Credential too short"},
+		"short nested string":  {`{"Authorization":"` + writeOnlyMarker + `","X":"ab"}`, "Credential too short"},
+		"non-string JSON only": {`42`, ""},
+	} {
+		t.Run(name, func(t *testing.T) {
+			resp := &validator.StringResponse{}
+			secretJSONValidator{}.ValidateString(ctx, validator.StringRequest{
+				Path:        path.Root("config_secrets_wo").AtMapKey("apiKey"),
+				ConfigValue: types.StringValue(tc.value),
+			}, resp)
+			if tc.wantErr == "" {
+				if resp.Diagnostics.HasError() {
+					t.Fatalf("unexpected diagnostics: %v", resp.Diagnostics)
+				}
+				return
+			}
+			assertDiagsHideMarker(t, resp.Diagnostics, `"apiKey"`)
+			if resp.Diagnostics[0].Summary() != tc.wantErr {
+				t.Fatalf("summary = %q, want %q", resp.Diagnostics[0].Summary(), tc.wantErr)
+			}
+			if strings.Contains(resp.Diagnostics[0].Detail(), tc.value) {
+				t.Fatalf("diagnostic echoes the value: %q", resp.Diagnostics[0].Detail())
+			}
+		})
+	}
+}
+
+// Configuration-level check: the full framework validation pipeline, including
+// attribute type validation, must not echo an invalid write-only value.
+func TestObservabilityWriteOnlyInvalidJSONIsNotEchoed(t *testing.T) {
+	ctx := context.Background()
+	dest := &resource.SchemaResponse{}
+	(&ObservabilityDestinationResource{}).Schema(ctx, resource.SchemaRequest{}, dest)
+	cfg := configWith(t, dest.Schema, map[string]tftypes.Value{
+		"name": tftypes.NewValue(tftypes.String, "tf-stub"),
+		"type": tftypes.NewValue(tftypes.String, "webhook"),
+		"config_secrets_wo": tftypes.NewValue(tftypes.Map{ElementType: tftypes.String}, map[string]tftypes.Value{
+			"apiKey": tftypes.NewValue(tftypes.String, writeOnlyMarker+" not json"),
+		}),
+		"config_secrets_wo_version": tftypes.NewValue(tftypes.Number, 1),
+	})
+	dv, err := tfprotov6.NewDynamicValue(cfg.Raw.Type(), cfg.Raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	server := providerserver.NewProtocol6(New("test")())()
+	resp, err := server.ValidateResourceConfig(ctx, &tfprotov6.ValidateResourceConfigRequest{
+		TypeName:           "openrouter_observability_destination",
+		Config:             &dv,
+		ClientCapabilities: &tfprotov6.ValidateResourceConfigClientCapabilities{WriteOnlyAttributesAllowed: true},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var invalid bool
+	for _, d := range resp.Diagnostics {
+		if strings.Contains(d.Summary+" "+d.Detail, writeOnlyMarker) {
+			t.Errorf("diagnostic leaks the write-only value: %s: %s", d.Summary, d.Detail)
+		}
+		invalid = invalid || d.Summary == "Invalid JSON"
+	}
+	if !invalid {
+		t.Fatalf("expected an Invalid JSON diagnostic, got %+v", resp.Diagnostics)
+	}
+}
+
+func TestObservabilityValidateConfigRejectsPublicKeys(t *testing.T) {
+	ctx := context.Background()
+	dest := &resource.SchemaResponse{}
+	(&ObservabilityDestinationResource{}).Schema(ctx, resource.SchemaRequest{}, dest)
+	resp := &resource.ValidateConfigResponse{}
+	(&ObservabilityDestinationResource{}).ValidateConfig(ctx, resource.ValidateConfigRequest{
+		Config: configWith(t, dest.Schema, map[string]tftypes.Value{
+			"config_secrets_wo": tftypes.NewValue(tftypes.Map{ElementType: tftypes.String}, map[string]tftypes.Value{
+				"username": tftypes.NewValue(tftypes.String, `"`+writeOnlyMarker+`"`),
+				"password": tftypes.NewValue(tftypes.String, `"`+writeOnlyMarker+`"`),
+			}),
+		}),
+	}, resp)
+	assertDiagsHideMarker(t, resp.Diagnostics, `"username"`)
+	if len(resp.Diagnostics) != 1 {
+		t.Fatalf("only the public key should be rejected, got %v", resp.Diagnostics)
+	}
+}
+
+func TestRedactConfigObjectsInBody(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "https://openrouter.test/api/v1/observability/destinations/dest_1", nil)
+	body := `{"data":{"id":"dest_1","name":"n","config":{"apiKey":"` + writeOnlyMarker + `","headers":{"Authorization":"` + writeOnlyMarker + `"},` +
+		`"url":"https://u:` + writeOnlyMarker + `@example.test","mlApp":"app","region":"us"}}}`
+
+	redacted := redactConfigObjectsInBody(req, body)
+	if strings.Contains(redacted, writeOnlyMarker) {
+		t.Fatalf("credential survived structural redaction: %s", redacted)
+	}
+	for _, want := range []string{`"mlApp":"app"`, `"region":"us"`, `"name":"n"`} {
+		if !strings.Contains(redacted, want) {
+			t.Errorf("redacted body lost public field %s: %s", want, redacted)
+		}
+	}
+
+	list := `{"data":[{"config":{"apiKey":"` + writeOnlyMarker + `"}}],"total_count":1}`
+	if got := redactConfigObjectsInBody(httptest.NewRequest(http.MethodGet, "https://openrouter.test/api/v1/observability/destinations", nil), list); strings.Contains(got, writeOnlyMarker) {
+		t.Fatalf("list response credential survived: %s", got)
+	}
+
+	other := httptest.NewRequest(http.MethodGet, "https://openrouter.test/api/v1/keys", nil)
+	if got := redactConfigObjectsInBody(other, body); got != body {
+		t.Fatalf("other endpoints must be untouched: %s", got)
+	}
+	if got := redactConfigObjectsInBody(req, "not json "+writeOnlyMarker); got != "not json "+writeOnlyMarker {
+		t.Fatalf("non-JSON bodies must be untouched: %s", got)
+	}
+}
+
+// Refreshes and data source reads have no write-only values in ctx, so the
+// diagnostic dump and the debug log must hide credentials structurally.
+func TestObservabilityResponseDumpsRedactCredentials(t *testing.T) {
+	body := `{"data":{"id":"dest_1","config":{"headers":{"Authorization":"Bearer ` + writeOnlyMarker + `"}}}}`
+	newResponse := func() *http.Response {
+		req := httptest.NewRequest(http.MethodGet, "https://openrouter.test/api/v1/observability/destinations/dest_1", nil)
+		return &http.Response{
+			StatusCode: http.StatusInternalServerError, Status: "500 Internal Server Error", Proto: "HTTP/1.1", ProtoMajor: 1, ProtoMinor: 1,
+			Header: http.Header{"Content-Type": []string{"application/json"}}, Request: req,
+			Body: io.NopCloser(strings.NewReader(body)), ContentLength: int64(len(body)),
+		}
+	}
+
+	if dump := debugResponse(newResponse()); strings.Contains(dump, writeOnlyMarker) {
+		t.Fatalf("diagnostic dump leaks the credential: %s", dump)
+	} else if !strings.Contains(dump, `"Authorization":"(sensitive)"`) && !strings.Contains(dump, `"headers":"(sensitive)"`) {
+		t.Fatalf("diagnostic dump lost the body: %s", dump)
+	}
+
+	res := newResponse()
+	fields, err := decomposeResponseForLogging(res)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if logged, _ := fields[FieldHttpResponseBody].(string); strings.Contains(logged, writeOnlyMarker) {
+		t.Fatalf("debug log leaks the credential: %s", logged)
+	}
+	// The SDK still reads the original body.
+	if raw, _ := io.ReadAll(res.Body); string(raw) != body {
+		t.Fatalf("response body for the SDK was modified: %s", raw)
 	}
 }

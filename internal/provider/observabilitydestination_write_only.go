@@ -10,7 +10,6 @@ import (
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
-	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
@@ -88,16 +87,19 @@ func addObservabilityWriteOnlyAttributes(s *schema.Schema) {
 	s.Attributes["config"] = config
 
 	s.Attributes["config_secrets_wo"] = schema.MapAttribute{
-		Optional:    true,
-		Sensitive:   true,
-		WriteOnly:   true,
-		ElementType: jsontypes.NormalizedType{},
+		Optional:  true,
+		Sensitive: true,
+		WriteOnly: true,
+		// A plain string element type: jsontypes.NormalizedType and
+		// validators.IsValidJSON echo an invalid value in their diagnostics.
+		ElementType: types.StringType,
 		Description: "Write-only credentials for the destination, as JSON-encoded values keyed like `config`. They are merged into `config` in the API request " +
 			"and never stored in Terraform state or plans. Requires Terraform 1.11 or later and `config_secrets_wo_version`. " +
-			"A key may appear in `config` or `config_secrets_wo`, not both. While this is set, the computed `config` blocks in the response " +
+			"A key may appear in `config` or `config_secrets_wo`, not both, and keys the API returns in plain text (such as `username` or `region`) must go in `config`. " +
+			"Each non-empty string in a value must be at least 4 characters long. While this is set, the computed `config` blocks in the response " +
 			"omit credentials, headers, and URLs not declared in `config`.",
 		Validators: []validator.Map{
-			mapvalidator.ValueStringsAre(validators.IsValidJSON()),
+			mapvalidator.ValueStringsAre(secretJSONValidator{}),
 			mapvalidator.AlsoRequires(path.MatchRoot("config_secrets_wo_version")),
 		},
 	}
@@ -123,37 +125,53 @@ func addIncludeSensitiveConfigAttribute(s *datasourceschema.Schema) {
 	}
 }
 
-// ValidateConfig rejects keys set in both `config` and `config_secrets_wo`. It
-// names keys only, never values.
+// ValidateConfig rejects keys set in both `config` and `config_secrets_wo`, and
+// public keys set in `config_secrets_wo`. It names keys only, never values.
 func (r *ObservabilityDestinationResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 	var public, secrets types.Map
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("config"), &public)...)
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("config_secrets_wo"), &secrets)...)
-	if resp.Diagnostics.HasError() || public.IsNull() || public.IsUnknown() || secrets.IsNull() || secrets.IsUnknown() {
+	if resp.Diagnostics.HasError() || secrets.IsNull() || secrets.IsUnknown() {
 		return
 	}
 
-	var overlap []string
+	keys := make([]string, 0, len(secrets.Elements()))
 	for key := range secrets.Elements() {
-		if _, ok := public.Elements()[key]; ok {
-			overlap = append(overlap, key)
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		keyPath := path.Root("config_secrets_wo").AtMapKey(key)
+		if _, ok := public.Elements()[key]; ok && !public.IsUnknown() {
+			resp.Diagnostics.AddAttributeError(keyPath, "Overlapping configuration key",
+				fmt.Sprintf("The key %q is set in both `config` and `config_secrets_wo`. Set each key in only one of them.", key))
+			continue
+		}
+		if isObservabilityPublicConfigKey(key) {
+			resp.Diagnostics.AddAttributeError(keyPath, publicKeyInSecretsSummary, publicKeyInSecretsDetail(key))
 		}
 	}
-	sort.Strings(overlap)
-	for _, key := range overlap {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("config_secrets_wo").AtMapKey(key),
-			"Overlapping configuration key",
-			fmt.Sprintf("The key %q is set in both `config` and `config_secrets_wo`. Set each key in only one of them.", key),
-		)
-	}
+}
+
+const publicKeyInSecretsSummary = "Public configuration key in config_secrets_wo"
+
+func publicKeyInSecretsDetail(key string) string {
+	return fmt.Sprintf("The key %q is returned by the API in plain text and stored in state, so it cannot be write-only. Set it in `config` instead.", key)
+}
+
+// isObservabilityPublicConfigKey reports whether a config key, in the API's
+// camelCase or Terraform's snake_case, is an allowlisted public field. Those
+// fields are kept in the computed config blocks, so a value supplied through
+// `config_secrets_wo` would reach state.
+func isObservabilityPublicConfigKey(key string) bool {
+	return observabilityPublicConfigFields[key] || observabilityPublicConfigFields[camelToSnake(key)]
 }
 
 // mergeObservabilitySecrets reads `config_secrets_wo` from the operation
 // configuration and merges it into into, the request's config map. It reports
 // whether any credentials were present.
 func mergeObservabilitySecrets(ctx context.Context, cfg tfsdk.Config, into map[string]any) (map[string]any, bool, diag.Diagnostics) {
-	var secrets map[string]jsontypes.Normalized
+	var secrets map[string]types.String
 	diags := cfg.GetAttribute(ctx, path.Root("config_secrets_wo"), &secrets)
 	if diags.HasError() || len(secrets) == 0 {
 		return into, false, diags
@@ -168,7 +186,7 @@ func mergeObservabilitySecrets(ctx context.Context, cfg tfsdk.Config, into map[s
 // mergeSecretValues decodes each credential like the generated builder decodes
 // `config` values (JSON) and adds it to into. Diagnostics name keys, never
 // values.
-func mergeSecretValues(into map[string]any, secrets map[string]jsontypes.Normalized) (map[string]any, diag.Diagnostics) {
+func mergeSecretValues(into map[string]any, secrets map[string]types.String) (map[string]any, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	if into == nil {
@@ -179,6 +197,10 @@ func mergeSecretValues(into map[string]any, secrets map[string]jsontypes.Normali
 		if _, ok := into[key]; ok {
 			diags.AddAttributeError(keyPath, "Overlapping configuration key",
 				fmt.Sprintf("The key %q is set in both `config` and `config_secrets_wo`. Set each key in only one of them.", key))
+			continue
+		}
+		if isObservabilityPublicConfigKey(key) {
+			diags.AddAttributeError(keyPath, publicKeyInSecretsSummary, publicKeyInSecretsDetail(key))
 			continue
 		}
 		if value.IsNull() || value.IsUnknown() {
@@ -244,12 +266,17 @@ func applyObservabilityWriteOnlyConfigOnUpdate(ctx context.Context, req resource
 
 // scrubObservabilityResource filters the computed config blocks of the resource
 // model when the practitioner uses write-only credentials, signalled by a
-// config_secrets_wo_version in the plan or state. Call it after the response has
-// been flattened into the model. The version and public config are passed in,
-// rather than read from the model, so this file compiles against the pristine
-// generated code that Speakeasy builds before merging custom edits.
+// config_secrets_wo_version in the plan or state. It also filters them when
+// neither the version nor `config` is set, which is the state right after an
+// import: the practitioner's mode is not known yet, so the response is treated
+// as write-only. The next apply records the real mode. Call it after the
+// response has been flattened into the model. The version and public config are
+// passed in, rather than read from the model, so this file compiles against the
+// pristine generated code that Speakeasy builds before merging custom edits.
 func scrubObservabilityResource(version types.Int64, public map[string]jsontypes.Normalized, data any) {
-	if version.IsNull() || version.IsUnknown() {
+	writeOnly := !version.IsNull() && !version.IsUnknown()
+	imported := version.IsNull() && len(public) == 0
+	if !writeOnly && !imported {
 		return
 	}
 	scrubObservabilityConfigBlocks(reflect.ValueOf(data), public)
@@ -313,6 +340,20 @@ func scrubObservabilityConfigStruct(v reflect.Value, declared map[string]jsontyp
 func tfsdkName(f reflect.StructField) string {
 	name, _, _ := strings.Cut(f.Tag.Get("tfsdk"), ",")
 	return name
+}
+
+func camelToSnake(s string) string {
+	var b strings.Builder
+	for i, r := range s {
+		if 'A' <= r && r <= 'Z' {
+			if i > 0 {
+				b.WriteByte('_')
+			}
+			r += 'a' - 'A'
+		}
+		b.WriteRune(r)
+	}
+	return b.String()
 }
 
 func snakeToCamel(s string) string {
