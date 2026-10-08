@@ -668,9 +668,68 @@ func TestStubWriteOnlyBroadcastValidation(t *testing.T) {
 			ExpectError:     regexp.MustCompile(`config_secrets_wo_version`),
 		},
 		{
+			Config: destConfig(srv.URL, `  config_secrets_wo = {
+    headers = "not json ${var.secret}"
+  }
+  config_secrets_wo_version = 1
+`),
+			ConfigVariables: secretVar(woMarker),
+			PlanOnly:        true,
+			ExpectError:     regexp.MustCompile(`Invalid JSON`),
+		},
+		{
+			// A key the API returns in plain text cannot be write-only.
+			Config: destConfig(srv.URL, `  config_secrets_wo = {
+    username = jsonencode(var.secret)
+  }
+  config_secrets_wo_version = 1
+`),
+			ConfigVariables: secretVar(woMarker),
+			PlanOnly:        true,
+			ExpectError:     regexp.MustCompile(`Public configuration key`),
+		},
+		{
 			Config:          destConfig(srv.URL, ""),
 			ConfigVariables: secretVar(woMarker),
 			ExpectError:     regexp.MustCompile(`Missing configuration`),
+		},
+	})
+}
+
+// Import starts from an id only, so the first read must not copy the raw
+// credential echo into state.
+func TestStubWriteOnlyBroadcastImportFiltersRawEcho(t *testing.T) {
+	_, srv := newWriteOnlyStub(t)
+
+	woTestCase(t, []resource.TestStep{
+		{
+			Config:          destConfig(srv.URL, destWriteOnlyBody("POST", 1)),
+			ConfigVariables: secretVar(woMarker),
+			Check:           stateMarker(woMarker, false),
+		},
+		{
+			Config:          destConfig(srv.URL, destWriteOnlyBody("POST", 1)),
+			ConfigVariables: secretVar(woMarker),
+			ResourceName:    destAddr,
+			ImportState:     true,
+			ImportStateCheck: func(states []*terraform.InstanceState) error {
+				if len(states) != 1 {
+					return fmt.Errorf("imported %d resources, want 1", len(states))
+				}
+				attrs := states[0].Attributes
+				for k, v := range attrs {
+					if strings.Contains(v, woMarker) {
+						return fmt.Errorf("imported state contains the credential at %s", k)
+					}
+				}
+				if _, ok := attrs["webhook.config.headers.Authorization"]; ok {
+					return fmt.Errorf("imported state kept credential headers")
+				}
+				if attrs["webhook.config.method"] != "POST" {
+					return fmt.Errorf("imported state lost public settings: method = %q", attrs["webhook.config.method"])
+				}
+				return nil
+			},
 		},
 	})
 }
