@@ -26,6 +26,7 @@ import (
 )
 
 func debugResponse(response *http.Response) string {
+	redactResponseBodyForDump(response)
 	if v := response.Request.Header.Get("Authorization"); v != "" {
 		response.Request.Header.Set("Authorization", "(sensitive)")
 	}
@@ -289,7 +290,7 @@ func decomposeResponseForLogging(res *http.Response) (map[string]interface{}, er
 	// http.Client
 	res.Body = io.NopCloser(bytes.NewBuffer(resBody))
 
-	fields[FieldHttpResponseBody] = string(resBody)
+	fields[FieldHttpResponseBody] = redactConfigObjectsInBody(res.Request, string(resBody))
 	redactSensitiveFields(res.Request, fields)
 
 	return fields, nil

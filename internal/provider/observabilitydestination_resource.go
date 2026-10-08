@@ -56,7 +56,7 @@ type ObservabilityDestinationResourceModel struct {
 	BroadcastGenerationRequestContext types.Bool                                                                        `tfsdk:"broadcast_generation_request_context"`
 	Clickhouse                        *tfTypes.GetObservabilityDestinationResponseObservabilityClickhouseDestination    `queryParam:"inline" tfsdk:"clickhouse"`
 	Config                            map[string]jsontypes.Normalized                                                   `tfsdk:"config"`
-	ConfigSecretsWo                   map[string]jsontypes.Normalized                                                   `tfsdk:"config_secrets_wo"`
+	ConfigSecretsWo                   map[string]types.String                                                           `tfsdk:"config_secrets_wo"`
 	ConfigSecretsWoVersion            types.Int64                                                                       `tfsdk:"config_secrets_wo_version"`
 	CreatedAt                         types.String                                                                      `tfsdk:"created_at"`
 	Datadog                           *tfTypes.GetObservabilityDestinationResponseObservabilityDatadogDestination       `queryParam:"inline" tfsdk:"datadog"`

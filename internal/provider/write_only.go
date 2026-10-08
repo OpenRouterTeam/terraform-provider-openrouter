@@ -3,10 +3,15 @@ package provider
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -39,14 +44,20 @@ func writeOnlyVersionChanged(ctx context.Context, plan tfsdk.Plan, state tfsdk.S
 // hold JSON-encoded values, so the credential is `"value"` in state and
 // configuration but a bare `value` in the API's error text and debug dumps.
 func jsonStringLeaves(s string) []string {
-	if s == "" || !strings.ContainsAny(s[:1], `"{[`) {
+	trimmed := strings.TrimLeft(s, " \t\r\n")
+	if trimmed == "" || !strings.ContainsAny(trimmed[:1], `"{[`) {
 		return nil
 	}
 	var decoded any
-	if json.Unmarshal([]byte(s), &decoded) != nil {
+	if json.Unmarshal([]byte(trimmed), &decoded) != nil {
 		return nil
 	}
 
+	return stringLeaves(decoded)
+}
+
+// stringLeaves returns the non-empty strings inside a decoded JSON value.
+func stringLeaves(decoded any) []string {
 	var leaves []string
 	var walk func(any)
 	walk = func(v any) {
@@ -68,4 +79,101 @@ func jsonStringLeaves(s string) []string {
 	walk(decoded)
 
 	return leaves
+}
+
+// secretJSONValidator checks that a write-only value is valid JSON whose
+// strings are long enough to redact. Unlike validators.IsValidJSON and
+// jsontypes.NormalizedType, its diagnostics never include the value.
+type secretJSONValidator struct{}
+
+var _ validator.String = secretJSONValidator{}
+
+func (secretJSONValidator) Description(context.Context) string {
+	return fmt.Sprintf("value must be valid JSON, and each non-empty string in it at least %d characters long", minSensitiveValueLength)
+}
+
+func (v secretJSONValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (secretJSONValidator) ValidateString(_ context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+	var decoded any
+	if json.Unmarshal([]byte(req.ConfigValue.ValueString()), &decoded) != nil {
+		resp.Diagnostics.AddAttributeError(req.Path, "Invalid JSON", fmt.Sprintf("The value of %s is not valid JSON. The value is not shown because it is write-only.", req.Path))
+		return
+	}
+	for _, leaf := range stringLeaves(decoded) {
+		if utf8.RuneCountInString(leaf) < minSensitiveValueLength {
+			resp.Diagnostics.AddAttributeError(req.Path, "Credential too short",
+				fmt.Sprintf("The value of %s contains a string shorter than %d characters. Values that short cannot be redacted from logs and error messages.", req.Path, minSensitiveValueLength))
+			return
+		}
+	}
+}
+
+// redactConfigObjectsInBody returns a JSON body with the credential-bearing
+// fields of every `config` object replaced, keeping only allowlisted public
+// fields. Write-only credentials are not in state, so value-based redaction
+// cannot find them in a refresh or data source read; this hides them
+// structurally. Bodies of other endpoints, and non-JSON bodies, are returned
+// unchanged.
+func redactConfigObjectsInBody(req *http.Request, body string) string {
+	if req == nil || req.URL == nil || !strings.Contains(req.URL.Path, "/observability/destinations") {
+		return body
+	}
+	var decoded any
+	if json.Unmarshal([]byte(body), &decoded) != nil {
+		return body
+	}
+	if !redactConfigObjects(decoded) {
+		return body
+	}
+	redacted, err := json.Marshal(decoded)
+	if err != nil {
+		return body
+	}
+	return string(redacted)
+}
+
+func redactConfigObjects(v any) bool {
+	changed := false
+	switch v := v.(type) {
+	case []any:
+		for _, item := range v {
+			changed = redactConfigObjects(item) || changed
+		}
+	case map[string]any:
+		for key, item := range v {
+			if cfg, ok := item.(map[string]any); ok && key == "config" {
+				for field := range cfg {
+					if !isObservabilityPublicConfigKey(field) {
+						cfg[field] = "(sensitive)"
+						changed = true
+					}
+				}
+				continue
+			}
+			changed = redactConfigObjects(item) || changed
+		}
+	}
+	return changed
+}
+
+// redactResponseBodyForDump replaces the response body with its structurally
+// redacted form before the response is dumped into a diagnostic. The SDK has
+// already consumed the body by then.
+func redactResponseBodyForDump(res *http.Response) {
+	if res == nil || res.Body == nil {
+		return
+	}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+	redacted := redactConfigObjectsInBody(res.Request, string(body))
+	res.Body = io.NopCloser(strings.NewReader(redacted))
+	res.ContentLength = int64(len(redacted))
 }
