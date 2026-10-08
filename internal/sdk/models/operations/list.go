@@ -13,6 +13,8 @@ import (
 type ListRequest struct {
 	// Whether to include disabled API keys in the response
 	IncludeDisabled *string `queryParam:"style=form,explode=true,name=include_disabled"`
+	// Whether to include expired API keys in the response. Expired keys are excluded by default and returned only when this is true.
+	IncludeExpired *string `queryParam:"style=form,explode=true,name=include_expired"`
 	// Number of API keys to skip for pagination
 	Offset *int64 `queryParam:"style=form,explode=true,name=offset"`
 	// Filter API keys by workspace ID. By default, keys in the default workspace are returned.
@@ -24,6 +26,13 @@ func (l *ListRequest) GetIncludeDisabled() *string {
 		return nil
 	}
 	return l.IncludeDisabled
+}
+
+func (l *ListRequest) GetIncludeExpired() *string {
+	if l == nil {
+		return nil
+	}
+	return l.IncludeExpired
 }
 
 func (l *ListRequest) GetOffset() *int64 {

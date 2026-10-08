@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: f5a46beb7674e825b5d6f4bcf04746e9
+  docChecksum: 34c3a87a3d90d33873aef46820a73441
   docVersion: 1.0.0
   speakeasyVersion: 1.801.0
   generationVersion: 2.946.0
-  releaseVersion: 0.3.38
-  configChecksum: 3456e8dda88ecbaf74c3c8340c6cb5cf
+  releaseVersion: 0.3.39
+  configChecksum: ff0f285bef4a289b30ed22f858d52708
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 04169c22-01ec-4537-a7ce-ad89736ae4f9
-  pristine_commit_hash: fd1b1a97c6b1d7a839be5724ef95c0d9e8845776
-  pristine_tree_hash: d7b04d5aba9f8066f857c90403603d2298758097
+  generation_id: c96427b1-47df-4d4a-aa7c-d44a5aea337e
+  pristine_commit_hash: 947db5d19efa6638add361f9ef955df11aed3b6e
+  pristine_tree_hash: 738878c84727c03e5c7206248e41c425806997ce
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -50,8 +50,8 @@ trackedFiles:
     pristine_git_object: 53b7dff227e1cdbe1212c0ed908970b5a4cd2d54
   examples/data-sources/openrouter_api_keys/data-source.tf:
     id: a09d5383438a
-    last_write_checksum: sha1:8f9d16925e6b5e81a346a6a3574f01a139b46f87
-    pristine_git_object: 4856746b5b6bbeae75fa8d3f5ca6327b823b9f5e
+    last_write_checksum: sha1:aec73fc4e23164c9aa9ff624dabe1300e24e6a25
+    pristine_git_object: 78fa3ccf3063092f9bd38bb4fa9e7492b760b423
   examples/data-sources/openrouter_byok_key/data-source.tf:
     id: 5ec7ed70d0f1
     last_write_checksum: sha1:b2e6a7e2b37a71aac3338cf1dd73d9c1e89bc91a
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:79f2c524e2a9826b6c60b3d0fdc7856f2db0eb4d
-    pristine_git_object: 9015e7b3927cec8a33214cca8e2755021e4735e4
+    last_write_checksum: sha1:bc0e230f0aa174b739fe59bdb4071dbcd7740f8e
+    pristine_git_object: 168a64f1bc8a5e50b2fbd4171838cb7ee092ad34
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -414,12 +414,12 @@ trackedFiles:
     pristine_git_object: 9cd2f94421eac3698e1edf3a655575531d02f76f
   internal/provider/apikeys_data_source.go:
     id: 6a7e4508f03c
-    last_write_checksum: sha1:74bfaa3d052d983f0e0fc365cd05a4d87d4f19a3
-    pristine_git_object: d228e326dc5d00dd8a935e6acb49556289377b82
+    last_write_checksum: sha1:a6187b438e0dfeb81e7876d592fb11a93d74a520
+    pristine_git_object: e22f8b5a22dda5749379b263095aa6fc94fbe142
   internal/provider/apikeys_data_source_sdk.go:
     id: 172c6c49e9fb
-    last_write_checksum: sha1:1ef96c914395353390c9cb6cc8b92965e07efce1
-    pristine_git_object: d762b850192f26dee21c45fcf2893de218bbf58e
+    last_write_checksum: sha1:14a8d8d4e76a65f160ec5cdb6666682e0ee3465d
+    pristine_git_object: fd1873db24b9280612accb2a4b5304aef054ba0d
   internal/provider/byokkey_data_source.go:
     id: dabd268011ce
     last_write_checksum: sha1:1d46ca263d1fd2748746edf15cb38c782e772be7
@@ -1698,8 +1698,8 @@ trackedFiles:
     pristine_git_object: 61661bcb65d796ec9e0dbbad3131fe4b56cd610f
   internal/sdk/models/operations/list.go:
     id: ee2c967ce632
-    last_write_checksum: sha1:126e57c2afc9d0142033b41dd683202a36d83619
-    pristine_git_object: 15b52c574c704df5970b511039a5142a84713437
+    last_write_checksum: sha1:c87b26fde33be42c2497012709a2fc1562507ddb
+    pristine_git_object: 74d5ac5efe9b1aef585aa4c9f50b6dc1e990cad1
   internal/sdk/models/operations/listbatches.go:
     id: c88f17f4908c
     last_write_checksum: sha1:52700339114413866dc3133322abacc96351424d
@@ -4962,8 +4962,8 @@ trackedFiles:
     pristine_git_object: 8b1a4550ddbfb754c8c7a6ac200adc6e633c7547
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:298d61b2e5b5307df41b41b4e32895a38ea2f9d2
-    pristine_git_object: 7c0dc0f41d7c434fdef1bb3c442d740ddbace625
+    last_write_checksum: sha1:205b05777e9615f64e8d9a1e34a2b93aef736c49
+    pristine_git_object: a52a2e0cecd56a6b7ba068e9a1b058d643429691
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -6000,6 +6000,7 @@ examples:
           include_disabled: "false"
           offset: 0
           workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+          include_expired: "false"
       responses:
         "200":
           application/json: {"data": [{"byok_usage": 17.38, "byok_usage_daily": 17.38, "byok_usage_monthly": 17.38, "byok_usage_weekly": 17.38, "created_at": "2025-08-24T10:30:00Z", "creator_user_id": "user_2dHFtVWx2n56w6HkM0000000000", "disabled": false, "expires_at": "2027-12-31T23:59:59Z", "external_user": null, "hash": "f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943", "include_byok_in_limit": false, "label": "Production API Key", "last_used_at": "2026-09-15T15:45:00Z", "limit": 100, "limit_remaining": 74.5, "limit_reset": "monthly", "name": "My Production Key", "updated_at": "2025-08-24T15:45:00Z", "usage": 25.5, "usage_daily": 25.5, "usage_monthly": 25.5, "usage_weekly": 25.5, "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}]}
