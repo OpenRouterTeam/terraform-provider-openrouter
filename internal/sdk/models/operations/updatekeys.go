@@ -53,6 +53,8 @@ type UpdateKeysRequestBody struct {
 	LimitReset *UpdateKeysLimitReset `json:"limit_reset,omitzero"`
 	// New name for the API key
 	Name *string `json:"name,omitzero"`
+	// Move the API key to this workspace. The key keeps its value; guardrail selections move with it, while other workspace-scoped settings (presets, BYOK keys, broadcast destinations, routing rules) do not. Sending the key's current workspace is a no-op.
+	WorkspaceID *string `json:"workspace_id,omitzero"`
 }
 
 func (u *UpdateKeysRequestBody) GetDisabled() *bool {
@@ -88,6 +90,13 @@ func (u *UpdateKeysRequestBody) GetName() *string {
 		return nil
 	}
 	return u.Name
+}
+
+func (u *UpdateKeysRequestBody) GetWorkspaceID() *string {
+	if u == nil {
+		return nil
+	}
+	return u.WorkspaceID
 }
 
 type UpdateKeysRequest struct {
@@ -358,8 +367,12 @@ type UpdateKeysResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Conflict - Resource conflict or concurrent modification
+	ConflictResponse *shared.ConflictResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
@@ -419,11 +432,25 @@ func (u *UpdateKeysResponse) GetUnauthorizedResponse() *shared.UnauthorizedRespo
 	return u.UnauthorizedResponse
 }
 
+func (u *UpdateKeysResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ForbiddenResponse
+}
+
 func (u *UpdateKeysResponse) GetNotFoundResponse() *shared.NotFoundResponse {
 	if u == nil {
 		return nil
 	}
 	return u.NotFoundResponse
+}
+
+func (u *UpdateKeysResponse) GetConflictResponse() *shared.ConflictResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ConflictResponse
 }
 
 func (u *UpdateKeysResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
