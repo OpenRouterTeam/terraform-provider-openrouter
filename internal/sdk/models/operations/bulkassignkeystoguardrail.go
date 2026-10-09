@@ -42,7 +42,7 @@ type BulkAssignKeysToGuardrailResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
-	// The guardrail has no workspace and carries a person-name or address sensitive-info filter, and at least one target key belongs to a HIPAA-enabled workspace, where that filter is not available.
+	// The guardrail has no workspace and carries a person-name or address sensitive-info filter, and at least one target key belongs to a workspace that does not allow that filter.
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
