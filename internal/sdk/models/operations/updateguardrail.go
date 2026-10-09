@@ -42,7 +42,7 @@ type UpdateGuardrailResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
-	// The update would give a HIPAA-enabled workspace a person-name or address sensitive-info filter, which is not available there.
+	// The update would add a person-name or address sensitive-info filter to a workspace that does not allow it.
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
