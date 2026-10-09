@@ -226,13 +226,9 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Description: `OpenRouter credit usage (in USD) for the current UTC week (Monday-Sunday)`,
 			},
 			"workspace_id": schema.StringAttribute{
-				Computed: true,
-				Optional: true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIfConfigured(),
-					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
-				},
-				Description: `The workspace to create the API key in. Defaults to the default workspace if not provided. Requires replacement if changed.`,
+				Computed:    true,
+				Optional:    true,
+				Description: `Move the API key to this workspace. The key keeps its value; guardrail selections move with it, while other workspace-scoped settings (presets, BYOK keys, broadcast destinations, routing rules) do not. Sending the key's current workspace is a no-op.`,
 			},
 		},
 	}
@@ -331,6 +327,13 @@ func (r *APIKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	if res1 == nil {
 		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res1))
+		return
+	}
+	if res1.StatusCode == 409 {
+		resp.Diagnostics.AddError(
+			"Resource Already Exists",
+			"When creating this resource, the API indicated that this resource already exists. You can bring the existing resource under management using Terraform import functionality or retry with a unique configuration.",
+		)
 		return
 	}
 	if res1.StatusCode != 200 {
