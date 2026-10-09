@@ -198,10 +198,10 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.3.44",
+		SDKVersion: "0.3.45",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.3.44 2.946.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
-			SDKVersion:        "0.3.44",
+			UserAgent:         "speakeasy-sdk/terraform 0.3.45 2.946.0 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			SDKVersion:        "0.3.45",
 			GenVersion:        "2.946.0",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
