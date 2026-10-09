@@ -36,7 +36,7 @@ func (e *AlignmentPluginMode) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// AlignmentPlugin - Beta. States the listed rules to the model and evaluates every turn against them. Requests are evaluated only for entities admitted to the beta; the configuration, metadata, and error shapes may change.
+// AlignmentPlugin - Beta. States the listed rules to the model and evaluates every turn against them; the configuration, metadata, and error shapes may change.
 type AlignmentPlugin struct {
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	id string `const:"alignment" json:"id"`
