@@ -45,7 +45,7 @@ resource "openrouter_api_key" "my_apikey" {
 - `include_byok_in_limit` (Boolean) Whether to include BYOK usage in the limit
 - `limit` (Number) New spending limit for the API key in USD
 - `limit_reset` (String) New limit reset type for the API key (daily, weekly, monthly, or null for no reset). Resets happen automatically at midnight UTC, and weeks are Monday through Sunday. must be one of ["daily", "weekly", "monthly"]
-- `workspace_id` (String) The workspace to create the API key in. Defaults to the default workspace if not provided. Requires replacement if changed.
+- `workspace_id` (String) Move the API key to this workspace. The key keeps its value; guardrail selections move with it, while other workspace-scoped settings (presets, BYOK keys, broadcast destinations, routing rules) do not. Sending the key's current workspace is a no-op.
 
 ### Read-Only
 

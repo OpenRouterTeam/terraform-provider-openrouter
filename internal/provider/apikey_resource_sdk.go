@@ -312,12 +312,19 @@ func (r *APIKeyResourceModel) ToOperationsUpdateKeysRequestBody(ctx context.Cont
 	} else {
 		name = nil
 	}
+	workspaceID := new(string)
+	if !r.WorkspaceID.IsUnknown() && !r.WorkspaceID.IsNull() {
+		*workspaceID = r.WorkspaceID.ValueString()
+	} else {
+		workspaceID = nil
+	}
 	out := operations.UpdateKeysRequestBody{
 		Disabled:           disabled,
 		IncludeByokInLimit: includeByokInLimit,
 		Limit:              limit,
 		LimitReset:         limitReset,
 		Name:               name,
+		WorkspaceID:        workspaceID,
 	}
 
 	return &out, diags
