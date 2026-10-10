@@ -9,17 +9,17 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type AllowedCaller string
+type NamespaceFunctionToolAllowedCaller string
 
 const (
-	AllowedCallerDirect       AllowedCaller = "direct"
-	AllowedCallerProgrammatic AllowedCaller = "programmatic"
+	NamespaceFunctionToolAllowedCallerDirect       NamespaceFunctionToolAllowedCaller = "direct"
+	NamespaceFunctionToolAllowedCallerProgrammatic NamespaceFunctionToolAllowedCaller = "programmatic"
 )
 
-func (e AllowedCaller) ToPointer() *AllowedCaller {
+func (e NamespaceFunctionToolAllowedCaller) ToPointer() *NamespaceFunctionToolAllowedCaller {
 	return &e
 }
-func (e *AllowedCaller) UnmarshalJSON(data []byte) error {
+func (e *NamespaceFunctionToolAllowedCaller) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -28,16 +28,16 @@ func (e *AllowedCaller) UnmarshalJSON(data []byte) error {
 	case "direct":
 		fallthrough
 	case "programmatic":
-		*e = AllowedCaller(v)
+		*e = NamespaceFunctionToolAllowedCaller(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for AllowedCaller: %v", v)
+		return fmt.Errorf("invalid value for NamespaceFunctionToolAllowedCaller: %v", v)
 	}
 }
 
 // NamespaceFunctionTool - A function tool grouped inside a namespace tool
 type NamespaceFunctionTool struct {
-	AllowedCallers []AllowedCaller `json:"allowed_callers,omitzero"`
+	AllowedCallers []NamespaceFunctionToolAllowedCaller `json:"allowed_callers,omitzero"`
 	// Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.
 	Async        *bool          `json:"async,omitzero"`
 	DeferLoading *bool          `json:"defer_loading,omitzero"`
@@ -61,7 +61,7 @@ func (n *NamespaceFunctionTool) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (n *NamespaceFunctionTool) GetAllowedCallers() []AllowedCaller {
+func (n *NamespaceFunctionTool) GetAllowedCallers() []NamespaceFunctionToolAllowedCaller {
 	if n == nil {
 		return nil
 	}
