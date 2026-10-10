@@ -30,9 +30,10 @@ type ObservabilityDestinationsDataSource struct {
 
 // ObservabilityDestinationsDataSourceModel describes the data model.
 type ObservabilityDestinationsDataSourceModel struct {
-	Data        []tfTypes.ObservabilityDestination `tfsdk:"data"`
-	TotalCount  types.Int64                        `tfsdk:"total_count"`
-	WorkspaceID types.String                       `queryParam:"style=form,explode=true,name=workspace_id" tfsdk:"workspace_id"`
+	Data                   []tfTypes.ObservabilityDestination `tfsdk:"data"`
+	IncludeSensitiveConfig types.Bool                         `tfsdk:"include_sensitive_config"`
+	TotalCount             types.Int64                        `tfsdk:"total_count"`
+	WorkspaceID            types.String                       `queryParam:"style=form,explode=true,name=workspace_id" tfsdk:"workspace_id"`
 }
 
 // Metadata returns the data source type name.
@@ -2175,6 +2176,7 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 			},
 		},
 	}
+	addIncludeSensitiveConfigAttribute(&resp.Schema)
 }
 
 func (r *ObservabilityDestinationsDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -2272,6 +2274,7 @@ func (r *ObservabilityDestinationsDataSource) Read(ctx context.Context, req data
 			return
 		}
 	}
+	scrubObservabilityDataSource(data.IncludeSensitiveConfig, data)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)

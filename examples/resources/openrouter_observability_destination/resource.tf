@@ -1,3 +1,15 @@
+variable "langfuse_public_key" {
+  type      = string
+  sensitive = true
+  ephemeral = true
+}
+
+variable "langfuse_secret_key" {
+  type      = string
+  sensitive = true
+  ephemeral = true
+}
+
 resource "openrouter_observability_destination" "my_observabilitydestination" {
   api_key_hashes = [
     "..."
@@ -5,10 +17,19 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
   broadcast_generation_cost            = false
   broadcast_generation_identity        = false
   broadcast_generation_request_context = false
+  # Public settings stay in `config`. Credentials go in `config_secrets_wo`, which
+  # keeps them out of Terraform state and plans (Terraform 1.11 or later); supply
+  # them from ephemeral variables or ephemeral resources. To rotate them, change
+  # the values and increment `config_secrets_wo_version`.
   config = {
-    key = jsonencode("value")
+    baseUrl = jsonencode("https://cloud.langfuse.com")
   }
-  enabled = true
+  config_secrets_wo = {
+    publicKey = jsonencode(var.langfuse_public_key)
+    secretKey = jsonencode(var.langfuse_secret_key)
+  }
+  config_secrets_wo_version = 1
+  enabled                   = true
   filter_rules = {
     enabled = true
     groups = [

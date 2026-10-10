@@ -13,6 +13,18 @@ ObservabilityDestination Resource
 ## Example Usage
 
 ```terraform
+variable "langfuse_public_key" {
+  type      = string
+  sensitive = true
+  ephemeral = true
+}
+
+variable "langfuse_secret_key" {
+  type      = string
+  sensitive = true
+  ephemeral = true
+}
+
 resource "openrouter_observability_destination" "my_observabilitydestination" {
   api_key_hashes = [
     "..."
@@ -20,10 +32,19 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
   broadcast_generation_cost            = false
   broadcast_generation_identity        = false
   broadcast_generation_request_context = false
+  # Public settings stay in `config`. Credentials go in `config_secrets_wo`, which
+  # keeps them out of Terraform state and plans (Terraform 1.11 or later); supply
+  # them from ephemeral variables or ephemeral resources. To rotate them, change
+  # the values and increment `config_secrets_wo_version`.
   config = {
-    key = jsonencode("value")
+    baseUrl = jsonencode("https://cloud.langfuse.com")
   }
-  enabled = true
+  config_secrets_wo = {
+    publicKey = jsonencode(var.langfuse_public_key)
+    secretKey = jsonencode(var.langfuse_secret_key)
+  }
+  config_secrets_wo_version = 1
+  enabled                   = true
   filter_rules = {
     enabled = true
     groups = [
@@ -57,16 +78,20 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
 
 ### Required
 
-- `config` (Map of String, Sensitive) Provider-specific configuration. The shape depends on `type` and is validated server-side.
 - `name` (String) Human-readable name for the destination.
 - `type` (String) The destination type. Only stable destination types are accepted. must be one of ["arize", "braintrust", "clickhouse", "datadog", "grafana", "langfuse", "langsmith", "newrelic", "opik", "otel-collector", "posthog", "ramp", "s3", "sentry", "snowflake", "weave", "webhook"]; Requires replacement if changed.
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes whose traffic is forwarded. `null` or omitted means all keys. Must contain at least one hash if provided.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
+- `config` (Map of String, Sensitive) Provider-specific configuration. The shape depends on `type` and is validated server-side. Everything in this map is stored in Terraform state; put credentials in `config_secrets_wo` instead to keep them out of state and plans. At least one of `config` and `config_secrets_wo` is required to create a destination.
+- `config_secrets_wo` (Map of String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only credentials for the destination, as JSON-encoded values keyed like `config`. They are merged into `config` in the API request and never stored in Terraform state or plans. Requires Terraform 1.11 or later and `config_secrets_wo_version`. A key may appear in `config` or `config_secrets_wo`, not both, and keys the API returns in plain text (such as `username` or `region`) must go in `config`. Each non-empty string in a value must be at least 4 characters long. While this is set, the computed `config` blocks in the response omit credentials, headers, and URLs not declared in `config`.
+- `config_secrets_wo_version` (Number) Rotation trigger for `config_secrets_wo`. The credentials are sent on create, and again whenever this value changes. Increment it to rotate them; any positive integer works. Unchanged versions leave stored credentials as they are.
 - `enabled` (Boolean) Whether this destination should be enabled immediately.
 - `filter_rules` (Attributes) Optional structured filter rules controlling which events are forwarded. (see [below for nested schema](#nestedatt--filter_rules))
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded — only metadata.

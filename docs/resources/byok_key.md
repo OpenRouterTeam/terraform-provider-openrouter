@@ -13,6 +13,15 @@ ByokKey Resource
 ## Example Usage
 
 ```terraform
+# Keeps the credential out of Terraform state and plans. Requires Terraform 1.11
+# or later; supply the value from an ephemeral variable or ephemeral resource.
+# To rotate the key, change the value and increment key_wo_version.
+variable "openai_api_key" {
+  type      = string
+  sensitive = true
+  ephemeral = true
+}
+
 resource "openrouter_byok_key" "my_byokkey" {
   allowed_api_key_hashes = [
     "f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943",
@@ -29,10 +38,12 @@ resource "openrouter_byok_key" "my_byokkey" {
   is_byok_only    = false
   is_fallback     = false
   is_required     = false
-  key             = "sk-proj-abc123..."
-  name            = "Production OpenAI Key"
-  provider_slug   = "openai"
-  workspace_id    = "550e8400-e29b-41d4-a716-446655440000"
+  # `key = "sk-proj-abc123..."` also works, but stores the key in Terraform state.
+  key_wo         = var.openai_api_key
+  key_wo_version = 1
+  name           = "Production OpenAI Key"
+  provider_slug  = "openai"
+  workspace_id   = "550e8400-e29b-41d4-a716-446655440000"
 }
 ```
 
@@ -41,10 +52,11 @@ resource "openrouter_byok_key" "my_byokkey" {
 
 ### Required
 
-- `key` (String, Sensitive) The raw provider API key or credential. This value is encrypted at rest and never returned in API responses.
 - `provider_slug` (String) The upstream provider this credential authenticates against, as a lowercase slug (e.g. `openai`, `anthropic`, `amazon-bedrock`). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "elevenlabs", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parasail", "perceptron", "perplexity", "phala", "poolside", "primeintellect", "quiver", "recraft", "reka", "relace", "respan", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "scaledown", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]; Requires replacement if changed.
 
 ### Optional
+
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
 - `allowed_api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400.
 - `allowed_models` (List of String) Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
@@ -55,6 +67,9 @@ resource "openrouter_byok_key" "my_byokkey" {
 - `is_byok_only` (Boolean) Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside `allowed_models` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials. Defaults to `false`.
 - `is_fallback` (Boolean) Whether this credential is treated as a fallback — used only after non-fallback keys for the same provider have been tried. Cannot be combined with `is_byok_only`.
 - `is_required` (Boolean) Whether OpenRouter's shared endpoints on this provider are removed for the models this credential applies to (its `allowed_models`, or every model when `null`). Requests for those models run only on your keys; models outside the allowlist may still fall back to shared capacity on this provider. Defaults to `false`.
+- `key` (String, Sensitive) The raw provider API key or credential. This value is encrypted at rest and never returned in API responses. It is stored in Terraform state; set `key_wo` instead to keep it out of state and plans. One of `key` and `key_wo` is required to create a key.
+- `key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only alternative to `key`: the raw provider API key or credential, never stored in Terraform state or plans. Requires Terraform 1.11 or later and `key_wo_version`. Cannot be combined with `key`. Must be at least 4 characters long, so it can be redacted from logs.
+- `key_wo_version` (Number) Rotation trigger for `key_wo`. The credential is sent on create, and again whenever this value changes. Increment it to rotate the key; any positive integer works.
 - `name` (String) Optional human-readable name for the credential.
 - `workspace_id` (String) Optional workspace ID to scope the credential to. When omitted, the credential is created in the account's default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly. Requires replacement if changed.
 
