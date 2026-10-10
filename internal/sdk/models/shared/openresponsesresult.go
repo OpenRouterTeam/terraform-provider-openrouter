@@ -33,6 +33,32 @@ func (e *OpenResponsesResultObject) UnmarshalJSON(data []byte) error {
 	}
 }
 
+type OpenResponsesResultAllowedCaller string
+
+const (
+	OpenResponsesResultAllowedCallerDirect       OpenResponsesResultAllowedCaller = "direct"
+	OpenResponsesResultAllowedCallerProgrammatic OpenResponsesResultAllowedCaller = "programmatic"
+)
+
+func (e OpenResponsesResultAllowedCaller) ToPointer() *OpenResponsesResultAllowedCaller {
+	return &e
+}
+func (e *OpenResponsesResultAllowedCaller) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "direct":
+		fallthrough
+	case "programmatic":
+		*e = OpenResponsesResultAllowedCaller(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for OpenResponsesResultAllowedCaller: %v", v)
+	}
+}
+
 // OpenResponsesResultToolFunction - Function tool definition
 type OpenResponsesResultToolFunction struct {
 	Description *string        `json:"description,omitzero"`
@@ -40,11 +66,13 @@ type OpenResponsesResultToolFunction struct {
 	Parameters  map[string]any `json:"parameters"`
 	Strict      *bool          `json:"strict,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"function" json:"type"`
+	type_          string                             `const:"function" json:"type"`
+	AllowedCallers []OpenResponsesResultAllowedCaller `json:"allowed_callers,omitzero"`
 	// Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.
 	Async *bool `json:"async,omitzero"`
-	// Withhold this tool from the model until `openrouter:tool_search` finds it. Requires the tool search server tool; at least one tool must remain non-deferred.
-	DeferLoading *bool `json:"defer_loading,omitzero"`
+	// Withhold this tool from the model until `openrouter:tool_search` finds it. Where the request declares no search tool, OpenRouter may add `openrouter:tool_search` to serve the flag, and otherwise sends the tool in full. A request that declares the search tool itself must keep at least one tool non-deferred.
+	DeferLoading *bool          `json:"defer_loading,omitzero"`
+	OutputSchema map[string]any `json:"output_schema,omitzero"`
 }
 
 func (o OpenResponsesResultToolFunction) MarshalJSON() ([]byte, error) {
@@ -90,6 +118,13 @@ func (o *OpenResponsesResultToolFunction) GetType() string {
 	return "function"
 }
 
+func (o *OpenResponsesResultToolFunction) GetAllowedCallers() []OpenResponsesResultAllowedCaller {
+	if o == nil {
+		return nil
+	}
+	return o.AllowedCallers
+}
+
 func (o *OpenResponsesResultToolFunction) GetAsync() *bool {
 	if o == nil {
 		return nil
@@ -102,6 +137,13 @@ func (o *OpenResponsesResultToolFunction) GetDeferLoading() *bool {
 		return nil
 	}
 	return o.DeferLoading
+}
+
+func (o *OpenResponsesResultToolFunction) GetOutputSchema() map[string]any {
+	if o == nil {
+		return nil
+	}
+	return o.OutputSchema
 }
 
 type OpenResponsesResultToolUnionType string
