@@ -107,17 +107,45 @@ func (e *AdditionalToolsItemTypeFunction) UnmarshalJSON(data []byte) error {
 	}
 }
 
+type AdditionalToolsItemAllowedCaller string
+
+const (
+	AdditionalToolsItemAllowedCallerDirect       AdditionalToolsItemAllowedCaller = "direct"
+	AdditionalToolsItemAllowedCallerProgrammatic AdditionalToolsItemAllowedCaller = "programmatic"
+)
+
+func (e AdditionalToolsItemAllowedCaller) ToPointer() *AdditionalToolsItemAllowedCaller {
+	return &e
+}
+func (e *AdditionalToolsItemAllowedCaller) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "direct":
+		fallthrough
+	case "programmatic":
+		*e = AdditionalToolsItemAllowedCaller(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for AdditionalToolsItemAllowedCaller: %v", v)
+	}
+}
+
 // AdditionalToolsItemToolFunction - Function tool definition
 type AdditionalToolsItemToolFunction struct {
-	Description *string                         `json:"description,omitzero"`
-	Name        string                          `json:"name"`
-	Parameters  map[string]any                  `json:"parameters"`
-	Strict      *bool                           `json:"strict,omitzero"`
-	Type        AdditionalToolsItemTypeFunction `json:"type"`
+	Description    *string                            `json:"description,omitzero"`
+	Name           string                             `json:"name"`
+	Parameters     map[string]any                     `json:"parameters"`
+	Strict         *bool                              `json:"strict,omitzero"`
+	Type           AdditionalToolsItemTypeFunction    `json:"type"`
+	AllowedCallers []AdditionalToolsItemAllowedCaller `json:"allowed_callers,omitzero"`
 	// Lets the model keep working after calling this tool instead of waiting for its output. The tool is still executed by the client; return the result in a later request as a `function_call_output` with the original `call_id`. Only honored by providers whose Responses API supports async tools; ignored elsewhere.
 	Async *bool `json:"async,omitzero"`
-	// Withhold this tool from the model until `openrouter:tool_search` finds it. Requires the tool search server tool; at least one tool must remain non-deferred.
-	DeferLoading *bool `json:"defer_loading,omitzero"`
+	// Withhold this tool from the model until `openrouter:tool_search` finds it. Where the request declares no search tool, OpenRouter may add `openrouter:tool_search` to serve the flag, and otherwise sends the tool in full. A request that declares the search tool itself must keep at least one tool non-deferred.
+	DeferLoading *bool          `json:"defer_loading,omitzero"`
+	OutputSchema map[string]any `json:"output_schema,omitzero"`
 }
 
 func (a AdditionalToolsItemToolFunction) MarshalJSON() ([]byte, error) {
@@ -166,6 +194,13 @@ func (a *AdditionalToolsItemToolFunction) GetType() AdditionalToolsItemTypeFunct
 	return a.Type
 }
 
+func (a *AdditionalToolsItemToolFunction) GetAllowedCallers() []AdditionalToolsItemAllowedCaller {
+	if a == nil {
+		return nil
+	}
+	return a.AllowedCallers
+}
+
 func (a *AdditionalToolsItemToolFunction) GetAsync() *bool {
 	if a == nil {
 		return nil
@@ -178,6 +213,13 @@ func (a *AdditionalToolsItemToolFunction) GetDeferLoading() *bool {
 		return nil
 	}
 	return a.DeferLoading
+}
+
+func (a *AdditionalToolsItemToolFunction) GetOutputSchema() map[string]any {
+	if a == nil {
+		return nil
+	}
+	return a.OutputSchema
 }
 
 type AdditionalToolsItemToolUnionType string
