@@ -125,8 +125,6 @@ func (r *ScimGroupsDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsListScimGroupsRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

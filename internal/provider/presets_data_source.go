@@ -131,8 +131,6 @@ func (r *PresetsDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsListPresetsRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

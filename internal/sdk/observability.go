@@ -82,6 +82,7 @@ func (s *Observability) ListDestinations(ctx context.Context, request operations
 		defer cancel()
 	}
 
+	ctx = utils.WithOperation(ctx, "listObservabilityDestinations")
 	req, err := http.NewRequestWithContext(ctx, "GET", opURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
@@ -400,6 +401,7 @@ func (s *Observability) CreateDestination(ctx context.Context, request shared.Cr
 		defer cancel()
 	}
 
+	ctx = utils.WithOperation(ctx, "createObservabilityDestination")
 	req, err := http.NewRequestWithContext(ctx, "POST", opURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
@@ -969,6 +971,7 @@ func (s *Observability) GetDestination(ctx context.Context, request operations.G
 		defer cancel()
 	}
 
+	ctx = utils.WithOperation(ctx, "getObservabilityDestination")
 	req, err := http.NewRequestWithContext(ctx, "GET", opURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
@@ -1235,6 +1238,7 @@ func (s *Observability) UpdateDestination(ctx context.Context, request operation
 		defer cancel()
 	}
 
+	ctx = utils.WithOperation(ctx, "updateObservabilityDestination")
 	req, err := http.NewRequestWithContext(ctx, "PATCH", opURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)

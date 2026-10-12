@@ -252,8 +252,6 @@ func (r *GuardrailDataSource) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsGetGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
