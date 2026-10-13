@@ -50,6 +50,10 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
+						"allow_safety_retention_google": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether ZDR-only requests to google/* models may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.`,
+						},
 						"allowed_data_regions": schema.ListAttribute{
 							Computed:    true,
 							ElementType: types.StringType,

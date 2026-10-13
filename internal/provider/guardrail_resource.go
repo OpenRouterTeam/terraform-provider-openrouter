@@ -42,6 +42,7 @@ type GuardrailResourceModel struct {
 	AllowedDataRegions         []types.String                      `tfsdk:"allowed_data_regions"`
 	AllowedModels              []types.String                      `tfsdk:"allowed_models"`
 	AllowedProviders           []types.String                      `tfsdk:"allowed_providers"`
+	AllowSafetyRetentionGoogle types.Bool                          `tfsdk:"allow_safety_retention_google"`
 	ContentFilterBuiltins      []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
 	ContentFilters             []tfTypes.ContentFilterEntry        `tfsdk:"content_filters"`
 	CreatedAt                  types.String                        `tfsdk:"created_at"`
@@ -74,6 +75,11 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Guardrail Resource",
 		Attributes: map[string]schema.Attribute{
+			"allow_safety_retention_google": schema.BoolAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: `Whether ZDR-only requests to google/* models may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.`,
+			},
 			"allowed_data_regions": schema.ListAttribute{
 				Computed:    true,
 				Optional:    true,
