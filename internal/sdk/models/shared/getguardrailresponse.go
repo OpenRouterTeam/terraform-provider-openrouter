@@ -11,6 +11,8 @@ import (
 type GetGuardrailResponseData struct {
 	// Whether ZDR-only requests to google/* models may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.
 	AllowSafetyRetentionGoogle *bool `json:"allow_safety_retention_google,omitzero"`
+	// Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.
+	AllowSafetyRetentionOther *bool `json:"allow_safety_retention_other,omitzero"`
 	// Data regions through which requests governed by this guardrail must arrive. `global` is https://openrouter.ai, `europe` is https://eu.openrouter.ai, and `us` is https://us.openrouter.ai. Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value.
 	AllowedDataRegions []GuardrailDataRegion `json:"allowed_data_regions,omitzero"`
 	// Array of model canonical_slugs (immutable identifiers)
@@ -81,6 +83,13 @@ func (g *GetGuardrailResponseData) GetAllowSafetyRetentionGoogle() *bool {
 		return nil
 	}
 	return g.AllowSafetyRetentionGoogle
+}
+
+func (g *GetGuardrailResponseData) GetAllowSafetyRetentionOther() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.AllowSafetyRetentionOther
 }
 
 func (g *GetGuardrailResponseData) GetAllowedDataRegions() []GuardrailDataRegion {
