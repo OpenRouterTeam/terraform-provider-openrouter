@@ -52,6 +52,7 @@ type ObservabilityDestinationResourceModel struct {
 	Arize                             *tfTypes.GetObservabilityDestinationResponseObservabilityArizeDestination         `queryParam:"inline" tfsdk:"arize"`
 	Braintrust                        *tfTypes.GetObservabilityDestinationResponseObservabilityBraintrustDestination    `queryParam:"inline" tfsdk:"braintrust"`
 	BroadcastGenerationCost           types.Bool                                                                        `tfsdk:"broadcast_generation_cost"`
+	BroadcastGenerationCostAllocation types.Bool                                                                        `tfsdk:"broadcast_generation_cost_allocation"`
 	BroadcastGenerationIdentity       types.Bool                                                                        `tfsdk:"broadcast_generation_identity"`
 	BroadcastGenerationRequestContext types.Bool                                                                        `tfsdk:"broadcast_generation_request_context"`
 	Clickhouse                        *tfTypes.GetObservabilityDestinationResponseObservabilityClickhouseDestination    `queryParam:"inline" tfsdk:"clickhouse"`
@@ -110,6 +111,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -238,6 +243,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
 					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
+					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include identity generation metadata.`,
@@ -356,6 +365,14 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 				},
 				Description: `When true, include cost and billing generation metadata.`,
 			},
+			"broadcast_generation_cost_allocation": schema.BoolAttribute{
+				Computed: true,
+				Optional: true,
+				PlanModifiers: []planmodifier.Bool{
+					speakeasy_boolplanmodifier.UseHoistedValue([]speakeasy_planmodifierutils.HoistedSource{speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("arize"), FieldPath: path.Root("arize").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("braintrust"), FieldPath: path.Root("braintrust").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("clickhouse"), FieldPath: path.Root("clickhouse").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("datadog"), FieldPath: path.Root("datadog").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("grafana"), FieldPath: path.Root("grafana").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("langfuse"), FieldPath: path.Root("langfuse").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("langsmith"), FieldPath: path.Root("langsmith").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("newrelic"), FieldPath: path.Root("newrelic").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("opik"), FieldPath: path.Root("opik").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("otel_collector"), FieldPath: path.Root("otel_collector").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("posthog"), FieldPath: path.Root("posthog").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("ramp"), FieldPath: path.Root("ramp").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("s3"), FieldPath: path.Root("s3").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("sentry"), FieldPath: path.Root("sentry").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("snowflake"), FieldPath: path.Root("snowflake").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("weave"), FieldPath: path.Root("weave").AtName("broadcast_generation_cost_allocation")}, speakeasy_planmodifierutils.HoistedSource{AssociatedTypePath: path.Root("webhook"), FieldPath: path.Root("webhook").AtName("broadcast_generation_cost_allocation")}}),
+				},
+				Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
+			},
 			"broadcast_generation_identity": schema.BoolAttribute{
 				Computed: true,
 				Optional: true,
@@ -383,6 +400,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -533,6 +554,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -767,6 +792,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
 					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
+					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include identity generation metadata.`,
@@ -896,6 +925,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
 					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
+					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include identity generation metadata.`,
@@ -1018,6 +1051,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -1150,6 +1187,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
 					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
+					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include identity generation metadata.`,
@@ -1268,6 +1309,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -1391,6 +1436,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
 					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
+					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include identity generation metadata.`,
@@ -1505,6 +1554,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -1632,6 +1685,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -1762,6 +1819,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -1912,6 +1973,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
 					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
+					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include identity generation metadata.`,
@@ -2030,6 +2095,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
@@ -2203,6 +2272,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
 					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
+					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include identity generation metadata.`,
@@ -2327,6 +2400,10 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 					"broadcast_generation_cost": schema.BoolAttribute{
 						Computed:    true,
 						Description: `When true, include cost and billing generation metadata.`,
+					},
+					"broadcast_generation_cost_allocation": schema.BoolAttribute{
+						Computed:    true,
+						Description: `Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.`,
 					},
 					"broadcast_generation_identity": schema.BoolAttribute{
 						Computed:    true,

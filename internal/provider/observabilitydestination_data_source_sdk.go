@@ -42,6 +42,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Arize.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Arize.BroadcastGenerationCost
+		r.Arize.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Arize.BroadcastGenerationCostAllocation
 		r.Arize.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Arize.BroadcastGenerationIdentity
 		r.Arize.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityArizeDestination.BroadcastGenerationRequestContext)
@@ -128,6 +130,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Braintrust.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Braintrust.BroadcastGenerationCost
+		r.Braintrust.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Braintrust.BroadcastGenerationCostAllocation
 		r.Braintrust.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Braintrust.BroadcastGenerationIdentity
 		r.Braintrust.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityBraintrustDestination.BroadcastGenerationRequestContext)
@@ -213,6 +217,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Clickhouse.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Clickhouse.BroadcastGenerationCost
+		r.Clickhouse.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Clickhouse.BroadcastGenerationCostAllocation
 		r.Clickhouse.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Clickhouse.BroadcastGenerationIdentity
 		r.Clickhouse.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityClickhouseDestination.BroadcastGenerationRequestContext)
@@ -301,6 +307,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Datadog.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Datadog.BroadcastGenerationCost
+		r.Datadog.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Datadog.BroadcastGenerationCostAllocation
 		r.Datadog.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Datadog.BroadcastGenerationIdentity
 		r.Datadog.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityDatadogDestination.BroadcastGenerationRequestContext)
@@ -386,6 +394,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Grafana.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Grafana.BroadcastGenerationCost
+		r.Grafana.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Grafana.BroadcastGenerationCostAllocation
 		r.Grafana.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Grafana.BroadcastGenerationIdentity
 		r.Grafana.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityGrafanaDestination.BroadcastGenerationRequestContext)
@@ -471,6 +481,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Langfuse.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Langfuse.BroadcastGenerationCost
+		r.Langfuse.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Langfuse.BroadcastGenerationCostAllocation
 		r.Langfuse.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Langfuse.BroadcastGenerationIdentity
 		r.Langfuse.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangfuseDestination.BroadcastGenerationRequestContext)
@@ -556,6 +568,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Langsmith.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Langsmith.BroadcastGenerationCost
+		r.Langsmith.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Langsmith.BroadcastGenerationCostAllocation
 		r.Langsmith.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Langsmith.BroadcastGenerationIdentity
 		r.Langsmith.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityLangsmithDestination.BroadcastGenerationRequestContext)
@@ -642,6 +656,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Newrelic.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Newrelic.BroadcastGenerationCost
+		r.Newrelic.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Newrelic.BroadcastGenerationCostAllocation
 		r.Newrelic.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Newrelic.BroadcastGenerationIdentity
 		r.Newrelic.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityNewrelicDestination.BroadcastGenerationRequestContext)
@@ -730,6 +746,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Opik.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Opik.BroadcastGenerationCost
+		r.Opik.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Opik.BroadcastGenerationCostAllocation
 		r.Opik.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Opik.BroadcastGenerationIdentity
 		r.Opik.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOpikDestination.BroadcastGenerationRequestContext)
@@ -815,6 +833,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.OtelCollector.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.OtelCollector.BroadcastGenerationCost
+		r.OtelCollector.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.OtelCollector.BroadcastGenerationCostAllocation
 		r.OtelCollector.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.OtelCollector.BroadcastGenerationIdentity
 		r.OtelCollector.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.BroadcastGenerationRequestContext)
@@ -898,6 +918,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Posthog.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Posthog.BroadcastGenerationCost
+		r.Posthog.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Posthog.BroadcastGenerationCostAllocation
 		r.Posthog.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Posthog.BroadcastGenerationIdentity
 		r.Posthog.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityPosthogDestination.BroadcastGenerationRequestContext)
@@ -982,6 +1004,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Ramp.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Ramp.BroadcastGenerationCost
+		r.Ramp.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Ramp.BroadcastGenerationCostAllocation
 		r.Ramp.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Ramp.BroadcastGenerationIdentity
 		r.Ramp.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityRampDestination.BroadcastGenerationRequestContext)
@@ -1066,6 +1090,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.S3.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.S3.BroadcastGenerationCost
+		r.S3.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.S3.BroadcastGenerationCostAllocation
 		r.S3.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.S3.BroadcastGenerationIdentity
 		r.S3.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityS3Destination.BroadcastGenerationRequestContext)
@@ -1156,6 +1182,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Sentry.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Sentry.BroadcastGenerationCost
+		r.Sentry.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Sentry.BroadcastGenerationCostAllocation
 		r.Sentry.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Sentry.BroadcastGenerationIdentity
 		r.Sentry.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySentryDestination.BroadcastGenerationRequestContext)
@@ -1240,6 +1268,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Snowflake.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Snowflake.BroadcastGenerationCost
+		r.Snowflake.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Snowflake.BroadcastGenerationCostAllocation
 		r.Snowflake.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Snowflake.BroadcastGenerationIdentity
 		r.Snowflake.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilitySnowflakeDestination.BroadcastGenerationRequestContext)
@@ -1329,6 +1359,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Weave.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Weave.BroadcastGenerationCost
+		r.Weave.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Weave.BroadcastGenerationCostAllocation
 		r.Weave.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Weave.BroadcastGenerationIdentity
 		r.Weave.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWeaveDestination.BroadcastGenerationRequestContext)
@@ -1415,6 +1447,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 		}
 		r.Webhook.BroadcastGenerationCost = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationCost)
 		r.BroadcastGenerationCost = r.Webhook.BroadcastGenerationCost
+		r.Webhook.BroadcastGenerationCostAllocation = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationCostAllocation)
+		r.BroadcastGenerationCostAllocation = r.Webhook.BroadcastGenerationCostAllocation
 		r.Webhook.BroadcastGenerationIdentity = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationIdentity)
 		r.BroadcastGenerationIdentity = r.Webhook.BroadcastGenerationIdentity
 		r.Webhook.BroadcastGenerationRequestContext = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityWebhookDestination.BroadcastGenerationRequestContext)

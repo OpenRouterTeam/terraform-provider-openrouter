@@ -79,6 +79,8 @@ type ObservabilityDestinationObservabilityWebhookDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -131,6 +133,13 @@ func (o *ObservabilityDestinationObservabilityWebhookDestination) GetBroadcastGe
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityWebhookDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityWebhookDestination) GetBroadcastGenerationIdentity() bool {
@@ -288,6 +297,8 @@ type ObservabilityDestinationObservabilityWeaveDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -340,6 +351,13 @@ func (o *ObservabilityDestinationObservabilityWeaveDestination) GetBroadcastGene
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityWeaveDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityWeaveDestination) GetBroadcastGenerationIdentity() bool {
@@ -522,6 +540,8 @@ type ObservabilityDestinationObservabilitySnowflakeDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -574,6 +594,13 @@ func (o *ObservabilityDestinationObservabilitySnowflakeDestination) GetBroadcast
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilitySnowflakeDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilitySnowflakeDestination) GetBroadcastGenerationIdentity() bool {
@@ -715,6 +742,8 @@ type ObservabilityDestinationObservabilitySentryDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -767,6 +796,13 @@ func (o *ObservabilityDestinationObservabilitySentryDestination) GetBroadcastGen
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilitySentryDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilitySentryDestination) GetBroadcastGenerationIdentity() bool {
@@ -961,6 +997,8 @@ type ObservabilityDestinationObservabilityS3Destination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -1013,6 +1051,13 @@ func (o *ObservabilityDestinationObservabilityS3Destination) GetBroadcastGenerat
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityS3Destination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityS3Destination) GetBroadcastGenerationIdentity() bool {
@@ -1158,6 +1203,8 @@ type ObservabilityDestinationObservabilityRampDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -1210,6 +1257,13 @@ func (o *ObservabilityDestinationObservabilityRampDestination) GetBroadcastGener
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityRampDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityRampDestination) GetBroadcastGenerationIdentity() bool {
@@ -1351,6 +1405,8 @@ type ObservabilityDestinationObservabilityPosthogDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -1403,6 +1459,13 @@ func (o *ObservabilityDestinationObservabilityPosthogDestination) GetBroadcastGe
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityPosthogDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityPosthogDestination) GetBroadcastGenerationIdentity() bool {
@@ -1536,6 +1599,8 @@ type ObservabilityDestinationObservabilityOtelCollectorDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -1588,6 +1653,13 @@ func (o *ObservabilityDestinationObservabilityOtelCollectorDestination) GetBroad
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityOtelCollectorDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityOtelCollectorDestination) GetBroadcastGenerationIdentity() bool {
@@ -1737,6 +1809,8 @@ type ObservabilityDestinationObservabilityOpikDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -1789,6 +1863,13 @@ func (o *ObservabilityDestinationObservabilityOpikDestination) GetBroadcastGener
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityOpikDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityOpikDestination) GetBroadcastGenerationIdentity() bool {
@@ -1956,6 +2037,8 @@ type ObservabilityDestinationObservabilityNewrelicDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -2008,6 +2091,13 @@ func (o *ObservabilityDestinationObservabilityNewrelicDestination) GetBroadcastG
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityNewrelicDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityNewrelicDestination) GetBroadcastGenerationIdentity() bool {
@@ -2167,6 +2257,8 @@ type ObservabilityDestinationObservabilityLangsmithDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -2219,6 +2311,13 @@ func (o *ObservabilityDestinationObservabilityLangsmithDestination) GetBroadcast
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityLangsmithDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityLangsmithDestination) GetBroadcastGenerationIdentity() bool {
@@ -2368,6 +2467,8 @@ type ObservabilityDestinationObservabilityLangfuseDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -2420,6 +2521,13 @@ func (o *ObservabilityDestinationObservabilityLangfuseDestination) GetBroadcastG
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityLangfuseDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityLangfuseDestination) GetBroadcastGenerationIdentity() bool {
@@ -2569,6 +2677,8 @@ type ObservabilityDestinationObservabilityGrafanaDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -2621,6 +2731,13 @@ func (o *ObservabilityDestinationObservabilityGrafanaDestination) GetBroadcastGe
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityGrafanaDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityGrafanaDestination) GetBroadcastGenerationIdentity() bool {
@@ -2773,6 +2890,8 @@ type ObservabilityDestinationObservabilityDatadogDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -2825,6 +2944,13 @@ func (o *ObservabilityDestinationObservabilityDatadogDestination) GetBroadcastGe
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityDatadogDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityDatadogDestination) GetBroadcastGenerationIdentity() bool {
@@ -3000,6 +3126,8 @@ type ObservabilityDestinationObservabilityClickhouseDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -3052,6 +3180,13 @@ func (o *ObservabilityDestinationObservabilityClickhouseDestination) GetBroadcas
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityClickhouseDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityClickhouseDestination) GetBroadcastGenerationIdentity() bool {
@@ -3201,6 +3336,8 @@ type ObservabilityDestinationObservabilityBraintrustDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -3253,6 +3390,13 @@ func (o *ObservabilityDestinationObservabilityBraintrustDestination) GetBroadcas
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityBraintrustDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityBraintrustDestination) GetBroadcastGenerationIdentity() bool {
@@ -3411,6 +3555,8 @@ type ObservabilityDestinationObservabilityArizeDestination struct {
 	APIKeyHashes []string `json:"api_key_hashes"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost bool `json:"broadcast_generation_cost"`
+	// Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
+	BroadcastGenerationCostAllocation bool `json:"broadcast_generation_cost_allocation"`
 	// When true, include identity generation metadata.
 	BroadcastGenerationIdentity bool `json:"broadcast_generation_identity"`
 	// When true, include request-context generation metadata.
@@ -3463,6 +3609,13 @@ func (o *ObservabilityDestinationObservabilityArizeDestination) GetBroadcastGene
 		return false
 	}
 	return o.BroadcastGenerationCost
+}
+
+func (o *ObservabilityDestinationObservabilityArizeDestination) GetBroadcastGenerationCostAllocation() bool {
+	if o == nil {
+		return false
+	}
+	return o.BroadcastGenerationCostAllocation
 }
 
 func (o *ObservabilityDestinationObservabilityArizeDestination) GetBroadcastGenerationIdentity() bool {

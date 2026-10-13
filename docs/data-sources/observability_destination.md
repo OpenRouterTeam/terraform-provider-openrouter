@@ -30,6 +30,7 @@ data "openrouter_observability_destination" "my_observabilitydestination" {
 - `arize` (Attributes) (see [below for nested schema](#nestedatt--arize))
 - `braintrust` (Attributes) (see [below for nested schema](#nestedatt--braintrust))
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `clickhouse` (Attributes) (see [below for nested schema](#nestedatt--clickhouse))
@@ -62,6 +63,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--arize--config))
@@ -133,6 +135,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--braintrust--config))
@@ -203,6 +206,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--clickhouse--config))
@@ -276,6 +280,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--datadog--config))
@@ -346,6 +351,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--grafana--config))
@@ -416,6 +422,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--langfuse--config))
@@ -486,6 +493,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--langsmith--config))
@@ -557,6 +565,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--newrelic--config))
@@ -626,6 +635,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--opik--config))
@@ -696,6 +706,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--otel_collector--config))
@@ -764,6 +775,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--posthog--config))
@@ -833,6 +845,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--ramp--config))
@@ -902,6 +915,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--s3--config))
@@ -977,6 +991,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--sentry--config))
@@ -1046,6 +1061,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--snowflake--config))
@@ -1120,6 +1136,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--weave--config))
@@ -1191,6 +1208,7 @@ Read-Only:
 
 - `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) whose traffic is forwarded to this destination. `null` means all keys.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
+- `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
 - `broadcast_generation_request_context` (Boolean) When true, include request-context generation metadata.
 - `config` (Attributes) (see [below for nested schema](#nestedatt--webhook--config))
