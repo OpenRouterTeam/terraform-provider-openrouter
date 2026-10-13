@@ -127,8 +127,6 @@ func (r *GuardrailKeyAssignmentsDataSource) Read(ctx context.Context, req dataso
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsListKeyAssignmentsRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

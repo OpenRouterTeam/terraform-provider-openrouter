@@ -246,8 +246,6 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
-
 	request, requestDiags := data.ToOperationsCreatePrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -352,8 +350,6 @@ func (r *PrivateEndpointResource) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.State)
-
 	request, requestDiags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -407,8 +403,6 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
 
 	request, requestDiags := data.ToOperationsUpdatePrivateEndpointPricingRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
@@ -469,8 +463,6 @@ func (r *PrivateEndpointResource) Delete(ctx context.Context, req resource.Delet
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	ctx = withSensitiveValues(ctx, req.State)
 
 	request, requestDiags := data.ToOperationsDeletePrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)

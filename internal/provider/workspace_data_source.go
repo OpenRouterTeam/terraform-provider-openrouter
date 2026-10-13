@@ -181,8 +181,6 @@ func (r *WorkspaceDataSource) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsGetWorkspaceRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
