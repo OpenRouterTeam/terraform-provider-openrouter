@@ -23,6 +23,7 @@ const (
 	OutputItemsTypeMessage                            OutputItemsType = "message"
 	OutputItemsTypeOpenrouterAdvisor                  OutputItemsType = "openrouter:advisor"
 	OutputItemsTypeOpenrouterApplyPatch               OutputItemsType = "openrouter:apply_patch"
+	OutputItemsTypeOpenrouterArmorBlocked             OutputItemsType = "openrouter:armor_blocked"
 	OutputItemsTypeOpenrouterBash                     OutputItemsType = "openrouter:bash"
 	OutputItemsTypeOpenrouterBrowserUse               OutputItemsType = "openrouter:browser_use"
 	OutputItemsTypeOpenrouterCodeInterpreter          OutputItemsType = "openrouter:code_interpreter"
@@ -81,6 +82,7 @@ type OutputItems struct {
 	OutputFilesServerToolItem           *OutputFilesServerToolItem           `queryParam:"inline" union:"member"`
 	OutputCustomToolCallItem            *OutputCustomToolCallItem            `queryParam:"inline" union:"member"`
 	OutputToolSearchCallItem            *OutputToolSearchCallItem            `queryParam:"inline" union:"member"`
+	OutputArmorBlockedItem              *OutputArmorBlockedItem              `queryParam:"inline" union:"member"`
 
 	Type OutputItemsType
 }
@@ -190,6 +192,18 @@ func CreateOutputItemsOpenrouterApplyPatch(openrouterApplyPatch OutputApplyPatch
 	return OutputItems{
 		OutputApplyPatchServerToolItem: &openrouterApplyPatch,
 		Type:                           typ,
+	}
+}
+
+func CreateOutputItemsOpenrouterArmorBlocked(openrouterArmorBlocked OutputArmorBlockedItem) OutputItems {
+	typ := OutputItemsTypeOpenrouterArmorBlocked
+
+	typStr := OutputArmorBlockedItemType(typ)
+	openrouterArmorBlocked.Type = typStr
+
+	return OutputItems{
+		OutputArmorBlockedItem: &openrouterArmorBlocked,
+		Type:                   typ,
 	}
 }
 
@@ -554,6 +568,15 @@ func (u *OutputItems) UnmarshalJSON(data []byte) (err error) {
 		u.OutputApplyPatchServerToolItem = outputApplyPatchServerToolItem
 		u.Type = OutputItemsTypeOpenrouterApplyPatch
 		return nil
+	case "openrouter:armor_blocked":
+		outputArmorBlockedItem := new(OutputArmorBlockedItem)
+		if err := utils.UnmarshalJSON(data, &outputArmorBlockedItem, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:armor_blocked) type OutputArmorBlockedItem within OutputItems: %w", string(data), err)
+		}
+
+		u.OutputArmorBlockedItem = outputArmorBlockedItem
+		u.Type = OutputItemsTypeOpenrouterArmorBlocked
+		return nil
 	case "openrouter:bash":
 		outputBashServerToolItem := new(OutputBashServerToolItem)
 		if err := utils.UnmarshalJSON(data, &outputBashServerToolItem, "", true, nil); err != nil {
@@ -884,6 +907,10 @@ func (u OutputItems) MarshalJSON() ([]byte, error) {
 
 	if u.OutputToolSearchCallItem != nil {
 		return utils.MarshalJSON(u.OutputToolSearchCallItem, "", true)
+	}
+
+	if u.OutputArmorBlockedItem != nil {
+		return utils.MarshalJSON(u.OutputArmorBlockedItem, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type OutputItems: all fields are null")

@@ -168,8 +168,6 @@ func (r *PresetDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsGetPresetRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

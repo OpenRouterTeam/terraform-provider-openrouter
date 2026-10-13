@@ -371,8 +371,6 @@ func (r *GuardrailResource) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
-
 	request, requestDiags := data.ToSharedCreateGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -432,8 +430,6 @@ func (r *GuardrailResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	ctx = withSensitiveValues(ctx, req.State)
 
 	request, requestDiags := data.ToOperationsGetGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
@@ -496,8 +492,6 @@ func (r *GuardrailResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
-
 	request, requestDiags := data.ToOperationsUpdateGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -557,8 +551,6 @@ func (r *GuardrailResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	ctx = withSensitiveValues(ctx, req.State)
 
 	request, requestDiags := data.ToOperationsDeleteGuardrailRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)

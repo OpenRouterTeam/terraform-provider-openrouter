@@ -699,8 +699,6 @@ func (r *ModelsDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsGetModelsRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

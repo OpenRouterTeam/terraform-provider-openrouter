@@ -96,8 +96,6 @@ func (r *OrganizationSettingsResource) Create(ctx context.Context, req resource.
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
-
 	request, requestDiags := data.ToSharedUpdateOrganizationSettingsRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -158,8 +156,6 @@ func (r *OrganizationSettingsResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.State)
-
 	res, err := r.client.Organization.GetSettings(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
@@ -207,8 +203,6 @@ func (r *OrganizationSettingsResource) Update(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
 
 	request, requestDiags := data.ToSharedUpdateOrganizationSettingsRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)

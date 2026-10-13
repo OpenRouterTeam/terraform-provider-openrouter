@@ -122,8 +122,6 @@ func (r *ProvidersDataSource) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	res, err := r.client.Providers.List(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
