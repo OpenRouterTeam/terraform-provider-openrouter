@@ -31,6 +31,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 	var diags diag.Diagnostics
 
 	r.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.AllowSafetyRetentionGoogle)
+	r.AllowSafetyRetentionOther = types.BoolPointerValue(resp.AllowSafetyRetentionOther)
 	if resp.AllowedDataRegions != nil {
 		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
 		for _, v := range resp.AllowedDataRegions {
@@ -151,6 +152,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 	var diags diag.Diagnostics
 
 	r.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.AllowSafetyRetentionGoogle)
+	r.AllowSafetyRetentionOther = types.BoolPointerValue(resp.AllowSafetyRetentionOther)
 	if resp.AllowedDataRegions != nil {
 		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
 		for _, v := range resp.AllowedDataRegions {
@@ -271,6 +273,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 	var diags diag.Diagnostics
 
 	r.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.AllowSafetyRetentionGoogle)
+	r.AllowSafetyRetentionOther = types.BoolPointerValue(resp.AllowSafetyRetentionOther)
 	if resp.AllowedDataRegions != nil {
 		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
 		for _, v := range resp.AllowedDataRegions {
@@ -427,6 +430,12 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 		*allowSafetyRetentionGoogle = r.AllowSafetyRetentionGoogle.ValueBool()
 	} else {
 		allowSafetyRetentionGoogle = nil
+	}
+	allowSafetyRetentionOther := new(bool)
+	if !r.AllowSafetyRetentionOther.IsUnknown() && !r.AllowSafetyRetentionOther.IsNull() {
+		*allowSafetyRetentionOther = r.AllowSafetyRetentionOther.ValueBool()
+	} else {
+		allowSafetyRetentionOther = nil
 	}
 	var allowedDataRegions []shared.GuardrailDataRegion
 	if r.AllowedDataRegions != nil {
@@ -599,6 +608,7 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 	}
 	out := shared.CreateGuardrailRequest{
 		AllowSafetyRetentionGoogle: allowSafetyRetentionGoogle,
+		AllowSafetyRetentionOther:  allowSafetyRetentionOther,
 		AllowedDataRegions:         allowedDataRegions,
 		AllowedModels:              allowedModels,
 		AllowedProviders:           allowedProviders,
@@ -634,6 +644,12 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 		*allowSafetyRetentionGoogle = r.AllowSafetyRetentionGoogle.ValueBool()
 	} else {
 		allowSafetyRetentionGoogle = nil
+	}
+	allowSafetyRetentionOther := new(bool)
+	if !r.AllowSafetyRetentionOther.IsUnknown() && !r.AllowSafetyRetentionOther.IsNull() {
+		*allowSafetyRetentionOther = r.AllowSafetyRetentionOther.ValueBool()
+	} else {
+		allowSafetyRetentionOther = nil
 	}
 	var allowedDataRegions []shared.GuardrailDataRegion
 	if r.AllowedDataRegions != nil {
@@ -803,6 +819,7 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 	}
 	out := shared.UpdateGuardrailRequest{
 		AllowSafetyRetentionGoogle: allowSafetyRetentionGoogle,
+		AllowSafetyRetentionOther:  allowSafetyRetentionOther,
 		AllowedDataRegions:         allowedDataRegions,
 		AllowedModels:              allowedModels,
 		AllowedProviders:           allowedProviders,
