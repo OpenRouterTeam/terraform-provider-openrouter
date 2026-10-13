@@ -10,6 +10,7 @@ import (
 type ObservabilityDestinationObservabilitySentryDestination struct {
 	APIKeyHashes                      []types.String                        `tfsdk:"api_key_hashes"`
 	BroadcastGenerationCost           types.Bool                            `tfsdk:"broadcast_generation_cost"`
+	BroadcastGenerationCostAllocation types.Bool                            `tfsdk:"broadcast_generation_cost_allocation"`
 	BroadcastGenerationIdentity       types.Bool                            `tfsdk:"broadcast_generation_identity"`
 	BroadcastGenerationRequestContext types.Bool                            `tfsdk:"broadcast_generation_request_context"`
 	Config                            *ObservabilityDestinationConfigSentry `tfsdk:"config"`
