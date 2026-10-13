@@ -8,6 +8,7 @@ import (
 )
 
 type Guardrail struct {
+	AllowSafetyRetentionGoogle types.Bool                  `tfsdk:"allow_safety_retention_google"`
 	AllowedDataRegions         []types.String              `tfsdk:"allowed_data_regions"`
 	AllowedModels              []types.String              `tfsdk:"allowed_models"`
 	AllowedProviders           []types.String              `tfsdk:"allowed_providers"`

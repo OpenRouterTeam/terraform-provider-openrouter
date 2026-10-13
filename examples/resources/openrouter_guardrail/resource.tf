@@ -1,4 +1,5 @@
 resource "openrouter_guardrail" "my_guardrail" {
+  allow_safety_retention_google = true
   allowed_data_regions = [
     "europe",
   ]
