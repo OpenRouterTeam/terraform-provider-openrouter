@@ -167,8 +167,6 @@ func (r *ByokKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsGetBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

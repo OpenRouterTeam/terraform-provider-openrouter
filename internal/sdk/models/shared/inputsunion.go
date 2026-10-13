@@ -959,6 +959,7 @@ const (
 	InputsUnion1TypeOutputWebFetchServerToolItem        InputsUnion1Type = "OutputWebFetchServerToolItem"
 	InputsUnion1TypeOutputToolSearchServerToolItem      InputsUnion1Type = "OutputToolSearchServerToolItem"
 	InputsUnion1TypeOutputMemoryServerToolItem          InputsUnion1Type = "OutputMemoryServerToolItem"
+	InputsUnion1TypeOutputArmorBlockedItem              InputsUnion1Type = "OutputArmorBlockedItem"
 	InputsUnion1TypeOutputMcpServerToolItem             InputsUnion1Type = "OutputMcpServerToolItem"
 	InputsUnion1TypeOutputSearchModelsServerToolItem    InputsUnion1Type = "OutputSearchModelsServerToolItem"
 	InputsUnion1TypeOutputFusionServerToolItem          InputsUnion1Type = "OutputFusionServerToolItem"
@@ -1013,6 +1014,7 @@ type InputsUnion1 struct {
 	OutputWebFetchServerToolItem        *OutputWebFetchServerToolItem        `queryParam:"inline" union:"member"`
 	OutputToolSearchServerToolItem      *OutputToolSearchServerToolItem      `queryParam:"inline" union:"member"`
 	OutputMemoryServerToolItem          *OutputMemoryServerToolItem          `queryParam:"inline" union:"member"`
+	OutputArmorBlockedItem              *OutputArmorBlockedItem              `queryParam:"inline" union:"member"`
 	OutputMcpServerToolItem             *OutputMcpServerToolItem             `queryParam:"inline" union:"member"`
 	OutputSearchModelsServerToolItem    *OutputSearchModelsServerToolItem    `queryParam:"inline" union:"member"`
 	OutputFusionServerToolItem          *OutputFusionServerToolItem          `queryParam:"inline" union:"member"`
@@ -1273,6 +1275,15 @@ func CreateInputsUnion1OutputMemoryServerToolItem(outputMemoryServerToolItem Out
 	return InputsUnion1{
 		OutputMemoryServerToolItem: &outputMemoryServerToolItem,
 		Type:                       typ,
+	}
+}
+
+func CreateInputsUnion1OutputArmorBlockedItem(outputArmorBlockedItem OutputArmorBlockedItem) InputsUnion1 {
+	typ := InputsUnion1TypeOutputArmorBlockedItem
+
+	return InputsUnion1{
+		OutputArmorBlockedItem: &outputArmorBlockedItem,
+		Type:                   typ,
 	}
 }
 
@@ -1721,6 +1732,14 @@ func (u *InputsUnion1) UnmarshalJSON(data []byte) (err error) {
 		})
 	}
 
+	var outputArmorBlockedItem OutputArmorBlockedItem = OutputArmorBlockedItem{}
+	if err := utils.UnmarshalJSON(data, &outputArmorBlockedItem, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  InputsUnion1TypeOutputArmorBlockedItem,
+			Value: &outputArmorBlockedItem,
+		})
+	}
+
 	var outputMcpServerToolItem OutputMcpServerToolItem = OutputMcpServerToolItem{}
 	if err := utils.UnmarshalJSON(data, &outputMcpServerToolItem, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
@@ -2012,6 +2031,9 @@ func (u *InputsUnion1) UnmarshalJSON(data []byte) (err error) {
 	case InputsUnion1TypeOutputMemoryServerToolItem:
 		u.OutputMemoryServerToolItem = best.Value.(*OutputMemoryServerToolItem)
 		return nil
+	case InputsUnion1TypeOutputArmorBlockedItem:
+		u.OutputArmorBlockedItem = best.Value.(*OutputArmorBlockedItem)
+		return nil
 	case InputsUnion1TypeOutputMcpServerToolItem:
 		u.OutputMcpServerToolItem = best.Value.(*OutputMcpServerToolItem)
 		return nil
@@ -2195,6 +2217,10 @@ func (u InputsUnion1) MarshalJSON() ([]byte, error) {
 
 	if u.OutputMemoryServerToolItem != nil {
 		return utils.MarshalJSON(u.OutputMemoryServerToolItem, "", true)
+	}
+
+	if u.OutputArmorBlockedItem != nil {
+		return utils.MarshalJSON(u.OutputArmorBlockedItem, "", true)
 	}
 
 	if u.OutputMcpServerToolItem != nil {

@@ -399,6 +399,7 @@ func (s *Byok) Create(ctx context.Context, request shared.CreateBYOKKeyRequest, 
 		defer cancel()
 	}
 
+	ctx = utils.WithOperation(ctx, "createBYOKKey")
 	req, err := http.NewRequestWithContext(ctx, "POST", opURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
@@ -1213,6 +1214,7 @@ func (s *Byok) Update(ctx context.Context, request operations.UpdateBYOKKeyReque
 		defer cancel()
 	}
 
+	ctx = utils.WithOperation(ctx, "updateBYOKKey")
 	req, err := http.NewRequestWithContext(ctx, "PATCH", opURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)

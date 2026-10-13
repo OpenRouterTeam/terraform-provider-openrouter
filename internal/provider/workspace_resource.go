@@ -208,8 +208,6 @@ func (r *WorkspaceResource) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan)
-
 	request, requestDiags := data.ToSharedCreateWorkspaceRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -270,8 +268,6 @@ func (r *WorkspaceResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.State)
-
 	request, requestDiags := data.ToOperationsGetWorkspaceRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
@@ -325,8 +321,6 @@ func (r *WorkspaceResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
 
 	request, requestDiags := data.ToOperationsUpdateWorkspaceRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
@@ -387,8 +381,6 @@ func (r *WorkspaceResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	ctx = withSensitiveValues(ctx, req.State)
 
 	request, requestDiags := data.ToOperationsDeleteWorkspaceRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)

@@ -123,8 +123,6 @@ func (r *GuardrailMemberAssignmentsDataSource) Read(ctx context.Context, req dat
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsListMemberAssignmentsRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

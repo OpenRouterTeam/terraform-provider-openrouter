@@ -173,8 +173,6 @@ func (r *WorkspacesDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsListWorkspacesRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

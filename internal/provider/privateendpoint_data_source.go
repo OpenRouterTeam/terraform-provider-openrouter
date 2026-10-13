@@ -155,8 +155,6 @@ func (r *PrivateEndpointDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
-	ctx = withSensitiveValues(ctx, req.Config)
-
 	request, requestDiags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 

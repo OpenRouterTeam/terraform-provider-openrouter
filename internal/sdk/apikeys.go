@@ -613,6 +613,7 @@ func (s *APIKeys) Create(ctx context.Context, request operations.CreateKeysReque
 		defer cancel()
 	}
 
+	ctx = utils.WithOperation(ctx, "createKeys")
 	req, err := http.NewRequestWithContext(ctx, "POST", opURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
