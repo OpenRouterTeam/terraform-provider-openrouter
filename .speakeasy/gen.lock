@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: fc6236648e3b34050f191ebeffe5ab1b
+  docChecksum: d5efb39c02c9f63c65b93086854bf0bf
   docVersion: 1.0.0
   speakeasyVersion: 1.802.0
   generationVersion: 2.948.4
-  releaseVersion: 0.3.74
-  configChecksum: 6c4a0cb9035b87af76d4790091c9007b
+  releaseVersion: 0.3.75
+  configChecksum: 9374ae231809317e0ba5448a606f5437
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 70509617-e455-475e-8492-8073bb14eab3
-  pristine_commit_hash: f927f23f78476556fa0867e11c1ab971c1ba8032
-  pristine_tree_hash: d79b9691228941f796038b31f33786ef3a7e546d
+  generation_id: 6f7d6331-0b08-40f6-87cf-544ceb491889
+  pristine_commit_hash: a3d9351b7f46e0301d4bad87d2a419042711a6b6
+  pristine_tree_hash: 7d97cd44c06a4d6a55c6323c1ef0eeb36a622f67
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:7eac6159608f6322e321a7cf09cd5f6ea0d4972e
-    pristine_git_object: 5e2f3ce22a1f3da863a72bc284a519c5b1cac71c
+    last_write_checksum: sha1:71ae18f2906b8265eda214d0f1b7c844566ae4fe
+    pristine_git_object: e062d082367597b4a09b5eafb13f4b97f31b2bf8
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1274,8 +1274,8 @@ trackedFiles:
     pristine_git_object: 97fce820b7122c1c188cc0d8c76fcc2788b3c17c
   internal/sdk/guardrails.go:
     id: 7acba59507ef
-    last_write_checksum: sha1:9886baa64ce1c0860e1ef97425b2317951c8d3bf
-    pristine_git_object: 88ca257faa60a68c5b228f9a984fc5b2e3e0029f
+    last_write_checksum: sha1:690ef056942a54a0d9189361ad0457abd84b3288
+    pristine_git_object: 322ff881adf283bdc79ecde9431c49a3fccbe9d4
   internal/sdk/images.go:
     id: 110b363483e3
     last_write_checksum: sha1:a04358d14e9e825ac528c121ecfe2c0f71fcee98
@@ -1770,12 +1770,12 @@ trackedFiles:
     pristine_git_object: 7ad46d7f4b5b014c08eadf0bee0970414a776d3a
   internal/sdk/models/operations/listkeyassignments.go:
     id: a34b7d64becb
-    last_write_checksum: sha1:ad9c39718a35d84fa5ef134295ea1209327bff59
-    pristine_git_object: 6a43466c326cd65606350032fbea874754fd3631
+    last_write_checksum: sha1:e2c9a305617cbef84f27c91f17be3cf899a9ebcf
+    pristine_git_object: 374ae49a4ed2356097f4742dea288949ba2c3cd6
   internal/sdk/models/operations/listmemberassignments.go:
     id: 0eca54507d66
-    last_write_checksum: sha1:243a58e394c8e30c7868ef83f949d8e19a195427
-    pristine_git_object: 63ec1333ca4791155ebf65cb3f3dbbf90c96e3a5
+    last_write_checksum: sha1:092f5e416156a055c972961cc31b3b3e41cfb394
+    pristine_git_object: ab1ba7811ea92fb96f7dc7ab744425a4a69f5bb4
   internal/sdk/models/operations/listmodelscount.go:
     id: 8a0a5fe06a16
     last_write_checksum: sha1:705ee47f83e23245b33a6deae060bc07e40a324b
@@ -5034,8 +5034,8 @@ trackedFiles:
     pristine_git_object: d7996175857711a962d259ba303eab486022dbfc
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:80ef332a5ebd7e550fa94efc34a4023116f7e00b
-    pristine_git_object: 9e41397bf9016ee12e75748c7bdabc8a812eec08
+    last_write_checksum: sha1:95abe8f88658aef2b4df3959993e55bb7ad7d525
+    pristine_git_object: 4373d89a4361f91e868bfa3a6163b1811001176d
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -6031,6 +6031,10 @@ examples:
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
   listMemberAssignments:
     speakeasy-default-list-member-assignments:
       parameters:
@@ -6044,6 +6048,10 @@ examples:
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
   listImageModels:
     speakeasy-default-list-image-models:
       responses:
