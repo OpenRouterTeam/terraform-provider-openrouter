@@ -9,20 +9,20 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type Environment string
+type EnvironmentEnum string
 
 const (
-	EnvironmentWindows Environment = "windows"
-	EnvironmentMac     Environment = "mac"
-	EnvironmentLinux   Environment = "linux"
-	EnvironmentUbuntu  Environment = "ubuntu"
-	EnvironmentBrowser Environment = "browser"
+	EnvironmentEnumWindows EnvironmentEnum = "windows"
+	EnvironmentEnumMac     EnvironmentEnum = "mac"
+	EnvironmentEnumLinux   EnvironmentEnum = "linux"
+	EnvironmentEnumUbuntu  EnvironmentEnum = "ubuntu"
+	EnvironmentEnumBrowser EnvironmentEnum = "browser"
 )
 
-func (e Environment) ToPointer() *Environment {
+func (e EnvironmentEnum) ToPointer() *EnvironmentEnum {
 	return &e
 }
-func (e *Environment) UnmarshalJSON(data []byte) error {
+func (e *EnvironmentEnum) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -37,10 +37,10 @@ func (e *Environment) UnmarshalJSON(data []byte) error {
 	case "ubuntu":
 		fallthrough
 	case "browser":
-		*e = Environment(v)
+		*e = EnvironmentEnum(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for Environment: %v", v)
+		return fmt.Errorf("invalid value for EnvironmentEnum: %v", v)
 	}
 }
 
@@ -71,7 +71,7 @@ func (e *ComputerUseServerToolType) UnmarshalJSON(data []byte) error {
 type ComputerUseServerTool struct {
 	DisplayHeight int64                     `json:"display_height"`
 	DisplayWidth  int64                     `json:"display_width"`
-	Environment   Environment               `json:"environment"`
+	Environment   EnvironmentEnum           `json:"environment"`
 	Type          ComputerUseServerToolType `json:"type"`
 }
 
@@ -100,9 +100,9 @@ func (c *ComputerUseServerTool) GetDisplayWidth() int64 {
 	return c.DisplayWidth
 }
 
-func (c *ComputerUseServerTool) GetEnvironment() Environment {
+func (c *ComputerUseServerTool) GetEnvironment() EnvironmentEnum {
 	if c == nil {
-		return Environment("")
+		return EnvironmentEnum("")
 	}
 	return c.Environment
 }

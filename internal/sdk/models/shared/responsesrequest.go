@@ -15,6 +15,7 @@ type ResponsesRequestPluginType string
 
 const (
 	ResponsesRequestPluginTypeAlignment          ResponsesRequestPluginType = "alignment"
+	ResponsesRequestPluginTypeArmor              ResponsesRequestPluginType = "armor"
 	ResponsesRequestPluginTypeAutoBetaRouter     ResponsesRequestPluginType = "auto-beta-router"
 	ResponsesRequestPluginTypeAutoRouter         ResponsesRequestPluginType = "auto-router"
 	ResponsesRequestPluginTypeContextCompression ResponsesRequestPluginType = "context-compression"
@@ -43,6 +44,7 @@ type ResponsesRequestPlugin struct {
 	SwitchyardRouterPlugin   *SwitchyardRouterPlugin   `queryParam:"inline" union:"member"`
 	JevRouterPlugin          *JevRouterPlugin          `queryParam:"inline" union:"member"`
 	AlignmentPlugin          *AlignmentPlugin          `queryParam:"inline" union:"member"`
+	ArmorPlugin              *ArmorPlugin              `queryParam:"inline" union:"member"`
 
 	Type ResponsesRequestPluginType
 }
@@ -53,6 +55,15 @@ func CreateResponsesRequestPluginAlignment(alignment AlignmentPlugin) ResponsesR
 	return ResponsesRequestPlugin{
 		AlignmentPlugin: &alignment,
 		Type:            typ,
+	}
+}
+
+func CreateResponsesRequestPluginArmor(armor ArmorPlugin) ResponsesRequestPlugin {
+	typ := ResponsesRequestPluginTypeArmor
+
+	return ResponsesRequestPlugin{
+		ArmorPlugin: &armor,
+		Type:        typ,
 	}
 }
 
@@ -191,6 +202,15 @@ func (u *ResponsesRequestPlugin) UnmarshalJSON(data []byte) (err error) {
 
 		u.AlignmentPlugin = alignmentPlugin
 		u.Type = ResponsesRequestPluginTypeAlignment
+		return nil
+	case "armor":
+		armorPlugin := new(ArmorPlugin)
+		if err := utils.UnmarshalJSON(data, &armorPlugin, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (ID == armor) type ArmorPlugin within ResponsesRequestPlugin: %w", string(data), err)
+		}
+
+		u.ArmorPlugin = armorPlugin
+		u.Type = ResponsesRequestPluginTypeArmor
 		return nil
 	case "auto-beta-router":
 		autoBetaRouterPlugin := new(AutoBetaRouterPlugin)
@@ -356,6 +376,10 @@ func (u ResponsesRequestPlugin) MarshalJSON() ([]byte, error) {
 
 	if u.AlignmentPlugin != nil {
 		return utils.MarshalJSON(u.AlignmentPlugin, "", true)
+	}
+
+	if u.ArmorPlugin != nil {
+		return utils.MarshalJSON(u.ArmorPlugin, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ResponsesRequestPlugin: all fields are null")

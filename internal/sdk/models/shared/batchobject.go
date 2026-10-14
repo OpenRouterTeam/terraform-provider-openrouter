@@ -2328,9 +2328,11 @@ type BodyChatCompletion struct {
 	Object             BodyObjectChatCompletion `json:"object"`
 	OpenrouterMetadata *OpenRouterMetadata      `json:"openrouter_metadata,omitzero"`
 	Provider           *string                  `json:"provider,omitzero"`
-	ServiceTier        *string                  `json:"service_tier,omitzero"`
-	SystemFingerprint  *string                  `json:"system_fingerprint,omitzero"`
-	Usage              *BodyUsage1              `json:"usage,omitzero"`
+	// OpenRouter Armor's verdict for each client tool call of this response, present whenever Armor evaluated the response (even when nothing was flagged). Independent of the `openrouter_metadata` opt-in.
+	SafeguardResults  []ArmorSafeguardResult `json:"safeguard_results,omitzero"`
+	ServiceTier       *string                `json:"service_tier,omitzero"`
+	SystemFingerprint *string                `json:"system_fingerprint,omitzero"`
+	Usage             *BodyUsage1            `json:"usage,omitzero"`
 }
 
 func (b BodyChatCompletion) MarshalJSON() ([]byte, error) {
@@ -2405,6 +2407,13 @@ func (b *BodyChatCompletion) GetProvider() *string {
 		return nil
 	}
 	return b.Provider
+}
+
+func (b *BodyChatCompletion) GetSafeguardResults() []ArmorSafeguardResult {
+	if b == nil {
+		return nil
+	}
+	return b.SafeguardResults
 }
 
 func (b *BodyChatCompletion) GetServiceTier() *string {
