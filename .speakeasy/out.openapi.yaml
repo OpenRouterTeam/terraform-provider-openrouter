@@ -16017,6 +16017,7 @@ components:
               - 'max_tokens'
               - 'frequency_penalty'
               - 'presence_penalty'
+            supports_diarization: false
             supports_implicit_caching: true
             tag: 'openai'
             throughput_last_30m:
@@ -26839,6 +26840,7 @@ components:
           - 'temperature'
           - 'top_p'
           - 'max_tokens'
+        supports_diarization: false
         supports_image_reference: false
         supports_implicit_caching: true
         supports_multiple_audio_references: false
@@ -27147,6 +27149,9 @@ components:
           items:
             $ref: '#/components/schemas/Parameter'
           type: 'array'
+        supports_diarization:
+          description: 'Whether this STT endpoint can label each transcript segment with a speaker (speaker diarization). False when the endpoint has not declared support.'
+          type: 'boolean'
         supports_image_reference:
           default: false
           description: 'Whether this TTS endpoint accepts an `image_url` reference describing the desired voice. Requests carrying an image reference are only routed to endpoints where this is true.'
@@ -27204,6 +27209,7 @@ components:
         - 'uptime_last_1d'
         - 'supports_implicit_caching'
         - 'native_tools'
+        - 'supports_diarization'
         - 'latency_last_30m'
         - 'throughput_last_30m'
       type: 'object'
@@ -39318,6 +39324,7 @@ paths:
                       - 'temperature'
                       - 'top_p'
                       - 'max_tokens'
+                    supports_diarization: false
                     supports_image_reference: false
                     supports_implicit_caching: true
                     supports_multiple_audio_references: false
@@ -39358,6 +39365,7 @@ paths:
                         - 'temperature'
                         - 'top_p'
                         - 'max_tokens'
+                      supports_diarization: false
                       supports_image_reference: false
                       supports_implicit_caching: true
                       supports_multiple_audio_references: false
@@ -46536,6 +46544,7 @@ paths:
                           - 'temperature'
                           - 'top_p'
                           - 'max_tokens'
+                        supports_diarization: false
                         supports_implicit_caching: true
                         tag: 'openai'
                         throughput_last_30m:
