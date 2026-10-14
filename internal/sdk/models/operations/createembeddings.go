@@ -944,6 +944,8 @@ type CreateEmbeddingsResponse struct {
 	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
+	// Client Closed Request - The caller cancelled the request
+	ClientClosedRequestResponse *shared.ClientClosedRequestResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 	// Bad Gateway - Provider/upstream API failure
@@ -1058,6 +1060,13 @@ func (c *CreateEmbeddingsResponse) GetTooManyRequestsResponse() *shared.TooManyR
 		return nil
 	}
 	return c.TooManyRequestsResponse
+}
+
+func (c *CreateEmbeddingsResponse) GetClientClosedRequestResponse() *shared.ClientClosedRequestResponse {
+	if c == nil {
+		return nil
+	}
+	return c.ClientClosedRequestResponse
 }
 
 func (c *CreateEmbeddingsResponse) GetInternalServerResponse() *shared.InternalServerResponse {

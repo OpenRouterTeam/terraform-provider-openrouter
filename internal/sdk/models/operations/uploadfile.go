@@ -87,6 +87,8 @@ type UploadFileResponse struct {
 	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
+	// Client Closed Request - The caller cancelled the request
+	ClientClosedRequestResponse *shared.ClientClosedRequestResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 	// Bad Gateway - Provider/upstream API failure
@@ -188,6 +190,13 @@ func (u *UploadFileResponse) GetTooManyRequestsResponse() *shared.TooManyRequest
 		return nil
 	}
 	return u.TooManyRequestsResponse
+}
+
+func (u *UploadFileResponse) GetClientClosedRequestResponse() *shared.ClientClosedRequestResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ClientClosedRequestResponse
 }
 
 func (u *UploadFileResponse) GetInternalServerResponse() *shared.InternalServerResponse {
