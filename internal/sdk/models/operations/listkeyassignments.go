@@ -50,8 +50,12 @@ type ListKeyAssignmentsResponse struct {
 	RawResponse *http.Response
 	// List of key assignments
 	ListKeyAssignmentsResponse *shared.ListKeyAssignmentsResponse
+	// Bad Request - Invalid request parameters or malformed input
+	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Not Found - Resource does not exist
+	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 
@@ -97,11 +101,25 @@ func (l *ListKeyAssignmentsResponse) GetListKeyAssignmentsResponse() *shared.Lis
 	return l.ListKeyAssignmentsResponse
 }
 
+func (l *ListKeyAssignmentsResponse) GetBadRequestResponse() *shared.BadRequestResponse {
+	if l == nil {
+		return nil
+	}
+	return l.BadRequestResponse
+}
+
 func (l *ListKeyAssignmentsResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
 	if l == nil {
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListKeyAssignmentsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
+	if l == nil {
+		return nil
+	}
+	return l.NotFoundResponse
 }
 
 func (l *ListKeyAssignmentsResponse) GetInternalServerResponse() *shared.InternalServerResponse {

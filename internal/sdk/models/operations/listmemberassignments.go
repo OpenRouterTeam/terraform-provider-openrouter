@@ -50,8 +50,12 @@ type ListMemberAssignmentsResponse struct {
 	RawResponse *http.Response
 	// List of member assignments
 	ListMemberAssignmentsResponse *shared.ListMemberAssignmentsResponse
+	// Bad Request - Invalid request parameters or malformed input
+	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Not Found - Resource does not exist
+	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 
@@ -97,11 +101,25 @@ func (l *ListMemberAssignmentsResponse) GetListMemberAssignmentsResponse() *shar
 	return l.ListMemberAssignmentsResponse
 }
 
+func (l *ListMemberAssignmentsResponse) GetBadRequestResponse() *shared.BadRequestResponse {
+	if l == nil {
+		return nil
+	}
+	return l.BadRequestResponse
+}
+
 func (l *ListMemberAssignmentsResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
 	if l == nil {
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListMemberAssignmentsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
+	if l == nil {
+		return nil
+	}
+	return l.NotFoundResponse
 }
 
 func (l *ListMemberAssignmentsResponse) GetInternalServerResponse() *shared.InternalServerResponse {
