@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: aa070f6d07e156b63f06b5c7f7622554
+  docChecksum: d7907f66ca1f67eda38297cb6f75e624
   docVersion: 1.0.0
   speakeasyVersion: 1.802.0
   generationVersion: 2.948.4
-  releaseVersion: 0.3.66
-  configChecksum: c210422e6071050430a51777f13ee7bd
+  releaseVersion: 0.3.67
+  configChecksum: a33af74aeb0cc2d70406eaa0b2066e95
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 51ae3cd5-fb88-4377-8c84-81a3eb556f64
-  pristine_commit_hash: bdd6af068cc02442701cf643547d9c94ab5c8019
-  pristine_tree_hash: 1947723c9b04be32ffde02fc4ba6ca2a9d23b7cc
+  generation_id: 425d4049-7339-4f86-a7c2-dfff672907e3
+  pristine_commit_hash: e6e6b58ca93815cd8beecf5d2dadec2e97c38c65
+  pristine_tree_hash: bba96c502369b6e24611596c492862ed294250cf
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:456355f77bbfcf8608704df3af9589dde0d77f5c
-    pristine_git_object: 02e26974c7ec8b75a890413d1f17818ea437cded
+    last_write_checksum: sha1:defce8e15d6e0bee66a077cc2240054e3590d121
+    pristine_git_object: f12d8aaeb03aca2024065953a01e4a6b36d144e7
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1234,8 +1234,8 @@ trackedFiles:
     pristine_git_object: a1b37fc8fc36ad19008b1313a7eb4f9dcc48335b
   internal/sdk/containers.go:
     id: 1ae2e9899498
-    last_write_checksum: sha1:854c1e636ab970526159e93a5befcec980c898af
-    pristine_git_object: c7f912ea75ccdf83c82acd7ee64490819aba528f
+    last_write_checksum: sha1:3638a6fa2ef63fdccb29a57406e8f476768991bf
+    pristine_git_object: f56e67c9ff6688523ed7d0d08f98f6cdffb303e0
   internal/sdk/credits.go:
     id: 5a044e5f0348
     last_write_checksum: sha1:f10b331791293c125ae078f2cf2d54c18e6d33e8
@@ -1254,8 +1254,8 @@ trackedFiles:
     pristine_git_object: 63cd63a6752ddc5a1476fd01b643723d3b05f8d4
   internal/sdk/embeddings.go:
     id: 301e958cb606
-    last_write_checksum: sha1:833839909608f0b7becb7caeb36325541d222516
-    pristine_git_object: 2e18cc86c60cf50eaa595f5be57d2dcef30a7101
+    last_write_checksum: sha1:e35e253d01a52a1996ff5a299af5103a1fdd0096
+    pristine_git_object: 7dbb71a5b410df4b28ae1dac2e6f46cd79503a1e
   internal/sdk/endpoints.go:
     id: cd3622951e47
     last_write_checksum: sha1:e176e2cf009881e58260bdd49f20887efe9edf92
@@ -1266,8 +1266,8 @@ trackedFiles:
     pristine_git_object: 1ce40babca73fcf27918d5a523895806ea2edc18
   internal/sdk/files.go:
     id: 37ef87cd5db4
-    last_write_checksum: sha1:9f7b6faa50571464ee7ba6a42aa727760b775062
-    pristine_git_object: bcc8a01ee1798b9db7581719f2219e9f85329d40
+    last_write_checksum: sha1:3f78e6ce09c7cd7a347f2e8689998d7c7f6f3b9e
+    pristine_git_object: b13cf9f6192666267bb1c8ed287ed0c7973fd8ac
   internal/sdk/generations.go:
     id: 3af0bc3ca334
     last_write_checksum: sha1:607987106675941d3584903205596e60d6fd525f
@@ -1418,8 +1418,8 @@ trackedFiles:
     pristine_git_object: d6d73d6f4fe6147ce705987667fb663f976afb6e
   internal/sdk/models/operations/createembeddings.go:
     id: db494cf871a8
-    last_write_checksum: sha1:01b4fef3cdd3dbc1423af2af5304fa964cc494d8
-    pristine_git_object: 935c57276c6ca0fbf26bc95197df0b4986ff8f7f
+    last_write_checksum: sha1:73874a30899597405e4a9eadb3aae92bd3e89a97
+    pristine_git_object: 42ab8e8f826b9697743d846d497de222375e3fc5
   internal/sdk/models/operations/createenduser.go:
     id: 436ecea249e2
     last_write_checksum: sha1:011c72b5c37921a9da2c854942af9221128901b9
@@ -1478,8 +1478,8 @@ trackedFiles:
     pristine_git_object: bf4eac4a64a94f48caa3f48d24c21ee8e8f7953c
   internal/sdk/models/operations/createvideos.go:
     id: 96b0d234f584
-    last_write_checksum: sha1:83a3746750265b6cad6e1a8c27c23ef2cb79f3cf
-    pristine_git_object: cb100a4c6ad3617b90b03745bf88d15b030d1aa7
+    last_write_checksum: sha1:0e1eacbffd9fa61a2be0ea390a6a58b6963287f2
+    pristine_git_object: 0ee136a25da9fbc8acaa08dfb2f148db67a5e2f6
   internal/sdk/models/operations/createworkspace.go:
     id: 0dfb68c3ac15
     last_write_checksum: sha1:f9d25b69ada8bb7662b85416116c439b09ef09cb
@@ -1854,8 +1854,8 @@ trackedFiles:
     pristine_git_object: cd188bfc502382117835b57ba4f34ba24bc868fc
   internal/sdk/models/operations/promotecontainerfile.go:
     id: bc538230d0f9
-    last_write_checksum: sha1:5ef36e870642834871fc9f2683c827339c5d4914
-    pristine_git_object: 176d6406b263cb4c63453e397b54a912a8a7d0f3
+    last_write_checksum: sha1:e1ddff308ffeaf2bd7aec7e536cc7a1dcfe69044
+    pristine_git_object: bc5340bd51923e251476d0aef0eb0a88c00a39cf
   internal/sdk/models/operations/provisionintern.go:
     id: 08f627d03a0d
     last_write_checksum: sha1:2b0b32597d0d185bcc285c5a28e696d28449098d
@@ -1934,8 +1934,8 @@ trackedFiles:
     pristine_git_object: 57572e38f038f1ad808f668b42a751f84bac06b6
   internal/sdk/models/operations/uploadfile.go:
     id: 28014f45529f
-    last_write_checksum: sha1:86275d4cd7c6cae64e520f5e2f78a3db273dd18b
-    pristine_git_object: 72543f0af505a9f38e4cc001d1a5aae064325a5e
+    last_write_checksum: sha1:fcb8b8d54d4a746889220aedd162d9eec9b12f4c
+    pristine_git_object: db802d339d2b28f76191536d84617998d25881f1
   internal/sdk/models/operations/upsertworkspacebudget.go:
     id: 68b410528b30
     last_write_checksum: sha1:e3bffa2f9796e9b90d7822b3ca8533f3c5b94e95
@@ -2784,6 +2784,14 @@ trackedFiles:
     id: f08357cf366f
     last_write_checksum: sha1:0a035d1ebc5ec1013be6e7d9826c8bbc22b2d371
     pristine_git_object: 01399ce091d392d221eb5ccd9e3f7949b55cca3f
+  internal/sdk/models/shared/clientclosedrequestresponse.go:
+    id: f8c756305a7a
+    last_write_checksum: sha1:ea7f970495a3cb88fb89cbad69516b54368f1457
+    pristine_git_object: 38d4e7d1188a21ef7804223f8779c9a15ce1f01d
+  internal/sdk/models/shared/clientclosedrequestresponseerrordata.go:
+    id: 969192b7d79e
+    last_write_checksum: sha1:a0ec793ad9792f6138e29dddb7aa271d41094073
+    pristine_git_object: 22871a600a340b7f24ef1932927e1726231923c2
   internal/sdk/models/shared/codeinterpreterfileoutput.go:
     id: 71aec1624965
     last_write_checksum: sha1:e8bd026544b095d4b1785d48d588eb6d36b71240
@@ -5002,8 +5010,8 @@ trackedFiles:
     pristine_git_object: d7996175857711a962d259ba303eab486022dbfc
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:bd13cd4ed6e50edb2b79dad6134819d36a8f8701
-    pristine_git_object: c7f55f06b45503af78e121096f8bd20d0b2e0b10
+    last_write_checksum: sha1:4fdad10f8796195f847882b245698997b7a25f57
+    pristine_git_object: 79d679d8f0959d9dda0c8f563a5fb851c664f6ad
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -5082,8 +5090,8 @@ trackedFiles:
     pristine_git_object: a85206f0966a30ce97dced911a0af54c58d9d6c5
   internal/sdk/videogeneration.go:
     id: ef76c19a17c2
-    last_write_checksum: sha1:0e66953fa8aab30653970162b5be8f01e3eef200
-    pristine_git_object: c6371265bf1ac9f321cde118e064c2863b18e702
+    last_write_checksum: sha1:e2f4a9e5f2968e210e4e18e814b17b36eb4f1a5d
+    pristine_git_object: 68226cf9205bdb32a8c68a6defbe015fe4210edc
   internal/sdk/videos.go:
     id: 1628317e94bf
     last_write_checksum: sha1:7c55475bd4d6a9d5211c7832a8536dd8f7dc62bf
@@ -5554,6 +5562,8 @@ examples:
           application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
         "504":
           application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+        "499":
+          application/json: {"error": {"code": 499, "message": "The request was cancelled."}}
   listEmbeddingsModels:
     speakeasy-default-list-embeddings-models:
       parameters:
@@ -5647,6 +5657,8 @@ examples:
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "499":
+          application/json: {"error": {"code": 499, "message": "The request was cancelled."}}
   deleteFile:
     speakeasy-default-delete-file:
       parameters:
@@ -6532,6 +6544,10 @@ examples:
           application/json: {"error": {"code": 413, "message": "Request payload too large"}}
         "403":
           application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "499":
+          application/json: {"error": {"code": 499, "message": "The request was cancelled."}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
   getVideos:
     speakeasy-default-get-videos:
       parameters:
@@ -7012,6 +7028,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "499":
+          application/json: {"error": {"code": 499, "message": "The request was cancelled."}}
   listOauthJwks:
     speakeasy-default-list-oauth-jwks:
       responses:

@@ -32,8 +32,12 @@ type CreateVideosResponse struct {
 	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
+	// Client Closed Request - The caller cancelled the request
+	ClientClosedRequestResponse *shared.ClientClosedRequestResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (c CreateVideosResponse) MarshalJSON() ([]byte, error) {
@@ -124,9 +128,23 @@ func (c *CreateVideosResponse) GetTooManyRequestsResponse() *shared.TooManyReque
 	return c.TooManyRequestsResponse
 }
 
+func (c *CreateVideosResponse) GetClientClosedRequestResponse() *shared.ClientClosedRequestResponse {
+	if c == nil {
+		return nil
+	}
+	return c.ClientClosedRequestResponse
+}
+
 func (c *CreateVideosResponse) GetInternalServerResponse() *shared.InternalServerResponse {
 	if c == nil {
 		return nil
 	}
 	return c.InternalServerResponse
+}
+
+func (c *CreateVideosResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if c == nil {
+		return nil
+	}
+	return c.ServiceUnavailableResponse
 }

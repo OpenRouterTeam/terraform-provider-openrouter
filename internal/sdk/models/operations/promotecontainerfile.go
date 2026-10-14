@@ -51,6 +51,8 @@ type PromoteContainerFileResponse struct {
 	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
+	// Client Closed Request - The caller cancelled the request
+	ClientClosedRequestResponse *shared.ClientClosedRequestResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 	// Service Unavailable - Service temporarily unavailable
@@ -157,6 +159,13 @@ func (p *PromoteContainerFileResponse) GetTooManyRequestsResponse() *shared.TooM
 		return nil
 	}
 	return p.TooManyRequestsResponse
+}
+
+func (p *PromoteContainerFileResponse) GetClientClosedRequestResponse() *shared.ClientClosedRequestResponse {
+	if p == nil {
+		return nil
+	}
+	return p.ClientClosedRequestResponse
 }
 
 func (p *PromoteContainerFileResponse) GetInternalServerResponse() *shared.InternalServerResponse {
