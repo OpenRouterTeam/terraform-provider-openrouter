@@ -8,10 +8,12 @@ import (
 )
 
 type AlignmentRuleRecord struct {
-	// Whether probability is at or above the threshold.
+	// Whether the message has a field the rule watches. Only an applicable rule is evaluated.
+	Applicable bool `json:"applicable"`
+	// Whether probability is at or above the threshold. False when the rule is not applicable.
 	Broken bool `json:"broken"`
-	// The evaluator's probability that the turn breaks the rule.
-	Probability float64 `json:"probability"`
+	// The evaluator's probability that the turn breaks the rule; null when the rule is not applicable.
+	Probability *float64 `json:"probability"`
 }
 
 func (a AlignmentRuleRecord) MarshalJSON() ([]byte, error) {
@@ -25,6 +27,13 @@ func (a *AlignmentRuleRecord) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (a *AlignmentRuleRecord) GetApplicable() bool {
+	if a == nil {
+		return false
+	}
+	return a.Applicable
+}
+
 func (a *AlignmentRuleRecord) GetBroken() bool {
 	if a == nil {
 		return false
@@ -32,9 +41,9 @@ func (a *AlignmentRuleRecord) GetBroken() bool {
 	return a.Broken
 }
 
-func (a *AlignmentRuleRecord) GetProbability() float64 {
+func (a *AlignmentRuleRecord) GetProbability() *float64 {
 	if a == nil {
-		return 0.0
+		return nil
 	}
 	return a.Probability
 }

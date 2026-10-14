@@ -34,6 +34,7 @@ const (
 	CodeEnumCyberPolicy                 CodeEnum = "cyber_policy"
 	CodeEnumMisalignmentPolicyViolation CodeEnum = "misalignment_policy_violation"
 	CodeEnumDataResidencyMismatch       CodeEnum = "data_residency_mismatch"
+	CodeEnumPermissionDenied            CodeEnum = "permission_denied"
 )
 
 func (e CodeEnum) ToPointer() *CodeEnum {
@@ -88,6 +89,8 @@ func (e *CodeEnum) UnmarshalJSON(data []byte) error {
 	case "misalignment_policy_violation":
 		fallthrough
 	case "data_residency_mismatch":
+		fallthrough
+	case "permission_denied":
 		*e = CodeEnum(v)
 		return nil
 	default:
