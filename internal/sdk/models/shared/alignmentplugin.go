@@ -9,7 +9,7 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// AlignmentPluginMode - `enforce`: a turn that breaks a rule is withheld, retried, and finally returned as an error. `audit`: every turn is evaluated and returned. Default `enforce`.
+// AlignmentPluginMode - `enforce`: a turn that breaks a rule is withheld, retried, and finally returned as an error. `audit`: every turn is evaluated and returned. Default `audit`.
 type AlignmentPluginMode string
 
 const (
@@ -44,11 +44,11 @@ type AlignmentPlugin struct {
 	Instruct *bool `json:"instruct,omitzero"`
 	// Provider calls made again after a blocked turn, in enforce mode. Default 1.
 	MaxRetries *int64 `json:"max_retries,omitzero"`
-	// `enforce`: a turn that breaks a rule is withheld, retried, and finally returned as an error. `audit`: every turn is evaluated and returned. Default `enforce`.
+	// `enforce`: a turn that breaks a rule is withheld, retried, and finally returned as an error. `audit`: every turn is evaluated and returned. Default `audit`.
 	Mode *AlignmentPluginMode `json:"mode,omitzero"`
-	// Texts that state what the reply must do or must not do. Each rule is evaluated on its own.
-	Rules []string `json:"rules"`
-	// Probability at or above which a rule is broken. Default 0.7.
+	// Rules the reply must follow. Each rule is evaluated on its own.
+	Rules []AlignmentRule `json:"rules"`
+	// Probability at or above which a rule is broken, from 0.01 to 1. Default 0.7.
 	Threshold *float64 `json:"threshold,omitzero"`
 }
 
@@ -88,9 +88,9 @@ func (a *AlignmentPlugin) GetMode() *AlignmentPluginMode {
 	return a.Mode
 }
 
-func (a *AlignmentPlugin) GetRules() []string {
+func (a *AlignmentPlugin) GetRules() []AlignmentRule {
 	if a == nil {
-		return []string{}
+		return []AlignmentRule{}
 	}
 	return a.Rules
 }
