@@ -13,18 +13,29 @@ import (
 type QuestionsType string
 
 const (
+	QuestionsTypeBox    QuestionsType = "box"
 	QuestionsTypeChoice QuestionsType = "choice"
 	QuestionsTypeNoul   QuestionsType = "noul"
 	QuestionsTypeScore  QuestionsType = "score"
 )
 
-// Questions - A Decisions question using a boolean, choice, or ordered score evaluation.
+// Questions - A Decisions question using a boolean, choice, ordered score, or image bounding-box evaluation.
 type Questions struct {
 	DecisionsNoulQuestion   *DecisionsNoulQuestion   `queryParam:"inline" union:"member"`
 	DecisionsChoiceQuestion *DecisionsChoiceQuestion `queryParam:"inline" union:"member"`
 	DecisionsScoreQuestion  *DecisionsScoreQuestion  `queryParam:"inline" union:"member"`
+	DecisionsBoxQuestion    *DecisionsBoxQuestion    `queryParam:"inline" union:"member"`
 
 	Type QuestionsType
+}
+
+func CreateQuestionsBox(box DecisionsBoxQuestion) Questions {
+	typ := QuestionsTypeBox
+
+	return Questions{
+		DecisionsBoxQuestion: &box,
+		Type:                 typ,
+	}
 }
 
 func CreateQuestionsChoice(choice DecisionsChoiceQuestion) Questions {
@@ -73,6 +84,15 @@ func (u *Questions) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	switch dis.Type {
+	case "box":
+		decisionsBoxQuestion := new(DecisionsBoxQuestion)
+		if err := utils.UnmarshalJSON(data, &decisionsBoxQuestion, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == box) type DecisionsBoxQuestion within Questions: %w", string(data), err)
+		}
+
+		u.DecisionsBoxQuestion = decisionsBoxQuestion
+		u.Type = QuestionsTypeBox
+		return nil
 	case "choice":
 		decisionsChoiceQuestion := new(DecisionsChoiceQuestion)
 		if err := utils.UnmarshalJSON(data, &decisionsChoiceQuestion, "", true, nil); err != nil {
@@ -116,6 +136,10 @@ func (u Questions) MarshalJSON() ([]byte, error) {
 
 	if u.DecisionsScoreQuestion != nil {
 		return utils.MarshalJSON(u.DecisionsScoreQuestion, "", true)
+	}
+
+	if u.DecisionsBoxQuestion != nil {
+		return utils.MarshalJSON(u.DecisionsBoxQuestion, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type Questions: all fields are null")
