@@ -38,6 +38,8 @@ type DeleteVaultSecretResponse struct {
 	NotFoundResponse *shared.NotFoundResponse
 	// Request Timeout - The route deadline passed before the request completed, or the request body stopped arriving.
 	RequestTimeoutResponse *shared.RequestTimeoutResponse
+	// Conflict - The secret belongs to a connection (for example an MCP or GitHub connection) and can only be replaced or removed by reconnecting or disconnecting it.
+	ConflictResponse *shared.ConflictResponse
 	// Too Many Requests - The vault rate limit was reached.
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Scope lookup failed.
@@ -115,6 +117,13 @@ func (d *DeleteVaultSecretResponse) GetRequestTimeoutResponse() *shared.RequestT
 		return nil
 	}
 	return d.RequestTimeoutResponse
+}
+
+func (d *DeleteVaultSecretResponse) GetConflictResponse() *shared.ConflictResponse {
+	if d == nil {
+		return nil
+	}
+	return d.ConflictResponse
 }
 
 func (d *DeleteVaultSecretResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {

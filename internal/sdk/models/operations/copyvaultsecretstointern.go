@@ -48,7 +48,7 @@ type CopyVaultSecretsToInternResponse struct {
 	NotFoundResponse *shared.NotFoundResponse
 	// Request Timeout - The route deadline passed before the request completed, or the request body stopped arriving.
 	RequestTimeoutResponse *shared.RequestTimeoutResponse
-	// Conflict - A named workspace secret has no hosts yet, or the intern is being transferred to another workspace. Nothing is copied.
+	// Conflict - A named workspace secret has no hosts yet, the intern already holds a secret of that name that belongs to a connection, or the intern is being transferred to another workspace. Nothing is copied.
 	ConflictResponse *shared.ConflictResponse
 	// Payload Too Large - The JSON body exceeds 425000 bytes.
 	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
