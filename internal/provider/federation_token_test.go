@@ -185,3 +185,31 @@ func TestNewFederatedTokenSourceValidatesConfig(t *testing.T) {
 		})
 	}
 }
+
+func TestFederationHTTPClientDoesNotFollowRedirects(t *testing.T) {
+	var redirected atomic.Int32
+	target := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		redirected.Add(1)
+	}))
+	t.Cleanup(target.Close)
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, target.URL+"/api/v1/oauth/token", http.StatusTemporaryRedirect)
+	}))
+	t.Cleanup(origin.Close)
+	source, err := newFederatedTokenSource(federatedTokenSourceConfig{
+		serverURL:          origin.URL + "/api/v1",
+		federationPolicyID: "policy-123",
+		oidcToken:          "subject-jwt",
+		httpClient:         newFederationHTTPClient(),
+	})
+	if err != nil {
+		t.Fatalf("newFederatedTokenSource: %v", err)
+	}
+
+	if _, err := source.Security(context.Background()); err == nil {
+		t.Fatal("expected the redirect response to fail the exchange")
+	}
+	if redirected.Load() != 0 {
+		t.Fatal("subject token was resent to the redirect target")
+	}
+}

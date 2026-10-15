@@ -64,7 +64,7 @@ func federatedTokenSourceFromConfig(data OpenrouterProviderModel, serverURL stri
 		federationPolicyID: policyID,
 		oidcToken:          oidcToken,
 		oidcTokenFile:      oidcTokenFile,
-		httpClient:         &http.Client{Transport: cleanhttp.DefaultPooledTransport()},
+		httpClient:         newFederationHTTPClient(),
 	})
 	if err != nil {
 		diags.AddError("Invalid workload identity federation configuration", err.Error())
@@ -74,8 +74,18 @@ func federatedTokenSourceFromConfig(data OpenrouterProviderModel, serverURL stri
 }
 
 func stringOrEnv(value types.String, envVar string) string {
-	if !value.IsNull() && !value.IsUnknown() && value.ValueString() != "" {
+	if !value.IsNull() && !value.IsUnknown() {
 		return value.ValueString()
 	}
 	return os.Getenv(envVar)
+}
+
+// newFederationHTTPClient never follows redirects, so the subject token is only sent to the configured server.
+func newFederationHTTPClient() *http.Client {
+	return &http.Client{
+		Transport: cleanhttp.DefaultPooledTransport(),
+		CheckRedirect: func(*http.Request, []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
 }
