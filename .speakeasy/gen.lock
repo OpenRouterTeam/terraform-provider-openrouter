@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 584993b1cb37561e793d2ad3c099526b
+  docChecksum: 263e03d7daac992d3f22db6438dc65ec
   docVersion: 1.0.0
   speakeasyVersion: 1.802.0
   generationVersion: 2.948.4
-  releaseVersion: 0.3.86
-  configChecksum: 4ee879824a0621d9b1ba0e71d5b0150e
+  releaseVersion: 0.3.87
+  configChecksum: 902107b1624945efc0d5edbc9bcffcb5
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: b143b156-3682-46d5-acc3-d403da9d4ba8
-  pristine_commit_hash: acf412134c647245ceebf40bfdcec608f5a9b7be
-  pristine_tree_hash: c51772cef3713d53082fde80741d3a13a73e0b23
+  generation_id: d76a06a2-b62f-4217-8fa7-6162468c9564
+  pristine_commit_hash: c307ba0411869d2053cad61ff68a0e46a62339bf
+  pristine_tree_hash: c2f007dfd78b91ffd1c18c3abbef38fbc8d93758
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:6af970afe421028c8f971a8217e057b4e8f19736
-    pristine_git_object: 19ed18151620d08c039afa7daf594db48dd2c800
+    last_write_checksum: sha1:e9a2c4b26d3bd525f066eea9332a50461b80b766
+    pristine_git_object: c23ca71c4759de45968de9d640ebc06e36745d2c
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1782,8 +1782,8 @@ trackedFiles:
     pristine_git_object: b0ffd8830e6896cda59b886ca8f5dfcc8cd75653
   internal/sdk/models/operations/listmodelsuser.go:
     id: bcfd5bae44d6
-    last_write_checksum: sha1:970ae14282adc71680a66910712120d136ad46e2
-    pristine_git_object: 1a6bbf1b066909cf43ffa753bba443ce75ce1f58
+    last_write_checksum: sha1:228636745eac6174748c53934ca14adb3752c81c
+    pristine_git_object: f2e8a7e9b1acc5c2807aab3a9b89e577c53373fe
   internal/sdk/models/operations/listoauthjwks.go:
     id: c0159b2826ec
     last_write_checksum: sha1:13e566fb25dd021138ec0d34f049023c8c151f32
@@ -5046,8 +5046,8 @@ trackedFiles:
     pristine_git_object: d7996175857711a962d259ba303eab486022dbfc
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:d688c70876031e95b9ed87436d838d2b2558da04
-    pristine_git_object: dda582ee974d2e3067a8ace41951a3710186c878
+    last_write_checksum: sha1:878f266648e6d58e23a8bf898f3400ae848f3c1a
+    pristine_git_object: b7ede5d328a3e6c81b9b80309b9f55d9bef3c6ab
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -6286,6 +6286,7 @@ examples:
           offset: 0
           limit: 500
           output_modalities: "text"
+          sort: "newest"
       responses:
         "200":
           application/json: {"data": [{"architecture": {"input_modalities": ["text"], "instruct_type": "chatml", "modality": "text->text", "output_modalities": ["text"], "tokenizer": "GPT"}, "canonical_slug": "openai/gpt-4", "context_length": 8192, "created": 1692901234, "default_parameters": null, "description": "GPT-4 is a large multimodal model that can solve difficult problems with greater accuracy.", "expiration_date": null, "id": "openai/gpt-4", "knowledge_cutoff": null, "links": {"details": "/api/v1/models/openai/gpt-4/endpoints"}, "name": "GPT-4", "per_request_limits": null, "pricing": {"completion": "0.00006", "image": "0", "prompt": "0.00003", "request": "0"}, "supported_parameters": ["temperature", "top_p", "max_tokens", "frequency_penalty", "presence_penalty"], "supported_voices": null, "top_provider": {"context_length": 8192, "is_moderated": true, "max_completion_tokens": 4096}}], "links": {"next": "/api/v1/models?offset=500&limit=500"}, "total_count": 150}
