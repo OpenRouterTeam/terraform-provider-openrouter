@@ -3,6 +3,7 @@ package provider
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -82,6 +83,25 @@ func TestFederationAuthTransportDoesNotAuthorizeRedirectsToAnotherHost(t *testin
 	}
 	if len(redirectedAuthorization) != 0 {
 		t.Fatalf("redirect target received Authorization %q", redirectedAuthorization)
+	}
+}
+
+func TestOriginOfTreatsDefaultPortsAsTheSameOrigin(t *testing.T) {
+	for _, tc := range []struct {
+		a, b string
+		same bool
+	}{
+		{"https://api.example.com:443/api/v1", "https://API.example.com/api/v1/workspaces", true},
+		{"http://localhost:80/api/v1", "http://localhost/api/v1", true},
+		{"https://api.example.com/api/v1", "https://api.example.com:8443/api/v1", false},
+		{"https://api.example.com/api/v1", "http://api.example.com/api/v1", false},
+		{"https://api.example.com/api/v1", "https://evil.example.com/api/v1", false},
+	} {
+		a, _ := url.Parse(tc.a)
+		b, _ := url.Parse(tc.b)
+		if got := originOf(a) == originOf(b); got != tc.same {
+			t.Errorf("same origin(%q, %q) = %v, want %v", tc.a, tc.b, got, tc.same)
+		}
 	}
 }
 

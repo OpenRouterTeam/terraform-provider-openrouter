@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // federationAuthTransport sets a fresh federated access token on every HTTP attempt, so SDK retries refresh an expired token instead of resending it.
 // It only authorizes requests to the configured server's origin, so a redirect to another host never receives the token.
 type federationAuthTransport struct {
 	source *federatedTokenSource
-	origin *url.URL
+	origin string
 	next   http.RoundTripper
 }
 
@@ -19,11 +20,26 @@ func newFederationAuthTransport(source *federatedTokenSource, serverURL string, 
 	if err != nil || origin.Scheme == "" || origin.Host == "" {
 		return federationAuthTransport{}, fmt.Errorf("server_url must be an absolute URL")
 	}
-	return federationAuthTransport{source: source, origin: origin, next: next}, nil
+	return federationAuthTransport{source: source, origin: originOf(origin), next: next}, nil
+}
+
+// originOf is scheme://host:port with the scheme's default port filled in, so `https://h` and `https://h:443` compare equal.
+func originOf(u *url.URL) string {
+	scheme := strings.ToLower(u.Scheme)
+	port := u.Port()
+	if port == "" {
+		switch scheme {
+		case "https":
+			port = "443"
+		case "http":
+			port = "80"
+		}
+	}
+	return scheme + "://" + strings.ToLower(u.Hostname()) + ":" + port
 }
 
 func (t federationAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	if req.URL.Scheme != t.origin.Scheme || req.URL.Host != t.origin.Host {
+	if originOf(req.URL) != t.origin {
 		unauthorized := req.Clone(req.Context())
 		unauthorized.Header.Del("Authorization")
 		return t.next.RoundTrip(unauthorized)
