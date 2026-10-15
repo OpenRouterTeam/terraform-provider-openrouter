@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 3b9ce3bf8698362d0168576dfc6f6e7c
+  docChecksum: b5b965fde439fe8a31c9774d13a5d455
   docVersion: 1.0.0
   speakeasyVersion: 1.802.0
   generationVersion: 2.948.4
-  releaseVersion: 0.3.78
-  configChecksum: 4464e2788f87655bd3ef34e08350e10a
+  releaseVersion: 0.3.79
+  configChecksum: 888acdf8b8a9841bf2d125ac4bd28383
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 2d0eb258-3b96-425c-a6a5-1967233f79e3
-  pristine_commit_hash: 2eebd45c0a6c58c16c75a7eef8dc78ec871bdf57
-  pristine_tree_hash: 708f5f3f987c3c87bbba22aa5e11fb036312646a
+  generation_id: 5b32bb64-b54d-4f70-a5c5-5dab9d30e729
+  pristine_commit_hash: 2eb8c83ae2d5d09962585b1ce41bfe2f5f703171
+  pristine_tree_hash: 7843cb183d2b178203bb04ad83855879014a6b07
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:9c2cd3a6a11ea665bd193af7c23ee27e34797787
-    pristine_git_object: 57f92750622ac751436c46d3f51ad86a366773fe
+    last_write_checksum: sha1:4df79db824f00d8a2b1b5711bca1a3cb00b2c0cf
+    pristine_git_object: 0fc7a3418fccac27fa41c4a3637382c731fe94c8
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1214,8 +1214,8 @@ trackedFiles:
     pristine_git_object: 20a170b15936f8e8e9ac2a511c8d48463657be7b
   internal/sdk/apikeys.go:
     id: a40d4b208cc3
-    last_write_checksum: sha1:a9e414e79ea421b7770068718fd914e118b16e50
-    pristine_git_object: 34e917c7d752c083754782173822561d2b1e7125
+    last_write_checksum: sha1:f34b25de3a52889624c9d847c6b84c8c9dc30e7a
+    pristine_git_object: f4a8778e3271f11805fa68be546522e77942ba32
   internal/sdk/batch.go:
     id: 58f39ecc28cc
     last_write_checksum: sha1:872a1cb04b7ad367192f385e632f69f206263624
@@ -1698,8 +1698,8 @@ trackedFiles:
     pristine_git_object: 61661bcb65d796ec9e0dbbad3131fe4b56cd610f
   internal/sdk/models/operations/list.go:
     id: ee2c967ce632
-    last_write_checksum: sha1:c87b26fde33be42c2497012709a2fc1562507ddb
-    pristine_git_object: 74d5ac5efe9b1aef585aa4c9f50b6dc1e990cad1
+    last_write_checksum: sha1:949c629dae59cc12ddbb67b887bfd451fa2022a7
+    pristine_git_object: 79de2d4e1428a58e4babc2bcedd875a8e1b7c27a
   internal/sdk/models/operations/listbatches.go:
     id: c88f17f4908c
     last_write_checksum: sha1:52700339114413866dc3133322abacc96351424d
@@ -2770,8 +2770,8 @@ trackedFiles:
     pristine_git_object: 25bdb2bafd35fb7e5fff9b063486db3e6eb60547
   internal/sdk/models/shared/chatrequest.go:
     id: 7c57049ee12f
-    last_write_checksum: sha1:6685781c15a5bc1cc59b1a9163987ea53094edd6
-    pristine_git_object: 79c6b07c73ec5ebd8fc385aa621d8ea624a0ca90
+    last_write_checksum: sha1:8073e9082a10ad76d468b98109ff8264a27db19b
+    pristine_git_object: 0f2dc06d5ce99190adc460f41253e782de59b1f9
   internal/sdk/models/shared/chatsearchmodelsservertool.go:
     id: 42240e0e927b
     last_write_checksum: sha1:4903abd463aeacb0ffabcc9a74939ad05347c98f
@@ -4402,8 +4402,8 @@ trackedFiles:
     pristine_git_object: 7d213236f9063894d0d1523e1f2ca37108b3280f
   internal/sdk/models/shared/responsesrequest.go:
     id: f640a3b91a94
-    last_write_checksum: sha1:dda4ef85f661017827a795681d1724750857ffb6
-    pristine_git_object: f2a2408d679b791331215c232b5a362bec9f1e9c
+    last_write_checksum: sha1:1c60bc5ce6b569b0ba7f17f082c2c96e97bbeb9b
+    pristine_git_object: 182f43fa9047f84295699f898236b08d3e69e95e
   internal/sdk/models/shared/routerattempt.go:
     id: c36b0f8e50e3
     last_write_checksum: sha1:2c5f4ae860ae60f708083d1dd0b2d0e8065291d7
@@ -5042,8 +5042,8 @@ trackedFiles:
     pristine_git_object: d7996175857711a962d259ba303eab486022dbfc
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:1839707242a4dde2e8120112e822cbf988d50984
-    pristine_git_object: 4e24535fe58b38866d7293c0fb580a01a0d41d78
+    last_write_checksum: sha1:eaff047e0b68487783853a30ea8a3253e91da749
+    pristine_git_object: 9e09bcd365d68c48604a93e53c2762ba5f28cbfe
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -6108,6 +6108,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
   createKeys:
     speakeasy-default-create-keys:
       requestBody:

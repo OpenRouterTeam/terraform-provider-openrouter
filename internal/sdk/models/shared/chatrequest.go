@@ -719,42 +719,42 @@ func (e *ChatRequestServiceTier) UnmarshalJSON(data []byte) error {
 	}
 }
 
-type StopType string
+type ChatRequestStopType string
 
 const (
-	StopTypeStr        StopType = "str"
-	StopTypeArrayOfStr StopType = "arrayOfStr"
+	ChatRequestStopTypeStr        ChatRequestStopType = "str"
+	ChatRequestStopTypeArrayOfStr ChatRequestStopType = "arrayOfStr"
 )
 
-// Stop sequences (up to 4)
-type Stop struct {
+// ChatRequestStop - Stop sequences (up to 4)
+type ChatRequestStop struct {
 	Str        *string  `queryParam:"inline" union:"member"`
 	ArrayOfStr []string `queryParam:"inline" union:"member"`
 
-	Type StopType
+	Type ChatRequestStopType
 }
 
-func CreateStopStr(str string) Stop {
-	typ := StopTypeStr
+func CreateChatRequestStopStr(str string) ChatRequestStop {
+	typ := ChatRequestStopTypeStr
 
-	return Stop{
+	return ChatRequestStop{
 		Str:  &str,
 		Type: typ,
 	}
 }
 
-func CreateStopArrayOfStr(arrayOfStr []string) Stop {
-	typ := StopTypeArrayOfStr
+func CreateChatRequestStopArrayOfStr(arrayOfStr []string) ChatRequestStop {
+	typ := ChatRequestStopTypeArrayOfStr
 
-	return Stop{
+	return ChatRequestStop{
 		ArrayOfStr: arrayOfStr,
 		Type:       typ,
 	}
 }
 
-func (u *Stop) UnmarshalJSON(data []byte) (err error) {
+func (u *ChatRequestStop) UnmarshalJSON(data []byte) (err error) {
 	previous := *u
-	*u = Stop{}
+	*u = ChatRequestStop{}
 	defer func() {
 		if err != nil {
 			*u = previous
@@ -767,7 +767,7 @@ func (u *Stop) UnmarshalJSON(data []byte) (err error) {
 	var str string = ""
 	if err := utils.UnmarshalJSON(data, &str, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
-			Type:  StopTypeStr,
+			Type:  ChatRequestStopTypeStr,
 			Value: &str,
 		})
 	}
@@ -775,36 +775,36 @@ func (u *Stop) UnmarshalJSON(data []byte) (err error) {
 	var arrayOfStr []string = []string{}
 	if err := utils.UnmarshalJSON(data, &arrayOfStr, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
-			Type:  StopTypeArrayOfStr,
+			Type:  ChatRequestStopTypeArrayOfStr,
 			Value: arrayOfStr,
 		})
 	}
 
 	if len(candidates) == 0 {
-		return fmt.Errorf("could not unmarshal `%s` into any supported union types for Stop", string(data))
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for ChatRequestStop", string(data))
 	}
 
 	// Pick the best candidate using multi-stage filtering
 	best := utils.PickBestUnionCandidate(candidates, data)
 	if best == nil {
-		return fmt.Errorf("could not unmarshal `%s` into any supported union types for Stop", string(data))
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for ChatRequestStop", string(data))
 	}
 
 	// Set the union type and value based on the best candidate
-	u.Type = best.Type.(StopType)
+	u.Type = best.Type.(ChatRequestStopType)
 	switch best.Type {
-	case StopTypeStr:
+	case ChatRequestStopTypeStr:
 		u.Str = best.Value.(*string)
 		return nil
-	case StopTypeArrayOfStr:
+	case ChatRequestStopTypeArrayOfStr:
 		u.ArrayOfStr = best.Value.([]string)
 		return nil
 	}
 
-	return fmt.Errorf("could not unmarshal `%s` into any supported union types for Stop", string(data))
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for ChatRequestStop", string(data))
 }
 
-func (u Stop) MarshalJSON() ([]byte, error) {
+func (u ChatRequestStop) MarshalJSON() ([]byte, error) {
 	if u.Str != nil {
 		return utils.MarshalJSON(u.Str, "", true)
 	}
@@ -813,7 +813,7 @@ func (u Stop) MarshalJSON() ([]byte, error) {
 		return utils.MarshalJSON(u.ArrayOfStr, "", true)
 	}
 
-	return nil, errors.New("could not marshal union type Stop: all fields are null")
+	return nil, errors.New("could not marshal union type ChatRequestStop: all fields are null")
 }
 
 // ChatRequest - Chat completion request parameters
@@ -876,7 +876,7 @@ type ChatRequest struct {
 	// A unique identifier for grouping related requests (e.g., a conversation or agent workflow). When provided, OpenRouter uses it as the sticky routing key, routing all requests in the session to the same provider to maximize prompt cache hits. Also used for observability grouping. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters.
 	SessionID *string `json:"session_id,omitzero"`
 	// Stop sequences (up to 4)
-	Stop *Stop `json:"stop,omitzero"`
+	Stop *ChatRequestStop `json:"stop,omitzero"`
 	// Stop conditions for the server-tool agent loop. Any condition firing halts the loop (OR logic). When set, this overrides `max_tool_calls`. When a condition fires while the model is still emitting tool calls, the pending tool calls are executed and one final turn is made with tool calls disabled so the response ends with a natural-language answer instead of an unfinished tool call.
 	StopServerToolsWhen []StopServerToolsWhenCondition `json:"stop_server_tools_when,omitzero"`
 	// Enable streaming response
@@ -1152,7 +1152,7 @@ func (c *ChatRequest) GetSessionID() *string {
 	return c.SessionID
 }
 
-func (c *ChatRequest) GetStop() *Stop {
+func (c *ChatRequest) GetStop() *ChatRequestStop {
 	if c == nil {
 		return nil
 	}
