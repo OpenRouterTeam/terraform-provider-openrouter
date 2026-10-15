@@ -24,7 +24,11 @@ func TestFederationAuthTransportRefreshesTokenBetweenRetryAttempts(t *testing.T)
 	}))
 	t.Cleanup(api.Close)
 
-	client := &http.Client{Transport: federationAuthTransport{source: source, next: http.DefaultTransport}}
+	transport, err := newFederationAuthTransport(source, api.URL+"/api/v1", http.DefaultTransport)
+	if err != nil {
+		t.Fatalf("newFederationAuthTransport: %v", err)
+	}
+	client := &http.Client{Transport: transport}
 	req, err := http.NewRequest(http.MethodGet, api.URL+"/api/v1/workspaces", nil)
 	if err != nil {
 		t.Fatalf("NewRequest: %v", err)
@@ -42,6 +46,42 @@ func TestFederationAuthTransportRefreshesTokenBetweenRetryAttempts(t *testing.T)
 	want := []string{"Bearer access-1", "Bearer access-2"}
 	if len(seen) != len(want) || seen[0] != want[0] || seen[1] != want[1] {
 		t.Fatalf("Authorization headers = %q, want %q", seen, want)
+	}
+}
+
+func TestFederationAuthTransportDoesNotAuthorizeRedirectsToAnotherHost(t *testing.T) {
+	exchange := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		grantToken(w, "access-1", 900)
+	})
+	source := newTestSource(t, exchange.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+
+	var redirectedAuthorization []string
+	target := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		redirectedAuthorization = r.Header.Values("Authorization")
+	}))
+	t.Cleanup(target.Close)
+	var originAuthorization string
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		originAuthorization = r.Header.Get("Authorization")
+		http.Redirect(w, r, target.URL+"/elsewhere", http.StatusFound)
+	}))
+	t.Cleanup(origin.Close)
+
+	transport, err := newFederationAuthTransport(source, origin.URL+"/api/v1", http.DefaultTransport)
+	if err != nil {
+		t.Fatalf("newFederationAuthTransport: %v", err)
+	}
+	res, err := (&http.Client{Transport: transport}).Get(origin.URL + "/api/v1/workspaces")
+	if err != nil {
+		t.Fatalf("Get: %v", err)
+	}
+	_ = res.Body.Close()
+
+	if originAuthorization != "Bearer access-1" {
+		t.Fatalf("origin Authorization = %q, want the federated token", originAuthorization)
+	}
+	if len(redirectedAuthorization) != 0 {
+		t.Fatalf("redirect target received Authorization %q", redirectedAuthorization)
 	}
 }
 

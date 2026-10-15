@@ -106,7 +106,12 @@ func (p *OpenrouterProvider) Configure(ctx context.Context, req provider.Configu
 
 	var transport http.RoundTripper = NewProviderHTTPTransport(providerHTTPTransportOpts)
 	if federation != nil {
-		transport = federationAuthTransport{source: federation, next: transport}
+		authorized, err := newFederationAuthTransport(federation, serverUrl, transport)
+		if err != nil {
+			resp.Diagnostics.AddError("Invalid server_url", err.Error())
+			return
+		}
+		transport = authorized
 	}
 	httpClient := &http.Client{Transport: transport}
 
