@@ -296,6 +296,8 @@ type ListResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Not Found - Resource does not exist
+	NotFoundResponse *shared.NotFoundResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
@@ -353,6 +355,13 @@ func (l *ListResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListResponse) GetNotFoundResponse() *shared.NotFoundResponse {
+	if l == nil {
+		return nil
+	}
+	return l.NotFoundResponse
 }
 
 func (l *ListResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
