@@ -32,4 +32,7 @@ provider "openrouter" {
 ### Optional
 
 - `api_key` (String, Sensitive) API key as bearer token in Authorization header. Configurable via environment variable `OPENROUTER_MANAGEMENT_KEY`.
+- `federation_policy_id` (String) ID of the organization's Workload Identity Federation policy that acts as a management key. Required with `oidc_token` or `oidc_token_file`. Configurable via environment variable `OPENROUTER_FEDERATION_POLICY_ID`.
+- `oidc_token` (String, Sensitive) OIDC token issued to this workload (for example a GitLab `id_tokens` JWT), exchanged for a short-lived management token through Workload Identity Federation. Use with `federation_policy_id` instead of `api_key`. Configurable via environment variable `OPENROUTER_OIDC_TOKEN`.
+- `oidc_token_file` (String) Path to a file holding the workload's OIDC token. The file is reread on every exchange, so a rotated token is picked up. Alternative to `oidc_token`. Configurable via environment variable `OPENROUTER_OIDC_TOKEN_FILE`.
 - `server_url` (String) Server URL (defaults to https://openrouter.ai/api/v1)
