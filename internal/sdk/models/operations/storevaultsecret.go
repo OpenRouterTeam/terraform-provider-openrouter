@@ -48,6 +48,8 @@ type StoreVaultSecretResponse struct {
 	NotFoundResponse *shared.NotFoundResponse
 	// Request Timeout - The route deadline passed before the request completed, or the request body stopped arriving.
 	RequestTimeoutResponse *shared.RequestTimeoutResponse
+	// Conflict - The secret belongs to a connection (for example an MCP or GitHub connection) and can only be replaced or removed by reconnecting or disconnecting it.
+	ConflictResponse *shared.ConflictResponse
 	// Payload Too Large - The JSON body exceeds 425000 bytes.
 	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - The vault rate limit was reached.
@@ -134,6 +136,13 @@ func (s *StoreVaultSecretResponse) GetRequestTimeoutResponse() *shared.RequestTi
 		return nil
 	}
 	return s.RequestTimeoutResponse
+}
+
+func (s *StoreVaultSecretResponse) GetConflictResponse() *shared.ConflictResponse {
+	if s == nil {
+		return nil
+	}
+	return s.ConflictResponse
 }
 
 func (s *StoreVaultSecretResponse) GetPayloadTooLargeResponse() *shared.PayloadTooLargeResponse {
