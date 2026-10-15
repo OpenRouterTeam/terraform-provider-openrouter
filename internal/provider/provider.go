@@ -104,15 +104,16 @@ func (p *OpenrouterProvider) Configure(ctx context.Context, req provider.Configu
 		Transport:  cleanhttp.DefaultPooledTransport(),
 	}
 
-	httpClient := &http.Client{Transport: NewProviderHTTPTransport(providerHTTPTransportOpts)}
+	var transport http.RoundTripper = NewProviderHTTPTransport(providerHTTPTransportOpts)
+	if federation != nil {
+		transport = federationAuthTransport{source: federation, next: transport}
+	}
+	httpClient := &http.Client{Transport: transport}
 
 	opts := []sdk.SDKOption{
 		sdk.WithServerURL(serverUrl),
 		sdk.WithSecurity(security),
 		sdk.WithClient(httpClient),
-	}
-	if federation != nil {
-		opts = append(opts, sdk.WithSecuritySource(federation.Security))
 	}
 
 	client := sdk.New(opts...)

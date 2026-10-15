@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -43,6 +44,26 @@ func federationPolicyIDAttribute() schema.StringAttribute {
 func federatedTokenSourceFromConfig(data OpenrouterProviderModel, serverURL string, apiKey *string) (*federatedTokenSource, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	for _, attr := range []struct {
+		name  string
+		value types.String
+	}{
+		{"oidc_token", data.OIDCToken},
+		{"oidc_token_file", data.OIDCTokenFile},
+		{"federation_policy_id", data.FederationPolicyID},
+	} {
+		if attr.value.IsUnknown() {
+			diags.AddAttributeError(
+				path.Root(attr.name),
+				"Unknown workload identity federation setting",
+				"The provider cannot authenticate until "+attr.name+" is known. Set it to a value known at plan time, or leave it unset to use its environment variable.",
+			)
+		}
+	}
+	if diags.HasError() {
+		return nil, diags
+	}
+
 	oidcToken := stringOrEnv(data.OIDCToken, oidcTokenEnvVar)
 	oidcTokenFile := stringOrEnv(data.OIDCTokenFile, oidcTokenFileEnvVar)
 	policyID := stringOrEnv(data.FederationPolicyID, federationPolicyIDEnvVar)
@@ -74,7 +95,7 @@ func federatedTokenSourceFromConfig(data OpenrouterProviderModel, serverURL stri
 }
 
 func stringOrEnv(value types.String, envVar string) string {
-	if !value.IsNull() && !value.IsUnknown() {
+	if !value.IsNull() {
 		return value.ValueString()
 	}
 	return os.Getenv(envVar)
