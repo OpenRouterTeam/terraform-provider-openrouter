@@ -122,3 +122,41 @@ func TestFederationConfigRejectsUnknownValuesInsteadOfUsingEnvironment(t *testin
 		})
 	}
 }
+
+func TestFederationConfigRejectsEmptyStringsInsteadOfFallingBack(t *testing.T) {
+	t.Setenv(oidcTokenEnvVar, "env-subject-jwt")
+	t.Setenv(federationPolicyIDEnvVar, "env-policy")
+	apiKey := "sk-or-v1-static"
+
+	for name, data := range map[string]OpenrouterProviderModel{
+		"federation_policy_id": {FederationPolicyID: types.StringValue(""), OIDCToken: types.StringNull(), OIDCTokenFile: types.StringNull()},
+		"oidc_token":           {FederationPolicyID: types.StringNull(), OIDCToken: types.StringValue(""), OIDCTokenFile: types.StringNull()},
+		"oidc_token_file":      {FederationPolicyID: types.StringNull(), OIDCToken: types.StringNull(), OIDCTokenFile: types.StringValue("")},
+	} {
+		t.Run(name, func(t *testing.T) {
+			for label, key := range map[string]*string{"with api_key": &apiKey, "without api_key": nil} {
+				source, diags := federatedTokenSourceFromConfig(data, "https://openrouter.ai/api/v1", key)
+				if source != nil || !diags.HasError() {
+					t.Fatalf("%s: expected an empty-value diagnostic and no token source, got source=%v diags=%v", label, source != nil, diags)
+				}
+				if summary := diags.Errors()[0].Summary(); summary != "Empty workload identity federation setting" {
+					t.Fatalf("%s: diagnostic = %q, want the empty-value error", label, summary)
+				}
+			}
+		})
+	}
+}
+
+func TestFederationConfigReadsEnvironmentOnlyForUnsetAttributes(t *testing.T) {
+	t.Setenv(oidcTokenEnvVar, "env-subject-jwt")
+	t.Setenv(federationPolicyIDEnvVar, "env-policy")
+
+	data := OpenrouterProviderModel{FederationPolicyID: types.StringNull(), OIDCToken: types.StringNull(), OIDCTokenFile: types.StringNull()}
+	source, diags := federatedTokenSourceFromConfig(data, "https://openrouter.ai/api/v1", nil)
+	if diags.HasError() || source == nil {
+		t.Fatalf("expected a token source from the environment, got source=%v diags=%v", source != nil, diags)
+	}
+	if source.federationPolicyID != "env-policy" {
+		t.Fatalf("federation policy = %q, want env-policy", source.federationPolicyID)
+	}
+}

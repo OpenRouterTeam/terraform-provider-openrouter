@@ -6,9 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math/rand/v2"
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -26,6 +28,10 @@ const (
 	federatedTokenRefreshSkew = time.Minute
 
 	maxTokenExchangeResponseBytes = 1 << 20
+
+	maxTokenExchangeAttempts   = 3
+	tokenExchangeBaseBackoff   = 500 * time.Millisecond
+	maxTokenExchangeRetryDelay = time.Minute
 )
 
 // federatedTokenSource exchanges a workload's OIDC token for a short-lived
@@ -37,6 +43,7 @@ type federatedTokenSource struct {
 	subjectToken       func() (string, error)
 	httpClient         *http.Client
 	now                func() time.Time
+	sleep              func(context.Context, time.Duration) error
 
 	mu          sync.Mutex
 	accessToken string
@@ -82,6 +89,7 @@ func newFederatedTokenSource(cfg federatedTokenSourceConfig) (*federatedTokenSou
 		subjectToken:       subjectToken,
 		httpClient:         cfg.httpClient,
 		now:                time.Now,
+		sleep:              sleepContext,
 	}, nil
 }
 
@@ -107,6 +115,17 @@ func (s *federatedTokenSource) Security(ctx context.Context) (shared.Security, e
 	return shared.Security{APIKey: &token}, nil
 }
 
+// retryableExchangeError marks a network error, 429 or 5xx; retryAfter is the server's Retry-After, if any.
+type retryableExchangeError struct {
+	err        error
+	retryAfter time.Duration
+}
+
+func (e *retryableExchangeError) Error() string { return e.err.Error() }
+func (e *retryableExchangeError) Unwrap() error { return e.err }
+
+// exchange retries network errors, 429 and 5xx with jittered exponential backoff. The exchange
+// endpoint is stateless about subject tokens (no jti is consumed), so resending the same one is safe.
 func (s *federatedTokenSource) exchange(ctx context.Context) (tokenExchangeResponse, error) {
 	subjectToken, err := s.subjectToken()
 	if err != nil {
@@ -114,6 +133,19 @@ func (s *federatedTokenSource) exchange(ctx context.Context) (tokenExchangeRespo
 	}
 	registerSensitiveValues(subjectToken)
 
+	for attempt := 1; ; attempt++ {
+		exchanged, err := s.exchangeOnce(ctx, subjectToken)
+		var retryable *retryableExchangeError
+		if err == nil || !errors.As(err, &retryable) || attempt == maxTokenExchangeAttempts || ctx.Err() != nil {
+			return exchanged, err
+		}
+		if err := s.sleep(ctx, tokenExchangeRetryDelay(attempt, retryable.retryAfter)); err != nil {
+			return tokenExchangeResponse{}, fmt.Errorf("%w (retry cancelled: %w)", retryable.err, err)
+		}
+	}
+}
+
+func (s *federatedTokenSource) exchangeOnce(ctx context.Context, subjectToken string) (tokenExchangeResponse, error) {
 	form := url.Values{
 		"grant_type":           {tokenExchangeGrantType},
 		"subject_token":        {subjectToken},
@@ -130,19 +162,49 @@ func (s *federatedTokenSource) exchange(ctx context.Context) (tokenExchangeRespo
 
 	res, err := s.httpClient.Do(req)
 	if err != nil {
-		return tokenExchangeResponse{}, fmt.Errorf("token exchange request failed: %w", err)
+		return tokenExchangeResponse{}, &retryableExchangeError{err: fmt.Errorf("token exchange request failed: %w", err)}
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(io.LimitReader(res.Body, maxTokenExchangeResponseBytes))
 	if err != nil {
-		return tokenExchangeResponse{}, fmt.Errorf("reading token exchange response: %w", err)
+		return tokenExchangeResponse{}, &retryableExchangeError{err: fmt.Errorf("reading token exchange response: %w", err)}
 	}
 	if res.StatusCode != http.StatusOK {
-		return tokenExchangeResponse{}, tokenExchangeFailure(res.StatusCode, body)
+		failure := tokenExchangeFailure(res.StatusCode, body)
+		if res.StatusCode == http.StatusTooManyRequests || res.StatusCode >= http.StatusInternalServerError {
+			return tokenExchangeResponse{}, &retryableExchangeError{err: failure, retryAfter: parseRetryAfter(res.Header.Get("Retry-After"))}
+		}
+		return tokenExchangeResponse{}, failure
 	}
 
 	return parseTokenExchangeResponse(body)
+}
+
+// tokenExchangeRetryDelay doubles per attempt with equal jitter, and waits at least as long as Retry-After asks (capped).
+func tokenExchangeRetryDelay(attempt int, retryAfter time.Duration) time.Duration {
+	ceiling := tokenExchangeBaseBackoff << (attempt - 1)
+	delay := ceiling/2 + rand.N(ceiling/2+1)
+	return min(max(delay, retryAfter), maxTokenExchangeRetryDelay)
+}
+
+func parseRetryAfter(value string) time.Duration {
+	seconds, err := strconv.Atoi(strings.TrimSpace(value))
+	if err != nil || seconds < 0 {
+		return 0
+	}
+	return time.Duration(seconds) * time.Second
+}
+
+func sleepContext(ctx context.Context, d time.Duration) error {
+	timer := time.NewTimer(d)
+	defer timer.Stop()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-timer.C:
+		return nil
+	}
 }
 
 func parseTokenExchangeResponse(body []byte) (tokenExchangeResponse, error) {

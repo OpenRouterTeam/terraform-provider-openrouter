@@ -58,6 +58,12 @@ func federatedTokenSourceFromConfig(data OpenrouterProviderModel, serverURL stri
 				"Unknown workload identity federation setting",
 				"The provider cannot authenticate until "+attr.name+" is known. Set it to a value known at plan time, or leave it unset to use its environment variable.",
 			)
+		} else if !attr.value.IsNull() && attr.value.ValueString() == "" {
+			diags.AddAttributeError(
+				path.Root(attr.name),
+				"Empty workload identity federation setting",
+				attr.name+" is set to an empty string. Set it to a value, or leave it unset to use its environment variable.",
+			)
 		}
 	}
 	if diags.HasError() {

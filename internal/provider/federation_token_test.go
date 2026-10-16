@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -211,5 +212,174 @@ func TestFederationHTTPClientDoesNotFollowRedirects(t *testing.T) {
 	}
 	if redirected.Load() != 0 {
 		t.Fatal("subject token was resent to the redirect target")
+	}
+}
+
+func recordSleeps(source *federatedTokenSource) *[]time.Duration {
+	var slept []time.Duration
+	source.sleep = func(_ context.Context, d time.Duration) error {
+		slept = append(slept, d)
+		return nil
+	}
+	return &slept
+}
+
+func drainSubjects(s *exchangeServer) []string {
+	var subjects []string
+	for {
+		select {
+		case subject := <-s.subjects:
+			subjects = append(subjects, subject)
+		default:
+			return subjects
+		}
+	}
+}
+
+func TestFederatedTokenSourceRetriesTransientFailuresWithTheSameSubjectToken(t *testing.T) {
+	for name, status := range map[string]int{"429": http.StatusTooManyRequests, "500": http.StatusInternalServerError, "502": http.StatusBadGateway, "503": http.StatusServiceUnavailable} {
+		t.Run(name, func(t *testing.T) {
+			server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, call int32) {
+				if call < maxTokenExchangeAttempts {
+					w.WriteHeader(status)
+					return
+				}
+				grantToken(w, "access-after-retry", 900)
+			})
+			source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+			slept := recordSleeps(source)
+
+			security, err := source.Security(context.Background())
+			if err != nil {
+				t.Fatalf("Security: %v", err)
+			}
+			if *security.APIKey != "access-after-retry" || server.calls.Load() != maxTokenExchangeAttempts {
+				t.Fatalf("got %q after %d exchanges, want access-after-retry after %d", *security.APIKey, server.calls.Load(), maxTokenExchangeAttempts)
+			}
+			for _, subject := range drainSubjects(server) {
+				if subject != "subject-jwt" {
+					t.Fatalf("retry sent subject %q, want subject-jwt", subject)
+				}
+			}
+			if len(*slept) != maxTokenExchangeAttempts-1 {
+				t.Fatalf("slept %d times, want %d", len(*slept), maxTokenExchangeAttempts-1)
+			}
+		})
+	}
+}
+
+func TestFederatedTokenSourceRetriesNetworkErrors(t *testing.T) {
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, call int32) {
+		if call == 1 {
+			conn, _, err := w.(http.Hijacker).Hijack()
+			if err != nil {
+				t.Errorf("hijack: %v", err)
+				return
+			}
+			_ = conn.Close()
+			return
+		}
+		grantToken(w, "access-after-reset", 900)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	recordSleeps(source)
+
+	security, err := source.Security(context.Background())
+	if err != nil {
+		t.Fatalf("Security: %v", err)
+	}
+	if *security.APIKey != "access-after-reset" || server.calls.Load() != 2 {
+		t.Fatalf("got %q after %d exchanges, want access-after-reset after 2", *security.APIKey, server.calls.Load())
+	}
+}
+
+func TestFederatedTokenSourceGivesUpAfterMaxAttempts(t *testing.T) {
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		w.WriteHeader(http.StatusServiceUnavailable)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	recordSleeps(source)
+
+	if _, err := source.Security(context.Background()); err == nil || !strings.Contains(err.Error(), "HTTP 503") {
+		t.Fatalf("err = %v, want the last 503", err)
+	}
+	if server.calls.Load() != maxTokenExchangeAttempts {
+		t.Fatalf("exchanges = %d, want %d", server.calls.Load(), maxTokenExchangeAttempts)
+	}
+}
+
+func TestFederatedTokenSourceNeverRetriesClientErrors(t *testing.T) {
+	for _, status := range []int{http.StatusBadRequest, http.StatusUnauthorized, http.StatusForbidden, http.StatusNotFound, http.StatusRequestEntityTooLarge} {
+		t.Run(http.StatusText(status), func(t *testing.T) {
+			server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+				w.WriteHeader(status)
+			})
+			source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+			slept := recordSleeps(source)
+
+			if _, err := source.Security(context.Background()); err == nil {
+				t.Fatal("expected the exchange to fail")
+			}
+			if server.calls.Load() != 1 || len(*slept) != 0 {
+				t.Fatalf("exchanges = %d, sleeps = %d; want 1 and 0", server.calls.Load(), len(*slept))
+			}
+		})
+	}
+}
+
+func TestFederatedTokenSourceHonorsRetryAfter(t *testing.T) {
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, call int32) {
+		if call == 1 {
+			w.Header().Set("Retry-After", "5")
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		grantToken(w, "access", 900)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	slept := recordSleeps(source)
+
+	if _, err := source.Security(context.Background()); err != nil {
+		t.Fatalf("Security: %v", err)
+	}
+	if len(*slept) != 1 || (*slept)[0] != 5*time.Second {
+		t.Fatalf("slept %v, want [5s]", *slept)
+	}
+}
+
+func TestFederatedTokenSourceStopsRetryingWhenContextIsCancelled(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		w.Header().Set("Retry-After", "30")
+		w.WriteHeader(http.StatusServiceUnavailable)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	source.sleep = func(ctx context.Context, d time.Duration) error {
+		cancel()
+		return sleepContext(ctx, d)
+	}
+
+	start := time.Now()
+	_, err := source.Security(ctx)
+	if err == nil || !errors.Is(err, context.Canceled) {
+		t.Fatalf("err = %v, want context.Canceled", err)
+	}
+	if server.calls.Load() != 1 || time.Since(start) > 5*time.Second {
+		t.Fatalf("exchanges = %d after %v; want 1 without waiting out Retry-After", server.calls.Load(), time.Since(start))
+	}
+}
+
+func TestTokenExchangeRetryDelayGrowsExponentiallyWithJitter(t *testing.T) {
+	for attempt := 1; attempt < maxTokenExchangeAttempts; attempt++ {
+		ceiling := tokenExchangeBaseBackoff << (attempt - 1)
+		for range 100 {
+			if d := tokenExchangeRetryDelay(attempt, 0); d < ceiling/2 || d > ceiling {
+				t.Fatalf("attempt %d delay %v outside [%v, %v]", attempt, d, ceiling/2, ceiling)
+			}
+		}
+	}
+	if d := tokenExchangeRetryDelay(1, time.Hour); d != maxTokenExchangeRetryDelay {
+		t.Fatalf("delay with a huge Retry-After = %v, want the %v cap", d, maxTokenExchangeRetryDelay)
 	}
 }
