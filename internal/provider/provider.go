@@ -35,8 +35,11 @@ type OpenrouterProvider struct {
 
 // OpenrouterProviderModel describes the provider data model.
 type OpenrouterProviderModel struct {
-	APIKey    types.String `tfsdk:"api_key"`
-	ServerURL types.String `tfsdk:"server_url"`
+	APIKey             types.String `tfsdk:"api_key"`
+	ServerURL          types.String `tfsdk:"server_url"`
+	OIDCToken          types.String `tfsdk:"oidc_token"`
+	OIDCTokenFile      types.String `tfsdk:"oidc_token_file"`
+	FederationPolicyID types.String `tfsdk:"federation_policy_id"`
 }
 
 func (p *OpenrouterProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -56,6 +59,9 @@ func (p *OpenrouterProvider) Schema(ctx context.Context, req provider.SchemaRequ
 				Description: `Server URL (defaults to https://openrouter.ai/api/v1)`,
 				Optional:    true,
 			},
+			"oidc_token":           federationOIDCTokenAttribute(),
+			"oidc_token_file":      federationOIDCTokenFileAttribute(),
+			"federation_policy_id": federationPolicyIDAttribute(),
 		},
 		MarkdownDescription: `OpenRouter API: OpenAI-compatible API with additional OpenRouter features`,
 	}
@@ -87,12 +93,27 @@ func (p *OpenrouterProvider) Configure(ctx context.Context, req provider.Configu
 	}
 	registerSensitiveValues(security.APIKey)
 
+	federation, diags := federatedTokenSourceFromConfig(data, serverUrl, security.APIKey)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	providerHTTPTransportOpts := ProviderHTTPTransportOpts{
 		SetHeaders: make(map[string]string),
 		Transport:  cleanhttp.DefaultPooledTransport(),
 	}
 
-	httpClient := &http.Client{Transport: NewProviderHTTPTransport(providerHTTPTransportOpts)}
+	var transport http.RoundTripper = NewProviderHTTPTransport(providerHTTPTransportOpts)
+	if federation != nil {
+		authorized, err := newFederationAuthTransport(federation, serverUrl, transport)
+		if err != nil {
+			resp.Diagnostics.AddError("Invalid server_url", err.Error())
+			return
+		}
+		transport = authorized
+	}
+	httpClient := &http.Client{Transport: transport}
 
 	opts := []sdk.SDKOption{
 		sdk.WithServerURL(serverUrl),
