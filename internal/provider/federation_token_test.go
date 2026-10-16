@@ -531,3 +531,39 @@ func TestFederatedTokenSourceWaiterHonorsContext(t *testing.T) {
 		t.Fatalf("err = %v, want context.DeadlineExceeded", err)
 	}
 }
+
+func TestFederatedTokenSourceWaitsForRefreshWhenCachedTokenIsAboutToExpire(t *testing.T) {
+	release := make(chan struct{})
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		<-release
+		grantToken(w, "refreshed", 900)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	source.accessToken = "almost-expired"
+	source.expiresAt = time.Now().Add(federatedTokenMinRemaining / 2)
+
+	go func() { _, _ = source.Security(context.Background()) }()
+	for server.calls.Load() == 0 {
+		time.Sleep(time.Millisecond)
+	}
+
+	waiter := make(chan string, 1)
+	go func() {
+		security, err := source.Security(context.Background())
+		if err != nil {
+			t.Errorf("Security: %v", err)
+			waiter <- ""
+			return
+		}
+		waiter <- *security.APIKey
+	}()
+	select {
+	case got := <-waiter:
+		t.Fatalf("got %q before the refresh finished, want the caller to wait", got)
+	case <-time.After(50 * time.Millisecond):
+	}
+	close(release)
+	if got := <-waiter; got != "refreshed" {
+		t.Fatalf("got %q, want refreshed", got)
+	}
+}

@@ -26,6 +26,8 @@ const (
 	// Re-exchange this long before expiry so a request never carries a token
 	// that lapses in flight.
 	federatedTokenRefreshSkew = time.Minute
+	// A cached token is still handed out during a refresh only if it outlives the request by this much.
+	federatedTokenMinRemaining = 15 * time.Second
 
 	maxTokenExchangeResponseBytes = 1 << 20
 
@@ -97,7 +99,8 @@ func newFederatedTokenSource(cfg federatedTokenSourceConfig) (*federatedTokenSou
 // Security returns the SDK credentials for the next request, exchanging a new
 // access token when the cached one is missing or about to expire. Only one
 // exchange runs at a time and the lock is not held across it: while it runs,
-// other callers keep using the cached token until it actually expires.
+// other callers keep using the cached token while it has at least
+// federatedTokenMinRemaining left, and otherwise wait for the exchange.
 func (s *federatedTokenSource) Security(ctx context.Context) (shared.Security, error) {
 	for {
 		s.mu.Lock()
@@ -105,7 +108,7 @@ func (s *federatedTokenSource) Security(ctx context.Context) (shared.Security, e
 			return s.securityLocked()
 		}
 		if s.refreshing != nil {
-			if s.validLocked(0) {
+			if s.validLocked(federatedTokenMinRemaining) {
 				return s.securityLocked()
 			}
 			done := s.refreshing
@@ -130,7 +133,7 @@ func (s *federatedTokenSource) Security(ctx context.Context) (shared.Security, e
 		if err == nil {
 			s.accessToken = exchanged.AccessToken
 			s.expiresAt = s.now().Add(time.Duration(exchanged.ExpiresIn) * time.Second)
-		} else if !s.validLocked(0) {
+		} else if !s.validLocked(federatedTokenMinRemaining) {
 			s.mu.Unlock()
 			return shared.Security{}, err
 		}
