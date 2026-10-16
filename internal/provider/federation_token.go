@@ -48,6 +48,7 @@ type federatedTokenSource struct {
 	mu          sync.Mutex
 	accessToken string
 	expiresAt   time.Time
+	refreshing  chan struct{}
 }
 
 type federatedTokenSourceConfig struct {
@@ -94,24 +95,57 @@ func newFederatedTokenSource(cfg federatedTokenSourceConfig) (*federatedTokenSou
 }
 
 // Security returns the SDK credentials for the next request, exchanging a new
-// access token when the cached one is missing or about to expire.
+// access token when the cached one is missing or about to expire. Only one
+// exchange runs at a time and the lock is not held across it: while it runs,
+// other callers keep using the cached token until it actually expires.
 func (s *federatedTokenSource) Security(ctx context.Context) (shared.Security, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	for {
+		s.mu.Lock()
+		if s.validLocked(federatedTokenRefreshSkew) {
+			return s.securityLocked()
+		}
+		if s.refreshing != nil {
+			if s.validLocked(0) {
+				return s.securityLocked()
+			}
+			done := s.refreshing
+			s.mu.Unlock()
+			select {
+			case <-done:
+				continue
+			case <-ctx.Done():
+				return shared.Security{}, ctx.Err()
+			}
+		}
 
-	if s.accessToken != "" && s.now().Add(federatedTokenRefreshSkew).Before(s.expiresAt) {
-		token := s.accessToken
-		return shared.Security{APIKey: &token}, nil
+		done := make(chan struct{})
+		s.refreshing = done
+		s.mu.Unlock()
+
+		exchanged, err := s.exchange(ctx)
+
+		s.mu.Lock()
+		s.refreshing = nil
+		close(done)
+		if err == nil {
+			s.accessToken = exchanged.AccessToken
+			s.expiresAt = s.now().Add(time.Duration(exchanged.ExpiresIn) * time.Second)
+		} else if !s.validLocked(0) {
+			s.mu.Unlock()
+			return shared.Security{}, err
+		}
+		return s.securityLocked()
 	}
+}
 
-	exchanged, err := s.exchange(ctx)
-	if err != nil {
-		return shared.Security{}, err
-	}
-	s.accessToken = exchanged.AccessToken
-	s.expiresAt = s.now().Add(time.Duration(exchanged.ExpiresIn) * time.Second)
+func (s *federatedTokenSource) validLocked(skew time.Duration) bool {
+	return s.accessToken != "" && s.now().Add(skew).Before(s.expiresAt)
+}
 
+// securityLocked returns the cached token and releases s.mu.
+func (s *federatedTokenSource) securityLocked() (shared.Security, error) {
 	token := s.accessToken
+	s.mu.Unlock()
 	return shared.Security{APIKey: &token}, nil
 }
 
@@ -126,14 +160,15 @@ func (e *retryableExchangeError) Unwrap() error { return e.err }
 
 // exchange retries network errors, 429 and 5xx with jittered exponential backoff. The exchange
 // endpoint is stateless about subject tokens (no jti is consumed), so resending the same one is safe.
+// The subject token is reread on every attempt so a token file rotated during backoff is picked up.
 func (s *federatedTokenSource) exchange(ctx context.Context) (tokenExchangeResponse, error) {
-	subjectToken, err := s.subjectToken()
-	if err != nil {
-		return tokenExchangeResponse{}, err
-	}
-	registerSensitiveValues(subjectToken)
-
 	for attempt := 1; ; attempt++ {
+		subjectToken, err := s.subjectToken()
+		if err != nil {
+			return tokenExchangeResponse{}, err
+		}
+		registerSensitiveValues(subjectToken)
+
 		exchanged, err := s.exchangeOnce(ctx, subjectToken)
 		var retryable *retryableExchangeError
 		if err == nil || !errors.As(err, &retryable) || attempt == maxTokenExchangeAttempts || ctx.Err() != nil {
@@ -173,7 +208,7 @@ func (s *federatedTokenSource) exchangeOnce(ctx context.Context, subjectToken st
 	if res.StatusCode != http.StatusOK {
 		failure := tokenExchangeFailure(res.StatusCode, body)
 		if res.StatusCode == http.StatusTooManyRequests || res.StatusCode >= http.StatusInternalServerError {
-			return tokenExchangeResponse{}, &retryableExchangeError{err: failure, retryAfter: parseRetryAfter(res.Header.Get("Retry-After"))}
+			return tokenExchangeResponse{}, &retryableExchangeError{err: failure, retryAfter: parseRetryAfter(res.Header.Get("Retry-After"), s.now())}
 		}
 		return tokenExchangeResponse{}, failure
 	}
@@ -188,12 +223,16 @@ func tokenExchangeRetryDelay(attempt int, retryAfter time.Duration) time.Duratio
 	return min(max(delay, retryAfter), maxTokenExchangeRetryDelay)
 }
 
-func parseRetryAfter(value string) time.Duration {
-	seconds, err := strconv.Atoi(strings.TrimSpace(value))
-	if err != nil || seconds < 0 {
-		return 0
+// parseRetryAfter accepts both Retry-After forms: delay-seconds and an HTTP date.
+func parseRetryAfter(value string, now time.Time) time.Duration {
+	value = strings.TrimSpace(value)
+	if seconds, err := strconv.Atoi(value); err == nil {
+		return max(time.Duration(seconds)*time.Second, 0)
 	}
-	return time.Duration(seconds) * time.Second
+	if at, err := http.ParseTime(value); err == nil {
+		return max(at.Sub(now), 0)
+	}
+	return 0
 }
 
 func sleepContext(ctx context.Context, d time.Duration) error {

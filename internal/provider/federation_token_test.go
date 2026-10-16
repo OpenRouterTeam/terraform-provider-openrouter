@@ -383,3 +383,151 @@ func TestTokenExchangeRetryDelayGrowsExponentiallyWithJitter(t *testing.T) {
 		t.Fatalf("delay with a huge Retry-After = %v, want the %v cap", d, maxTokenExchangeRetryDelay)
 	}
 }
+
+func TestParseRetryAfterAcceptsSecondsAndHTTPDates(t *testing.T) {
+	now := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
+	for value, want := range map[string]time.Duration{
+		"5":                             5 * time.Second,
+		" 60 ":                          time.Minute,
+		"-1":                            0,
+		"Fri, 16 Oct 2026 12:00:30 GMT": 30 * time.Second,
+		"Fri, 16 Oct 2026 11:59:00 GMT": 0,
+		"soon":                          0,
+		"":                              0,
+	} {
+		if got := parseRetryAfter(value, now); got != want {
+			t.Errorf("parseRetryAfter(%q) = %v, want %v", value, got, want)
+		}
+	}
+}
+
+func TestFederatedTokenSourceRereadsTokenFileBetweenRetries(t *testing.T) {
+	tokenFile := filepath.Join(t.TempDir(), "token")
+	if err := os.WriteFile(tokenFile, []byte("expired-jwt"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	server := newExchangeServer(t, func(w http.ResponseWriter, r *http.Request, _ int32) {
+		if r.PostForm.Get("subject_token") != "rotated-jwt" {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		grantToken(w, "access", 900)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcTokenFile: tokenFile})
+	source.sleep = func(context.Context, time.Duration) error {
+		return os.WriteFile(tokenFile, []byte("rotated-jwt"), 0o600)
+	}
+
+	if _, err := source.Security(context.Background()); err != nil {
+		t.Fatalf("Security: %v", err)
+	}
+	if subjects := drainSubjects(server); len(subjects) != 2 || subjects[0] != "expired-jwt" || subjects[1] != "rotated-jwt" {
+		t.Fatalf("subjects = %v, want [expired-jwt rotated-jwt]", subjects)
+	}
+}
+
+func TestFederatedTokenSourceServesCachedTokenWhileRefreshing(t *testing.T) {
+	release := make(chan struct{})
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		<-release
+		grantToken(w, "refreshed", 900)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	source.accessToken = "cached"
+	source.expiresAt = time.Now().Add(federatedTokenRefreshSkew / 2)
+
+	refreshed := make(chan string, 1)
+	go func() {
+		security, err := source.Security(context.Background())
+		if err != nil {
+			t.Errorf("refreshing Security: %v", err)
+		}
+		refreshed <- *security.APIKey
+	}()
+	for server.calls.Load() == 0 {
+		time.Sleep(time.Millisecond)
+	}
+
+	security, err := source.Security(context.Background())
+	if err != nil || *security.APIKey != "cached" {
+		t.Fatalf("concurrent Security = %v, %v; want the cached token without waiting", security.APIKey, err)
+	}
+	close(release)
+	if got := <-refreshed; got != "refreshed" {
+		t.Fatalf("refresh returned %q, want refreshed", got)
+	}
+	if server.calls.Load() != 1 {
+		t.Fatalf("exchanges = %d, want 1", server.calls.Load())
+	}
+}
+
+func TestFederatedTokenSourceRunsOneExchangeForConcurrentCallers(t *testing.T) {
+	release := make(chan struct{})
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		<-release
+		grantToken(w, "access", 900)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+
+	const callers = 5
+	results := make(chan string, callers)
+	for range callers {
+		go func() {
+			security, err := source.Security(context.Background())
+			if err != nil {
+				t.Errorf("Security: %v", err)
+				results <- ""
+				return
+			}
+			results <- *security.APIKey
+		}()
+	}
+	for server.calls.Load() == 0 {
+		time.Sleep(time.Millisecond)
+	}
+	close(release)
+	for range callers {
+		if got := <-results; got != "access" {
+			t.Fatalf("caller got %q, want access", got)
+		}
+	}
+	if server.calls.Load() != 1 {
+		t.Fatalf("exchanges = %d, want 1", server.calls.Load())
+	}
+}
+
+func TestFederatedTokenSourceKeepsValidTokenWhenRefreshFails(t *testing.T) {
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		w.WriteHeader(http.StatusServiceUnavailable)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	recordSleeps(source)
+	source.accessToken = "cached"
+	source.expiresAt = time.Now().Add(federatedTokenRefreshSkew / 2)
+
+	security, err := source.Security(context.Background())
+	if err != nil || *security.APIKey != "cached" {
+		t.Fatalf("Security = %v, %v; want the still-valid cached token", security.APIKey, err)
+	}
+}
+
+func TestFederatedTokenSourceWaiterHonorsContext(t *testing.T) {
+	release := make(chan struct{})
+	defer close(release)
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		<-release
+		grantToken(w, "access", 900)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+
+	go func() { _, _ = source.Security(context.Background()) }()
+	for server.calls.Load() == 0 {
+		time.Sleep(time.Millisecond)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Millisecond)
+	defer cancel()
+	if _, err := source.Security(ctx); !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("err = %v, want context.DeadlineExceeded", err)
+	}
+}
