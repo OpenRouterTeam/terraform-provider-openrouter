@@ -3,12 +3,11 @@ name: Acceptance Tests
 # Live acceptance tests against a dedicated OpenRouter TEST organization.
 #
 # Safety model:
-# - Pull requests run the live suite when the `run-acceptance` label is
-#   applied, and only for branches in this repository (fork PRs never receive
-#   secrets). While the label stays on, each new push re-runs the suite;
-#   remove the label to stop. The label is a convenience gate, not a security
-#   boundary: anyone who can push a branch here can already dispatch this
-#   workflow on it.
+# - Every pull request from a branch in this repository runs the live suite
+#   (fork PRs never receive secrets, so they are skipped). The suite waits for
+#   that commit's Regenerate run first and only runs on the branch's current
+#   head: when Regenerate pushes a regen commit, the run for the old commit
+#   exits early and the run for the regen commit tests the generated code.
 # - Secret lives in the `acceptance-testing` environment as
 #   OPENROUTER_MANAGEMENT_KEY. It MUST be a Management API key
 #   (sk-or-mgmt-...) issued from a dedicated test org with $0 credits:
@@ -19,7 +18,8 @@ name: Acceptance Tests
 #   tf-acc-* resources, including those of a concurrent run, and parallel runs
 #   hit account caps (5 destinations per type). `queue: max` lets runs wait
 #   in line instead of the default one-pending-slot, where a newly queued PR
-#   run would cancel a pending release gate.
+#   run would cancel a pending release gate. Runs that exit early above never
+#   enter the group.
 # - Tests namespace resources as tf-acc-<run_id>-* and a TestMain sweeper
 #   deletes tf-acc-* leftovers from crashed runs before each suite.
 # - openrouter_byok_key is excluded: it needs a real provider credential we
@@ -32,20 +32,73 @@ on:
   pull_request:
     branches:
       - main
-    types: [labeled, synchronize, reopened]
 
 permissions:
   contents: read
 
 jobs:
+  # Decides whether this commit is worth a live run: waits for Regenerate on
+  # it (if the PR touches Speakeasy inputs) and checks that the branch has
+  # not moved on. Cheap, and outside the serialized group.
+  gate:
+    name: Wait for regeneration
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      checks: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+    steps:
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          regenerate() {
+            gh api -X GET "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs" -f check_name=Regenerate \
+              --jq '.check_runs | sort_by(.started_at) | last | "\(.status) \(.conclusion)"'
+          }
+          # Regenerate's run is created by the same event as this one, so a
+          # missing check after a short grace period means it isn't going to
+          # run (the PR doesn't touch .speakeasy inputs).
+          sleep 30
+          deadline=$((SECONDS + 1800))
+          while :; do
+            STATE=$(regenerate)
+            case "$STATE" in
+              "null null") echo "No Regenerate run for $SHA"; break ;;
+              completed*)  echo "Regenerate: ${STATE#completed }"; break ;;
+            esac
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              echo "::error::Timed out waiting for Regenerate on $SHA"
+              exit 1
+            fi
+            sleep 20
+          done
+          case "$STATE" in
+            "completed failure" | "completed cancelled" | "completed timed_out")
+              echo "::notice::Regenerate did not succeed on $SHA; skipping the live suite"
+              echo "run=false" >> "$GITHUB_OUTPUT"; exit 0 ;;
+          esac
+
+          HEAD=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha)
+          if [ "$HEAD" != "$SHA" ]; then
+            echo "::notice::Branch moved to ${HEAD:0:7} (Regenerate pushed); the run for that commit tests it"
+            echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
   acceptance:
-    # PRs: same-repo branches carrying the run-acceptance label only, and
-    # only when that label (not some other one) was just added.
+    needs: gate
+    # Nightly and dispatch runs skip the gate; PR runs need its go-ahead.
     if: >-
-      github.event_name != 'pull_request' || (
-        github.event.pull_request.head.repo.full_name == github.repository &&
-        contains(github.event.pull_request.labels.*.name, 'run-acceptance') &&
-        (github.event.action != 'labeled' || github.event.label.name == 'run-acceptance')
+      !cancelled() && (
+        github.event_name != 'pull_request' || needs.gate.outputs.run == 'true'
       )
     runs-on: ubuntu-latest
     environment: acceptance-testing
