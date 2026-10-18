@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 50413051bd1d1f9988a7d99bf8b8d679
+  docChecksum: 28ff362cc930c78da234db7b328ef174
   docVersion: 1.0.0
   speakeasyVersion: 1.802.0
   generationVersion: 2.948.4
-  releaseVersion: 0.3.98
-  configChecksum: 30bae2cd8b1e650e402fc34d3bf7d9f4
+  releaseVersion: 0.3.99
+  configChecksum: 01b786513ac36d0d7b3e227426549741
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 133fbe6e-f2ec-4294-935c-7651645cc995
-  pristine_commit_hash: 64fb497d23132a86ddeeb6a421cc28e6e5f89ec0
-  pristine_tree_hash: 98ca9c8649214dfbfadc5cf69cc136a976d7a348
+  generation_id: 3b47a551-e8ba-4462-a65f-924af16db274
+  pristine_commit_hash: 5ff52e1e83fccb15ea374ac26ea37d330dfdf32a
+  pristine_tree_hash: e1fb2f1c64bc1deb474bfe824fa12089d5925489
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:74350d6b598109b2ea94a4a3c03882ab3bf982f6
-    pristine_git_object: 7d1c0ed29bab911a9b14312444efd4ef2d1fab51
+    last_write_checksum: sha1:e7ab90b4e5021fe0efea8040065dc0be3751e1ae
+    pristine_git_object: a827d3f226496f0fbf055abf17937a6a5a348988
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1342,8 +1342,8 @@ trackedFiles:
     pristine_git_object: f0902cafebecd2f6203e04efa7d05e55de85f3b8
   internal/sdk/interns.go:
     id: 29c37e85fb2b
-    last_write_checksum: sha1:a76dbf0f5ac25e3dd10cc6fb07ddbb347968dd1f
-    pristine_git_object: ae1a7c527d54c84ea17ef929521dd3154abe0f4b
+    last_write_checksum: sha1:dc4d214ff36e18cf81220cf08e8b6d7341a7253b
+    pristine_git_object: f91d0881913760629fb469aff75146bd5faaac32
   internal/sdk/models.go:
     id: 7b13b8162cf6
     last_write_checksum: sha1:5a64b1311ee4c95050fb7caf9a1e5b2acb47f66d
@@ -4554,12 +4554,12 @@ trackedFiles:
     pristine_git_object: 851cab02b75f2e73efa38a209b0f1bc2f1abe4ce
   internal/sdk/models/shared/signinterndaemonrequest.go:
     id: b9c1a6653af1
-    last_write_checksum: sha1:90b92334f4a832570f9325ea3d57b87e9dd79cc0
-    pristine_git_object: 33dff0a762ca2eb04edfb7dec13975155014615a
+    last_write_checksum: sha1:75acb32d697f0aec28957bd121038f12d96e924a
+    pristine_git_object: 36744de1dca342faf53b10a47cc39c9cd21ecc07
   internal/sdk/models/shared/signinterndaemonresponse.go:
     id: bdd82c0e8e32
-    last_write_checksum: sha1:1008d858c24acaf102642e596d9843b8e3b2cebc
-    pristine_git_object: aef4a0b235c9656728637f3e5f5013f83c2589f6
+    last_write_checksum: sha1:6dc4ad5c948902443e8b809d6d9b23bfc917bf87
+    pristine_git_object: 045b8b7747fa76a7e7780ec5608c6473504beb6a
   internal/sdk/models/shared/speechinput.go:
     id: b9ddd21c3f10
     last_write_checksum: sha1:c42f7b6096249df8dd27eb1f8c8c9132fb100b5a
@@ -5050,8 +5050,8 @@ trackedFiles:
     pristine_git_object: d7996175857711a962d259ba303eab486022dbfc
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:1da182f2e3df0a22a0fb3f3c3b643c30ceb44a54
-    pristine_git_object: d3c5421e7e64ccf8874dc98151b1cfcd29e611b3
+    last_write_checksum: sha1:d0178ed86fc762a5ff20348549ba75849a4ad7ca
+    pristine_git_object: 72eff1f49fbff0414956742143ff595321c29fd7
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -9143,7 +9143,7 @@ examples:
         path:
           internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
       requestBody:
-        application/json: {"bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+        application/json: {"bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "route": {"method": "POST", "path": "/api/invoke"}}
       responses:
         "200":
           application/json: {"x-ori-invoke-signature": "MEUCIQ...", "x-ori-invoke-timestamp": "1789000000", "x-ori-invoke-user": "user_2abc"}
@@ -9159,7 +9159,7 @@ examples:
         path:
           internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
       requestBody:
-        application/json: {"bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+        application/json: {"bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "route": {"method": "POST", "path": "/api/invoke"}}
       responses:
         "200":
           application/json: {"x-ori-invoke-signature": "MEUCIQ...", "x-ori-invoke-timestamp": "1789000000", "x-ori-invoke-user": "user_2abc"}
