@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 34017661486c7917c72939be8685dfce
+  docChecksum: 50413051bd1d1f9988a7d99bf8b8d679
   docVersion: 1.0.0
   speakeasyVersion: 1.802.0
   generationVersion: 2.948.4
-  releaseVersion: 0.3.96
-  configChecksum: d1236b9d78d6e91dffcf0c5ab1b8a7e6
+  releaseVersion: 0.3.97
+  configChecksum: 9ef306ea80b0bd76795a361885f8309a
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: d1f00dbf-e7a5-4cc7-afeb-51d214f46580
-  pristine_commit_hash: d51485ab89159e644f104d884ffa75eccf173c32
-  pristine_tree_hash: 8759c34005f1c10d9991a114000f0ddff3a1fc5e
+  generation_id: fae9c7c8-e271-466a-906e-f77c98f6b6ed
+  pristine_commit_hash: d5fb72db3850a5a6d74df9d61c941a135ca973c3
+  pristine_tree_hash: d3f902fdc4167d4efbe0ef0b07e14e255cee3f13
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:a383362e221dd052ac0260d63931461aff4944c7
-    pristine_git_object: 4f8d54d5ad0096b1d2066f84174fd51bc25a5df9
+    last_write_checksum: sha1:27524adbd8c572a9bc6b201c4ed200727645f8dc
+    pristine_git_object: 4b657a038a80bb46f67d4eef4475e9caffbb154c
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1756,6 +1756,10 @@ trackedFiles:
     id: 3ab6b60137de
     last_write_checksum: sha1:e674d92b1b63fcf71f868ad4cb4be66ead8b3253
     pristine_git_object: f2c412b82645a9170c63561bfc13b9d0d6d53fa3
+  internal/sdk/models/operations/listinternconnections.go:
+    id: 21cd75244383
+    last_write_checksum: sha1:5b5988ccaede091c30debf89505b0b0c8763c27e
+    pristine_git_object: 64ddfe0f35a8acb1d4b10e955d802e70c3429fbc
   internal/sdk/models/operations/listinterneffectivevaultsecrets.go:
     id: 8beee9380f97
     last_write_checksum: sha1:d8ead434dff92d51916e4a750137eefdb8ff302a
@@ -5046,8 +5050,8 @@ trackedFiles:
     pristine_git_object: d7996175857711a962d259ba303eab486022dbfc
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:8cc98b1c49f24a58a09a6580115390d1d5b175ac
-    pristine_git_object: 2b612fbdbfadc8b09500d6da8ea76703d37de5f1
+    last_write_checksum: sha1:448a8afbcca44ce2a7bd228a74aa566a60e042d8
+    pristine_git_object: 6d5a522bbb33b7cf85142cacc0462c397a6d6be9
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -5122,8 +5126,8 @@ trackedFiles:
     pristine_git_object: 86e71b1c243584ac30f4b897d54367f831a07aa6
   internal/sdk/vault.go:
     id: 387005ba9449
-    last_write_checksum: sha1:758f56834daef4e104b23654954b06112ce7c100
-    pristine_git_object: c11685bdff4ae25caa0a1c7bc76c546589e4c81a
+    last_write_checksum: sha1:834f9c50a521762f74a3c53dbe95601c917259e2
+    pristine_git_object: cc319ad45a2a214a5e4b5f716411627c5b6b040a
   internal/sdk/videogeneration.go:
     id: ef76c19a17c2
     last_write_checksum: sha1:e2f4a9e5f2968e210e4e18e814b17b36eb4f1a5d
@@ -9165,4 +9169,130 @@ examples:
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+  listInternConnections:
+    speakeasy-default-list-intern-connections:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "200":
+          application/json: {"data": [{"key": "<key>"}]}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "408":
+          application/json: {"error": {"code": 408, "message": "Operation timed out. Please try again later."}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "502":
+          application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+        "504":
+          application/json: {"error": {"code": 504, "message": "The operation was aborted due to timeout"}}
+    invalid-vault-request:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid vault request"}}
+    invalid-or-missing-api-key:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "401":
+          application/json: {"error": {"code": 401, "message": "Invalid or missing API key"}}
+    regional-hostname:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "The Intern API does not support regional data residency yet. Please use the global endpoint at openrouter.ai."}}
+    workspace-scope-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "403":
+          application/json: {"error": {"code": 403, "message": "Vault scope is unavailable"}}
+    not-found:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "404":
+          application/json: {"error": {"code": 404, "message": "Not found"}}
+    body-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Request body timed out"}}
+    route-deadline:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "408":
+          application/json: {"error": {"code": 408, "message": "Vault request timed out"}}
+    rate-limited:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "429":
+          application/json: {"error": {"code": 429, "message": "Too many vault requests"}}
+    internal-error:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+    invalid-vault-response:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Invalid vault response"}}
+    vault-request-failed:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "502":
+          application/json: {"error": {"code": 502, "message": "Vault request failed"}}
+    vault-unavailable:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault service is unavailable"}}
+    writes-disabled:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "503":
+          application/json: {"error": {"code": 503, "message": "Vault writes are not enabled"}}
+    vault-timed-out:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "504":
+          application/json: {"error": {"code": 504, "message": "Vault request timed out"}}
 examplesVersion: 1.0.2
