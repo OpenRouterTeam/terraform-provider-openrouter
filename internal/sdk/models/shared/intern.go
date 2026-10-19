@@ -90,10 +90,14 @@ type Intern struct {
 	AttachedVaultID *string `json:"attached_vault_id"`
 	// ISO 8601 creation time.
 	CreatedAt string `json:"created_at"`
+	// Whether the user behind the key created the intern. Present on list and retrieve; absent for organization keys, which act for no user.
+	CreatedByYou *bool `json:"created_by_you,omitzero"`
 	// Free-form description.
 	Description *string `json:"description"`
 	// Public hostname the intern is reachable at, or null until provisioning has assigned one.
 	Hostname *string `json:"hostname"`
+	// SHA-256 of the intern icon, or null when it has none. Present on list and retrieve; fetch the bytes from `GET /api/v1/interns/{intern_id}/icon`.
+	IconSha256 *string `json:"icon_sha256,omitzero"`
 	// Intern id.
 	ID string `json:"id"`
 	// Standing instructions the intern boots with.
@@ -130,6 +134,13 @@ func (i *Intern) GetCreatedAt() string {
 	return i.CreatedAt
 }
 
+func (i *Intern) GetCreatedByYou() *bool {
+	if i == nil {
+		return nil
+	}
+	return i.CreatedByYou
+}
+
 func (i *Intern) GetDescription() *string {
 	if i == nil {
 		return nil
@@ -142,6 +153,13 @@ func (i *Intern) GetHostname() *string {
 		return nil
 	}
 	return i.Hostname
+}
+
+func (i *Intern) GetIconSha256() *string {
+	if i == nil {
+		return nil
+	}
+	return i.IconSha256
 }
 
 func (i *Intern) GetID() string {
