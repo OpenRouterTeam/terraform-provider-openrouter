@@ -89,6 +89,7 @@ const (
 	ProviderNameOpenAi              ProviderName = "OpenAI"
 	ProviderNameOpenInference       ProviderName = "OpenInference"
 	ProviderNameParasail            ProviderName = "Parasail"
+	ProviderNameParetoAlpha         ProviderName = "ParetoAlpha"
 	ProviderNamePoolside            ProviderName = "Poolside"
 	ProviderNamePrimeIntellect      ProviderName = "PrimeIntellect"
 	ProviderNamePerceptron          ProviderName = "Perceptron"
@@ -291,6 +292,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "OpenInference":
 		fallthrough
 	case "Parasail":
+		fallthrough
+	case "ParetoAlpha":
 		fallthrough
 	case "Poolside":
 		fallthrough
