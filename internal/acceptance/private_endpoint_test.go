@@ -39,6 +39,7 @@ type stubPrivateEndpoint struct {
 	UpstreamModelID string      `json:"upstream_model_id"`
 	DeclaredZDR     *bool       `json:"declared_zdr"`
 	DeclaredRegion  *string     `json:"declared_region"`
+	MaxCompletion   *int64      `json:"max_completion_tokens"`
 	Pricing         stubPricing `json:"pricing"`
 	CreatedAt       string      `json:"created_at"`
 }
@@ -157,6 +158,7 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 		BaseURL         *string      `json:"base_url"`
 		DeclaredZDR     *bool        `json:"declared_zdr"`
 		DeclaredRegion  *string      `json:"declared_region"`
+		MaxCompletion   *int64       `json:"max_completion_tokens"`
 		Pricing         *stubPricing `json:"pricing"`
 		Activate        *struct {
 			WorkspaceID string `json:"workspace_id"`
@@ -176,6 +178,7 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 		UpstreamModelID: body.UpstreamModelID,
 		DeclaredZDR:     body.DeclaredZDR,
 		DeclaredRegion:  body.DeclaredRegion,
+		MaxCompletion:   body.MaxCompletion,
 		Pricing:         stubPricing{Prompt: "0.0000025", Completion: "0.00001"},
 		CreatedAt:       "2026-09-26T12:00:00Z",
 	}
@@ -337,6 +340,7 @@ resource "openrouter_private_endpoint" "test" {
   upstream_model_id = %q
   declared_zdr      = true
   declared_region   = "us"
+  max_completion_tokens = 131072
   pricing = {
     prompt     = %q
     completion = "0.000008"
@@ -362,6 +366,7 @@ func TestStubPrivateEndpointLifecycle(t *testing.T) {
 					resource.TestCheckResourceAttr(name, "status", "active"),
 					resource.TestCheckResourceAttr(name, "pricing.prompt", "0.000002"),
 					resource.TestCheckResourceAttr(name, "declared_region", "us"),
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "131072"),
 					resource.TestCheckResourceAttrSet(name, "id"),
 					api.checkCreateCount(1),
 					api.checkLastCreateActivated(),
