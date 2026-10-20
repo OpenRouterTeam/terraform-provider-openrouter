@@ -131,7 +131,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 				Description: `Cap on completion tokens per request. Requests asking for more skip this endpoint, and the default output length stays within it. When omitted, the cap is copied from the public endpoint for the same model and provider, if there is one. Requires replacement if changed.`,
 				Validators: []validator.Int64{
-					int64validator.AtMost(2147483647),
+					int64validator.Between(1, 2147483647),
 				},
 			},
 			"model_name": schema.StringAttribute{
