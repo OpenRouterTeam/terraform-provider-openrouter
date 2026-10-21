@@ -640,6 +640,56 @@ func TestStubWriteOnlyBroadcastLegacyPersists(t *testing.T) {
 	}})
 }
 
+// Moving credentials from `config` to `config_secrets_wo` updates in place and
+// clears both the legacy `config` value and the computed copy from state.
+func TestStubWriteOnlyBroadcastMigratesFromLegacy(t *testing.T) {
+	stub, srv := newWriteOnlyStub(t)
+	cleared := resource.ComposeTestCheckFunc(
+		stateMarker(woMarker, false), stateMarker(woMarker2, false),
+		resource.TestCheckNoResourceAttr(destAddr, "config.headers"),
+		resource.TestCheckNoResourceAttr(destAddr, "webhook.config.headers.Authorization"),
+		resource.TestCheckResourceAttr(destAddr, "webhook.config.url", "https://example.com/hook"))
+
+	woTestCase(t, []resource.TestStep{
+		{
+			Config: persisted(destConfig(srv.URL, `  config = {
+    url     = jsonencode("https://example.com/hook")
+    method  = jsonencode("POST")
+    headers = jsonencode({ Authorization = "Bearer ${var.secret}" })
+  }
+`)),
+			ConfigVariables: secretVar(woMarker),
+			Check: resource.ComposeTestCheckFunc(
+				stateMarker(woMarker, true), // control: legacy persists the credential
+				resource.TestCheckResourceAttr(destAddr, "webhook.config.headers.Authorization", "Bearer "+woMarker)),
+		},
+		{
+			PreConfig:       stub.reset,
+			Config:          destConfig(srv.URL, destWriteOnlyBody("POST", 1)),
+			ConfigVariables: secretVar(woMarker2),
+			ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{
+				plancheck.ExpectResourceAction(destAddr, plancheck.ResourceActionUpdate), // in place, no replacement
+				planContainsNoMarker{woMarker2},
+			}},
+			Check: resource.ComposeTestCheckFunc(cleared,
+				requestHas(stub, http.MethodPatch, "/observability/destinations/", func(b map[string]any) error {
+					cfg, _ := b["config"].(map[string]any)
+					headers, _ := cfg["headers"].(map[string]any)
+					if headers["Authorization"] != "Bearer "+woMarker2 {
+						return fmt.Errorf("migration request config = %v, want the write-only credential", cfg)
+					}
+					return nil
+				})),
+		},
+		{
+			// A refresh does not bring the credential back.
+			Config:          destConfig(srv.URL, destWriteOnlyBody("POST", 1)),
+			ConfigVariables: secretVar(woMarker2),
+			PlanOnly:        true,
+		},
+	})
+}
+
 func TestStubWriteOnlyBroadcastValidation(t *testing.T) {
 	_, srv := newWriteOnlyStub(t)
 
