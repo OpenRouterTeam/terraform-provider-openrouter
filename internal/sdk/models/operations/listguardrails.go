@@ -63,6 +63,8 @@ type ListGuardrailsResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 
@@ -120,6 +122,13 @@ func (l *ListGuardrailsResponse) GetUnauthorizedResponse() *shared.UnauthorizedR
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListGuardrailsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListGuardrailsResponse) GetInternalServerResponse() *shared.InternalServerResponse {
