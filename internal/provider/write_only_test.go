@@ -180,16 +180,32 @@ func TestObservabilityConfigAllowlistsMatchGeneratedFields(t *testing.T) {
 func TestScrubObservabilityResourceOnlyInWriteOnlyMode(t *testing.T) {
 	legacy := &ObservabilityDestinationResourceModel{Config: map[string]jsontypes.Normalized{"apiKey": jsontypes.NewNormalizedValue(`"` + writeOnlyMarker + `"`)}}
 	fillObservabilityConfigBlocks(reflect.ValueOf(legacy))
-	scrubObservabilityResource(types.Int64Null(), legacy.Config, legacy)
+	scrubObservabilityResource(types.Int64Null(), legacy.Config, false, legacy)
 	if legacy.Datadog.Config.APIKey.IsNull() {
 		t.Fatal("legacy mode (no config_secrets_wo_version) must keep today's behavior")
 	}
 
-	// Right after an import neither `config` nor the version is known, so the
+	// Removing `config`, `config_secrets_wo` and the version leaves the same
+	// empty state as an import, but returns to storing what the API returns.
+	optedOut := &ObservabilityDestinationResourceModel{}
+	fillObservabilityConfigBlocks(reflect.ValueOf(optedOut))
+	scrubObservabilityResource(types.Int64Null(), nil, false, optedOut)
+	if optedOut.Datadog.Config.APIKey.IsNull() || optedOut.Webhook.Config.Headers == nil {
+		t.Fatal("leaving write-only mode must store what the API returns")
+	}
+
+	// Right after an import the practitioner's mode is not known, so the
 	// response is filtered as if write-only.
+	ctx := context.Background()
+	private := &fakePrivateState{}
+	if diags := markObservabilityImported(ctx, private); diags.HasError() {
+		t.Fatal(diags)
+	}
 	imported := &ObservabilityDestinationResourceModel{}
 	fillObservabilityConfigBlocks(reflect.ValueOf(imported))
-	scrubObservabilityResource(types.Int64Null(), imported.Config, imported)
+	if diags := scrubObservabilityResourceOnRead(ctx, private, types.Int64Null(), imported.Config, imported); diags.HasError() {
+		t.Fatal(diags)
+	}
 	if !imported.Datadog.Config.APIKey.IsNull() || imported.Webhook.Config.Headers != nil || !imported.Webhook.Config.URL.IsNull() {
 		t.Fatal("imported state must drop credentials, headers and URLs from computed config")
 	}
@@ -199,12 +215,48 @@ func TestScrubObservabilityResourceOnlyInWriteOnlyMode(t *testing.T) {
 
 	writeOnly := &ObservabilityDestinationResourceModel{}
 	fillObservabilityConfigBlocks(reflect.ValueOf(writeOnly))
-	scrubObservabilityResource(types.Int64Value(1), writeOnly.Config, writeOnly)
+	scrubObservabilityResource(types.Int64Value(1), writeOnly.Config, false, writeOnly)
 	if !writeOnly.Datadog.Config.APIKey.IsNull() || writeOnly.Webhook.Config.Headers != nil {
 		t.Fatal("write-only mode must drop credentials and headers from computed config")
 	}
 	if writeOnly.Datadog.Config.MlApp.IsNull() {
 		t.Fatal("write-only mode must keep non-credential settings")
+	}
+}
+
+// fakePrivateState stands in for the framework's private state, whose type is
+// internal.
+type fakePrivateState struct{ data map[string][]byte }
+
+func (p *fakePrivateState) GetKey(_ context.Context, key string) ([]byte, diag.Diagnostics) {
+	return p.data[key], nil
+}
+
+func (p *fakePrivateState) SetKey(_ context.Context, key string, value []byte) diag.Diagnostics {
+	if p.data == nil {
+		p.data = map[string][]byte{}
+	}
+	if len(value) == 0 {
+		delete(p.data, key)
+	} else {
+		p.data[key] = value
+	}
+	return nil
+}
+
+func TestObservabilityImportMarker(t *testing.T) {
+	ctx := context.Background()
+	private := &fakePrivateState{}
+	if imported, _ := observabilityImported(ctx, private); imported {
+		t.Fatal("a destination that was never imported must not be treated as imported")
+	}
+	markObservabilityImported(ctx, private)
+	if imported, _ := observabilityImported(ctx, private); !imported {
+		t.Fatal("ImportState must mark the destination as imported")
+	}
+	clearObservabilityImported(ctx, private)
+	if imported, _ := observabilityImported(ctx, private); imported {
+		t.Fatal("the first apply must clear the import marker")
 	}
 }
 

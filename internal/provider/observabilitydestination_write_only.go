@@ -268,20 +268,61 @@ func applyObservabilityWriteOnlyConfigOnUpdate(ctx context.Context, req resource
 
 // scrubObservabilityResource filters the computed config blocks of the resource
 // model when the practitioner uses write-only credentials, signalled by a
-// config_secrets_wo_version in the plan or state. It also filters them when
-// neither the version nor `config` is set, which is the state right after an
-// import: the practitioner's mode is not known yet, so the response is treated
-// as write-only. The next apply records the real mode. Call it after the
-// response has been flattened into the model. The version and public config are
-// passed in, rather than read from the model, so this file compiles against the
-// pristine generated code that Speakeasy builds before merging custom edits.
-func scrubObservabilityResource(version types.Int64, public map[string]jsontypes.Normalized, data any) {
+// config_secrets_wo_version in the plan or state, or when imported is true.
+// Removing the version (and `config_secrets_wo`) returns the destination to
+// storing what the API returns. Call it after the response has been flattened
+// into the model. The version and public config are passed in, rather than
+// read from the model, so this file compiles against the pristine generated
+// code that Speakeasy builds before merging custom edits.
+func scrubObservabilityResource(version types.Int64, public map[string]jsontypes.Normalized, imported bool, data any) {
 	writeOnly := !version.IsNull() && !version.IsUnknown()
-	imported := version.IsNull() && len(public) == 0
 	if !writeOnly && !imported {
 		return
 	}
 	scrubObservabilityConfigBlocks(reflect.ValueOf(data), public)
+}
+
+// scrubObservabilityResourceOnRead is scrubObservabilityResource for Read, where
+// the import marker in private state also triggers filtering.
+func scrubObservabilityResourceOnRead(ctx context.Context, private providerPrivateState, version types.Int64, public map[string]jsontypes.Normalized, data any) diag.Diagnostics {
+	imported, diags := observabilityImported(ctx, private)
+	scrubObservabilityResource(version, public, imported || diags.HasError(), data)
+	return diags
+}
+
+// observabilityImportedKey is the private state key set by ImportState. An
+// imported destination has no configuration in state yet, so its mode is not
+// known and the response is treated as write-only until the first apply, whose
+// Update records the real mode and clears the key. Inferring an import from an
+// empty state instead would also match a destination whose practitioner just
+// removed `config`, `config_secrets_wo` and the version.
+const observabilityImportedKey = "observability_destination_imported"
+
+// providerPrivateState is the private state of a resource operation
+// (resource.ImportStateResponse.Private and the like), whose concrete type is
+// internal to the framework.
+type providerPrivateState interface {
+	GetKey(ctx context.Context, key string) ([]byte, diag.Diagnostics)
+	SetKey(ctx context.Context, key string, value []byte) diag.Diagnostics
+}
+
+// markObservabilityImported records in private state that the destination was
+// just imported.
+func markObservabilityImported(ctx context.Context, private providerPrivateState) diag.Diagnostics {
+	return private.SetKey(ctx, observabilityImportedKey, []byte("true"))
+}
+
+// observabilityImported reports whether the destination was imported and not
+// applied since.
+func observabilityImported(ctx context.Context, private providerPrivateState) (bool, diag.Diagnostics) {
+	value, diags := private.GetKey(ctx, observabilityImportedKey)
+	return len(value) > 0, diags
+}
+
+// clearObservabilityImported removes the import marker once an apply has
+// recorded the practitioner's mode.
+func clearObservabilityImported(ctx context.Context, private providerPrivateState) diag.Diagnostics {
+	return private.SetKey(ctx, observabilityImportedKey, nil)
 }
 
 // scrubObservabilityDataSource filters the computed config blocks when

@@ -690,6 +690,82 @@ func TestStubWriteOnlyBroadcastMigratesFromLegacy(t *testing.T) {
 	})
 }
 
+// Removing `config`, `config_secrets_wo` and the version leaves the same empty
+// configuration as an import, but it is a transition out of write-only mode:
+// as documented, the computed config blocks again hold what the API returns,
+// including the credentials it still stores.
+func TestStubWriteOnlyBroadcastOptOutStoresEcho(t *testing.T) {
+	_, srv := newWriteOnlyStub(t)
+
+	woTestCase(t, []resource.TestStep{
+		{
+			Config:          destConfig(srv.URL, destWriteOnlyBody("POST", 1)),
+			ConfigVariables: secretVar(woMarker),
+			Check:           stateMarker(woMarker, false),
+		},
+		{
+			Config:          destConfig(srv.URL, ""),
+			ConfigVariables: secretVar(woMarker),
+			ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{
+				plancheck.ExpectResourceAction(destAddr, plancheck.ResourceActionUpdate),
+			}},
+			Check: resource.ComposeTestCheckFunc(
+				resource.TestCheckNoResourceAttr(destAddr, "config_secrets_wo_version"),
+				resource.TestCheckResourceAttr(destAddr, "webhook.config.headers.Authorization", "Bearer "+woMarker),
+				resource.TestCheckResourceAttr(destAddr, "webhook.config.url", "https://example.com/hook")),
+		},
+		{
+			// A refresh keeps storing the echo: this is not an import.
+			RefreshState: true,
+			Check:        resource.TestCheckResourceAttr(destAddr, "webhook.config.headers.Authorization", "Bearer "+woMarker),
+		},
+	})
+}
+
+// An imported destination is filtered on the import read and on later
+// refreshes, until an apply records the practitioner's mode. The import marker
+// lives in private state, so it must survive the refresh.
+func TestStubWriteOnlyBroadcastImportFiltersOnRefresh(t *testing.T) {
+	_, srv := newWriteOnlyStub(t)
+
+	woTestCase(t, []resource.TestStep{
+		{
+			// The destination already exists, holding a credential.
+			PreConfig: func() {
+				body := fmt.Sprintf(`{"name":"tf-stub-wo","type":"webhook","enabled":false,"config":{"url":"https://example.com/hook","method":"POST","headers":{"Authorization":"Bearer %s"}}}`, woMarker)
+				res, err := http.Post(srv.URL+"/observability/destinations", "application/json", strings.NewReader(body))
+				if err != nil {
+					t.Fatal(err)
+				}
+				res.Body.Close()
+			},
+			Config:             destConfig(srv.URL, ""),
+			ConfigVariables:    secretVar(woMarker),
+			ResourceName:       destAddr,
+			ImportState:        true,
+			ImportStateId:      "dest_stub_1",
+			ImportStatePersist: true,
+			ImportStateCheck: func(states []*terraform.InstanceState) error {
+				for k, v := range states[0].Attributes {
+					if strings.Contains(v, woMarker) {
+						return fmt.Errorf("imported state contains the credential at %s", k)
+					}
+				}
+				return nil
+			},
+		},
+		{
+			RefreshState: true,
+			// Import does not set the top-level `type`, so the follow-up plan
+			// replaces the destination. That is unrelated to write-only mode.
+			ExpectNonEmptyPlan: true,
+			Check: resource.ComposeTestCheckFunc(stateMarker(woMarker, false),
+				resource.TestCheckNoResourceAttr(destAddr, "webhook.config.headers.Authorization"),
+				resource.TestCheckResourceAttr(destAddr, "webhook.config.method", "POST")),
+		},
+	})
+}
+
 func TestStubWriteOnlyBroadcastValidation(t *testing.T) {
 	_, srv := newWriteOnlyStub(t)
 
