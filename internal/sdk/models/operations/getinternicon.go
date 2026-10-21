@@ -38,9 +38,7 @@ type GetInternIconResponse struct {
 	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 	// Icon image bytes.
-	TwoHundredImageJpegBytes []byte
-	// Icon image bytes.
-	TwoHundredImagePngBytes []byte
+	Bytes []byte
 	// Missing, unknown or provisioning API key.
 	InternLifecycleError *shared.InternLifecycleError
 }
@@ -77,18 +75,11 @@ func (g *GetInternIconResponse) GetRawResponse() *http.Response {
 	return g.RawResponse
 }
 
-func (g *GetInternIconResponse) GetTwoHundredImageJpegBytes() []byte {
+func (g *GetInternIconResponse) GetBytes() []byte {
 	if g == nil {
 		return nil
 	}
-	return g.TwoHundredImageJpegBytes
-}
-
-func (g *GetInternIconResponse) GetTwoHundredImagePngBytes() []byte {
-	if g == nil {
-		return nil
-	}
-	return g.TwoHundredImagePngBytes
+	return g.Bytes
 }
 
 func (g *GetInternIconResponse) GetInternLifecycleError() *shared.InternLifecycleError {

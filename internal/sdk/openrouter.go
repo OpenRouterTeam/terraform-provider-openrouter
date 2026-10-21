@@ -81,10 +81,9 @@ type OpenRouter struct {
 	Datasets *Datasets
 	// Text embedding endpoints
 	Embeddings *Embeddings
-	// End Users endpoints
-	EndUsers *EndUsers
 	// Endpoint information
-	Endpoints *Endpoints
+	Endpoints     *Endpoints
+	ExternalUsers *ExternalUsers
 	// Files endpoints
 	Files *Files
 	// Generation history endpoints
@@ -238,8 +237,8 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Credits = newCredits(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Datasets = newDatasets(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Embeddings = newEmbeddings(sdk, sdk.sdkConfiguration, sdk.hooks)
-	sdk.EndUsers = newEndUsers(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Endpoints = newEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.ExternalUsers = newExternalUsers(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Files = newFiles(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Generations = newGenerations(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Guardrails = newGuardrails(sdk, sdk.sdkConfiguration, sdk.hooks)
