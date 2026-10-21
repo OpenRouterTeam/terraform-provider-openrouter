@@ -34,6 +34,8 @@ type UpdateOrganizationSettingsResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -91,6 +93,13 @@ func (u *UpdateOrganizationSettingsResponse) GetUnauthorizedResponse() *shared.U
 		return nil
 	}
 	return u.UnauthorizedResponse
+}
+
+func (u *UpdateOrganizationSettingsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if u == nil {
+		return nil
+	}
+	return u.ForbiddenResponse
 }
 
 func (u *UpdateOrganizationSettingsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
