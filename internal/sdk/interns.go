@@ -2470,7 +2470,7 @@ func (s *Interns) GetInternIcon(ctx context.Context, request operations.GetInter
 	if o.AcceptHeaderOverride != nil {
 		req.Header.Set("Accept", string(*o.AcceptHeaderOverride))
 	} else {
-		req.Header.Set("Accept", "application/json;q=1, image/jpeg;q=0.7, image/png;q=0")
+		req.Header.Set("Accept", "application/json;q=1, image/*;q=0")
 	}
 
 	req.Header.Set("User-Agent", s.sdkConfiguration.UserAgent)
@@ -2593,20 +2593,13 @@ func (s *Interns) GetInternIcon(ctx context.Context, request operations.GetInter
 	switch {
 	case httpRes.StatusCode == 200:
 		switch {
-		case utils.MatchContentType(httpRes.Header.Get("Content-Type"), `image/jpeg`):
+		case utils.MatchContentType(httpRes.Header.Get("Content-Type"), `image/*`):
 			rawBody, err := utils.ConsumeRawBody(httpRes)
 			if err != nil {
 				return nil, err
 			}
 
-			res.TwoHundredImageJpegBytes = rawBody
-		case utils.MatchContentType(httpRes.Header.Get("Content-Type"), `image/png`):
-			rawBody, err := utils.ConsumeRawBody(httpRes)
-			if err != nil {
-				return nil, err
-			}
-
-			res.TwoHundredImagePngBytes = rawBody
+			res.Bytes = rawBody
 		default:
 			rawBody, err := utils.ConsumeRawBody(httpRes)
 			if err != nil {
