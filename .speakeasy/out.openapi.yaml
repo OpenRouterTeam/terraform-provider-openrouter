@@ -34160,6 +34160,13 @@ components:
           minLength: 1
           type: string
           x-speakeasy-param-force-new: true
+        max_completion_tokens:
+          description: Cap on completion tokens per request. Requests asking for more skip this endpoint, and the default output length stays within it. When omitted, the cap is copied from the public endpoint for the same model and provider, if there is one.
+          example: 131072
+          minimum: 1
+          maximum: 2147483647
+          type: integer
+          x-speakeasy-param-force-new: true
         pricing:
           $ref: '#/components/schemas/PrivateEndpointPricing'
         provider_slug:
@@ -34183,7 +34190,7 @@ components:
       x-speakeasy-entity-description: |-
         A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
 
-        Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+        Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr`, `declared_region` or `max_completion_tokens` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
 
         `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
 
@@ -34301,6 +34308,12 @@ components:
           format: uuid
           type: string
           x-speakeasy-param-suppress-computed-diff: true
+        max_completion_tokens:
+          description: Most completion tokens a request routed to this endpoint can produce, or `null` when the endpoint sets no cap beyond the model context length.
+          example: 131072
+          type:
+            - integer
+            - 'null'
         model_name:
           description: Display name of the model, or `null` when the model is no longer listed.
           example: 'OpenAI: GPT-4o'
@@ -34350,6 +34363,7 @@ components:
         - upstream_model_id
         - declared_zdr
         - declared_region
+        - max_completion_tokens
         - pricing
       type: object
       x-speakeasy-entity: PrivateEndpoint

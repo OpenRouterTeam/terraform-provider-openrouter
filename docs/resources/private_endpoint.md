@@ -4,7 +4,7 @@ page_title: "openrouter_private_endpoint Resource - terraform-provider-openroute
 subcategory: ""
 description: |-
   A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set activate to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
-  Only pricing changes in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr or declared_region destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
+  Only pricing changes in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr, declared_region or max_completion_tokens destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
   base_url is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing / or /chat/completions); a config that differs from the stored value only in those ways is not a change.
   activate is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after terraform import you can keep it in config without replacing the endpoint.
   If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
@@ -14,7 +14,7 @@ description: |-
 
 A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
 
-Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr`, `declared_region` or `max_completion_tokens` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
 
 `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
 
@@ -29,10 +29,11 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
   activate = {
     workspace_id = "550e8400-e29b-41d4-a716-446655440000"
   }
-  base_url        = "https://api.openai.com/v1"
-  declared_region = "us"
-  declared_zdr    = true
-  model_permaslug = "openai/gpt-4o-2024-08-06"
+  base_url              = "https://api.openai.com/v1"
+  declared_region       = "us"
+  declared_zdr          = true
+  max_completion_tokens = 131072
+  model_permaslug       = "openai/gpt-4o-2024-08-06"
   pricing = {
     completion = "0.00001"
     prompt     = "0.0000025"
@@ -57,6 +58,7 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 - `base_url` (String) HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 - `declared_region` (String) Attest where this deployment processes data. must be one of ["global", "europe", "us"]; Requires replacement if changed.
 - `declared_zdr` (Boolean) Attest that this deployment retains no prompt or completion data. Requires replacement if changed.
+- `max_completion_tokens` (Number) Cap on completion tokens per request. Requests asking for more skip this endpoint, and the default output length stays within it. When omitted, the cap is copied from the public endpoint for the same model and provider, if there is one. Requires replacement if changed.
 - `pricing` (Attributes) Negotiated per-token rates reported for requests routed to this endpoint. (see [below for nested schema](#nestedatt--pricing))
 
 ### Read-Only
