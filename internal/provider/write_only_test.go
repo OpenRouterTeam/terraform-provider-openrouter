@@ -171,10 +171,13 @@ func TestObservabilityConfigAllowlistsMatchGeneratedFields(t *testing.T) {
 	}
 }
 
+// The scrub helpers take the write-only fields as arguments, and these tests
+// pass them directly rather than through the model structs: Speakeasy compiles
+// the tests against its pristine output, which lacks those struct fields.
 func TestScrubObservabilityResourceOnlyInWriteOnlyMode(t *testing.T) {
 	legacy := &ObservabilityDestinationResourceModel{Config: map[string]jsontypes.Normalized{"apiKey": jsontypes.NewNormalizedValue(`"` + writeOnlyMarker + `"`)}}
 	fillObservabilityConfigBlocks(reflect.ValueOf(legacy))
-	scrubObservabilityResource(legacy.ConfigSecretsWoVersion, legacy.Config, legacy)
+	scrubObservabilityResource(types.Int64Null(), legacy.Config, legacy)
 	if legacy.Datadog.Config.APIKey.IsNull() {
 		t.Fatal("legacy mode (no config_secrets_wo_version) must keep today's behavior")
 	}
@@ -183,7 +186,7 @@ func TestScrubObservabilityResourceOnlyInWriteOnlyMode(t *testing.T) {
 	// response is filtered as if write-only.
 	imported := &ObservabilityDestinationResourceModel{}
 	fillObservabilityConfigBlocks(reflect.ValueOf(imported))
-	scrubObservabilityResource(imported.ConfigSecretsWoVersion, imported.Config, imported)
+	scrubObservabilityResource(types.Int64Null(), imported.Config, imported)
 	if !imported.Datadog.Config.APIKey.IsNull() || imported.Webhook.Config.Headers != nil || !imported.Webhook.Config.URL.IsNull() {
 		t.Fatal("imported state must drop credentials, headers and URLs from computed config")
 	}
@@ -191,9 +194,9 @@ func TestScrubObservabilityResourceOnlyInWriteOnlyMode(t *testing.T) {
 		t.Fatal("imported state must keep non-credential settings")
 	}
 
-	writeOnly := &ObservabilityDestinationResourceModel{ConfigSecretsWoVersion: types.Int64Value(1)}
+	writeOnly := &ObservabilityDestinationResourceModel{}
 	fillObservabilityConfigBlocks(reflect.ValueOf(writeOnly))
-	scrubObservabilityResource(writeOnly.ConfigSecretsWoVersion, writeOnly.Config, writeOnly)
+	scrubObservabilityResource(types.Int64Value(1), writeOnly.Config, writeOnly)
 	if !writeOnly.Datadog.Config.APIKey.IsNull() || writeOnly.Webhook.Config.Headers != nil {
 		t.Fatal("write-only mode must drop credentials and headers from computed config")
 	}
@@ -213,9 +216,9 @@ func TestScrubObservabilityDataSource(t *testing.T) {
 		"false scrubs": {types.BoolValue(false), false, "explicit false"},
 	} {
 		t.Run(name, func(t *testing.T) {
-			data := &ObservabilityDestinationDataSourceModel{IncludeSensitiveConfig: tc.include}
+			data := &ObservabilityDestinationDataSourceModel{}
 			fillObservabilityConfigBlocks(reflect.ValueOf(data))
-			scrubObservabilityDataSource(data.IncludeSensitiveConfig, data)
+			scrubObservabilityDataSource(tc.include, data)
 			if kept := !data.Datadog.Config.APIKey.IsNull(); kept != tc.wantKept {
 				t.Fatalf("%s: credential kept = %v, want %v", tc.wantLabel, kept, tc.wantKept)
 			}
