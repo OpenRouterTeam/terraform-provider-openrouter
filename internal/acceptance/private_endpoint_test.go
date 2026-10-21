@@ -39,6 +39,7 @@ type stubPrivateEndpoint struct {
 	UpstreamModelID string      `json:"upstream_model_id"`
 	DeclaredZDR     *bool       `json:"declared_zdr"`
 	DeclaredRegion  *string     `json:"declared_region"`
+	MaxCompletion   *int64      `json:"max_completion_tokens"`
 	Pricing         stubPricing `json:"pricing"`
 	CreatedAt       string      `json:"created_at"`
 }
@@ -62,6 +63,10 @@ type stubPrivateEndpoints struct {
 	// retainedDraftStatus answers the next activating create with this status
 	// and the kept draft in the body, as a failed activation step does.
 	retainedDraftStatus int
+	// defaultMaxCompletion is the cap a create without max_completion_tokens
+	// gets, as the API copies it from the public endpoint when there is one.
+	// nil leaves it null.
+	defaultMaxCompletion *int64
 }
 
 func newStubPrivateEndpoints(t *testing.T) (*httptest.Server, *stubPrivateEndpoints) {
@@ -157,6 +162,7 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 		BaseURL         *string      `json:"base_url"`
 		DeclaredZDR     *bool        `json:"declared_zdr"`
 		DeclaredRegion  *string      `json:"declared_region"`
+		MaxCompletion   *int64       `json:"max_completion_tokens"`
 		Pricing         *stubPricing `json:"pricing"`
 		Activate        *struct {
 			WorkspaceID string `json:"workspace_id"`
@@ -176,11 +182,15 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 		UpstreamModelID: body.UpstreamModelID,
 		DeclaredZDR:     body.DeclaredZDR,
 		DeclaredRegion:  body.DeclaredRegion,
+		MaxCompletion:   body.MaxCompletion,
 		Pricing:         stubPricing{Prompt: "0.0000025", Completion: "0.00001"},
 		CreatedAt:       "2026-09-26T12:00:00Z",
 	}
 	if body.Pricing != nil {
 		endpoint.Pricing = *body.Pricing
+	}
+	if body.MaxCompletion == nil {
+		endpoint.MaxCompletion = s.defaultMaxCompletion
 	}
 	if body.BaseURL != nil {
 		normalized := stubNormalizeBaseURL(*body.BaseURL)
@@ -332,11 +342,12 @@ func (s *stubPrivateEndpoints) setPricing(prompt string) {
 func privateEndpointConfig(serverURL, upstreamModelID, prompt string) string {
 	return stubBudgetProviderConfig(serverURL) + fmt.Sprintf(`
 resource "openrouter_private_endpoint" "test" {
-  model_permaslug   = "openai/gpt-4o"
-  provider_slug     = "openai"
-  upstream_model_id = %q
-  declared_zdr      = true
-  declared_region   = "us"
+  model_permaslug       = "openai/gpt-4o"
+  provider_slug         = "openai"
+  upstream_model_id     = %q
+  declared_zdr          = true
+  declared_region       = "us"
+  max_completion_tokens = 131072
   pricing = {
     prompt     = %q
     completion = "0.000008"
@@ -362,6 +373,7 @@ func TestStubPrivateEndpointLifecycle(t *testing.T) {
 					resource.TestCheckResourceAttr(name, "status", "active"),
 					resource.TestCheckResourceAttr(name, "pricing.prompt", "0.000002"),
 					resource.TestCheckResourceAttr(name, "declared_region", "us"),
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "131072"),
 					resource.TestCheckResourceAttrSet(name, "id"),
 					api.checkCreateCount(1),
 					api.checkLastCreateActivated(),
@@ -773,5 +785,163 @@ func TestStubPrivateEndpointRejectsNonHTTPSBaseURL(t *testing.T) {
 	defer api.mu.Unlock()
 	if len(api.creates) != 0 {
 		t.Fatalf("server saw %d creates for an http base_url, want 0", len(api.creates))
+	}
+}
+
+// privateEndpointMaxCompletionConfig is privateEndpointConfig with
+// max_completion_tokens set to value, or left out when value is empty.
+func privateEndpointMaxCompletionConfig(t *testing.T, serverURL, value string) string {
+	t.Helper()
+	config := privateEndpointConfig(serverURL, "gpt-4o-2024-08-06", "0.000002")
+	const configured = "  max_completion_tokens = 131072\n"
+	if !strings.Contains(config, configured) {
+		t.Fatal("privateEndpointConfig no longer sets max_completion_tokens = 131072")
+	}
+	line := ""
+	if value != "" {
+		line = "  max_completion_tokens = " + value + "\n"
+	}
+	return strings.Replace(config, configured, line, 1)
+}
+
+// checkLastCreateMaxCompletion checks the last create body's
+// max_completion_tokens: omitted when want is nil, else equal to want (JSON
+// numbers decode as float64).
+func (s *stubPrivateEndpoints) checkLastCreateMaxCompletion(want any) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		got, sent := s.creates[len(s.creates)-1]["max_completion_tokens"]
+		if want == nil {
+			if sent {
+				return fmt.Errorf("create body max_completion_tokens = %v, want it omitted", got)
+			}
+			return nil
+		}
+		if !sent || got != want {
+			return fmt.Errorf("create body max_completion_tokens = %v (sent %t), want %v", got, sent, want)
+		}
+		return nil
+	}
+}
+
+// Left out of config, max_completion_tokens is not sent and takes whatever
+// the API stores: null, or the cap it copied from the public endpoint. Either
+// way the endpoint converges with no diff on the next plan or refresh, and a
+// pricing change still updates in place.
+func TestStubPrivateEndpointMaxCompletionTokensUnset(t *testing.T) {
+	const name = "openrouter_private_endpoint.test"
+	copied := int64(16384)
+	for _, tc := range []struct {
+		name          string
+		serverDefault *int64
+		check         resource.TestCheckFunc
+	}{
+		{"null", nil, resource.TestCheckNoResourceAttr(name, "max_completion_tokens")},
+		{"copied from public endpoint", &copied, resource.TestCheckResourceAttr(name, "max_completion_tokens", "16384")},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			srv, api := newStubPrivateEndpoints(t)
+			api.defaultMaxCompletion = tc.serverDefault
+			config := privateEndpointMaxCompletionConfig(t, srv.URL, "")
+			resource.UnitTest(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{
+						Config: config,
+						ConfigPlanChecks: resource.ConfigPlanChecks{
+							PostApplyPostRefresh: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+						},
+						Check: resource.ComposeAggregateTestCheckFunc(
+							tc.check,
+							api.checkCreateCount(1),
+							api.checkLastCreateMaxCompletion(nil),
+						),
+					},
+					{Config: config, PlanOnly: true},
+					{RefreshState: true, Check: tc.check},
+					{
+						Config: strings.Replace(config, `prompt     = "0.000002"`, `prompt     = "0.0000015"`, 1),
+						ConfigPlanChecks: resource.ConfigPlanChecks{
+							PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate)},
+						},
+						Check: resource.ComposeAggregateTestCheckFunc(
+							tc.check,
+							api.checkCreateCount(1),
+							api.checkPricingPuts(1),
+						),
+					},
+				},
+			})
+		})
+	}
+}
+
+// The API cannot change max_completion_tokens after create, so a new value
+// replaces the endpoint. Removing it from config keeps the stored cap rather
+// than replacing the endpoint to clear it.
+func TestStubPrivateEndpointMaxCompletionTokensForcesReplacement(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: privateEndpointMaxCompletionConfig(t, srv.URL, "131072"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "131072"),
+					api.checkLastCreateMaxCompletion(float64(131072)),
+				),
+			},
+			{
+				Config: privateEndpointMaxCompletionConfig(t, srv.URL, "65536"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(name, plancheck.ResourceActionDestroyBeforeCreate),
+						plancheck.ExpectKnownValue(name, tfjsonpath.New("max_completion_tokens"), knownvalue.Int64Exact(65536)),
+					},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "65536"),
+					api.checkCreateCount(2),
+					api.checkEndpointCount(1),
+					api.checkLastCreateMaxCompletion(float64(65536)),
+				),
+			},
+			{
+				Config: privateEndpointMaxCompletionConfig(t, srv.URL, ""),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "65536"),
+					api.checkCreateCount(2),
+				),
+			},
+		},
+	})
+}
+
+// The API accepts 1..2147483647; anything else fails at plan time instead of
+// with a 400 on create.
+func TestStubPrivateEndpointRejectsOutOfRangeMaxCompletionTokens(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:      privateEndpointMaxCompletionConfig(t, srv.URL, "0"),
+				ExpectError: regexp.MustCompile(`must be between 1 and 2147483647`),
+			},
+			{
+				Config:      privateEndpointMaxCompletionConfig(t, srv.URL, "2147483648"),
+				ExpectError: regexp.MustCompile(`must be between 1 and 2147483647`),
+			},
+		},
+	})
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if len(api.creates) != 0 {
+		t.Fatalf("server saw %d creates for an out-of-range max_completion_tokens, want 0", len(api.creates))
 	}
 }

@@ -30,18 +30,19 @@ type PrivateEndpointDataSource struct {
 
 // PrivateEndpointDataSourceModel describes the data model.
 type PrivateEndpointDataSourceModel struct {
-	BaseURL         types.String                    `tfsdk:"base_url"`
-	DeclaredRegion  types.String                    `tfsdk:"declared_region"`
-	DeclaredZdr     types.Bool                      `tfsdk:"declared_zdr"`
-	ID              types.String                    `tfsdk:"id"`
-	ModelName       types.String                    `tfsdk:"model_name"`
-	ModelPermaslug  types.String                    `tfsdk:"model_permaslug"`
-	ModelSlug       types.String                    `tfsdk:"model_slug"`
-	Pricing         *tfTypes.PrivateEndpointPricing `tfsdk:"pricing"`
-	ProviderName    types.String                    `tfsdk:"provider_name"`
-	ProviderSlug    types.String                    `tfsdk:"provider_slug"`
-	Status          types.String                    `tfsdk:"status"`
-	UpstreamModelID types.String                    `tfsdk:"upstream_model_id"`
+	BaseURL             types.String                    `tfsdk:"base_url"`
+	DeclaredRegion      types.String                    `tfsdk:"declared_region"`
+	DeclaredZdr         types.Bool                      `tfsdk:"declared_zdr"`
+	ID                  types.String                    `tfsdk:"id"`
+	MaxCompletionTokens types.Int64                     `tfsdk:"max_completion_tokens"`
+	ModelName           types.String                    `tfsdk:"model_name"`
+	ModelPermaslug      types.String                    `tfsdk:"model_permaslug"`
+	ModelSlug           types.String                    `tfsdk:"model_slug"`
+	Pricing             *tfTypes.PrivateEndpointPricing `tfsdk:"pricing"`
+	ProviderName        types.String                    `tfsdk:"provider_name"`
+	ProviderSlug        types.String                    `tfsdk:"provider_slug"`
+	Status              types.String                    `tfsdk:"status"`
+	UpstreamModelID     types.String                    `tfsdk:"upstream_model_id"`
 }
 
 // Metadata returns the data source type name.
@@ -70,6 +71,10 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 			"id": schema.StringAttribute{
 				Required:    true,
 				Description: `Stable identifier of the private endpoint.`,
+			},
+			"max_completion_tokens": schema.Int64Attribute{
+				Computed:    true,
+				Description: `Most completion tokens a request routed to this endpoint can produce, or ` + "`" + `null` + "`" + ` when the endpoint sets no cap beyond the model context length.`,
 			},
 			"model_name": schema.StringAttribute{
 				Computed:    true,

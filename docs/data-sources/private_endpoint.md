@@ -30,6 +30,7 @@ data "openrouter_private_endpoint" "my_privateendpoint" {
 - `base_url` (String) HTTPS base URL of your deployment, or `null` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 - `declared_region` (String) Where you attest this deployment processes data. `global` means not regional; `null` means undeclared.
 - `declared_zdr` (Boolean) Whether you attest this deployment retains no prompt or completion data. `null` means undeclared.
+- `max_completion_tokens` (Number) Most completion tokens a request routed to this endpoint can produce, or `null` when the endpoint sets no cap beyond the model context length.
 - `model_name` (String) Display name of the model, or `null` when the model is no longer listed.
 - `model_permaslug` (String) Permanent slug of the model this endpoint serves.
 - `model_slug` (String) Public model slug, or `null` when the model is no longer listed.

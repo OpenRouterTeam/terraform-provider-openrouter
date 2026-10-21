@@ -50,6 +50,8 @@ type CreatePrivateEndpointRequest struct {
 	DeclaredZdr *bool `json:"declared_zdr,omitzero"`
 	// Permanent slug of the model this endpoint serves.
 	ModelPermaslug string `json:"model_permaslug"`
+	// Cap on completion tokens per request. Requests asking for more skip this endpoint, and the default output length stays within it. When omitted, the cap is copied from the public endpoint for the same model and provider, if there is one.
+	MaxCompletionTokens *int64 `json:"max_completion_tokens,omitzero"`
 	// Negotiated per-token rates reported for requests routed to this endpoint.
 	Pricing *PrivateEndpointPricing `json:"pricing,omitzero"`
 	// Slug of the upstream provider.
@@ -102,6 +104,13 @@ func (c *CreatePrivateEndpointRequest) GetModelPermaslug() string {
 		return ""
 	}
 	return c.ModelPermaslug
+}
+
+func (c *CreatePrivateEndpointRequest) GetMaxCompletionTokens() *int64 {
+	if c == nil {
+		return nil
+	}
+	return c.MaxCompletionTokens
 }
 
 func (c *CreatePrivateEndpointRequest) GetPricing() *PrivateEndpointPricing {
