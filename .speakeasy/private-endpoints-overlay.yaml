@@ -1,6 +1,7 @@
 # Pinned copy of the /private-endpoints API (openrouter-web #47521 at
-# 8223a225: Idempotency-Key on create, 408 on every operation), applied on top
-# of the monorepo-synced .speakeasy/in.openapi.yaml.
+# 8223a225: Idempotency-Key on create, 408 on every operation), plus
+# max_completion_tokens (added ahead of the openrouter-web change that ships
+# it), applied on top of the monorepo-synced .speakeasy/in.openapi.yaml.
 #
 # The sdk-bot spec sync rewrites in.openapi.yaml wholesale, and the public spec
 # it copies still hides these routes until #47521 ships. Keeping them here means
@@ -12,6 +13,13 @@
 # Delete this file (and its workflow.yaml entry) once the synced spec carries
 # the routes with this shape. The shared error schemas it references
 # (BadRequestResponse, RequestTimeoutResponse, ...) come from in.openapi.yaml.
+#
+# Before deleting it, also confirm the synced spec has max_completion_tokens
+# on CreatePrivateEndpointRequest (integer, 1..2147483647) and on
+# PrivateEndpoint (required, nullable integer). This file added it ahead of
+# the monorepo sync; if the synced spec lacks it, deleting this file removes
+# the attribute from openrouter_private_endpoint and breaks every config that
+# sets it.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:
