@@ -32,7 +32,8 @@ func addByokKeyWriteOnlyAttributes(s *schema.Schema) {
 		Sensitive: true,
 		WriteOnly: true,
 		Description: "Write-only alternative to `key`: the raw provider API key or credential, never stored in Terraform state or plans. " +
-			"Requires Terraform 1.11 or later and `key_wo_version`. Cannot be combined with `key`. Must be at least 4 characters long, so it can be redacted from logs.",
+			"Requires Terraform 1.11 or later and `key_wo_version`. Cannot be combined with `key`. Must be at least 4 characters long, so it can be redacted from logs. " +
+			writeOnlyMigrationNote,
 		Validators: []validator.String{
 			// Shorter values are not redacted from logs and error messages.
 			stringvalidator.UTF8LengthAtLeast(minSensitiveValueLength),

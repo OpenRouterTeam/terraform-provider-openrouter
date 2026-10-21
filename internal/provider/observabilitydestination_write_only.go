@@ -97,7 +97,7 @@ func addObservabilityWriteOnlyAttributes(s *schema.Schema) {
 			"and never stored in Terraform state or plans. Requires Terraform 1.11 or later and `config_secrets_wo_version`. " +
 			"A key may appear in `config` or `config_secrets_wo`, not both, and keys the API returns in plain text (such as `username` or `region`) must go in `config`. " +
 			"Each non-empty string in a value must be at least 4 characters long. While this is set, the computed `config` blocks in the response " +
-			"omit credentials, headers, and URLs not declared in `config`.",
+			"omit credentials, headers, and URLs not declared in `config`. " + writeOnlyMigrationNote,
 		Validators: []validator.Map{
 			mapvalidator.ValueStringsAre(secretJSONValidator{}),
 			mapvalidator.AlsoRequires(path.MatchRoot("config_secrets_wo_version")),

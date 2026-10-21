@@ -21,6 +21,12 @@ import (
 // integer version attribute: changing the version is how a practitioner asks
 // for the credential to be sent again.
 
+// writeOnlyMigrationNote is appended to the description of each write-only
+// credential. Moving a credential to its write-only attribute removes it from
+// the current state only.
+const writeOnlyMigrationNote = "Moving an existing credential to this attribute removes it from the current state only: " +
+	"earlier state versions, state backups and saved plan files still contain it, so rotate the credential when you migrate."
+
 // writeOnlyVersionChanged reports whether the planned value of the version
 // attribute at versionPath differs from the prior state, meaning the paired
 // write-only credential should be sent to the API. A null planned version means

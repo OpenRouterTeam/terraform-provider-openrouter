@@ -1,6 +1,8 @@
 # Keeps the credential out of Terraform state and plans. Requires Terraform 1.11
 # or later; supply the value from an ephemeral variable or ephemeral resource.
 # To rotate the key, change the value and increment key_wo_version.
+# Migrating from `key` removes the key from the current state only; earlier
+# state versions, backups and saved plans still hold it, so rotate it as well.
 variable "openai_api_key" {
   type      = string
   sensitive = true
