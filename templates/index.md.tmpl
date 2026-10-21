@@ -1,0 +1,84 @@
+---
+page_title: "{{.ProviderShortName}} Provider"
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.ProviderShortName}} Provider
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{tffile .ExampleFile }}
+{{- end }}
+
+## Authentication
+
+Authenticate with one of:
+
+- A Management API key in `api_key` or `OPENROUTER_MANAGEMENT_KEY`.
+- Workload Identity Federation: set `federation_policy_id` together with `oidc_token` or `oidc_token_file` (or their environment variables). The provider exchanges the workload's OIDC token at `<server_url>/oauth/token` (RFC 8693 token exchange, scope `management`) for a short-lived access token, and sends that token to the Management API. No long-lived key is stored in CI.
+
+Configuring both an API key and federation is an error, including an API key that comes only from `OPENROUTER_MANAGEMENT_KEY`.
+
+### Token lifetime
+
+The provider caches the exchanged access token and exchanges again one minute before it expires, so a run can outlast a single access token. Each exchange needs a subject token that has not expired yet:
+
+- With `oidc_token` (or `OPENROUTER_OIDC_TOKEN`), the provider has one fixed subject token for the whole run. Once that token expires, the next exchange fails, and the run fails when the cached access token runs out. If an exchange grants a token for a minute or less, for example because its lifetime is capped at the subject token's remaining lifetime, the provider exchanges again on every request.
+- With `oidc_token_file` (or `OPENROUTER_OIDC_TOKEN_FILE`), the provider rereads the file on every exchange. Replace the file's contents with a fresh token before the old one expires and the provider picks it up.
+
+For runs that can outlast the CI platform's OIDC token, use `oidc_token_file` and refresh the file.
+
+### GitLab CI/CD
+
+GitLab writes [`id_tokens`](https://docs.gitlab.com/ci/secrets/id_token_authentication/) to the job's environment, so the provider can read the token directly:
+
+```yaml
+terraform:
+  id_tokens:
+    OPENROUTER_OIDC_TOKEN:
+      aud: "<audience from your federation policy>"
+  variables:
+    OPENROUTER_FEDERATION_POLICY_ID: "<policy ID>"
+  script:
+    - terraform init
+    - terraform apply -auto-approve
+```
+
+### GitHub Actions
+
+GitHub Actions issues OIDC tokens on request. Grant the job `id-token: write`, fetch a token for your policy's audience, and write it to a file:
+
+```yaml
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      OPENROUTER_FEDERATION_POLICY_ID: "<policy ID>"
+      OPENROUTER_OIDC_AUDIENCE: "<audience from your federation policy>"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Fetch OpenRouter OIDC token
+        run: |
+          token_file="$RUNNER_TEMP/openrouter-oidc-token"
+          curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$OPENROUTER_OIDC_AUDIENCE" | jq -r .value > "$token_file"
+          echo "OPENROUTER_OIDC_TOKEN_FILE=$token_file" >> "$GITHUB_ENV"
+      - run: terraform init
+      - run: terraform apply -auto-approve
+```
+
+GitHub's OIDC tokens are short-lived. If an apply can run longer than the token, fetch a new one into the same file while Terraform runs, for example from a background loop started in the same step as `terraform apply`. Write to a temporary file and `mv` it over the old one so the provider never reads a partial token.
+
+### HCP Terraform
+
+HCP Terraform issues workload identity tokens when the workspace sets `TFC_WORKLOAD_IDENTITY_AUDIENCE` (see [manually generating workload identity tokens](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/manual-generation)). Each plan and apply then gets the token in the `TFC_WORKLOAD_IDENTITY_TOKEN` environment variable. The provider doesn't read that variable. On HCP Terraform agents, use pre-plan and pre-apply agent hooks to write it to a file, and set `OPENROUTER_OIDC_TOKEN_FILE` to that path and `OPENROUTER_FEDERATION_POLICY_ID` as workspace environment variables.
+
+{{ .SchemaMarkdown | trimspace }}
