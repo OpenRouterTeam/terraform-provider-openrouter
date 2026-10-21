@@ -22,6 +22,8 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
   # keeps them out of Terraform state and plans (Terraform 1.11 or later); supply
   # them from ephemeral variables or ephemeral resources. To rotate them, change
   # the values and increment `config_secrets_wo_version`.
+  # Moving credentials out of `config` removes them from the current state only;
+  # earlier state versions, backups and saved plans still hold them, so rotate them.
   config = {
     baseUrl = jsonencode("https://cloud.langfuse.com")
   }
