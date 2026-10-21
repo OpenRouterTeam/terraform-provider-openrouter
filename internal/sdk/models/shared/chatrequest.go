@@ -857,7 +857,7 @@ type ChatRequest struct {
 	// Presence penalty (-2.0 to 2.0)
 	PresencePenalty *float64 `json:"presence_penalty,omitzero"`
 	PromptCacheKey  *string  `json:"prompt_cache_key,omitzero"`
-	// Request-level prompt-cache controls. `mode: "explicit"` disables OpenAI-managed breakpoints so only blocks marked with `prompt_cache_breakpoint` are cached. Only supported by OpenAI GPT-5.6 and newer.
+	// Request-level prompt-cache controls. `mode: "explicit"` disables OpenAI-managed breakpoints so only blocks marked with `prompt_cache_breakpoint` are cached. `ttl` sets the minimum cache lifetime for every breakpoint the request writes: "30m" (default) or "12h" (billed at the higher 12h cache-write rate). Only supported by OpenAI GPT-5.6 and newer.
 	PromptCacheOptions *PromptCacheOptions `json:"prompt_cache_options,omitzero"`
 	// When multiple model providers are available, optionally indicate your routing preference.
 	Provider *ProviderPreferences `json:"provider,omitzero"`
