@@ -10,9 +10,12 @@ import (
 	"testing"
 
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/redact"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	datasourceschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
@@ -674,4 +677,107 @@ func TestObservabilityResponseDumpsCombineSpecAndStructuralRedaction(t *testing.
 	}
 	logged, _ := fields[FieldHttpResponseBody].(string)
 	check("debug log", logged)
+}
+
+// The schema helpers are called from custom code in the generated Schema
+// methods. Calling them on minimal schemas exercises them, and keeps them
+// referenced when Speakeasy lints its pristine output, which lacks the calls.
+func TestWriteOnlySchemaHelpers(t *testing.T) {
+	byok := resourceschema.Schema{Attributes: map[string]resourceschema.Attribute{
+		"key": resourceschema.StringAttribute{Required: true, Sensitive: true},
+	}}
+	addByokKeyWriteOnlyAttributes(&byok)
+	if key := byok.Attributes["key"]; key.IsRequired() || !key.IsOptional() || !key.IsSensitive() {
+		t.Error("byok key must become optional and stay sensitive")
+	}
+	if attr := byok.Attributes["key_wo"]; attr == nil || !attr.IsWriteOnly() || !strings.Contains(attr.GetDescription(), writeOnlyMigrationNote) {
+		t.Error("byok key_wo must be write-only and carry the migration note")
+	}
+
+	dest := resourceschema.Schema{Attributes: map[string]resourceschema.Attribute{
+		"config": resourceschema.MapAttribute{Required: true, Sensitive: true, ElementType: jsontypes.NormalizedType{}},
+	}}
+	addObservabilityWriteOnlyAttributes(&dest)
+	if cfg := dest.Attributes["config"]; cfg.IsRequired() || !cfg.IsOptional() {
+		t.Error("observability config must become optional")
+	}
+	if attr := dest.Attributes["config_secrets_wo"]; attr == nil || !attr.IsWriteOnly() || !strings.Contains(attr.GetDescription(), writeOnlyMigrationNote) {
+		t.Error("observability config_secrets_wo must be write-only and carry the migration note")
+	}
+
+	ds := datasourceschema.Schema{Attributes: map[string]datasourceschema.Attribute{}}
+	addIncludeSensitiveConfigAttribute(&ds)
+	if attr := ds.Attributes["include_sensitive_config"]; attr == nil || !attr.IsOptional() {
+		t.Error("include_sensitive_config must be optional")
+	}
+}
+
+// updateRequest builds an UpdateRequest whose config and plan hold config and
+// whose prior state holds state.
+func updateRequest(t *testing.T, s resourceschema.Schema, config, state map[string]tftypes.Value) resource.UpdateRequest {
+	t.Helper()
+	cfg := configWith(t, s, config)
+	return resource.UpdateRequest{
+		Config: cfg,
+		Plan:   tfsdk.Plan{Schema: s, Raw: cfg.Raw},
+		State:  tfsdk.State{Schema: s, Raw: configWith(t, s, state).Raw},
+	}
+}
+
+func TestByokWriteOnlyKeyRequests(t *testing.T) {
+	ctx := context.Background()
+	byok := &resource.SchemaResponse{}
+	(&ByokKeyResource{}).Schema(ctx, resource.SchemaRequest{}, byok)
+	keyWo := map[string]tftypes.Value{
+		"key_wo":         tftypes.NewValue(tftypes.String, writeOnlyMarker),
+		"key_wo_version": tftypes.NewValue(tftypes.Number, 2),
+	}
+
+	create := &shared.CreateBYOKKeyRequest{}
+	if diags := applyByokWriteOnlyKeyOnCreate(ctx, configWith(t, byok.Schema, keyWo), create); diags.HasError() || create.Key != writeOnlyMarker {
+		t.Fatalf("create must send key_wo: diags=%v", diags)
+	}
+	if diags := applyByokWriteOnlyKeyOnCreate(ctx, configWith(t, byok.Schema, nil), &shared.CreateBYOKKeyRequest{}); !diags.HasError() {
+		t.Fatal("create without key or key_wo must fail")
+	}
+
+	unchanged := &operations.UpdateBYOKKeyRequest{}
+	if diags := applyByokWriteOnlyKeyOnUpdate(ctx, updateRequest(t, byok.Schema, keyWo, keyWo), unchanged); diags.HasError() || unchanged.Body.Key != nil {
+		t.Fatalf("an unchanged version must not resend the key: diags=%v", diags)
+	}
+	rotated := &operations.UpdateBYOKKeyRequest{}
+	prior := map[string]tftypes.Value{"key_wo_version": tftypes.NewValue(tftypes.Number, 1)}
+	if diags := applyByokWriteOnlyKeyOnUpdate(ctx, updateRequest(t, byok.Schema, keyWo, prior), rotated); diags.HasError() || rotated.Body.Key == nil || *rotated.Body.Key != writeOnlyMarker {
+		t.Fatalf("a bumped version must resend the key: diags=%v", diags)
+	}
+}
+
+func TestObservabilityWriteOnlyConfigRequests(t *testing.T) {
+	ctx := context.Background()
+	dest := &resource.SchemaResponse{}
+	(&ObservabilityDestinationResource{}).Schema(ctx, resource.SchemaRequest{}, dest)
+	secrets := map[string]tftypes.Value{
+		"config_secrets_wo": tftypes.NewValue(tftypes.Map{ElementType: tftypes.String}, map[string]tftypes.Value{
+			"apiKey": tftypes.NewValue(tftypes.String, `"`+writeOnlyMarker+`"`),
+		}),
+		"config_secrets_wo_version": tftypes.NewValue(tftypes.Number, 2),
+	}
+
+	create := &shared.CreateObservabilityDestinationRequest{Config: map[string]any{"mlApp": "app"}}
+	if diags := applyObservabilityWriteOnlyConfigOnCreate(ctx, configWith(t, dest.Schema, secrets), create); diags.HasError() || create.Config["apiKey"] != writeOnlyMarker || create.Config["mlApp"] != "app" {
+		t.Fatalf("create must merge config_secrets_wo into config: diags=%v", diags)
+	}
+	if diags := applyObservabilityWriteOnlyConfigOnCreate(ctx, configWith(t, dest.Schema, nil), &shared.CreateObservabilityDestinationRequest{}); !diags.HasError() {
+		t.Fatal("create without config or config_secrets_wo must fail")
+	}
+
+	unchanged := &operations.UpdateObservabilityDestinationRequest{}
+	if diags := applyObservabilityWriteOnlyConfigOnUpdate(ctx, updateRequest(t, dest.Schema, secrets, secrets), unchanged); diags.HasError() || unchanged.Body.Config != nil {
+		t.Fatalf("an unchanged version must not resend credentials: diags=%v", diags)
+	}
+	rotated := &operations.UpdateObservabilityDestinationRequest{}
+	prior := map[string]tftypes.Value{"config_secrets_wo_version": tftypes.NewValue(tftypes.Number, 1)}
+	if diags := applyObservabilityWriteOnlyConfigOnUpdate(ctx, updateRequest(t, dest.Schema, secrets, prior), rotated); diags.HasError() || rotated.Body.Config["apiKey"] != writeOnlyMarker {
+		t.Fatalf("a bumped version must resend credentials: diags=%v", diags)
+	}
 }
