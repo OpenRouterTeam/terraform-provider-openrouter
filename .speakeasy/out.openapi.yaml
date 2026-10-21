@@ -6900,6 +6900,7 @@ components:
         - 'primeintellect'
         - 'quiver'
         - 'recraft'
+        - 'recursive'
         - 'reka'
         - 'relace'
         - 'respan'
@@ -18559,6 +18560,7 @@ components:
                 - 'Perplexity'
                 - 'Phala'
                 - 'Recraft'
+                - 'Recursive'
                 - 'Reka'
                 - 'Relace'
                 - 'Respan'
@@ -26173,6 +26175,7 @@ components:
         - 'Perplexity'
         - 'Phala'
         - 'Recraft'
+        - 'Recursive'
         - 'Reka'
         - 'Relace'
         - 'Respan'
@@ -26536,6 +26539,9 @@ components:
           additionalProperties: {}
           type: 'object'
         recursal:
+          additionalProperties: {}
+          type: 'object'
+        recursive:
           additionalProperties: {}
           type: 'object'
         reflection:
@@ -26957,6 +26963,7 @@ components:
             - 'Perplexity'
             - 'Phala'
             - 'Recraft'
+            - 'Recursive'
             - 'Reka'
             - 'Relace'
             - 'Respan'
@@ -36883,6 +36890,7 @@ paths:
               - 'primeintellect'
               - 'quiver'
               - 'recraft'
+              - 'recursive'
               - 'reka'
               - 'relace'
               - 'respan'

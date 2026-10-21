@@ -96,6 +96,7 @@ const (
 	ProviderNamePerplexity          ProviderName = "Perplexity"
 	ProviderNamePhala               ProviderName = "Phala"
 	ProviderNameRecraft             ProviderName = "Recraft"
+	ProviderNameRecursive           ProviderName = "Recursive"
 	ProviderNameReka                ProviderName = "Reka"
 	ProviderNameRelace              ProviderName = "Relace"
 	ProviderNameRespan              ProviderName = "Respan"
@@ -306,6 +307,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "Phala":
 		fallthrough
 	case "Recraft":
+		fallthrough
+	case "Recursive":
 		fallthrough
 	case "Reka":
 		fallthrough

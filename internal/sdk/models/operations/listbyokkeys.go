@@ -101,6 +101,7 @@ const (
 	ProviderPrimeintellect           Provider = "primeintellect"
 	ProviderQuiver                   Provider = "quiver"
 	ProviderRecraft                  Provider = "recraft"
+	ProviderRecursive                Provider = "recursive"
 	ProviderReka                     Provider = "reka"
 	ProviderRelace                   Provider = "relace"
 	ProviderRespan                   Provider = "respan"
@@ -313,6 +314,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "quiver":
 		fallthrough
 	case "recraft":
+		fallthrough
+	case "recursive":
 		fallthrough
 	case "reka":
 		fallthrough
