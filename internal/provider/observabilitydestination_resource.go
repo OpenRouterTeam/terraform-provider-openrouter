@@ -2632,7 +2632,7 @@ func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resou
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	scrubObservabilityResource(data.ConfigSecretsWoVersion, data.Config, data)
+	scrubObservabilityResource(data.ConfigSecretsWoVersion, data.Config, false, data)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -2693,7 +2693,7 @@ func (r *ObservabilityDestinationResource) Read(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	scrubObservabilityResource(data.ConfigSecretsWoVersion, data.Config, data)
+	resp.Diagnostics.Append(scrubObservabilityResourceOnRead(ctx, req.Private, data.ConfigSecretsWoVersion, data.Config, data)...)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -2756,7 +2756,8 @@ func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resou
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	scrubObservabilityResource(data.ConfigSecretsWoVersion, data.Config, data)
+	scrubObservabilityResource(data.ConfigSecretsWoVersion, data.Config, false, data)
+	resp.Diagnostics.Append(clearObservabilityImported(ctx, resp.Private)...)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -2812,4 +2813,5 @@ func (r *ObservabilityDestinationResource) Delete(ctx context.Context, req resou
 
 func (r *ObservabilityDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
+	resp.Diagnostics.Append(markObservabilityImported(ctx, resp.Private)...)
 }
