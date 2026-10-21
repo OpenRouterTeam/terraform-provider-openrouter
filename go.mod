@@ -1,6 +1,6 @@
 module github.com/OpenRouterTeam/terraform-provider-openrouter
 
-go 1.27.2
+go 1.27.3
 
 require (
 	github.com/hashicorp/go-cleanhttp v0.5.2
