@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/redact"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -628,4 +629,46 @@ func TestObservabilityResponseDumpsRedactCredentials(t *testing.T) {
 	if raw, _ := io.ReadAll(res.Body); string(raw) != body {
 		t.Fatalf("response body for the SDK was modified: %s", raw)
 	}
+}
+
+// The generated spec-driven masking (internal/sdk/redact) and the structural
+// masking both apply: the spec marks known credential fields such as
+// secretKey, and the allowlist also hides fields the spec does not mark, such
+// as headers.
+func TestObservabilityResponseDumpsCombineSpecAndStructuralRedaction(t *testing.T) {
+	const specMarker = "spec-marked-credential"
+	body := `{"data":{"id":"dest_1","type":"langfuse","config":{"secretKey":"` + specMarker + `","baseUrl":"https://cloud.langfuse.com","headers":{"Authorization":"Bearer ` + writeOnlyMarker + `"}}}}`
+	newResponse := func() *http.Response {
+		req := httptest.NewRequest(http.MethodGet, "https://openrouter.test/api/v1/observability/destinations/dest_1", nil)
+		req = req.WithContext(redact.WithOperation(req.Context(), "getObservabilityDestination"))
+		return &http.Response{
+			StatusCode: http.StatusInternalServerError, Status: "500 Internal Server Error", Proto: "HTTP/1.1", ProtoMajor: 1, ProtoMinor: 1,
+			Header: http.Header{"Content-Type": []string{"application/json"}}, Request: req,
+			Body: io.NopCloser(strings.NewReader(body)), ContentLength: int64(len(body)),
+		}
+	}
+	check := func(name, got string) {
+		t.Helper()
+		for _, marker := range []string{specMarker, writeOnlyMarker} {
+			if strings.Contains(got, marker) {
+				t.Fatalf("%s leaks %q: %s", name, marker, got)
+			}
+		}
+		if !strings.Contains(got, `"id":"dest_1"`) {
+			t.Fatalf("%s lost the body: %s", name, got)
+		}
+	}
+
+	res := newResponse()
+	check("diagnostic dump", debugResponse(res))
+	if raw, _ := io.ReadAll(res.Body); string(raw) != body {
+		t.Fatalf("response body was modified by the diagnostic dump: %s", raw)
+	}
+
+	fields, err := decomposeResponseForLogging(newResponse())
+	if err != nil {
+		t.Fatal(err)
+	}
+	logged, _ := fields[FieldHttpResponseBody].(string)
+	check("debug log", logged)
 }
