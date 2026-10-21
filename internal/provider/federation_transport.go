@@ -1,5 +1,3 @@
-//lint:file-ignore U1000 Called only from persistent edits to provider.go, which the generator lints before applying them.
-
 package provider
 
 import (
@@ -17,6 +15,7 @@ type federationAuthTransport struct {
 	next   http.RoundTripper
 }
 
+//lint:ignore U1000 Called only from the custom code in provider.go, which the generator lints before applying it.
 func newFederationAuthTransport(source *federatedTokenSource, serverURL string, next http.RoundTripper) (federationAuthTransport, error) {
 	origin, err := url.Parse(serverURL)
 	if err != nil || origin.Scheme == "" || origin.Host == "" {

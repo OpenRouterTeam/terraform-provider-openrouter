@@ -69,7 +69,8 @@ jobs:
         run: |
           token_file="$RUNNER_TEMP/openrouter-oidc-token"
           curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$OPENROUTER_OIDC_AUDIENCE" | jq -r .value > "$token_file"
+            --get --data-urlencode "audience=$OPENROUTER_OIDC_AUDIENCE" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value > "$token_file"
           echo "OPENROUTER_OIDC_TOKEN_FILE=$token_file" >> "$GITHUB_ENV"
       - run: terraform init
       - run: terraform apply -auto-approve
@@ -79,6 +80,6 @@ GitHub's OIDC tokens are short-lived. If an apply can run longer than the token,
 
 ### HCP Terraform
 
-HCP Terraform issues workload identity tokens when the workspace sets `TFC_WORKLOAD_IDENTITY_AUDIENCE` (see [manually generating workload identity tokens](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/manual-generation)). Each plan and apply then gets the token in the `TFC_WORKLOAD_IDENTITY_TOKEN` environment variable. The provider doesn't read that variable. On HCP Terraform agents, use pre-plan and pre-apply agent hooks to write it to a file, and set `OPENROUTER_OIDC_TOKEN_FILE` to that path and `OPENROUTER_FEDERATION_POLICY_ID` as workspace environment variables.
+HCP Terraform issues workload identity tokens when the workspace sets `TFC_WORKLOAD_IDENTITY_AUDIENCE` (see [manually generating workload identity tokens](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/manual-generation)). Each plan and apply then gets the token in the `TFC_WORKLOAD_IDENTITY_TOKEN` environment variable. The provider doesn't read that variable, and a standard remote run has no hook that could copy it to `OPENROUTER_OIDC_TOKEN` or a file, so standard remote runs aren't supported today. Use HCP Terraform agents instead: pre-plan and pre-apply agent hooks write the token to a file, and the workspace sets `OPENROUTER_OIDC_TOKEN_FILE` to that path and `OPENROUTER_FEDERATION_POLICY_ID` as environment variables.
 
 {{ .SchemaMarkdown | trimspace }}

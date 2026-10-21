@@ -53,6 +53,8 @@ type federatedTokenSource struct {
 	refreshing  chan struct{}
 	// registeredSubjectToken is the last subject token passed to registerSensitiveValues,
 	// whose registry is global and never trimmed, so an unchanged token is not appended again.
+	// Each successful exchange still registers its new access token, so the registry grows by
+	// one entry per exchange (about one per access token lifetime in a normal run).
 	registeredSubjectToken string
 }
 
@@ -127,21 +129,32 @@ func (s *federatedTokenSource) Security(ctx context.Context) (shared.Security, e
 		done := make(chan struct{})
 		s.refreshing = done
 		s.mu.Unlock()
+		return s.refresh(ctx, done)
+	}
+}
 
-		exchanged, err := s.exchange(ctx)
-
+// refresh runs the exchange this caller claimed by setting s.refreshing to
+// done, and stores its result. The in-flight marker is cleared and waiters are
+// woken in a defer, so a panic during the exchange can't strand them.
+func (s *federatedTokenSource) refresh(ctx context.Context, done chan struct{}) (shared.Security, error) {
+	defer func() {
 		s.mu.Lock()
 		s.refreshing = nil
 		close(done)
-		if err == nil {
-			s.accessToken = exchanged.AccessToken
-			s.expiresAt = s.now().Add(time.Duration(exchanged.ExpiresIn) * time.Second)
-		} else if !s.validLocked(federatedTokenMinRemaining) {
-			s.mu.Unlock()
-			return shared.Security{}, err
-		}
-		return s.securityLocked()
+		s.mu.Unlock()
+	}()
+
+	exchanged, err := s.exchange(ctx)
+
+	s.mu.Lock()
+	if err == nil {
+		s.accessToken = exchanged.AccessToken
+		s.expiresAt = s.now().Add(time.Duration(exchanged.ExpiresIn) * time.Second)
+	} else if !s.validLocked(federatedTokenMinRemaining) {
+		s.mu.Unlock()
+		return shared.Security{}, err
 	}
+	return s.securityLocked()
 }
 
 func (s *federatedTokenSource) validLocked(skew time.Duration) bool {
@@ -167,6 +180,11 @@ func (e *retryableExchangeError) Unwrap() error { return e.err }
 // exchange retries network errors, 429 and 5xx with jittered exponential backoff. The exchange
 // endpoint is stateless about subject tokens (no jti is consumed), so resending the same one is safe.
 // The subject token is reread on every attempt so a token file rotated during backoff is picked up.
+//
+// These retries nest inside the SDK's own HTTP retries: federationAuthTransport asks for a token on
+// every SDK attempt, so one failing request can cost up to maxTokenExchangeAttempts exchanges per SDK
+// attempt. That is accepted: exchanges happen only while no cached token is usable, at most one runs at a
+// time, and the attempt count and backoff cap bound the total.
 func (s *federatedTokenSource) exchange(ctx context.Context) (tokenExchangeResponse, error) {
 	for attempt := 1; ; attempt++ {
 		subjectToken, err := s.subjectToken()

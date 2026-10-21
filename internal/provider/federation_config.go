@@ -1,10 +1,9 @@
-//lint:file-ignore U1000 Called only from persistent edits to provider.go, which the generator lints before applying them.
-
 package provider
 
 import (
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -19,6 +18,7 @@ const (
 	federationPolicyIDEnvVar = "OPENROUTER_FEDERATION_POLICY_ID"
 )
 
+//lint:ignore U1000 Called only from the custom code in provider.go, which the generator lints before applying it.
 func federationOIDCTokenAttribute() schema.StringAttribute {
 	return schema.StringAttribute{
 		MarkdownDescription: "OIDC token issued to this workload (for example a GitLab `id_tokens` JWT), exchanged for a short-lived management token through Workload Identity Federation. Use with `federation_policy_id` instead of `api_key`. Configurable via environment variable `" + oidcTokenEnvVar + "`.",
@@ -27,6 +27,7 @@ func federationOIDCTokenAttribute() schema.StringAttribute {
 	}
 }
 
+//lint:ignore U1000 Called only from the custom code in provider.go, which the generator lints before applying it.
 func federationOIDCTokenFileAttribute() schema.StringAttribute {
 	return schema.StringAttribute{
 		MarkdownDescription: "Path to a file holding the workload's OIDC token. The file is reread on every exchange, so a rotated token is picked up. Alternative to `oidc_token`. Configurable via environment variable `" + oidcTokenFileEnvVar + "`.",
@@ -34,6 +35,7 @@ func federationOIDCTokenFileAttribute() schema.StringAttribute {
 	}
 }
 
+//lint:ignore U1000 Called only from the custom code in provider.go, which the generator lints before applying it.
 func federationPolicyIDAttribute() schema.StringAttribute {
 	return schema.StringAttribute{
 		MarkdownDescription: "ID of the organization's Workload Identity Federation policy that acts as a management key. Required with `oidc_token` or `oidc_token_file`. Configurable via environment variable `" + federationPolicyIDEnvVar + "`.",
@@ -54,6 +56,8 @@ type federationProviderModel struct {
 
 // federatedTokenSourceFromConfig returns nil when no federation setting is
 // present, so the provider keeps authenticating with `api_key`.
+//
+//lint:ignore U1000 Called only from the custom code in provider.go, which the generator lints before applying it.
 func federatedTokenSourceFromConfig(data federationProviderModel, serverURL string, apiKey *string) (*federatedTokenSource, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -119,9 +123,13 @@ func stringOrEnv(value types.String, envVar string) string {
 	return os.Getenv(envVar)
 }
 
+// tokenExchangeTimeout bounds one exchange attempt; a shorter request context still wins.
+const tokenExchangeTimeout = 30 * time.Second
+
 // newFederationHTTPClient never follows redirects, so the subject token is only sent to the configured server.
 func newFederationHTTPClient() *http.Client {
 	return &http.Client{
+		Timeout:   tokenExchangeTimeout,
 		Transport: cleanhttp.DefaultPooledTransport(),
 		CheckRedirect: func(*http.Request, []*http.Request) error {
 			return http.ErrUseLastResponse

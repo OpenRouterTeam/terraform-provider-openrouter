@@ -189,6 +189,41 @@ func TestFederatedTokenSourceRegistersEachSubjectTokenForRedactionOnce(t *testin
 	}
 }
 
+func TestFederatedTokenSourceReleasesWaitersWhenExchangePanics(t *testing.T) {
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		grantToken(w, "access-after-panic", 900)
+	})
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	readSubjectToken := source.subjectToken
+	var panicked atomic.Bool
+	source.subjectToken = func() (string, error) {
+		if panicked.CompareAndSwap(false, true) {
+			panic("subject token source failed")
+		}
+		return readSubjectToken()
+	}
+
+	func() {
+		defer func() {
+			if recover() == nil {
+				t.Fatal("expected the exchange to panic")
+			}
+		}()
+		_, _ = source.Security(context.Background())
+	}()
+
+	// Without cleanup, this caller would wait forever on the abandoned refresh.
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	security, err := source.Security(ctx)
+	if err != nil {
+		t.Fatalf("Security after a panicked exchange: %v", err)
+	}
+	if *security.APIKey != "access-after-panic" {
+		t.Fatalf("token = %q, want access-after-panic", *security.APIKey)
+	}
+}
+
 func TestFederatedTokenSourceReportsOAuthError(t *testing.T) {
 	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
 		w.Header().Set("Content-Type", "application/json")

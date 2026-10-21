@@ -121,6 +121,16 @@ data "openrouter_credits" "test" {}
 `, providerBody)
 }
 
+// isolateFederationEnv clears the credential environment variables the
+// provider reads, so only the test's HCL (and managementKey) configures it.
+func isolateFederationEnv(t *testing.T, managementKey string) {
+	t.Helper()
+	t.Setenv("OPENROUTER_MANAGEMENT_KEY", managementKey)
+	t.Setenv("OPENROUTER_OIDC_TOKEN", "")
+	t.Setenv("OPENROUTER_OIDC_TOKEN_FILE", "")
+	t.Setenv("OPENROUTER_FEDERATION_POLICY_ID", "")
+}
+
 // UnitTest intentionally bypasses TF_ACC: every request goes to a local fixture.
 func TestStubFederationAuthenticatesManagementRequests(t *testing.T) {
 	tokenFile := filepath.Join(t.TempDir(), "oidc-token")
@@ -133,7 +143,7 @@ func TestStubFederationAuthenticatesManagementRequests(t *testing.T) {
 		"oidc_token_file": fmt.Sprintf("  oidc_token_file = %q", tokenFile),
 	} {
 		t.Run(name, func(t *testing.T) {
-			t.Setenv("OPENROUTER_MANAGEMENT_KEY", "")
+			isolateFederationEnv(t, "")
 			srv, stub := newFederationStub(t)
 			config := federationCreditsConfig(fmt.Sprintf("  server_url = %q\n  federation_policy_id = %q\n%s", srv.URL, federationStubPolicyID, credential))
 			resource.UnitTest(t, resource.TestCase{
@@ -159,7 +169,7 @@ func TestStubFederationRejectsAPIKeyAlongsideFederation(t *testing.T) {
 		"OPENROUTER_MANAGEMENT_KEY env var": {apiKeyEnv: "sk-or-v1-static"},
 	} {
 		t.Run(name, func(t *testing.T) {
-			t.Setenv("OPENROUTER_MANAGEMENT_KEY", tc.apiKeyEnv)
+			isolateFederationEnv(t, tc.apiKeyEnv)
 			srv, stub := newFederationStub(t)
 			config := federationCreditsConfig(fmt.Sprintf("  server_url = %q\n  federation_policy_id = %q\n  oidc_token = %q\n%s", srv.URL, federationStubPolicyID, federationStubSubjectToken, tc.apiKeyHCL))
 			resource.UnitTest(t, resource.TestCase{
