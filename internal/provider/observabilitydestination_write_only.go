@@ -106,7 +106,9 @@ func addObservabilityWriteOnlyAttributes(s *schema.Schema) {
 	s.Attributes["config_secrets_wo_version"] = schema.Int64Attribute{
 		Optional: true,
 		Description: "Rotation trigger for `config_secrets_wo`. The credentials are sent on create, and again whenever this value changes. " +
-			"Increment it to rotate them; any positive integer works. Unchanged versions leave stored credentials as they are.",
+			"Increment it to rotate them; any positive integer works. Unchanged versions leave stored credentials as they are. " +
+			"Removing this attribute and `config_secrets_wo` returns the destination to storing everything the API returns in the computed `config` blocks, " +
+			"which can include the credentials the API still holds. To stop using write-only credentials, set them in `config` or replace the destination.",
 		Validators: []validator.Int64{
 			int64validator.AtLeast(1),
 			int64validator.AlsoRequires(path.MatchRoot("config_secrets_wo")),
