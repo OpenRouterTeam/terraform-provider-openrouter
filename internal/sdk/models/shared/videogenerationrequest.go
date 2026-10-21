@@ -168,6 +168,7 @@ type VideoGenerationRequestOptions struct {
 	Quiver                   map[string]any `json:"quiver,omitzero"`
 	Recraft                  map[string]any `json:"recraft,omitzero"`
 	Recursal                 map[string]any `json:"recursal,omitzero"`
+	Recursive                map[string]any `json:"recursive,omitzero"`
 	Reflection               map[string]any `json:"reflection,omitzero"`
 	Reka                     map[string]any `json:"reka,omitzero"`
 	Relace                   map[string]any `json:"relace,omitzero"`
@@ -980,6 +981,13 @@ func (v *VideoGenerationRequestOptions) GetRecursal() map[string]any {
 		return nil
 	}
 	return v.Recursal
+}
+
+func (v *VideoGenerationRequestOptions) GetRecursive() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Recursive
 }
 
 func (v *VideoGenerationRequestOptions) GetReflection() map[string]any {

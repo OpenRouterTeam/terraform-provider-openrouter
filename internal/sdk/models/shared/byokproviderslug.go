@@ -98,6 +98,7 @@ const (
 	BYOKProviderSlugPrimeintellect           BYOKProviderSlug = "primeintellect"
 	BYOKProviderSlugQuiver                   BYOKProviderSlug = "quiver"
 	BYOKProviderSlugRecraft                  BYOKProviderSlug = "recraft"
+	BYOKProviderSlugRecursive                BYOKProviderSlug = "recursive"
 	BYOKProviderSlugReka                     BYOKProviderSlug = "reka"
 	BYOKProviderSlugRelace                   BYOKProviderSlug = "relace"
 	BYOKProviderSlugRespan                   BYOKProviderSlug = "respan"
@@ -310,6 +311,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "quiver":
 		fallthrough
 	case "recraft":
+		fallthrough
+	case "recursive":
 		fallthrough
 	case "reka":
 		fallthrough
