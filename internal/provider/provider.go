@@ -35,11 +35,9 @@ type OpenrouterProvider struct {
 
 // OpenrouterProviderModel describes the provider data model.
 type OpenrouterProviderModel struct {
-	APIKey             types.String `tfsdk:"api_key"`
-	ServerURL          types.String `tfsdk:"server_url"`
-	OIDCToken          types.String `tfsdk:"oidc_token"`
-	OIDCTokenFile      types.String `tfsdk:"oidc_token_file"`
-	FederationPolicyID types.String `tfsdk:"federation_policy_id"`
+	APIKey    types.String `tfsdk:"api_key"`
+	ServerURL types.String `tfsdk:"server_url"`
+	federationProviderModel
 }
 
 func (p *OpenrouterProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -93,7 +91,7 @@ func (p *OpenrouterProvider) Configure(ctx context.Context, req provider.Configu
 	}
 	registerSensitiveValues(security.APIKey)
 
-	federation, diags := federatedTokenSourceFromConfig(data, serverUrl, security.APIKey)
+	federation, diags := federatedTokenSourceFromConfig(data.federationProviderModel, serverUrl, security.APIKey)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

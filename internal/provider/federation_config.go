@@ -1,3 +1,5 @@
+//lint:file-ignore U1000 Called only from persistent edits to provider.go, which the generator lints before applying them.
+
 package provider
 
 import (
@@ -39,9 +41,20 @@ func federationPolicyIDAttribute() schema.StringAttribute {
 	}
 }
 
+// federationProviderModel holds the federation provider attributes and is
+// embedded in the generated OpenrouterProviderModel. Code in this package
+// must not depend on that embedding (or on any other custom edit to
+// provider.go): Speakeasy compiles its pristine output, without custom code,
+// together with the hand-written files before merging the custom code back.
+type federationProviderModel struct {
+	OIDCToken          types.String `tfsdk:"oidc_token"`
+	OIDCTokenFile      types.String `tfsdk:"oidc_token_file"`
+	FederationPolicyID types.String `tfsdk:"federation_policy_id"`
+}
+
 // federatedTokenSourceFromConfig returns nil when no federation setting is
 // present, so the provider keeps authenticating with `api_key`.
-func federatedTokenSourceFromConfig(data OpenrouterProviderModel, serverURL string, apiKey *string) (*federatedTokenSource, diag.Diagnostics) {
+func federatedTokenSourceFromConfig(data federationProviderModel, serverURL string, apiKey *string) (*federatedTokenSource, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	for _, attr := range []struct {

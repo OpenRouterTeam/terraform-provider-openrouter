@@ -109,7 +109,7 @@ func TestFederationConfigRejectsUnknownValuesInsteadOfUsingEnvironment(t *testin
 	t.Setenv(oidcTokenEnvVar, "env-subject-jwt")
 	t.Setenv(federationPolicyIDEnvVar, "env-policy")
 
-	for name, data := range map[string]OpenrouterProviderModel{
+	for name, data := range map[string]federationProviderModel{
 		"federation_policy_id": {FederationPolicyID: types.StringUnknown(), OIDCToken: types.StringValue("subject-jwt"), OIDCTokenFile: types.StringNull()},
 		"oidc_token":           {FederationPolicyID: types.StringValue("policy-123"), OIDCToken: types.StringUnknown(), OIDCTokenFile: types.StringNull()},
 		"oidc_token_file":      {FederationPolicyID: types.StringValue("policy-123"), OIDCToken: types.StringNull(), OIDCTokenFile: types.StringUnknown()},
@@ -128,7 +128,7 @@ func TestFederationConfigRejectsEmptyStringsInsteadOfFallingBack(t *testing.T) {
 	t.Setenv(federationPolicyIDEnvVar, "env-policy")
 	apiKey := "sk-or-v1-static"
 
-	for name, data := range map[string]OpenrouterProviderModel{
+	for name, data := range map[string]federationProviderModel{
 		"federation_policy_id": {FederationPolicyID: types.StringValue(""), OIDCToken: types.StringNull(), OIDCTokenFile: types.StringNull()},
 		"oidc_token":           {FederationPolicyID: types.StringNull(), OIDCToken: types.StringValue(""), OIDCTokenFile: types.StringNull()},
 		"oidc_token_file":      {FederationPolicyID: types.StringNull(), OIDCToken: types.StringNull(), OIDCTokenFile: types.StringValue("")},
@@ -151,7 +151,7 @@ func TestFederationConfigReadsEnvironmentOnlyForUnsetAttributes(t *testing.T) {
 	t.Setenv(oidcTokenEnvVar, "env-subject-jwt")
 	t.Setenv(federationPolicyIDEnvVar, "env-policy")
 
-	data := OpenrouterProviderModel{FederationPolicyID: types.StringNull(), OIDCToken: types.StringNull(), OIDCTokenFile: types.StringNull()}
+	data := federationProviderModel{FederationPolicyID: types.StringNull(), OIDCToken: types.StringNull(), OIDCTokenFile: types.StringNull()}
 	source, diags := federatedTokenSourceFromConfig(data, "https://openrouter.ai/api/v1", nil)
 	if diags.HasError() || source == nil {
 		t.Fatalf("expected a token source from the environment, got source=%v diags=%v", source != nil, diags)
