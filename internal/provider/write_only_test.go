@@ -679,36 +679,24 @@ func TestObservabilityResponseDumpsCombineSpecAndStructuralRedaction(t *testing.
 	check("debug log", logged)
 }
 
-// The schema helpers are called from custom code in the generated Schema
-// methods. Calling them on minimal schemas exercises them, and keeps them
-// referenced when Speakeasy lints its pristine output, which lacks the calls.
+// TestWriteOnlySchemas covers the resulting schemas. This test calls the
+// helpers directly because Speakeasy lints its pristine output, where the
+// generated Schema methods do not call them, and reports unreferenced helpers.
 func TestWriteOnlySchemaHelpers(t *testing.T) {
-	byok := resourceschema.Schema{Attributes: map[string]resourceschema.Attribute{
-		"key": resourceschema.StringAttribute{Required: true, Sensitive: true},
-	}}
+	byok := resourceschema.Schema{Attributes: map[string]resourceschema.Attribute{"key": resourceschema.StringAttribute{Required: true}}}
 	addByokKeyWriteOnlyAttributes(&byok)
-	if key := byok.Attributes["key"]; key.IsRequired() || !key.IsOptional() || !key.IsSensitive() {
-		t.Error("byok key must become optional and stay sensitive")
-	}
-	if attr := byok.Attributes["key_wo"]; attr == nil || !attr.IsWriteOnly() || !strings.Contains(attr.GetDescription(), writeOnlyMigrationNote) {
-		t.Error("byok key_wo must be write-only and carry the migration note")
-	}
-
-	dest := resourceschema.Schema{Attributes: map[string]resourceschema.Attribute{
-		"config": resourceschema.MapAttribute{Required: true, Sensitive: true, ElementType: jsontypes.NormalizedType{}},
-	}}
+	dest := resourceschema.Schema{Attributes: map[string]resourceschema.Attribute{"config": resourceschema.MapAttribute{Required: true, ElementType: jsontypes.NormalizedType{}}}}
 	addObservabilityWriteOnlyAttributes(&dest)
-	if cfg := dest.Attributes["config"]; cfg.IsRequired() || !cfg.IsOptional() {
-		t.Error("observability config must become optional")
-	}
-	if attr := dest.Attributes["config_secrets_wo"]; attr == nil || !attr.IsWriteOnly() || !strings.Contains(attr.GetDescription(), writeOnlyMigrationNote) {
-		t.Error("observability config_secrets_wo must be write-only and carry the migration note")
+	for name, attr := range map[string]resourceschema.Attribute{"key_wo": byok.Attributes["key_wo"], "config_secrets_wo": dest.Attributes["config_secrets_wo"]} {
+		if attr == nil || !strings.Contains(attr.GetDescription(), writeOnlyMigrationNote) {
+			t.Errorf("%s must carry the migration note", name)
+		}
 	}
 
 	ds := datasourceschema.Schema{Attributes: map[string]datasourceschema.Attribute{}}
 	addIncludeSensitiveConfigAttribute(&ds)
-	if attr := ds.Attributes["include_sensitive_config"]; attr == nil || !attr.IsOptional() {
-		t.Error("include_sensitive_config must be optional")
+	if ds.Attributes["include_sensitive_config"] == nil {
+		t.Error("include_sensitive_config missing")
 	}
 }
 
