@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: d080a6c7a30bf40e82ea5fa3166df15a
+  docChecksum: 7fdbea03f80b108b2edde1840cc4e606
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.114
-  configChecksum: 97ba6e9c8962fb9077ad6dbd40d4eeb3
+  releaseVersion: 0.3.115
+  configChecksum: 4c995bffe61c0cb1871545245c298c4a
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 19db00b8-bb72-4ffa-91c5-483d269c73eb
-  pristine_commit_hash: fc41838438c1b9d3a21a909801743135140d8507
-  pristine_tree_hash: 701d6b040b0b2a28efb2a101985c78077ce3d25d
+  generation_id: 3ccfed78-657a-4f62-86cf-c8d23e5cd592
+  pristine_commit_hash: 73fda305c9d4b68c8240252326d4a4ee6c900c54
+  pristine_tree_hash: 4b13d5bd88672e544c65889dfb132ace35d867bb
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:559132834d2675aeee05de78a6cef9b61937283d
-    pristine_git_object: c6ab5e2f683aa5df59a6a21f1acd8eebfbfbade8
+    last_write_checksum: sha1:4b6065a2e986267fe459812eb4c8ee613cc3ee88
+    pristine_git_object: 43ed1b6a0345822799ec1d8a0c2fc0e19aec600c
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1646,8 +1646,8 @@ trackedFiles:
     pristine_git_object: b247ed80788e09567d2cb28690c29980b1d373cf
   internal/sdk/models/operations/getorganizationsettings.go:
     id: 921015acd6a5
-    last_write_checksum: sha1:e7d6ae6e67f56eb25bdcaaafdd3532b721af4b41
-    pristine_git_object: c2a453c45e9c654503a956a096530d4f7cb5f590
+    last_write_checksum: sha1:9dc0131a5837db879a41bcaa8878c92e6292e532
+    pristine_git_object: 3390d5d0779d94d61ce3063f9bd6db9b992d9d3b
   internal/sdk/models/operations/getpreset.go:
     id: 4fe52e3c403f
     last_write_checksum: sha1:6c78cfbe866b9ba4e94137077a8ee5b91f2b8a6e
@@ -1806,8 +1806,8 @@ trackedFiles:
     pristine_git_object: 008279c3ad0176b03bad02852b112b0ab96d8e17
   internal/sdk/models/operations/listorganizationmembers.go:
     id: b7da3df5652a
-    last_write_checksum: sha1:093656b54977f18a1a91b8f611fb17a732f6121f
-    pristine_git_object: 118a1056db0f00b7b62c8d910241910555d2eba0
+    last_write_checksum: sha1:6625e7c831f8ac0d2517cd32e1c0ec19a51681b3
+    pristine_git_object: eff545898d96294c9f78b0c54b913e5b561b59d0
   internal/sdk/models/operations/listpresets.go:
     id: bff2f6a5db1b
     last_write_checksum: sha1:8b971bd5b93e839f05b9385aec0ba137a77b6ed5
@@ -1926,8 +1926,8 @@ trackedFiles:
     pristine_git_object: 11571f7e83751d99c13e5b3675b24cf1b8ee2818
   internal/sdk/models/operations/updateorganizationsettings.go:
     id: 48fad6282866
-    last_write_checksum: sha1:73adf0a664f597074b6d19bfe928107d4dc5bab1
-    pristine_git_object: ae596890773a69ed3695bf21273a3207fe2c08cb
+    last_write_checksum: sha1:bea93c5dd9ae318adbc922672ee082b0b2c73408
+    pristine_git_object: ac450ace360ab1d81a8440da8bd32abf1dd8a502
   internal/sdk/models/operations/updateprivateendpoint.go:
     id: a06968cb4975
     last_write_checksum: sha1:6967fbba1ae76b669a9a5573fdbeb64a87d50a59
@@ -3514,8 +3514,8 @@ trackedFiles:
     pristine_git_object: cf014ef2a4ae850a729b59d4d935492a00cd0fd6
   internal/sdk/models/shared/interndaemonaccess.go:
     id: 5b013f3942d8
-    last_write_checksum: sha1:fa3e724b31cae143e5beab31ee73843691808766
-    pristine_git_object: e7df9dba7779425f04acd8b6d6d44348f400338f
+    last_write_checksum: sha1:b4a9362966c063cab77f6fc6b500b6fefc7822b6
+    pristine_git_object: c9345b190e6c6af407fcb12e8bc4dec2ff74c642
   internal/sdk/models/shared/interninvokeacceptedresponse.go:
     id: b4b26ebb47a3
     last_write_checksum: sha1:6977859a70f5f57ca7a58a174e25b4e4c19bdc28
@@ -5066,8 +5066,8 @@ trackedFiles:
     pristine_git_object: d7996175857711a962d259ba303eab486022dbfc
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:1e28d25e303b0ff2a97f50cd68388c91e3c4b545
-    pristine_git_object: d1dc96826a6862d5f0c46d51398321815b2e1d42
+    last_write_checksum: sha1:1ed9074afd1a9e104c608a0eef72d0935a60f035
+    pristine_git_object: 0e2713ff5a6cae33ba9ecc9ed3c9f2f0fbdf15b0
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -5078,8 +5078,8 @@ trackedFiles:
     pristine_git_object: 3851483e03ce4e6b06c6c61fd82d1a735032739c
   internal/sdk/organization.go:
     id: 48893f96fab0
-    last_write_checksum: sha1:aa6022013c5e930dcd769db8756dbce6e6e9392a
-    pristine_git_object: 5c4baf276ab7e17a82dbab65a1ceba7c05fa218a
+    last_write_checksum: sha1:1df8a7309a4d00b54d220f94f0ab3b86034ed27d
+    pristine_git_object: 6e5416a2bcbfb72e70cf8a98e19f9a7bffceeba3
   internal/sdk/presets.go:
     id: dcb2411c5cf9
     last_write_checksum: sha1:4b2d06d869b7f606835040de4a3ede9cce4117a2
@@ -6416,6 +6416,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listPresets:
     speakeasy-default-list-presets:
       parameters:
@@ -8887,7 +8889,7 @@ examples:
           internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
       responses:
         "200":
-          application/json: {"origin": "https://research-assistant-7c9e6679.or.bot", "token": "daemon_token"}
+          application/json: {"origin": "https://research-assistant-7c9e6679.or.bot", "token": "daemon_token", "viewer": {"principals": ["clerk:user_2abc", "slack:T0123:U0456"]}}
         "401":
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
@@ -8899,7 +8901,7 @@ examples:
           internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
       responses:
         "200":
-          application/json: {"origin": "https://research-assistant-7c9e6679.or.bot", "token": "daemon_token"}
+          application/json: {"origin": "https://research-assistant-7c9e6679.or.bot", "token": "daemon_token", "viewer": {"principals": ["clerk:user_2abc", "slack:T0123:U0456"]}}
         "401":
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
@@ -8933,6 +8935,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   updateOrganizationSettings:
     speakeasy-default-update-organization-settings:
       requestBody:
@@ -8948,6 +8952,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listTools:
     speakeasy-default-list-tools:
       parameters:
