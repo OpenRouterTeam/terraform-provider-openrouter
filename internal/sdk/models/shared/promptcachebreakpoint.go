@@ -32,9 +32,10 @@ func (e *PromptCacheBreakpointMode) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// PromptCacheBreakpoint - Marks an explicit prompt-cache boundary on this content block (OpenAI-style). Everything through the block carrying this marker is part of the candidate cached prefix. Supported natively by OpenAI GPT-5.6 and newer; on providers that use Anthropic-style `cache_control`, OpenRouter converts the marker to that format automatically.
+// PromptCacheBreakpoint - Marks an explicit prompt-cache boundary on this content block (OpenAI-style). Everything through the block carrying this marker is part of the candidate cached prefix. Supported natively by OpenAI GPT-5.6 and newer; on providers that use Anthropic-style `cache_control`, OpenRouter converts the marker to that format automatically. `ttl` ("30m" or "12h") overrides the request-level `prompt_cache_options.ttl` for this boundary; 12h writes bill at the higher cache-write rate.
 type PromptCacheBreakpoint struct {
 	Mode PromptCacheBreakpointMode `json:"mode"`
+	TTL  *string                   `json:"ttl,omitzero"`
 }
 
 func (p PromptCacheBreakpoint) MarshalJSON() ([]byte, error) {
@@ -53,4 +54,11 @@ func (p *PromptCacheBreakpoint) GetMode() PromptCacheBreakpointMode {
 		return PromptCacheBreakpointMode("")
 	}
 	return p.Mode
+}
+
+func (p *PromptCacheBreakpoint) GetTTL() *string {
+	if p == nil {
+		return nil
+	}
+	return p.TTL
 }

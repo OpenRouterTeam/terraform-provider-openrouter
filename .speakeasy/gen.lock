@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: f4ada0535767864d2f63499f5c54a034
+  docChecksum: 727ee32ab6193cc8f131cab47447b887
   docVersion: 1.0.0
   speakeasyVersion: 1.803.0
   generationVersion: 2.950.2
-  releaseVersion: 0.3.108
-  configChecksum: 1435b6e1b9f2b54cf2aa1a73bba2179c
+  releaseVersion: 0.3.109
+  configChecksum: 89d0634fdac282b414e94f4f36188ad2
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 403f2c4e-fc30-4e08-b811-6b422414dfd6
-  pristine_commit_hash: 216a40d4d8f882e2cd5e264fe0d16e0bf72a995e
-  pristine_tree_hash: 2893da4bccb7ff1b7caa4ecbded13385db73bc0a
+  generation_id: cd08b296-f1a8-41e1-bcdd-9cdc620bc99c
+  pristine_commit_hash: ceca16b396c1c538b7877ba975a565fc235164fc
+  pristine_tree_hash: 32d949ffdb21e2c4b4c2e8058ba7b4a0d3c3cef4
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:7e34a3dd01aa161b151d42da971153f1fb22870e
-    pristine_git_object: 360247f804489023cc107120b50215f2c089b907
+    last_write_checksum: sha1:3ad16280ce3d9586e65945f016f03669a177e482
+    pristine_git_object: 1fb37501fb772d087a64417ddcaf6e3b88f10132
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1342,8 +1342,8 @@ trackedFiles:
     pristine_git_object: f0902cafebecd2f6203e04efa7d05e55de85f3b8
   internal/sdk/interns.go:
     id: 29c37e85fb2b
-    last_write_checksum: sha1:1550b141700da71d5505e5ecf582696b50c0128a
-    pristine_git_object: 8b279732b80dab873d278903f083ba625f497ce6
+    last_write_checksum: sha1:b5a0f11c167e8db2490d12b4c0d01d842fd24a8e
+    pristine_git_object: c166557138853487b7d00f093f075f154d40503f
   internal/sdk/models.go:
     id: 7b13b8162cf6
     last_write_checksum: sha1:5a64b1311ee4c95050fb7caf9a1e5b2acb47f66d
@@ -1612,6 +1612,10 @@ trackedFiles:
     id: 31dd4cc36cc6
     last_write_checksum: sha1:21a95f9f8a64d3ad2955d846c98b91ce1b609938
     pristine_git_object: 46dabf2cbebc8afffbcbbdcffcc91ae67f857114
+  internal/sdk/models/operations/getinternconnections.go:
+    id: 1b42d52b9124
+    last_write_checksum: sha1:bc160b18bef832dcdc2a17f20a671db6cd672b6c
+    pristine_git_object: 89602df08d537239db9bb2fd032bef6426189b23
   internal/sdk/models/operations/getinterndaemon.go:
     id: 43e0c1fe7faf
     last_write_checksum: sha1:afe1f15b1e8bde81390bf5b3178c3eaa1c63e8f8
@@ -2714,8 +2718,8 @@ trackedFiles:
     pristine_git_object: d3aef9de789f3219c9c3c20244154d211f7a5282
   internal/sdk/models/shared/chatcontenttext.go:
     id: 01ee162b7776
-    last_write_checksum: sha1:312993b86e222609cb03f8fe2c1b514a6b197ecc
-    pristine_git_object: 17cea5094e8c0441aa106c3d7fdc92651345d8af
+    last_write_checksum: sha1:2801db3fd2fe9305b7424e916a0059e8a44ae39f
+    pristine_git_object: 0691beb2495aba5d9ec682998608faf17962f1a7
   internal/sdk/models/shared/chatcontentvideo.go:
     id: 29d0c45f66a1
     last_write_checksum: sha1:097b7bf8055f6828854d853c32d48760c9dc293e
@@ -2778,8 +2782,8 @@ trackedFiles:
     pristine_git_object: 25bdb2bafd35fb7e5fff9b063486db3e6eb60547
   internal/sdk/models/shared/chatrequest.go:
     id: 7c57049ee12f
-    last_write_checksum: sha1:8073e9082a10ad76d468b98109ff8264a27db19b
-    pristine_git_object: 0f2dc06d5ce99190adc460f41253e782de59b1f9
+    last_write_checksum: sha1:1ecd45fa8fe7fa2f057932e792e381e02711dc9e
+    pristine_git_object: c9745fab210700503ac918f49964a583615e497a
   internal/sdk/models/shared/chatsearchmodelsservertool.go:
     id: 42240e0e927b
     last_write_checksum: sha1:4903abd463aeacb0ffabcc9a74939ad05347c98f
@@ -3466,8 +3470,8 @@ trackedFiles:
     pristine_git_object: 06151fdd905e23d8bd0a88d076561daf937a1813
   internal/sdk/models/shared/inputtext.go:
     id: 3ee055f0ed3f
-    last_write_checksum: sha1:5f7641535dce1ad7645ac89e31f08756e07d9026
-    pristine_git_object: 72f6f59d05b9c502e1483cfd89cd876ec41f936a
+    last_write_checksum: sha1:61384ff4efc17087e43d430738eb72cc7b37e791
+    pristine_git_object: 66f9a759d9dcc388dbf4ce1da2fb81c6b047712d
   internal/sdk/models/shared/inputvideo.go:
     id: 8a43173244ba
     last_write_checksum: sha1:abdbd814f719384d6cf7db456df265435fc1dcfa
@@ -3478,8 +3482,8 @@ trackedFiles:
     pristine_git_object: 38a27fded021a097a246bbcf43d3b3e5b3fe4ce5
   internal/sdk/models/shared/intern.go:
     id: ca1a0f7af3fc
-    last_write_checksum: sha1:933c878f043e3492b6f91cb751a154111be4a873
-    pristine_git_object: 629f32d14d39e6242492a59544c1b010158f7a61
+    last_write_checksum: sha1:6642e8f5ac9d413a2b1ca6155ebdc82a05981b19
+    pristine_git_object: 3e0ab0e422dc2689cccca283bfb0131bb3129371
   internal/sdk/models/shared/internalserverresponse.go:
     id: e2e8720d6d0e
     last_write_checksum: sha1:e029b5fe949b45da0d60c57f5cdcfdac97cc1c0a
@@ -3500,6 +3504,14 @@ trackedFiles:
     id: dd8bb7e2e14f
     last_write_checksum: sha1:5e879f43c754fa99fc11a383a5e068227f014859
     pristine_git_object: b6d743a214cbcb6c3d5edd876b5ac1eec7b0c1d4
+  internal/sdk/models/shared/internconnection.go:
+    id: 0d92f4c54668
+    last_write_checksum: sha1:ccf7623c6eb1e0ebf4cd83d429331cd67374521d
+    pristine_git_object: 1cd50d005b6bf9d531f4be65ca848530176a7639
+  internal/sdk/models/shared/internconnectionlist.go:
+    id: 1574fa3b5a3a
+    last_write_checksum: sha1:9509d8eb44d6d8118f720fefcec48472280e4342
+    pristine_git_object: cf014ef2a4ae850a729b59d4d935492a00cd0fd6
   internal/sdk/models/shared/interndaemonaccess.go:
     id: 5b013f3942d8
     last_write_checksum: sha1:fa3e724b31cae143e5beab31ee73843691808766
@@ -3870,8 +3882,8 @@ trackedFiles:
     pristine_git_object: f357d730d2d7d3d564192aeb18094140a6b0f165
   internal/sdk/models/shared/openresponsesresult.go:
     id: f5e882f58844
-    last_write_checksum: sha1:9319fad7043d6a8f4e285f962844ac750e5e058e
-    pristine_git_object: 77ecedf59f6dca50048b4a40ba51d510f0da4ad7
+    last_write_checksum: sha1:9209b33894edfc1bcfb3f7e7f80249a0bcca3aee
+    pristine_git_object: a81b8c0883949eca4de63015e595deb546e6aee3
   internal/sdk/models/shared/openrouterfile.go:
     id: 776877f6bad1
     last_write_checksum: sha1:1c966f668a6b50263f71243293fd9f8e885b667b
@@ -4262,12 +4274,12 @@ trackedFiles:
     pristine_git_object: ba79074cf750ddd620165737f768b141f7dc4afd
   internal/sdk/models/shared/promptcachebreakpoint.go:
     id: 5344f3e55f1d
-    last_write_checksum: sha1:a3dbc998b43be62602b18026affc3d2d67e33d13
-    pristine_git_object: f4997ec6a753f7f4daec0f7eebd964cb5dad4297
+    last_write_checksum: sha1:5fd5003474ea0e24c9ee24a87787a7db920ffd63
+    pristine_git_object: 83623dfc5a67a96e1e7415af31d1a4baf84109a8
   internal/sdk/models/shared/promptcacheoptions.go:
     id: 4795b77ba7f0
-    last_write_checksum: sha1:86ddd3483e962f5714b4e4bd6deaa16f775bb3f4
-    pristine_git_object: 8d382c50973a949cc33890bffbae590bc54013ae
+    last_write_checksum: sha1:95b95fecf895c2fd8a855936ed179f1e8168cb12
+    pristine_git_object: 36b3b8bf3febea0f72ec5710b5a3ed881e9a4bd8
   internal/sdk/models/shared/promptinjectionscanscope.go:
     id: 4b7f2431c120
     last_write_checksum: sha1:f6fc0472dfce4b071c64b4f638b001a68b672a67
@@ -4414,8 +4426,8 @@ trackedFiles:
     pristine_git_object: 7d213236f9063894d0d1523e1f2ca37108b3280f
   internal/sdk/models/shared/responsesrequest.go:
     id: f640a3b91a94
-    last_write_checksum: sha1:1c60bc5ce6b569b0ba7f17f082c2c96e97bbeb9b
-    pristine_git_object: 182f43fa9047f84295699f898236b08d3e69e95e
+    last_write_checksum: sha1:67758a5c2ae6cf028ef132aa2b07bfbe3f97e171
+    pristine_git_object: a8288ff07d935ecf8f77fd75d34b617d24ede760
   internal/sdk/models/shared/routerattempt.go:
     id: c36b0f8e50e3
     last_write_checksum: sha1:2c5f4ae860ae60f708083d1dd0b2d0e8065291d7
@@ -5054,8 +5066,8 @@ trackedFiles:
     pristine_git_object: d7996175857711a962d259ba303eab486022dbfc
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:dca722075481cb76900db36b8cc5f4393f66ce50
-    pristine_git_object: bda997e7d61f0649d7e3495d9c6522207d89b5c4
+    last_write_checksum: sha1:9caae6758127cc618f0fe4a318d34210f3a4143d
+    pristine_git_object: 9dcd0b26e40fcabd552be5e1138e125b624ea08b
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -8293,7 +8305,7 @@ examples:
           starting_after: "MjAyNi0wOS0xNlQwODozMDowMC4wMDAwMDBafDdjOWU2Njc5LTc0MjUtNDBkZS05NDRiLWUwN2ZjMWY5MGFlNw"
       responses:
         "200":
-          application/json: {"data": [{"attached_vault_id": null, "created_at": "2026-09-16T08:30:00.000Z", "created_by_you": true, "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "icon_sha256": null, "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}], "has_more": false}
+          application/json: {"data": [{"attached_vault_id": null, "can_edit": true, "created_at": "2026-09-16T08:30:00.000Z", "created_by_you": true, "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "icon_sha256": null, "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}], "has_more": false}
         "400":
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
@@ -8307,7 +8319,7 @@ examples:
         application/json: {"name": "research-assistant", "provision": true, "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
       responses:
         "200":
-          application/json: {"attached_vault_id": null, "created_at": "2026-09-16T08:30:00.000Z", "created_by_you": true, "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "icon_sha256": null, "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
+          application/json: {"attached_vault_id": null, "can_edit": true, "created_at": "2026-09-16T08:30:00.000Z", "created_by_you": true, "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "icon_sha256": null, "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
         "400":
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
@@ -8335,7 +8347,7 @@ examples:
           internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
       responses:
         "200":
-          application/json: {"attached_vault_id": null, "created_at": "2026-09-16T08:30:00.000Z", "created_by_you": true, "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "icon_sha256": null, "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
+          application/json: {"attached_vault_id": null, "can_edit": true, "created_at": "2026-09-16T08:30:00.000Z", "created_by_you": true, "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "icon_sha256": null, "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
         "401":
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
@@ -8349,7 +8361,7 @@ examples:
         application/json: {"description": "Researches customer questions", "model": "openai/gpt-5.4"}
       responses:
         "200":
-          application/json: {"attached_vault_id": null, "created_at": "2026-09-16T08:30:00.000Z", "created_by_you": true, "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "icon_sha256": null, "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
+          application/json: {"attached_vault_id": null, "can_edit": true, "created_at": "2026-09-16T08:30:00.000Z", "created_by_you": true, "description": "Researches customer questions", "hostname": "research-assistant.openrouter.ai", "icon_sha256": null, "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "instructions": null, "last_failure_message": null, "model": "openai/gpt-5.4", "name": "research-assistant", "progress": null, "status": "running", "updated_at": "2026-09-16T08:45:00.000Z", "vault_id": "b431c59d-6eed-41ac-bc89-9a89be79a121", "workspace_id": "89f9f5b2-3f89-4eaf-83ca-5ceae149e8bb"}
         "400":
           application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
         "500":
@@ -9397,4 +9409,16 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getInternConnections:
+    speakeasy-default-get-intern-connections:
+      parameters:
+        path:
+          internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+      responses:
+        "200":
+          application/json: {"data": [{"account": {"acts_as": "<value>", "is_your_account_linked": false, "note": null, "scope": "shared"}, "id": "<id>", "is_enabled": true, "is_intern_only": false, "kind": "google", "mcp_server_name": "<value>", "name": "<value>", "off_reason": "disabled", "server": {"host": "juicy-bookend.biz", "surface": "<value>", "transport": "<value>", "url": "https://knowledgeable-ectoderm.biz"}, "status": {"reason": "<value>", "state": "error"}, "tool_count": 230953}]}
+        "401":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
+        "500":
+          application/json: {"error": {"code": 404, "message": "Intern not found", "metadata": {"reason": "not_found", "retryable": false}}}
 examplesVersion: 1.0.2
