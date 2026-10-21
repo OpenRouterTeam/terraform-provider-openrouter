@@ -8,6 +8,7 @@ import (
 	"fmt"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
+	custom_stringvalidators "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators/stringvalidators"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -105,6 +106,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 						"europe",
 						"us",
 					),
+					custom_stringvalidators.DeclaredRegionProviderValidator(),
 				},
 			},
 			"declared_zdr": schema.BoolAttribute{
