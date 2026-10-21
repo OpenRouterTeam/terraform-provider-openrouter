@@ -51,6 +51,9 @@ type federatedTokenSource struct {
 	accessToken string
 	expiresAt   time.Time
 	refreshing  chan struct{}
+	// registeredSubjectToken is the last subject token passed to registerSensitiveValues,
+	// whose registry is global and never trimmed, so an unchanged token is not appended again.
+	registeredSubjectToken string
 }
 
 type federatedTokenSourceConfig struct {
@@ -170,7 +173,7 @@ func (s *federatedTokenSource) exchange(ctx context.Context) (tokenExchangeRespo
 		if err != nil {
 			return tokenExchangeResponse{}, err
 		}
-		registerSensitiveValues(subjectToken)
+		s.registerSubjectToken(subjectToken)
 
 		exchanged, err := s.exchangeOnce(ctx, subjectToken)
 		var retryable *retryableExchangeError
@@ -180,6 +183,16 @@ func (s *federatedTokenSource) exchange(ctx context.Context) (tokenExchangeRespo
 		if err := s.sleep(ctx, tokenExchangeRetryDelay(attempt, retryable.retryAfter)); err != nil {
 			return tokenExchangeResponse{}, fmt.Errorf("%w (retry cancelled: %w)", retryable.err, err)
 		}
+	}
+}
+
+// registerSubjectToken registers the subject token for log redaction once per distinct value.
+func (s *federatedTokenSource) registerSubjectToken(token string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if token != s.registeredSubjectToken {
+		registerSensitiveValues(token)
+		s.registeredSubjectToken = token
 	}
 }
 

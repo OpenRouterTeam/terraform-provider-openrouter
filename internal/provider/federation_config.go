@@ -85,7 +85,6 @@ func federatedTokenSourceFromConfig(data OpenrouterProviderModel, serverURL stri
 		return nil, diags
 	}
 
-	registerSensitiveValues(oidcToken)
 	source, err := newFederatedTokenSource(federatedTokenSourceConfig{
 		serverURL:          serverURL,
 		federationPolicyID: policyID,

@@ -147,6 +147,48 @@ func TestFederatedTokenSourceRereadsTokenFile(t *testing.T) {
 	}
 }
 
+func TestFederatedTokenSourceRegistersEachSubjectTokenForRedactionOnce(t *testing.T) {
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
+		grantToken(w, "access", 1)
+	})
+	path := filepath.Join(t.TempDir(), "token")
+	if err := os.WriteFile(path, []byte("dedupe-first-jwt"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	source := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcTokenFile: path})
+	registrations := func(value string) int {
+		providerSensitiveValuesMu.RLock()
+		defer providerSensitiveValuesMu.RUnlock()
+		n := 0
+		for _, registered := range providerSensitiveValues {
+			if registered == value {
+				n++
+			}
+		}
+		return n
+	}
+
+	// A 1s token is always inside the refresh skew, so every call re-exchanges.
+	for range 3 {
+		if _, err := source.Security(context.Background()); err != nil {
+			t.Fatalf("Security: %v", err)
+		}
+	}
+	if err := os.WriteFile(path, []byte("dedupe-rotated-jwt"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := source.Security(context.Background()); err != nil {
+		t.Fatalf("Security after rotation: %v", err)
+	}
+
+	if calls := server.calls.Load(); calls != 4 {
+		t.Fatalf("exchanges = %d, want 4", calls)
+	}
+	if first, rotated := registrations("dedupe-first-jwt"), registrations("dedupe-rotated-jwt"); first != 1 || rotated != 1 {
+		t.Fatalf("subject token registrations = %d, %d; want each registered once", first, rotated)
+	}
+}
+
 func TestFederatedTokenSourceReportsOAuthError(t *testing.T) {
 	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, _ int32) {
 		w.Header().Set("Content-Type", "application/json")
