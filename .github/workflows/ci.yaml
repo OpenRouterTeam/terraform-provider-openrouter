@@ -6,8 +6,9 @@ name: CI
 # unset; they run in acceptance.yaml (nightly, dispatch, and every same-repo
 # PR after its regeneration) and as the release gate in sdk_publish.yaml.
 #
-# Speakeasy regen PRs are opened with GITHUB_TOKEN, which does not trigger
-# pull_request workflows, so the push-to-main run is their validation.
+# Bot PRs (spec updates and Speakeasy regen PRs) are opened by the
+# GH_DOCS_SYNC app, so this runs on them, and auto-merge-bot-prs.yaml waits
+# for it before merging.
 
 on:
   pull_request:

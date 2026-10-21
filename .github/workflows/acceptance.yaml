@@ -53,6 +53,7 @@ jobs:
     if: >-
       github.event_name == 'pull_request'
       && github.event.pull_request.head.repo.full_name == github.repository
+      && github.actor != 'dependabot[bot]'
       && !(github.event.pull_request.user.login == 'openrouter-docs-sync[bot]'
         && (startsWith(github.event.pull_request.head.ref, 'sdk-bot/openapi-update-')
           || startsWith(github.event.pull_request.head.ref, 'speakeasy-sdk-regen-')))
@@ -72,8 +73,13 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
+          # Rides out transient API errors; the last failure still fails.
+          retry() {
+            for _ in 1 2; do "$@" && return; sleep 10; done
+            "$@"
+          }
           pr_head() {
-            gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha
+            retry gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha
           }
           skip() {
             echo "::notice::$1"
@@ -89,7 +95,7 @@ jobs:
           # GitHub evaluates against the PR's whole diff. Mirror it (keep in
           # sync with regenerate.yaml's `paths`) rather than infer it from
           # whether the check has shown up yet.
-          FILES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --jq '.[].filename')
+          FILES=$(retry gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files?per_page=100" --jq '.[].filename')
           INPUTS=$(grep -E '^\.speakeasy/' <<< "$FILES" \
             | grep -vxE '\.speakeasy/(gen\.lock|workflow\.lock|out\.openapi\.yaml)' || true)
           if [ -z "$INPUTS" ]; then
@@ -110,9 +116,11 @@ jobs:
           appear_deadline=$((SECONDS + 600))
           deadline=$((SECONDS + 2700))
           while :; do
-            STATE=$(regenerate)
+            # A failed poll just waits for the next one, up to the deadline.
+            STATE=$(regenerate) || STATE=error
             case "$STATE" in
               completed*) echo "Regenerate: ${STATE#completed }"; break ;;
+              error) echo "::warning::Could not read the Regenerate check; retrying" ;;
               "null null")
                 if [ "$SECONDS" -ge "$appear_deadline" ]; then
                   # GitHub evaluates path filters against at most 300 files.
@@ -172,7 +180,11 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          HEAD=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha)
+          retry() {
+            for _ in 1 2; do "$@" && return; sleep 10; done
+            "$@"
+          }
+          HEAD=$(retry gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha)
           if [ "$HEAD" != "$SHA" ]; then
             echo "::notice::Branch moved to ${HEAD:0:7} while this run was queued; the run for that commit tests it"
             echo "stale=true" >> "$GITHUB_OUTPUT"
