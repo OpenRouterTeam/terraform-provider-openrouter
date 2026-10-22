@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: fdc2db6eb9320b81233b0a1b7bf8b5d8
+  docChecksum: 74acec38240de9b61801b38fc98f5cc3
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 5db07d30-1a5a-425b-a271-75f4f020552a
-  pristine_commit_hash: abd18da950a589657ae8aff8d7b5629a655e89bb
-  pristine_tree_hash: 372bb069192aa33afe1b389682f77917574e5de6
+  generation_id: 70cd68d0-1407-46a7-a864-10bd9d31cda6
+  pristine_commit_hash: fda411e8122c03569076d5a7f26ec196d87cb7b1
+  pristine_tree_hash: 50cf7858150bca9042e513c5d5ce5536bf931b4c
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -430,8 +430,8 @@ trackedFiles:
     pristine_git_object: 8902a8a0298560b7ca527bd385f793c83a2204d7
   internal/provider/byokkey_resource.go:
     id: 7c3b6c42a696
-    last_write_checksum: sha1:302382f3ffbb12a709bc62faa96f8a7b6d8ec1c4
-    pristine_git_object: efd4f512a08f47cb90335ba3eb8c43c192dae614
+    last_write_checksum: sha1:1d279c8503cfd47fe3a0b8579760d0b73549f60f
+    pristine_git_object: 70379147c5f516b63d61906e6df7ea508900e2cd
   internal/provider/byokkey_resource_sdk.go:
     id: f02d4f42598a
     last_write_checksum: sha1:1a7920f20706feafe373d8ae0f8c2b2692e17dff
@@ -1274,8 +1274,8 @@ trackedFiles:
     pristine_git_object: 97fce820b7122c1c188cc0d8c76fcc2788b3c17c
   internal/sdk/guardrails.go:
     id: 7acba59507ef
-    last_write_checksum: sha1:690ef056942a54a0d9189361ad0457abd84b3288
-    pristine_git_object: 322ff881adf283bdc79ecde9431c49a3fccbe9d4
+    last_write_checksum: sha1:9a80b534eaee7c3215ee8b6117c6b33adde79fa1
+    pristine_git_object: 5f82c199027cae38817522fb8024399d6595b9ad
   internal/sdk/images.go:
     id: 110b363483e3
     last_write_checksum: sha1:a04358d14e9e825ac528c121ecfe2c0f71fcee98
@@ -1366,24 +1366,24 @@ trackedFiles:
     pristine_git_object: ddcb89068cb640ad07d0c8035c307c92711ba0de
   internal/sdk/models/operations/bulkassignkeystoguardrail.go:
     id: 211b701e43ac
-    last_write_checksum: sha1:84f014e501ef5426eeb590cb99fae54c3fbfeb6d
-    pristine_git_object: 1b2a0a200d3e8bbf3c8e6c52d72fcdc9f1f9a873
+    last_write_checksum: sha1:5edbad3b094162fc93af6cfa77cd2e5cce61e5af
+    pristine_git_object: d76b7222bd9e3d1b3bb22956572c103463ac13dd
   internal/sdk/models/operations/bulkassignmemberstoguardrail.go:
     id: 4c1f3b748a37
-    last_write_checksum: sha1:fd1478b506671d3342378143554cfc519e42cd8f
-    pristine_git_object: ce0412efecccb9c0a625de7bd15a6a9fc1acdb35
+    last_write_checksum: sha1:2ac8a1d639212106245be2804ad21abd4369dd34
+    pristine_git_object: 145d95b7efac3eb04ee90a64105feafd8fe8c4c1
   internal/sdk/models/operations/bulkremoveworkspacemembers.go:
     id: e4f2ceb06ea8
     last_write_checksum: sha1:eaa9077a8a7abe177b605012b49866874eaf2454
     pristine_git_object: b06efeadfd0856f4b2c8aa4a29da343274e829a6
   internal/sdk/models/operations/bulkunassignkeysfromguardrail.go:
     id: c16275fb919c
-    last_write_checksum: sha1:cc76f8b3d0c578d67fe1f99c9b521d1744478662
-    pristine_git_object: bf82f4f5c46401164b23b76a1eab9c80bdbe8aa9
+    last_write_checksum: sha1:1a770a41d4e1e40236656c080c2134d9ded8e907
+    pristine_git_object: 4ea55e7dfb1ec8bf8a6cdf13ecd1be87d7bf69d5
   internal/sdk/models/operations/bulkunassignmembersfromguardrail.go:
     id: 251a5b79a86d
-    last_write_checksum: sha1:2ba1b8b9accf3e0ccbcd367438a26b7fa7cea5ac
-    pristine_git_object: a34ae37330446a1ebc473cb64f76f3a0b7d7dd23
+    last_write_checksum: sha1:1feff11460f374ae63cde49b40e8fc2a6b7f9c13
+    pristine_git_object: bc5ea9f8d658c9744b5fd39a00de3640507cc32c
   internal/sdk/models/operations/copyvaultsecretstointern.go:
     id: "825687208688"
     last_write_checksum: sha1:dcdbc9243c01bdf4367b3f132a235573de10f48d
@@ -1426,8 +1426,8 @@ trackedFiles:
     pristine_git_object: 6c7a867dc481896234c8ff4e0884ded90d63351d
   internal/sdk/models/operations/createguardrail.go:
     id: ceff42af9379
-    last_write_checksum: sha1:8dba7e07ef71d5ca651644dc49726f092ffcb50d
-    pristine_git_object: 2c68b2a64f869683ab0140fcfcd1362beeac04f3
+    last_write_checksum: sha1:bcf43dd3282d3d9eb40c79daa21cb5c9f2bd3a47
+    pristine_git_object: 08cbdbc6bcb5c6b64c3c42ba66c9263d1d26f1ca
   internal/sdk/models/operations/createintern.go:
     id: 35f593197ed7
     last_write_checksum: sha1:0ad381aabc47c1f3db98841dc85400061aca2172
@@ -1502,8 +1502,8 @@ trackedFiles:
     pristine_git_object: 3a0583e8787d47082c14038cbe0a0c3d6aa555dc
   internal/sdk/models/operations/deleteguardrail.go:
     id: 1c1fe9640317
-    last_write_checksum: sha1:2fdf4a940a58c8c65b6d13a16d5cf4f6191ef0dd
-    pristine_git_object: 0b0b59198ce910c8c4b53266713561e53ac59dc3
+    last_write_checksum: sha1:08ee52433eb67e4a9559ff7d59057d6fc2b213c3
+    pristine_git_object: 348879311979d593edd930423e8c10c5d097dd82
   internal/sdk/models/operations/deleteintern.go:
     id: a95b99d0bd53
     last_write_checksum: sha1:a170de20f5ec2bf4d70003bc261191a49cdd785d
@@ -1538,8 +1538,8 @@ trackedFiles:
     pristine_git_object: 384bc05dd80a4c1b1b22b771a144d077388a88d3
   internal/sdk/models/operations/deleteworkspacebudget.go:
     id: ea9d87457232
-    last_write_checksum: sha1:6b7772665c5bbcabc97eef0adeae67f6cc5c00a5
-    pristine_git_object: 0bf862259d4c27acd9578375dbba483c73819094
+    last_write_checksum: sha1:d22246692da020611e12b51e1da9b85419f1326d
+    pristine_git_object: c3e674d2bc03ed8a8414056dfade8147d0619155
   internal/sdk/models/operations/disableprivateendpoint.go:
     id: 06b09af9d428
     last_write_checksum: sha1:c61f7a0df5e69bcb0169926a5a5438b78d70ff5d
@@ -1606,8 +1606,8 @@ trackedFiles:
     pristine_git_object: 4126b563f5324a9a411df828814a9b1846dfc0fb
   internal/sdk/models/operations/getguardrail.go:
     id: 9875e3d32ba8
-    last_write_checksum: sha1:07c45b8766d7acebbcfbc09704e039e618c392af
-    pristine_git_object: 860e799972289e5a77d27f41ca5c48f75f1f3f89
+    last_write_checksum: sha1:2a30ddeabd962345f8550d5b5b9757e7764d1256
+    pristine_git_object: 0d7989d0f25686d9bac9bb3da6daa67988bdf112
   internal/sdk/models/operations/getintern.go:
     id: 31dd4cc36cc6
     last_write_checksum: sha1:21a95f9f8a64d3ad2955d846c98b91ce1b609938
@@ -1694,12 +1694,12 @@ trackedFiles:
     pristine_git_object: 6a45c0e0d474d8257701215c8b01cb9a106e2a80
   internal/sdk/models/operations/getworkspace.go:
     id: 265dc9ac3ec6
-    last_write_checksum: sha1:a2849cb3c6cae1fb3c5b372ce8b3f7a6f7ebee33
-    pristine_git_object: 09e0cf6e8fa643c87e7bfa05b76bb4a5c830e536
+    last_write_checksum: sha1:c3c65346c20459e35a56a3e96443a7cb575c3ae5
+    pristine_git_object: a87856b54b952fd54fd23471a8a0e0793d5980ea
   internal/sdk/models/operations/getworkspacebudget.go:
     id: "379085110652"
-    last_write_checksum: sha1:9d6b462626797c933f98e621ed78e41a8f0c4fcb
-    pristine_git_object: baa889d4f4fe8c4a4c38916b7a3488e02acb528f
+    last_write_checksum: sha1:dfd31e9a68da7c042bb1ee803eabc5b088a4b1d3
+    pristine_git_object: 96072a093c12e6c15afb1e04d8bc07dd6ce040e6
   internal/sdk/models/operations/invokeintern.go:
     id: 8b8003751bbe
     last_write_checksum: sha1:056a5123d0ddb5ed0e38a493ee20ae2069045005
@@ -1746,16 +1746,16 @@ trackedFiles:
     pristine_git_object: 27bd7d379d229139cef60d271b89edcbcc9f2c0d
   internal/sdk/models/operations/listguardrailkeyassignments.go:
     id: 4045304affe0
-    last_write_checksum: sha1:52fb97467913d47bb89a75ade8fc7134babafd36
-    pristine_git_object: 28e9d819585da24357a245782df56af630c9b9c3
+    last_write_checksum: sha1:1dd11987b6f9af71344215a49423c90a302894eb
+    pristine_git_object: 332aea09143023f8b34c3a599750e045d8e10c9c
   internal/sdk/models/operations/listguardrailmemberassignments.go:
     id: e6a7691c7449
-    last_write_checksum: sha1:d0dfe923c33f2496d62cd07702d92e628be577b6
-    pristine_git_object: c1d7fce045b275e75c4a4f30dca93a47b1691109
+    last_write_checksum: sha1:cffc39503fb58c916d1b590453a0372d30b47d9e
+    pristine_git_object: 820e3b6c39ac7017e83ef6962919ba9242087c17
   internal/sdk/models/operations/listguardrails.go:
     id: 863a18d510e0
-    last_write_checksum: sha1:d7bf4c89c4a527c6270fb902c05c792d1f96cded
-    pristine_git_object: d159b97345a6722f207576c08d12f15a36a29163
+    last_write_checksum: sha1:a44782a8ff20de997d4d8726c325c73539f7902c
+    pristine_git_object: 0cee22923d9b220895327964fe771d051a926ad7
   internal/sdk/models/operations/listimagemodelendpoints.go:
     id: 05f2c02add2a
     last_write_checksum: sha1:e07c05e79fe4764d568eca3c6c0d0f8e4dabe78a
@@ -1782,12 +1782,12 @@ trackedFiles:
     pristine_git_object: 7ad46d7f4b5b014c08eadf0bee0970414a776d3a
   internal/sdk/models/operations/listkeyassignments.go:
     id: a34b7d64becb
-    last_write_checksum: sha1:e2c9a305617cbef84f27c91f17be3cf899a9ebcf
-    pristine_git_object: 374ae49a4ed2356097f4742dea288949ba2c3cd6
+    last_write_checksum: sha1:d9770b599a9af68d6f86c42cc55423c2649f2b68
+    pristine_git_object: 2dba8c6b9760027a6aace289ea9ee7d2dbf7a5a3
   internal/sdk/models/operations/listmemberassignments.go:
     id: 0eca54507d66
-    last_write_checksum: sha1:092f5e416156a055c972961cc31b3b3e41cfb394
-    pristine_git_object: ab1ba7811ea92fb96f7dc7ab744425a4a69f5bb4
+    last_write_checksum: sha1:2bcf0615bf935cb939b3faf7b1b8211813233f53
+    pristine_git_object: 92dbbdd9bf58720aaf1e698b88d0e4a9b89eca41
   internal/sdk/models/operations/listmodelscount.go:
     id: 8a0a5fe06a16
     last_write_checksum: sha1:705ee47f83e23245b33a6deae060bc07e40a324b
@@ -1850,16 +1850,16 @@ trackedFiles:
     pristine_git_object: ee8f2b479f8b400e997230b6913cd903805f4781
   internal/sdk/models/operations/listworkspacebudgets.go:
     id: e72be74766d9
-    last_write_checksum: sha1:6030c348b01e6413c6d862661a38b923f9f9666b
-    pristine_git_object: 1433f6d1b4e3db286252ffd6effe32d658ccdabb
+    last_write_checksum: sha1:ef03529ac8c0b093755d2ef3ccbc41929640ad19
+    pristine_git_object: 63ccb67dffdb43a92e79a2ab29c268de0aad591a
   internal/sdk/models/operations/listworkspacemembers.go:
     id: 7cc441f94e59
     last_write_checksum: sha1:e08c750c53ac4ea60c4b96cf7e9cff640d68e3c0
     pristine_git_object: 65de8b532e43cef65b313b8207ef5d3348e7590e
   internal/sdk/models/operations/listworkspaces.go:
     id: 86a1257e623f
-    last_write_checksum: sha1:9a5c470243d9eeca6abdc065f96115fc0656b573
-    pristine_git_object: b45968e0b54a4fca66432fac64115c0bb67415a9
+    last_write_checksum: sha1:c4ca3141003d234a5bc28255e484c6b623d07162
+    pristine_git_object: 9704174254ca7b243eb54597717093638450b8db
   internal/sdk/models/operations/options.go:
     id: 6d0d29414e00
     last_write_checksum: sha1:517c4c6410623c063dbed8a154dfb16b35c7c65a
@@ -1910,8 +1910,8 @@ trackedFiles:
     pristine_git_object: 790d1e65afea43526831165fb311abd6b4294eaa
   internal/sdk/models/operations/updateguardrail.go:
     id: 8c146d4d139d
-    last_write_checksum: sha1:39d80224c8821c2009a70cc1b34b75a9535008eb
-    pristine_git_object: 256dd143428ea5efc4ab9745f76ed24e5b139a13
+    last_write_checksum: sha1:b1cdcdd21f4f454174347ca87cd65fa0bcf8d2c4
+    pristine_git_object: e13ef1a7ea5dfd284d1bbad7b2530f1483d477e9
   internal/sdk/models/operations/updateintern.go:
     id: 624325cb26e2
     last_write_checksum: sha1:5eda55ca731bf742564cf1bd4ad3f7113be3d2f5
@@ -1950,8 +1950,8 @@ trackedFiles:
     pristine_git_object: db802d339d2b28f76191536d84617998d25881f1
   internal/sdk/models/operations/upsertworkspacebudget.go:
     id: 68b410528b30
-    last_write_checksum: sha1:e3bffa2f9796e9b90d7822b3ca8533f3c5b94e95
-    pristine_git_object: 6d87e4bdc5cc7495a1dbdad80b77a3b6636418b0
+    last_write_checksum: sha1:6ea1585c7d393e1b2e0c80d53127931b7b699c7f
+    pristine_git_object: 85a329c453058684606e5e59d06b92241936b32e
   internal/sdk/models/operations/validateprivateendpoint.go:
     id: 96ac9b2666aa
     last_write_checksum: sha1:01b601e98a254d3868bf846d9e550f7398cd2013
@@ -5154,8 +5154,8 @@ trackedFiles:
     pristine_git_object: 4b01dbc226c382c2e910ee42a22e9d5f77d1f782
   internal/sdk/workspaces.go:
     id: 436a1d832809
-    last_write_checksum: sha1:2ff8645479e16ae158cb67518b09bc02866198ef
-    pristine_git_object: 3c352612ee116838a1d941c81865d2cce8c78856
+    last_write_checksum: sha1:56269c410557c5798e60a6788be3e599b2941424
+    pristine_git_object: e3af6d4f6cbd17ddd75365c89b8cc93df4a9fd00
   internal/validators/DateValidator.go:
     id: 4fdfa187ab97
     last_write_checksum: sha1:9c33faf7117e16c25ed6076126919212b1d388a3
@@ -5877,6 +5877,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   createGuardrail:
     speakeasy-default-create-guardrail:
       requestBody:
@@ -5906,6 +5908,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   getGuardrail:
     speakeasy-default-get-guardrail:
       parameters:
@@ -5920,6 +5924,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   updateGuardrail:
     speakeasy-default-update-guardrail:
       parameters:
@@ -5959,6 +5965,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   bulkAssignKeysToGuardrail:
     speakeasy-default-bulk-assign-keys-to-guardrail:
       parameters:
@@ -5997,6 +6005,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listGuardrailMemberAssignments:
     speakeasy-default-list-guardrail-member-assignments:
       parameters:
@@ -6014,6 +6024,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   bulkAssignMembersToGuardrail:
     speakeasy-default-bulk-assign-members-to-guardrail:
       parameters:
@@ -6032,6 +6044,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   bulkUnassignMembersFromGuardrail:
     speakeasy-default-bulk-unassign-members-from-guardrail:
       parameters:
@@ -6050,6 +6064,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listKeyAssignments:
     speakeasy-default-list-key-assignments:
       parameters:
@@ -6067,6 +6083,8 @@ examples:
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "404":
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listMemberAssignments:
     speakeasy-default-list-member-assignments:
       parameters:
@@ -6084,6 +6102,8 @@ examples:
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "404":
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listImageModels:
     speakeasy-default-list-image-models:
       responses:
@@ -6681,6 +6701,8 @@ examples:
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   createWorkspace:
     speakeasy-default-create-workspace:
       requestBody:
@@ -6731,6 +6753,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   updateWorkspace:
     speakeasy-default-update-workspace:
       parameters:
@@ -6766,6 +6790,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   deleteWorkspaceBudget:
     speakeasy-default-delete-workspace-budget:
       parameters:
@@ -6784,6 +6810,8 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   upsertWorkspaceBudget:
     speakeasy-default-upsert-workspace-budget:
       parameters:
@@ -6804,6 +6832,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listWorkspaceMembers:
     speakeasy-default-list-workspace-members:
       parameters:
@@ -6980,6 +7010,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   getSessionCost:
     speakeasy-default-get-session-cost:
       parameters:

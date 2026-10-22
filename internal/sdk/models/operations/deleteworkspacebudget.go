@@ -43,6 +43,8 @@ type DeleteWorkspaceBudgetResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -100,6 +102,13 @@ func (d *DeleteWorkspaceBudgetResponse) GetUnauthorizedResponse() *shared.Unauth
 		return nil
 	}
 	return d.UnauthorizedResponse
+}
+
+func (d *DeleteWorkspaceBudgetResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if d == nil {
+		return nil
+	}
+	return d.ForbiddenResponse
 }
 
 func (d *DeleteWorkspaceBudgetResponse) GetNotFoundResponse() *shared.NotFoundResponse {
