@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: f97dbc1cf45f7b90651b45850abb3840
+  docChecksum: 6ffcb02bb996185d177c517df4e6191d
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 6d6fb481-02eb-433e-a04f-671691519c4d
-  pristine_commit_hash: 5f6a0dd55f6fc1c8970c0978764c9355162e9d04
-  pristine_tree_hash: bdf4fd30233f4989b60cf7eb52b0a23af2150946
+  generation_id: 9352f8ac-c482-43a5-8379-31c970127a03
+  pristine_commit_hash: b98d763019894022c11138e881ccb3c974ac092f
+  pristine_tree_hash: ab2c3e9c5d33d8722987d1cb6970ead6659ca563
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -430,8 +430,8 @@ trackedFiles:
     pristine_git_object: 8902a8a0298560b7ca527bd385f793c83a2204d7
   internal/provider/byokkey_resource.go:
     id: 7c3b6c42a696
-    last_write_checksum: sha1:302382f3ffbb12a709bc62faa96f8a7b6d8ec1c4
-    pristine_git_object: efd4f512a08f47cb90335ba3eb8c43c192dae614
+    last_write_checksum: sha1:1d279c8503cfd47fe3a0b8579760d0b73549f60f
+    pristine_git_object: 70379147c5f516b63d61906e6df7ea508900e2cd
   internal/provider/byokkey_resource_sdk.go:
     id: f02d4f42598a
     last_write_checksum: sha1:1a7920f20706feafe373d8ae0f8c2b2692e17dff
@@ -1270,8 +1270,8 @@ trackedFiles:
     pristine_git_object: b13cf9f6192666267bb1c8ed287ed0c7973fd8ac
   internal/sdk/generations.go:
     id: 3af0bc3ca334
-    last_write_checksum: sha1:607987106675941d3584903205596e60d6fd525f
-    pristine_git_object: 97fce820b7122c1c188cc0d8c76fcc2788b3c17c
+    last_write_checksum: sha1:ed98d9760d09eca334e3b40a60488351aaef11b9
+    pristine_git_object: 7b2a42e313fb35122dc72bec219a398afa5bf9a0
   internal/sdk/guardrails.go:
     id: 7acba59507ef
     last_write_checksum: sha1:9a80b534eaee7c3215ee8b6117c6b33adde79fa1
@@ -1894,8 +1894,8 @@ trackedFiles:
     pristine_git_object: 1bc7c280420dadd646a7bc42e2bf41655f676db5
   internal/sdk/models/operations/submitgenerationfeedback.go:
     id: c967413fefe5
-    last_write_checksum: sha1:a17a4a10f3e899fe4b75d8771fb7884c8eebc49d
-    pristine_git_object: 278bb47edca51c7ef51f22e6584bf3efa9775690
+    last_write_checksum: sha1:fb043a5fcfa9a397fbe5e3330ccef7ee77726278
+    pristine_git_object: 80e86d177776b743ff84f24ba220eaa74bd239dc
   internal/sdk/models/operations/suspendintern.go:
     id: 7eea88db1f52
     last_write_checksum: sha1:cf25763f74563c0bc29def10aa267528a590b0ee
@@ -5867,6 +5867,8 @@ examples:
           application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
   listGuardrails:
     speakeasy-default-list-guardrails:
       parameters:
