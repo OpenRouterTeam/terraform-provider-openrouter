@@ -34,6 +34,8 @@ type GetPresetResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -91,6 +93,13 @@ func (g *GetPresetResponse) GetUnauthorizedResponse() *shared.UnauthorizedRespon
 		return nil
 	}
 	return g.UnauthorizedResponse
+}
+
+func (g *GetPresetResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetPresetResponse) GetNotFoundResponse() *shared.NotFoundResponse {

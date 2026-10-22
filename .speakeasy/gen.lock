@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 6ffcb02bb996185d177c517df4e6191d
+  docChecksum: 1ecc31d24b4ac3c7229f1817a1c47c50
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.122
-  configChecksum: 04ecf528bb986e24065f247b57011411
+  releaseVersion: 0.3.123
+  configChecksum: 286aeee339b72cd48343061fecec0223
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 0379d587-0b3c-4f5c-b3d6-5466f233ccc8
-  pristine_commit_hash: f46809d90ccc6b25ac673411b0b8835f9fd4bc47
-  pristine_tree_hash: fb2d854a95ab271eaa0c98b76f5bdd558e784c71
+  generation_id: 89f204be-ce61-47a8-b97e-f0dbc9dedc55
+  pristine_commit_hash: a3003116b46f93a49b504a180e46296e2419f672
+  pristine_tree_hash: 662424530f42c5ffbfb51ce5da8c0ded6408e100
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:222ae939457348afad03c035eafa90bbedfcfc45
-    pristine_git_object: ac764c7080f949b67e4f0c9893c317a39bb52f78
+    last_write_checksum: sha1:0bef8bd2ac503cb6664056117d29abb7ac0cbda3
+    pristine_git_object: 3f764a21b14133b90bd89ed2abe1c787f2255f27
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1262,8 +1262,8 @@ trackedFiles:
     pristine_git_object: 5887d7ffb5ee34e22aa85760470b89ca40bdb093
   internal/sdk/externalusers.go:
     id: 3f6e3a351b94
-    last_write_checksum: sha1:28b09913b957457e1fad7cd343b52cb4854595ae
-    pristine_git_object: 50ba27f0c3ebd38b6e2292b3b95ea5a488407015
+    last_write_checksum: sha1:55bfbf87ec7fa453663fb0c254c425e24e4cdca3
+    pristine_git_object: 751503972eb75cceb869bdb1f0dce1e129a01efe
   internal/sdk/files.go:
     id: 37ef87cd5db4
     last_write_checksum: sha1:3f78e6ce09c7cd7a347f2e8689998d7c7f6f3b9e
@@ -1594,8 +1594,8 @@ trackedFiles:
     pristine_git_object: c9d5cc0e9651b782af202132aac98b139f7f275f
   internal/sdk/models/operations/getexternaluser.go:
     id: c77fb52df582
-    last_write_checksum: sha1:6de5366cb096695a48a93afd55304694dc76f5d0
-    pristine_git_object: 6bf9fb74a48aa8d78ab3fcb087e0b386a382ba83
+    last_write_checksum: sha1:db27387878d9c2f228435362f74e0c6783adb48a
+    pristine_git_object: fda461272ed1e9b031fed5965dfedbe469a70352
   internal/sdk/models/operations/getfilemetadata.go:
     id: 641963d1ac41
     last_write_checksum: sha1:965fbbb9ab7332203a8d167d2981b89cf1376da2
@@ -1650,12 +1650,12 @@ trackedFiles:
     pristine_git_object: 3390d5d0779d94d61ce3063f9bd6db9b992d9d3b
   internal/sdk/models/operations/getpreset.go:
     id: 4fe52e3c403f
-    last_write_checksum: sha1:6c78cfbe866b9ba4e94137077a8ee5b91f2b8a6e
-    pristine_git_object: eae3ced5fc5eaaed36397dc7d840e2985abe8c1e
+    last_write_checksum: sha1:1ff693fa93cd16f158a80bd7e89a915e302384cd
+    pristine_git_object: 2da17dfb8ee983aba7bb9b5d5dfb043562bcf9e5
   internal/sdk/models/operations/getpresetversion.go:
     id: 7636824085b7
-    last_write_checksum: sha1:b20893402ec71399784d7bb610e0ae0a2b54a531
-    pristine_git_object: 7e8b5c0c2f9a410df1523cadb46b5447325e4206
+    last_write_checksum: sha1:2003e0661d1bc89e56d10deb621dcab33b4fa5d6
+    pristine_git_object: 904af2f8abf9b9f096e9d402e18f91edb812082c
   internal/sdk/models/operations/getprivateendpoint.go:
     id: 45ed29867613
     last_write_checksum: sha1:6ee9f512e56125b0f2ba065751b844b4b91a8e91
@@ -1734,8 +1734,8 @@ trackedFiles:
     pristine_git_object: bf73b6467009e36f8b7c87069b3ab0299d38d446
   internal/sdk/models/operations/listexternalusers.go:
     id: 63d62e1058d3
-    last_write_checksum: sha1:08a9a1fb54b792b9134ffa5ee880eccd459bb608
-    pristine_git_object: 6c63b076e23fa76197099863d5b44c1ec1fce148
+    last_write_checksum: sha1:ece4e7bcb361ce8817c82d7a7536d4400837e1e8
+    pristine_git_object: 854f88dca722c49162ec84de6f00ff19226f8a6d
   internal/sdk/models/operations/listfiles.go:
     id: a0a08686de63
     last_write_checksum: sha1:4acd06c0e975e3685eea5b62992eff6dce661ea1
@@ -1810,12 +1810,12 @@ trackedFiles:
     pristine_git_object: eff545898d96294c9f78b0c54b913e5b561b59d0
   internal/sdk/models/operations/listpresets.go:
     id: bff2f6a5db1b
-    last_write_checksum: sha1:8b971bd5b93e839f05b9385aec0ba137a77b6ed5
-    pristine_git_object: 057b15c97a84908b2626fb2b2c501f8fccd2ff32
+    last_write_checksum: sha1:586d3d4d6f270eece0bd6712290847fd52503dec
+    pristine_git_object: 5b3e938a28ed86924b10270b4ef8fefd93e4d35e
   internal/sdk/models/operations/listpresetversions.go:
     id: 110c7144b107
-    last_write_checksum: sha1:168500197bcae91529f562b03ec2aa3d21ac3e37
-    pristine_git_object: 90dc69641a2b859d4d1e2e5b531e62efbb66f633
+    last_write_checksum: sha1:ec5f52c4a8e218ea0c31c7b15acd6ae2e546aa5a
+    pristine_git_object: fed65f28ae9e3621fe5f2bf6c6ed3634336bc1c9
   internal/sdk/models/operations/listprivateendpoints.go:
     id: 4dbf54ccc30e
     last_write_checksum: sha1:7fd813b0cc2fe420795c0d2baee0f95814944fdb
@@ -5066,8 +5066,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:4a5e3c8a990cb85ad39aa3acd7b40947d768e9d5
-    pristine_git_object: 9d8f7581e99c7c2153d8db0bd2fe57472ba14386
+    last_write_checksum: sha1:4a7526637be721db4fbc984e5fcc55672009ba05
+    pristine_git_object: 05e93bce9b20338e8edfea2152c9d054e125177c
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -5082,8 +5082,8 @@ trackedFiles:
     pristine_git_object: 6e5416a2bcbfb72e70cf8a98e19f9a7bffceeba3
   internal/sdk/presets.go:
     id: dcb2411c5cf9
-    last_write_checksum: sha1:4b2d06d869b7f606835040de4a3ede9cce4117a2
-    pristine_git_object: 6539d1d37a00f85584a1b45e42ce3549ed9f3dca
+    last_write_checksum: sha1:f497842aa18ebb4615d7f0a23f0a19da31d94133
+    pristine_git_object: d3316ce4ba8c8b31b007353aa92636fb31b0bb12
   internal/sdk/privateendpoints.go:
     id: c9211a390c27
     last_write_checksum: sha1:04aab136fec7fc48d19069a6d0015187765a60de
@@ -6467,6 +6467,8 @@ examples:
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   getPreset:
     speakeasy-default-get-preset:
       parameters:
@@ -6483,6 +6485,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   createPresetsChatCompletions:
     speakeasy-default-create-presets-chat-completions:
       parameters:
@@ -6568,6 +6572,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   getPresetVersion:
     speakeasy-default-get-preset-version:
       parameters:
@@ -6585,6 +6591,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   listProviders:
     speakeasy-default-list-providers:
       responses:
@@ -9412,6 +9420,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   createExternalUser:
     speakeasy-default-create-external-user:
       requestBody:
@@ -9459,6 +9469,8 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
   updateExternalUser:
     speakeasy-default-update-external-user:
       parameters:
