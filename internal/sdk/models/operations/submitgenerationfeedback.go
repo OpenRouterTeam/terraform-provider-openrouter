@@ -24,6 +24,8 @@ type SubmitGenerationFeedbackResponse struct {
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Conflict - Feedback was already submitted for this generation by this account. The first submission is kept.
+	ConflictResponse *shared.ConflictResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
@@ -88,6 +90,13 @@ func (s *SubmitGenerationFeedbackResponse) GetNotFoundResponse() *shared.NotFoun
 		return nil
 	}
 	return s.NotFoundResponse
+}
+
+func (s *SubmitGenerationFeedbackResponse) GetConflictResponse() *shared.ConflictResponse {
+	if s == nil {
+		return nil
+	}
+	return s.ConflictResponse
 }
 
 func (s *SubmitGenerationFeedbackResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
