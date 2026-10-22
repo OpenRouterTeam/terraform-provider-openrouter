@@ -168,6 +168,8 @@ type DeleteScimGroupMappingResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -225,6 +227,13 @@ func (d *DeleteScimGroupMappingResponse) GetUnauthorizedResponse() *shared.Unaut
 		return nil
 	}
 	return d.UnauthorizedResponse
+}
+
+func (d *DeleteScimGroupMappingResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if d == nil {
+		return nil
+	}
+	return d.ForbiddenResponse
 }
 
 func (d *DeleteScimGroupMappingResponse) GetNotFoundResponse() *shared.NotFoundResponse {
