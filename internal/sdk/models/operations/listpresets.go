@@ -54,6 +54,8 @@ type ListPresetsResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 
@@ -111,6 +113,13 @@ func (l *ListPresetsResponse) GetUnauthorizedResponse() *shared.UnauthorizedResp
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListPresetsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListPresetsResponse) GetInternalServerResponse() *shared.InternalServerResponse {
