@@ -3,12 +3,17 @@ name: Acceptance Tests
 # Live acceptance tests against a dedicated OpenRouter TEST organization.
 #
 # Safety model:
-# - Pull requests run the live suite when the `run-acceptance` label is
-#   applied, and only for branches in this repository (fork PRs never receive
-#   secrets). While the label stays on, each new push re-runs the suite;
-#   remove the label to stop. The label is a convenience gate, not a security
-#   boundary: anyone who can push a branch here can already dispatch this
-#   workflow on it.
+# - Every pull request from a branch in this repository runs the live suite
+#   (fork PRs never receive secrets, so they are skipped), except the
+#   app-authored bot PRs that auto-merge-bot-prs.yaml merges without waiting
+#   for it; the release gate and the nightly run cover what they land. When a
+#   PR touches Speakeasy inputs, the suite waits for that commit's Regenerate
+#   run first, and it only runs on the branch's current head: when Regenerate
+#   pushes a regen commit, the run for the old commit exits early and the run
+#   for the regen commit tests the generated code.
+# - This runs PR code with the secret below, so anyone who can push a branch
+#   here can use the key. Required reviewers or a deployment branch policy on
+#   the environment are what narrow that, not this workflow.
 # - Secret lives in the `acceptance-testing` environment as
 #   OPENROUTER_MANAGEMENT_KEY. It MUST be a Management API key
 #   (sk-or-mgmt-...) issued from a dedicated test org with $0 credits:
@@ -19,7 +24,8 @@ name: Acceptance Tests
 #   tf-acc-* resources, including those of a concurrent run, and parallel runs
 #   hit account caps (5 destinations per type). `queue: max` lets runs wait
 #   in line instead of the default one-pending-slot, where a newly queued PR
-#   run would cancel a pending release gate.
+#   run would cancel a pending release gate. Runs that exit early above never
+#   enter the group.
 # - Tests namespace resources as tf-acc-<run_id>-* and a TestMain sweeper
 #   deletes tf-acc-* leftovers from crashed runs before each suite.
 # - openrouter_byok_key is excluded: it needs a real provider credential we
@@ -32,24 +38,130 @@ on:
   pull_request:
     branches:
       - main
-    types: [labeled, synchronize, reopened]
 
 permissions:
   contents: read
 
 jobs:
-  acceptance:
-    # PRs: same-repo branches carrying the run-acceptance label only, and
-    # only when that label (not some other one) was just added.
+  # Decides whether this commit is worth a live run: waits for Regenerate on
+  # it when the PR touches Speakeasy inputs and checks that the branch has not
+  # moved on. Cheap, and outside the serialized group. App-authored bot PRs
+  # skip it, and so the live suite; dispatch the workflow on such a branch to
+  # test it anyway.
+  gate:
+    name: Wait for regeneration
     if: >-
-      github.event_name != 'pull_request' || (
-        github.event.pull_request.head.repo.full_name == github.repository &&
-        contains(github.event.pull_request.labels.*.name, 'run-acceptance') &&
-        (github.event.action != 'labeled' || github.event.label.name == 'run-acceptance')
+      github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.actor != 'dependabot[bot]'
+      && !(github.event.pull_request.user.login == 'openrouter-docs-sync[bot]'
+        && (startsWith(github.event.pull_request.head.ref, 'sdk-bot/openapi-update-')
+          || startsWith(github.event.pull_request.head.ref, 'speakeasy-sdk-regen-')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    permissions:
+      contents: read
+      checks: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+    steps:
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          # Rides out transient API errors; the last failure still fails.
+          retry() {
+            for _ in 1 2; do "$@" && return; sleep 10; done
+            "$@"
+          }
+          pr_head() {
+            retry gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha
+          }
+          skip() {
+            echo "::notice::$1"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+          HEAD=$(pr_head)
+          if [ "$HEAD" != "$SHA" ]; then
+            skip "Branch already moved to ${HEAD:0:7}; the run for that commit tests it"
+          fi
+
+          # Whether Regenerate runs is decided by its path filter, which
+          # GitHub evaluates against the PR's whole diff. Mirror it (keep in
+          # sync with regenerate.yaml's `paths`) rather than infer it from
+          # whether the check has shown up yet.
+          FILES=$(retry gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files?per_page=100" --jq '.[].filename')
+          INPUTS=$(grep -E '^\.speakeasy/' <<< "$FILES" \
+            | grep -vxE '\.speakeasy/(gen\.lock|workflow\.lock|out\.openapi\.yaml)' || true)
+          if [ -z "$INPUTS" ]; then
+            echo "PR touches no Speakeasy inputs, so Regenerate does not run"
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Speakeasy inputs changed; waiting for Regenerate on $SHA:"
+          echo "$INPUTS"
+
+          regenerate() {
+            gh api -X GET "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs" -f check_name=Regenerate \
+              --jq '[.check_runs[] | select(.app.slug == "github-actions")] | sort_by(.started_at) | last | "\(.status) \(.conclusion)"'
+          }
+          # The check normally appears within seconds, but run creation can
+          # lag. Allow 10 minutes for it to appear, and 45 in all: Regenerate's
+          # own 30-minute timeout plus queueing behind this PR's earlier runs.
+          appear_deadline=$((SECONDS + 600))
+          deadline=$((SECONDS + 2700))
+          while :; do
+            # A failed poll just waits for the next one, up to the deadline.
+            STATE=$(regenerate) || STATE=error
+            case "$STATE" in
+              completed*) echo "Regenerate: ${STATE#completed }"; break ;;
+              error) echo "::warning::Could not read the Regenerate check; retrying" ;;
+              "null null")
+                if [ "$SECONDS" -ge "$appear_deadline" ]; then
+                  # GitHub evaluates path filters against at most 300 files.
+                  if [ "$(wc -l <<< "$FILES")" -ge 300 ]; then
+                    echo "::warning::No Regenerate run for $SHA; with 300+ changed files GitHub may have skipped it, so testing the commit as is"
+                    break
+                  fi
+                  echo "::error::Regenerate was expected on $SHA (Speakeasy inputs changed) but never started. Re-run this job once it has."
+                  exit 1
+                fi ;;
+            esac
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              echo "::error::Timed out waiting for Regenerate on $SHA"
+              exit 1
+            fi
+            sleep 20
+          done
+          case "$STATE" in
+            "completed success" | "completed neutral" | "completed skipped" | "null null") ;;
+            *) skip "Regenerate did not succeed on $SHA (${STATE#completed }); skipping the live suite" ;;
+          esac
+
+          HEAD=$(pr_head)
+          if [ "$HEAD" != "$SHA" ]; then
+            skip "Branch moved to ${HEAD:0:7} (Regenerate pushed); the run for that commit tests it"
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
+  acceptance:
+    needs: gate
+    # Nightly and dispatch runs skip the gate; PR runs need its go-ahead.
+    if: >-
+      !cancelled() && (
+        github.event_name != 'pull_request' || needs.gate.outputs.run == 'true'
       )
     runs-on: ubuntu-latest
     environment: acceptance-testing
     timeout-minutes: 45
+    permissions:
+      contents: read
+      pull-requests: read
     # Job-level (not workflow-level) so PR runs skipped by the `if` above
     # never enter the group and cancel a pending nightly or release gate.
     concurrency:
@@ -57,18 +169,43 @@ jobs:
       cancel-in-progress: false
       queue: max
     steps:
+      # The run may have waited in the group for a while. If the branch moved
+      # since the gate, the newer commit's run tests it; skip the rest.
+      - name: Check the branch has not moved
+        id: head
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          retry() {
+            for _ in 1 2; do "$@" && return; sleep 10; done
+            "$@"
+          }
+          HEAD=$(retry gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha)
+          if [ "$HEAD" != "$SHA" ]; then
+            echo "::notice::Branch moved to ${HEAD:0:7} while this run was queued; the run for that commit tests it"
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        if: steps.head.outputs.stale != 'true'
 
       - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        if: steps.head.outputs.stale != 'true'
         with:
           go-version-file: go.mod
           cache: true
 
       - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        if: steps.head.outputs.stale != 'true'
         with:
           terraform_wrapper: false
 
       - name: Validate management key is configured
+        if: steps.head.outputs.stale != 'true'
         env:
           OPENROUTER_MANAGEMENT_KEY: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
         run: |
@@ -78,6 +215,7 @@ jobs:
           fi
 
       - name: Run acceptance tests
+        if: steps.head.outputs.stale != 'true'
         # Do NOT set TF_LOG / TF_LOG_PROVIDER here: internal/provider/utils.go
         # redacts only the Authorization header, not response bodies -- debug
         # logging would leak full HTTP responses (e.g. new key material) into
@@ -97,7 +235,7 @@ jobs:
           go test ./internal/acceptance/... -v -parallel 4 -timeout 30m 2>&1 | tee acceptance.log
 
       - name: Upload acceptance logs
-        if: always()
+        if: always() && steps.head.outputs.stale != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: acceptance-logs-${{ github.run_id }}
