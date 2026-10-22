@@ -55,12 +55,12 @@ jobs:
     steps:
       - name: Generate GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           app-id: ${{ secrets.GH_DOCS_SYNC_APP_ID }}
           private-key: ${{ secrets.GH_DOCS_SYNC_APP_PRIVATE_KEY }}
 
-      - uses: speakeasy-api/sdk-generation-action@v15
+      - uses: speakeasy-api/sdk-generation-action@68f3bfefb79354d39358bf4699863dabd2cea0f6 # v15.60.11
         with:
           action: run-workflow
           mode: pr
