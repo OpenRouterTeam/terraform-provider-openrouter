@@ -57,6 +57,8 @@ type ObservabilityDestinationResourceModel struct {
 	BroadcastGenerationRequestContext types.Bool                                                                        `tfsdk:"broadcast_generation_request_context"`
 	Clickhouse                        *tfTypes.GetObservabilityDestinationResponseObservabilityClickhouseDestination    `queryParam:"inline" tfsdk:"clickhouse"`
 	Config                            map[string]jsontypes.Normalized                                                   `tfsdk:"config"`
+	ConfigSecretsWo                   map[string]types.String                                                           `tfsdk:"config_secrets_wo"`
+	ConfigSecretsWoVersion            types.Int64                                                                       `tfsdk:"config_secrets_wo_version"`
 	CreatedAt                         types.String                                                                      `tfsdk:"created_at"`
 	Datadog                           *tfTypes.GetObservabilityDestinationResponseObservabilityDatadogDestination       `queryParam:"inline" tfsdk:"datadog"`
 	Enabled                           types.Bool                                                                        `tfsdk:"enabled"`
@@ -2521,6 +2523,7 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 			},
 		},
 	}
+	addObservabilityWriteOnlyAttributes(&resp.Schema)
 }
 
 func (r *ObservabilityDestinationResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -2569,6 +2572,10 @@ func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resou
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	resp.Diagnostics.Append(applyObservabilityWriteOnlyConfigOnCreate(ctx, req.Config, request)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	res, err := r.client.Observability.CreateDestination(ctx, *request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
@@ -2607,6 +2614,7 @@ func (r *ObservabilityDestinationResource) Create(ctx context.Context, req resou
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	scrubObservabilityResource(data.ConfigSecretsWoVersion, data.Config, false, data)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -2667,6 +2675,7 @@ func (r *ObservabilityDestinationResource) Read(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	resp.Diagnostics.Append(scrubObservabilityResourceOnRead(ctx, req.Private, data.ConfigSecretsWoVersion, data.Config, data)...)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -2691,6 +2700,10 @@ func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resou
 	request, requestDiags := data.ToOperationsUpdateObservabilityDestinationRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
 
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(applyObservabilityWriteOnlyConfigOnUpdate(ctx, req, request)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -2725,6 +2738,8 @@ func (r *ObservabilityDestinationResource) Update(ctx context.Context, req resou
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	scrubObservabilityResource(data.ConfigSecretsWoVersion, data.Config, false, data)
+	resp.Diagnostics.Append(clearObservabilityImported(ctx, resp.Private)...)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -2780,4 +2795,5 @@ func (r *ObservabilityDestinationResource) Delete(ctx context.Context, req resou
 
 func (r *ObservabilityDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
+	resp.Diagnostics.Append(markObservabilityImported(ctx, resp.Private)...)
 }
