@@ -38,6 +38,22 @@ jobs:
           terraform_wrapper: false
       - name: Build provider
         run: go build ./...
+      # Scans the same toolchain and module graph GoReleaser ships. A newly
+      # published Go advisory fails this step, so releases stop until go.mod
+      # is bumped to the fixed version. A go.mod-only change does not touch
+      # gen.lock, so after merging the fix, re-run this Publish workflow via
+      # workflow_dispatch.
+      - name: Check provider binary for known vulnerabilities
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+          CGO_ENABLED=0 go build -trimpath -o "$RUNNER_TEMP/terraform-provider-openrouter" .
+          # Exit 3 means vulnerabilities were found; anything else is a tool error.
+          rc=0
+          govulncheck -mode=binary "$RUNNER_TEMP/terraform-provider-openrouter" || rc=$?
+          if [ "$rc" -eq 3 ]; then
+            echo "::error::govulncheck found a reachable known vulnerability (see 'Fixed in' above). Fix: raise the go directive in go.mod to the fixed Go release, or go get <module>@<fixed version> and raise its minimum in .speakeasy/gen.yaml additionalDependencies; then go mod tidy, merge the fix, then re-run the Publish workflow via workflow_dispatch."
+          fi
+          exit "$rc"
       - name: Run acceptance tests
         env:
           TF_ACC: "1"

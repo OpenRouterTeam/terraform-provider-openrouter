@@ -50,6 +50,18 @@ jobs:
       - name: Build
         run: go build ./...
 
+      - name: Check provider binary for known vulnerabilities
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+          CGO_ENABLED=0 go build -trimpath -o "$RUNNER_TEMP/terraform-provider-openrouter" .
+          # Exit 3 means vulnerabilities were found; anything else is a tool error.
+          rc=0
+          govulncheck -mode=binary "$RUNNER_TEMP/terraform-provider-openrouter" || rc=$?
+          if [ "$rc" -eq 3 ]; then
+            echo "::error::govulncheck found a reachable known vulnerability (see 'Fixed in' above). Fix: raise the go directive in go.mod to the fixed Go release, or go get <module>@<fixed version> and raise its minimum in .speakeasy/gen.yaml additionalDependencies; then go mod tidy and open a PR."
+          fi
+          exit "$rc"
+
       - name: go mod tidy
         run: go mod tidy -diff
 
