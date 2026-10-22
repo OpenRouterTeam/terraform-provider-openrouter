@@ -32,6 +32,8 @@ type DeleteGuardrailResponse struct {
 	DeleteGuardrailResponse *shared.DeleteGuardrailResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -82,6 +84,13 @@ func (d *DeleteGuardrailResponse) GetUnauthorizedResponse() *shared.Unauthorized
 		return nil
 	}
 	return d.UnauthorizedResponse
+}
+
+func (d *DeleteGuardrailResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if d == nil {
+		return nil
+	}
+	return d.ForbiddenResponse
 }
 
 func (d *DeleteGuardrailResponse) GetNotFoundResponse() *shared.NotFoundResponse {

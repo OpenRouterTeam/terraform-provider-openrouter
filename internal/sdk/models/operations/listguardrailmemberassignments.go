@@ -61,6 +61,8 @@ type ListGuardrailMemberAssignmentsResponse struct {
 	ListMemberAssignmentsResponse *shared.ListMemberAssignmentsResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -113,6 +115,13 @@ func (l *ListGuardrailMemberAssignmentsResponse) GetUnauthorizedResponse() *shar
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListGuardrailMemberAssignmentsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListGuardrailMemberAssignmentsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
