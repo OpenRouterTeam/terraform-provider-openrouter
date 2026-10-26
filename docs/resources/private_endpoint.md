@@ -38,10 +38,8 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
   declared_zdr    = true
   model_permaslug = "openai/gpt-4o-2024-08-06"
   pricing = {
-    cache_read  = "0.00000025"
-    cache_write = "0.000003125"
-    completion  = "0.00001"
-    prompt      = "0.0000025"
+    completion = "0.00001"
+    prompt     = "0.0000025"
   }
   provider_slug     = "openai"
   upstream_model_id = "gpt-4o-2024-08-06"
@@ -88,8 +86,6 @@ Required:
 
 Optional:
 
-- `cache_read` (String) USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads.
-- `cache_write` (String) USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes.
 - `completion` (String) USD per completion token, as a decimal string. Not Null
 - `prompt` (String) USD per prompt token, as a decimal string. Not Null
 

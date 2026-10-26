@@ -67,8 +67,6 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	if r.Pricing == nil {
 		r.Pricing = &tfTypes.PrivateEndpointPricing{}
 	}
-	r.Pricing.CacheRead = types.StringPointerValue(resp.Pricing.CacheRead)
-	r.Pricing.CacheWrite = types.StringPointerValue(resp.Pricing.CacheWrite)
 	r.Pricing.Completion = types.StringValue(resp.Pricing.Completion)
 	r.Pricing.Prompt = types.StringValue(resp.Pricing.Prompt)
 	r.ProviderName = types.StringValue(resp.ProviderName)
@@ -224,18 +222,6 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 
 	var pricing *shared.PrivateEndpointPricing
 	if r.Pricing != nil {
-		cacheRead := new(string)
-		if !r.Pricing.CacheRead.IsUnknown() && !r.Pricing.CacheRead.IsNull() {
-			*cacheRead = r.Pricing.CacheRead.ValueString()
-		} else {
-			cacheRead = nil
-		}
-		cacheWrite := new(string)
-		if !r.Pricing.CacheWrite.IsUnknown() && !r.Pricing.CacheWrite.IsNull() {
-			*cacheWrite = r.Pricing.CacheWrite.ValueString()
-		} else {
-			cacheWrite = nil
-		}
 		var completion string
 		completion = r.Pricing.Completion.ValueString()
 
@@ -243,8 +229,6 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 		prompt = r.Pricing.Prompt.ValueString()
 
 		pricing = &shared.PrivateEndpointPricing{
-			CacheRead:  cacheRead,
-			CacheWrite: cacheWrite,
 			Completion: completion,
 			Prompt:     prompt,
 		}
@@ -287,18 +271,6 @@ func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointParametersRe
 func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointPricingRequest(ctx context.Context) (*shared.UpdatePrivateEndpointPricingRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	cacheRead := new(string)
-	if !r.Pricing.CacheRead.IsUnknown() && !r.Pricing.CacheRead.IsNull() {
-		*cacheRead = r.Pricing.CacheRead.ValueString()
-	} else {
-		cacheRead = nil
-	}
-	cacheWrite := new(string)
-	if !r.Pricing.CacheWrite.IsUnknown() && !r.Pricing.CacheWrite.IsNull() {
-		*cacheWrite = r.Pricing.CacheWrite.ValueString()
-	} else {
-		cacheWrite = nil
-	}
 	var completion string
 	completion = r.Pricing.Completion.ValueString()
 
@@ -306,8 +278,6 @@ func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointPricingReque
 	prompt = r.Pricing.Prompt.ValueString()
 
 	pricing := shared.PrivateEndpointPricing{
-		CacheRead:  cacheRead,
-		CacheWrite: cacheWrite,
 		Completion: completion,
 		Prompt:     prompt,
 	}

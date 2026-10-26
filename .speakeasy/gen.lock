@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: b43d51a141349b48ada1d56c5a767905
+  docChecksum: 969af33bb10f7ab4e919d52b6ca69fae
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 5863f0da-8e5e-4e45-a395-ba8fed0ed011
-  pristine_commit_hash: ec8721d3591738365441d343a11704d5d9a96aa8
-  pristine_tree_hash: 10079e4e036d652f96bd9a09872a214bde3bf33d
+  generation_id: aa9a7415-ce9b-468e-8509-d8acbe1332da
+  pristine_commit_hash: 09648838b241973f44d50f182d2fe00d2de22e09
+  pristine_tree_hash: 74a4674bc633d3a5e908dee837bb160a842ee244
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -214,8 +214,8 @@ trackedFiles:
     pristine_git_object: f0098a99de94cae86badd9a21e43d14e798a7869
   examples/resources/openrouter_private_endpoint/resource.tf:
     id: 2b1c7d4b04ce
-    last_write_checksum: sha1:fb0ad1096e78fa26c40101295c28282ef7a8b809
-    pristine_git_object: 613afb64962f3dc5d4e084e0f472697994c3388a
+    last_write_checksum: sha1:f9df59625cd2601b8dc75be5256938900f9ecff9
+    pristine_git_object: 47eb543e692c9ab110fb114bb14d01ebf92acb58
   examples/resources/openrouter_scim_group_mapping/import-by-string-id.tf:
     id: aaa905f58c19
     last_write_checksum: sha1:8315cd1b1c896fb14c49ff9295d8a92210c367a0
@@ -574,20 +574,20 @@ trackedFiles:
     pristine_git_object: 6d6db7af516483c5f209083f5a95afdcc1f7eaaf
   internal/provider/privateendpoint_data_source.go:
     id: 1104827e5f3d
-    last_write_checksum: sha1:a41657ef96ba5495792df65c579ba0b97066478c
-    pristine_git_object: c8dec97c2ba2ddb0d3afec06da7321db66797639
+    last_write_checksum: sha1:1a05ec8fcc4e9ae0c8ab6f5495817e7265393a6b
+    pristine_git_object: c1e9eb727aa60098ee9c88db757ee766f5b53c3c
   internal/provider/privateendpoint_data_source_sdk.go:
     id: 4c7ae904eb5c
-    last_write_checksum: sha1:bc2fc483b4c8a07ba5751b44cd7897ee757f9d64
-    pristine_git_object: d2d3cdd6533ddea90fa5f58189dffe90baa2330f
+    last_write_checksum: sha1:67f2f99d998a2289aec3ff3256f86d02fdd16cf1
+    pristine_git_object: b231a7a2991e0c95c5fad14df9a39cee92679af4
   internal/provider/privateendpoint_resource.go:
     id: a64a2acbf118
-    last_write_checksum: sha1:7e8938a59345b7de8c82d785b74509a3eea96c5e
-    pristine_git_object: 35714bddb513f0a2171b6767e62924c39f37e711
+    last_write_checksum: sha1:43efd29ef3d71f560cbe1f061a28be2a3005bbbb
+    pristine_git_object: eabe7b642134b0668f46b33ce52072499c84b94f
   internal/provider/privateendpoint_resource_sdk.go:
     id: f78a28b90402
-    last_write_checksum: sha1:b19b614a78a0c14d260d00ebba8201ca5b150319
-    pristine_git_object: e2a5ed1d4b43b6896a9d421eb65a69b2a850bc46
+    last_write_checksum: sha1:813bef8e2f6fd7f55db53c8be8af2e6347241898
+    pristine_git_object: 73f76f4aff9514203e3f1eb9348116e78f6a1853
   internal/provider/provider.go:
     id: 1e7e86841cf3
     last_write_checksum: sha1:540e106dee055bc2661c0cbb6c751ef311811e67
@@ -1114,8 +1114,8 @@ trackedFiles:
     pristine_git_object: 6cfd058429d6a5743bd1b11e11abbae26ddce508
   internal/provider/types/private_endpoint_pricing.go:
     id: c881af7ca432
-    last_write_checksum: sha1:aad594198cba992996fa58100ceda28775245491
-    pristine_git_object: abb7232e35fe02e8e0f1c4199bc02259ccca85f5
+    last_write_checksum: sha1:cc806382ffa1ce9cefd3bc7893b609f950597adc
+    pristine_git_object: 7620fd5dfd4159eafbcfb4131d15b1c8a5d30028
   internal/provider/types/public_pricing.go:
     id: 0cc0514e2922
     last_write_checksum: sha1:d0d5892dea80d6eda4feb71a21713013f9ec3ca4
@@ -4258,8 +4258,8 @@ trackedFiles:
     pristine_git_object: 03e0c7edfb15aaa55d57eb8ba86d0bdab5ff362d
   internal/sdk/models/shared/privateendpointpricing.go:
     id: 05a04c2a77e1
-    last_write_checksum: sha1:572098f783fe26bb34186b8747a3a33de3d05e6f
-    pristine_git_object: 01453649c634d748cfbfb61ae30e97af770ff162
+    last_write_checksum: sha1:5d3ad7fcc668a41f322c61881773358aa2825ae6
+    pristine_git_object: a1e4991241b22ed8ea79636390d7986bf0208953
   internal/sdk/models/shared/privateendpointresponse.go:
     id: ab36076979a5
     last_write_checksum: sha1:c9856c2fa104f9fb29e0aa1bf1c2b16e41f802dc
@@ -5102,8 +5102,8 @@ trackedFiles:
     pristine_git_object: d3316ce4ba8c8b31b007353aa92636fb31b0bb12
   internal/sdk/privateendpoints.go:
     id: c9211a390c27
-    last_write_checksum: sha1:9a829c06c68a0666ecbe676b1d479606bf08b263
-    pristine_git_object: 7ea9b98cb86834406ef26a389053abed77f13bf4
+    last_write_checksum: sha1:0a8da52b0f9ff8f413cbf7183c2fa4689afdbe3e
+    pristine_git_object: e4eecdde04f8ee477ade619773d2f70ec9577d08
   internal/sdk/providers.go:
     id: 3c6c5c46b0f8
     last_write_checksum: sha1:11db9cebc5018f96e8c15af884bf457b25516550
@@ -8566,7 +8566,7 @@ examples:
           Idempotency-Key: "wayfair-gpt-4o-eastus-2026-09"
           idempotency-key: "wayfair-gpt-4o-eastus-2026-09"
       requestBody:
-        application/json: {"activate": {"workspace_id": "550e8400-e29b-41d4-a716-446655440000"}, "base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "model_permaslug": "openai/gpt-4o-2024-08-06", "pricing": {"cache_read": "0.00000025", "cache_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025"}, "provider_slug": "azure", "upstream_model_id": "gpt-4o-prod"}
+        application/json: {"activate": {"workspace_id": "550e8400-e29b-41d4-a716-446655440000"}, "base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "model_permaslug": "openai/gpt-4o-2024-08-06", "pricing": {"completion": "0.00001", "prompt": "0.0000025"}, "provider_slug": "azure", "upstream_model_id": "gpt-4o-prod"}
       responses:
         "201":
           application/json: {"data": {"created_at": "2026-09-24T10:30:00Z", "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "provider_name": "Azure", "status": "active", "declared_region": "us", "declared_zdr": true}}
@@ -8623,7 +8623,7 @@ examples:
           id: "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11"
       responses:
         "200":
-          application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"cache_read": "0.00000025", "cache_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "tested_parameters": ["tools", "tool_choice", "response_format"], "upstream_model_id": "gpt-4o-2024-08-06"}}
+          application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "tested_parameters": ["tools", "tool_choice", "response_format"], "upstream_model_id": "gpt-4o-2024-08-06"}}
         "401":
           application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
         "403":
@@ -8643,7 +8643,7 @@ examples:
         application/json: {"base_url": "https://contoso.openai.azure.com", "declared_region": "us", "upstream_model_id": "gpt-4o-prod"}
       responses:
         "200":
-          application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"cache_read": "0.00000025", "cache_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "tested_parameters": ["tools", "tool_choice", "response_format"], "upstream_model_id": "gpt-4o-2024-08-06"}}
+          application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "tested_parameters": ["tools", "tool_choice", "response_format"], "upstream_model_id": "gpt-4o-2024-08-06"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -8746,10 +8746,10 @@ examples:
         path:
           id: "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11"
       requestBody:
-        application/json: {"pricing": {"cache_read": "0.00000025", "cache_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025"}}
+        application/json: {"pricing": {"completion": "0.00001", "prompt": "0.0000025"}}
       responses:
         "200":
-          application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"cache_read": "0.00000025", "cache_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "tested_parameters": ["tools", "tool_choice", "response_format"], "upstream_model_id": "gpt-4o-2024-08-06"}}
+          application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "tested_parameters": ["tools", "tool_choice", "response_format"], "upstream_model_id": "gpt-4o-2024-08-06"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -9529,7 +9529,7 @@ examples:
         application/json: {"declared_parameters": ["temperature", "seed"]}
       responses:
         "200":
-          application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"cache_read": "0.00000025", "cache_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "tested_parameters": ["tools", "tool_choice", "response_format"], "upstream_model_id": "gpt-4o-2024-08-06"}}
+          application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_parameters": ["temperature", "seed"], "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "tested_parameters": ["tools", "tool_choice", "response_format"], "upstream_model_id": "gpt-4o-2024-08-06"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":

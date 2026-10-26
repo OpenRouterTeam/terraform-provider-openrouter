@@ -11,10 +11,8 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
   declared_zdr    = true
   model_permaslug = "openai/gpt-4o-2024-08-06"
   pricing = {
-    cache_read  = "0.00000025"
-    cache_write = "0.000003125"
-    completion  = "0.00001"
-    prompt      = "0.0000025"
+    completion = "0.00001"
+    prompt     = "0.0000025"
   }
   provider_slug     = "openai"
   upstream_model_id = "gpt-4o-2024-08-06"
