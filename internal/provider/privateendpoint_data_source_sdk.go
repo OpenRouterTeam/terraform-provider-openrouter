@@ -16,6 +16,10 @@ func (r *PrivateEndpointDataSourceModel) RefreshFromSharedPrivateEndpoint(ctx co
 	var diags diag.Diagnostics
 
 	r.BaseURL = types.StringPointerValue(resp.BaseURL)
+	r.DeclaredParameters = make([]types.String, 0, len(resp.DeclaredParameters))
+	for _, v := range resp.DeclaredParameters {
+		r.DeclaredParameters = append(r.DeclaredParameters, types.StringValue(v))
+	}
 	if resp.DeclaredRegion != nil {
 		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))
 	} else {
@@ -27,11 +31,17 @@ func (r *PrivateEndpointDataSourceModel) RefreshFromSharedPrivateEndpoint(ctx co
 	r.ModelPermaslug = types.StringValue(resp.ModelPermaslug)
 	r.ModelSlug = types.StringPointerValue(resp.ModelSlug)
 	r.Pricing = &tfTypes.PrivateEndpointPricing{}
+	r.Pricing.CacheRead = types.StringPointerValue(resp.Pricing.CacheRead)
+	r.Pricing.CacheWrite = types.StringPointerValue(resp.Pricing.CacheWrite)
 	r.Pricing.Completion = types.StringValue(resp.Pricing.Completion)
 	r.Pricing.Prompt = types.StringValue(resp.Pricing.Prompt)
 	r.ProviderName = types.StringValue(resp.ProviderName)
 	r.ProviderSlug = types.StringPointerValue(resp.ProviderSlug)
 	r.Status = types.StringValue(string(resp.Status))
+	r.TestedParameters = make([]types.String, 0, len(resp.TestedParameters))
+	for _, v := range resp.TestedParameters {
+		r.TestedParameters = append(r.TestedParameters, types.StringValue(v))
+	}
 	r.UpstreamModelID = types.StringValue(resp.UpstreamModelID)
 
 	return diags
