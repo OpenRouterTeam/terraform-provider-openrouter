@@ -9,7 +9,6 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
   ]
   declared_region = "us"
   declared_zdr    = true
-  idempotency_key = "wayfair-gpt-4o-eastus-2026-09"
   model_permaslug = "openai/gpt-4o-2024-08-06"
   pricing = {
     cache_read  = "0.00000025"

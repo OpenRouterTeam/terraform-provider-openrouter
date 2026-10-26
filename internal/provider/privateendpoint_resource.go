@@ -49,7 +49,6 @@ type PrivateEndpointResourceModel struct {
 	DeclaredRegion     types.String                       `tfsdk:"declared_region"`
 	DeclaredZdr        types.Bool                         `tfsdk:"declared_zdr"`
 	ID                 types.String                       `tfsdk:"id"`
-	IdempotencyKey     types.String                       `tfsdk:"idempotency_key"`
 	ModelName          types.String                       `tfsdk:"model_name"`
 	ModelPermaslug     types.String                       `tfsdk:"model_permaslug"`
 	ModelSlug          types.String                       `tfsdk:"model_slug"`
@@ -131,16 +130,6 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
 				Description: `Stable identifier of the private endpoint.`,
-			},
-			"idempotency_key": schema.StringAttribute{
-				Optional: true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIfConfigured(),
-				},
-				Description: `Retry-safe create: a repeated create with the same key from the same organization returns the endpoint the first request created instead of creating another. The endpoint is returned as it is now. Reusing a key with a different request body (model, provider, base URL, upstream model ID, declared ZDR or region, or pricing) is rejected with 422 ` + "`" + `idempotency_key_reused` + "`" + `. ` + "`" + `activate` + "`" + ` is not compared, and later edits to the endpoint do not affect the comparison. Requires replacement if changed.`,
-				Validators: []validator.String{
-					stringvalidator.UTF8LengthBetween(1, 255),
-				},
 			},
 			"model_name": schema.StringAttribute{
 				Computed: true,

@@ -101,12 +101,6 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpointResponse(
 func (r *PrivateEndpointResourceModel) ToOperationsCreatePrivateEndpointRequest(ctx context.Context) (*operations.CreatePrivateEndpointRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	idempotencyKey := new(string)
-	if !r.IdempotencyKey.IsUnknown() && !r.IdempotencyKey.IsNull() {
-		*idempotencyKey = r.IdempotencyKey.ValueString()
-	} else {
-		idempotencyKey = nil
-	}
 	body, bodyDiags := r.ToSharedCreatePrivateEndpointRequest(ctx)
 	diags.Append(bodyDiags...)
 
@@ -115,8 +109,7 @@ func (r *PrivateEndpointResourceModel) ToOperationsCreatePrivateEndpointRequest(
 	}
 
 	out := operations.CreatePrivateEndpointRequest{
-		IdempotencyKey: idempotencyKey,
-		Body:           *body,
+		Body: *body,
 	}
 
 	return &out, diags
