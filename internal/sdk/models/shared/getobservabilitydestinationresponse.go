@@ -10,17 +10,17 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type GetObservabilityDestinationResponseMethod string
+type GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod string
 
 const (
-	GetObservabilityDestinationResponseMethodPost GetObservabilityDestinationResponseMethod = "POST"
-	GetObservabilityDestinationResponseMethodPut  GetObservabilityDestinationResponseMethod = "PUT"
+	GetObservabilityDestinationResponseObservabilityWebhookDestinationMethodPost GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod = "POST"
+	GetObservabilityDestinationResponseObservabilityWebhookDestinationMethodPut  GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod = "PUT"
 )
 
-func (e GetObservabilityDestinationResponseMethod) ToPointer() *GetObservabilityDestinationResponseMethod {
+func (e GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod) ToPointer() *GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod {
 	return &e
 }
-func (e *GetObservabilityDestinationResponseMethod) UnmarshalJSON(data []byte) error {
+func (e *GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -29,17 +29,17 @@ func (e *GetObservabilityDestinationResponseMethod) UnmarshalJSON(data []byte) e
 	case "POST":
 		fallthrough
 	case "PUT":
-		*e = GetObservabilityDestinationResponseMethod(v)
+		*e = GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for GetObservabilityDestinationResponseMethod: %v", v)
+		return fmt.Errorf("invalid value for GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod: %v", v)
 	}
 }
 
 type GetObservabilityDestinationResponseConfigWebhook struct {
-	Headers map[string]string                          `json:"headers,omitzero"`
-	Method  *GetObservabilityDestinationResponseMethod `json:"method,omitzero"`
-	URL     string                                     `json:"url"`
+	Headers map[string]string                                                         `json:"headers,omitzero"`
+	Method  *GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod `json:"method,omitzero"`
+	URL     string                                                                    `json:"url"`
 }
 
 func (g GetObservabilityDestinationResponseConfigWebhook) MarshalJSON() ([]byte, error) {
@@ -60,7 +60,7 @@ func (g *GetObservabilityDestinationResponseConfigWebhook) GetHeaders() map[stri
 	return g.Headers
 }
 
-func (g *GetObservabilityDestinationResponseConfigWebhook) GetMethod() *GetObservabilityDestinationResponseMethod {
+func (g *GetObservabilityDestinationResponseConfigWebhook) GetMethod() *GetObservabilityDestinationResponseObservabilityWebhookDestinationMethod {
 	if g == nil {
 		return nil
 	}
