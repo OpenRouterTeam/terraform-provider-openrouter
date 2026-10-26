@@ -31,8 +31,6 @@ func (r *PrivateEndpointDataSourceModel) RefreshFromSharedPrivateEndpoint(ctx co
 	r.ModelPermaslug = types.StringValue(resp.ModelPermaslug)
 	r.ModelSlug = types.StringPointerValue(resp.ModelSlug)
 	r.Pricing = &tfTypes.PrivateEndpointPricing{}
-	r.Pricing.CacheRead = types.StringPointerValue(resp.Pricing.CacheRead)
-	r.Pricing.CacheWrite = types.StringPointerValue(resp.Pricing.CacheWrite)
 	r.Pricing.Completion = types.StringValue(resp.Pricing.Completion)
 	r.Pricing.Prompt = types.StringValue(resp.Pricing.Prompt)
 	r.ProviderName = types.StringValue(resp.ProviderName)

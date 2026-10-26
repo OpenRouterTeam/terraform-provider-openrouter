@@ -93,14 +93,6 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 			"pricing": schema.SingleNestedAttribute{
 				Computed: true,
 				Attributes: map[string]schema.Attribute{
-					"cache_read": schema.StringAttribute{
-						Computed:    true,
-						Description: `USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads.`,
-					},
-					"cache_write": schema.StringAttribute{
-						Computed:    true,
-						Description: `USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes.`,
-					},
 					"completion": schema.StringAttribute{
 						Computed:    true,
 						Description: `USD per completion token, as a decimal string.`,
