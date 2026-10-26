@@ -50,6 +50,10 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	var diags diag.Diagnostics
 
 	r.BaseURL = privateEndpointBaseURL(r.BaseURL, resp.BaseURL)
+	r.DeclaredParameters = make([]types.String, 0, len(resp.DeclaredParameters))
+	for _, v := range resp.DeclaredParameters {
+		r.DeclaredParameters = append(r.DeclaredParameters, types.StringValue(v))
+	}
 	if resp.DeclaredRegion != nil {
 		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))
 	} else {
@@ -63,6 +67,8 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	if r.Pricing == nil {
 		r.Pricing = &tfTypes.PrivateEndpointPricing{}
 	}
+	r.Pricing.CacheRead = types.StringPointerValue(resp.Pricing.CacheRead)
+	r.Pricing.CacheWrite = types.StringPointerValue(resp.Pricing.CacheWrite)
 	r.Pricing.Completion = types.StringValue(resp.Pricing.Completion)
 	r.Pricing.Prompt = types.StringValue(resp.Pricing.Prompt)
 	r.ProviderName = types.StringValue(resp.ProviderName)
@@ -70,6 +76,10 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 		r.ProviderSlug = types.StringValue(*resp.ProviderSlug)
 	}
 	r.Status = types.StringValue(string(resp.Status))
+	r.TestedParameters = make([]types.String, 0, len(resp.TestedParameters))
+	for _, v := range resp.TestedParameters {
+		r.TestedParameters = append(r.TestedParameters, types.StringValue(v))
+	}
 	r.UpstreamModelID = types.StringValue(resp.UpstreamModelID)
 
 	return diags
@@ -133,6 +143,27 @@ func (r *PrivateEndpointResourceModel) ToOperationsGetPrivateEndpointRequest(ctx
 	return &out, diags
 }
 
+func (r *PrivateEndpointResourceModel) ToOperationsUpdatePrivateEndpointParametersRequest(ctx context.Context) (*operations.UpdatePrivateEndpointParametersRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	var id string
+	id = r.ID.ValueString()
+
+	body, bodyDiags := r.ToSharedUpdatePrivateEndpointParametersRequest(ctx)
+	diags.Append(bodyDiags...)
+
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	out := operations.UpdatePrivateEndpointParametersRequest{
+		ID:   id,
+		Body: *body,
+	}
+
+	return &out, diags
+}
+
 func (r *PrivateEndpointResourceModel) ToOperationsUpdatePrivateEndpointPricingRequest(ctx context.Context) (*operations.UpdatePrivateEndpointPricingRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -172,6 +203,10 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 	} else {
 		baseURL = nil
 	}
+	declaredParameters := make([]shared.PrivateEndpointDeclaredParameter, 0, len(r.DeclaredParameters))
+	for _, declaredParametersItem := range r.DeclaredParameters {
+		declaredParameters = append(declaredParameters, shared.PrivateEndpointDeclaredParameter(declaredParametersItem.ValueString()))
+	}
 	declaredRegion := new(shared.CreatePrivateEndpointRequestDeclaredRegion)
 	if !r.DeclaredRegion.IsUnknown() && !r.DeclaredRegion.IsNull() {
 		*declaredRegion = shared.CreatePrivateEndpointRequestDeclaredRegion(r.DeclaredRegion.ValueString())
@@ -189,6 +224,18 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 
 	var pricing *shared.PrivateEndpointPricing
 	if r.Pricing != nil {
+		cacheRead := new(string)
+		if !r.Pricing.CacheRead.IsUnknown() && !r.Pricing.CacheRead.IsNull() {
+			*cacheRead = r.Pricing.CacheRead.ValueString()
+		} else {
+			cacheRead = nil
+		}
+		cacheWrite := new(string)
+		if !r.Pricing.CacheWrite.IsUnknown() && !r.Pricing.CacheWrite.IsNull() {
+			*cacheWrite = r.Pricing.CacheWrite.ValueString()
+		} else {
+			cacheWrite = nil
+		}
 		var completion string
 		completion = r.Pricing.Completion.ValueString()
 
@@ -196,6 +243,8 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 		prompt = r.Pricing.Prompt.ValueString()
 
 		pricing = &shared.PrivateEndpointPricing{
+			CacheRead:  cacheRead,
+			CacheWrite: cacheWrite,
 			Completion: completion,
 			Prompt:     prompt,
 		}
@@ -207,14 +256,29 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 	upstreamModelID = r.UpstreamModelID.ValueString()
 
 	out := shared.CreatePrivateEndpointRequest{
-		Activate:        activate,
-		BaseURL:         baseURL,
-		DeclaredRegion:  declaredRegion,
-		DeclaredZdr:     declaredZdr,
-		ModelPermaslug:  modelPermaslug,
-		Pricing:         pricing,
-		ProviderSlug:    providerSlug,
-		UpstreamModelID: upstreamModelID,
+		Activate:           activate,
+		BaseURL:            baseURL,
+		DeclaredParameters: declaredParameters,
+		DeclaredRegion:     declaredRegion,
+		DeclaredZdr:        declaredZdr,
+		ModelPermaslug:     modelPermaslug,
+		Pricing:            pricing,
+		ProviderSlug:       providerSlug,
+		UpstreamModelID:    upstreamModelID,
+	}
+
+	return &out, diags
+}
+
+func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointParametersRequest(ctx context.Context) (*shared.UpdatePrivateEndpointParametersRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	declaredParameters := make([]shared.PrivateEndpointDeclaredParameter, 0, len(r.DeclaredParameters))
+	for _, declaredParametersItem := range r.DeclaredParameters {
+		declaredParameters = append(declaredParameters, shared.PrivateEndpointDeclaredParameter(declaredParametersItem.ValueString()))
+	}
+	out := shared.UpdatePrivateEndpointParametersRequest{
+		DeclaredParameters: declaredParameters,
 	}
 
 	return &out, diags
@@ -223,6 +287,18 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointPricingRequest(ctx context.Context) (*shared.UpdatePrivateEndpointPricingRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	cacheRead := new(string)
+	if !r.Pricing.CacheRead.IsUnknown() && !r.Pricing.CacheRead.IsNull() {
+		*cacheRead = r.Pricing.CacheRead.ValueString()
+	} else {
+		cacheRead = nil
+	}
+	cacheWrite := new(string)
+	if !r.Pricing.CacheWrite.IsUnknown() && !r.Pricing.CacheWrite.IsNull() {
+		*cacheWrite = r.Pricing.CacheWrite.ValueString()
+	} else {
+		cacheWrite = nil
+	}
 	var completion string
 	completion = r.Pricing.Completion.ValueString()
 
@@ -230,6 +306,8 @@ func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointPricingReque
 	prompt = r.Pricing.Prompt.ValueString()
 
 	pricing := shared.PrivateEndpointPricing{
+		CacheRead:  cacheRead,
+		CacheWrite: cacheWrite,
 		Completion: completion,
 		Prompt:     prompt,
 	}

@@ -8,6 +8,8 @@ import (
 )
 
 type PrivateEndpointPricing struct {
+	CacheRead  types.String `tfsdk:"cache_read"`
+	CacheWrite types.String `tfsdk:"cache_write"`
 	Completion types.String `tfsdk:"completion"`
 	Prompt     types.String `tfsdk:"prompt"`
 }

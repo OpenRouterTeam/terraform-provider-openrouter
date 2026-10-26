@@ -7,11 +7,13 @@ import (
 	"context"
 	"fmt"
 	speakeasy_boolplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
+	speakeasy_listplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/listplanmodifier"
 	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	speakeasy_stringvalidators "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators/stringvalidators"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -41,19 +43,21 @@ type PrivateEndpointResource struct {
 
 // PrivateEndpointResourceModel describes the resource data model.
 type PrivateEndpointResourceModel struct {
-	Activate        *tfTypes.PrivateEndpointActivation `tfsdk:"activate"`
-	BaseURL         types.String                       `tfsdk:"base_url"`
-	DeclaredRegion  types.String                       `tfsdk:"declared_region"`
-	DeclaredZdr     types.Bool                         `tfsdk:"declared_zdr"`
-	ID              types.String                       `tfsdk:"id"`
-	ModelName       types.String                       `tfsdk:"model_name"`
-	ModelPermaslug  types.String                       `tfsdk:"model_permaslug"`
-	ModelSlug       types.String                       `tfsdk:"model_slug"`
-	Pricing         *tfTypes.PrivateEndpointPricing    `tfsdk:"pricing"`
-	ProviderName    types.String                       `tfsdk:"provider_name"`
-	ProviderSlug    types.String                       `tfsdk:"provider_slug"`
-	Status          types.String                       `tfsdk:"status"`
-	UpstreamModelID types.String                       `tfsdk:"upstream_model_id"`
+	Activate           *tfTypes.PrivateEndpointActivation `tfsdk:"activate"`
+	BaseURL            types.String                       `tfsdk:"base_url"`
+	DeclaredParameters []types.String                     `tfsdk:"declared_parameters"`
+	DeclaredRegion     types.String                       `tfsdk:"declared_region"`
+	DeclaredZdr        types.Bool                         `tfsdk:"declared_zdr"`
+	ID                 types.String                       `tfsdk:"id"`
+	ModelName          types.String                       `tfsdk:"model_name"`
+	ModelPermaslug     types.String                       `tfsdk:"model_permaslug"`
+	ModelSlug          types.String                       `tfsdk:"model_slug"`
+	Pricing            *tfTypes.PrivateEndpointPricing    `tfsdk:"pricing"`
+	ProviderName       types.String                       `tfsdk:"provider_name"`
+	ProviderSlug       types.String                       `tfsdk:"provider_slug"`
+	Status             types.String                       `tfsdk:"status"`
+	TestedParameters   []types.String                     `tfsdk:"tested_parameters"`
+	UpstreamModelID    types.String                       `tfsdk:"upstream_model_id"`
 }
 
 func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -62,7 +66,7 @@ func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.Met
 
 func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\nOnly `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
+		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\nOnly `pricing` and `declared_parameters` change in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
 		Attributes: map[string]schema.Attribute{
 			"activate": schema.SingleNestedAttribute{
 				Optional: true,
@@ -84,6 +88,15 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
 					stringvalidator.RegexMatches(regexp.MustCompile(`^(?i)https://`), "must match pattern "+regexp.MustCompile(`^(?i)https://`).String()),
+				},
+			},
+			"declared_parameters": schema.ListAttribute{
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: `Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. ` + "`" + `tool_choice` + "`" + ` requires ` + "`" + `tools` + "`" + ` to be tested or declared.`,
+				Validators: []validator.List{
+					listvalidator.SizeAtMost(25),
 				},
 			},
 			"declared_region": schema.StringAttribute{
@@ -147,6 +160,22 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Computed: true,
 				Optional: true,
 				Attributes: map[string]schema.Attribute{
+					"cache_read": schema.StringAttribute{
+						Computed:    true,
+						Optional:    true,
+						Description: `USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads.`,
+						Validators: []validator.String{
+							stringvalidator.RegexMatches(regexp.MustCompile(`^\d+(\.\d+)?$`), "must match pattern "+regexp.MustCompile(`^\d+(\.\d+)?$`).String()),
+						},
+					},
+					"cache_write": schema.StringAttribute{
+						Computed:    true,
+						Optional:    true,
+						Description: `USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes.`,
+						Validators: []validator.String{
+							stringvalidator.RegexMatches(regexp.MustCompile(`^\d+(\.\d+)?$`), "must match pattern "+regexp.MustCompile(`^\d+(\.\d+)?$`).String()),
+						},
+					},
 					"completion": schema.StringAttribute{
 						Computed:    true,
 						Optional:    true,
@@ -192,6 +221,14 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
 				Description: `Lifecycle state. ` + "`" + `draft` + "`" + ` endpoints are not routable until validated and activated; ` + "`" + `disabled` + "`" + ` endpoints are activated but temporarily not routable.`,
+			},
+			"tested_parameters": schema.ListAttribute{
+				Computed: true,
+				PlanModifiers: []planmodifier.List{
+					speakeasy_listplanmodifier.SuppressDiff(speakeasy_listplanmodifier.ExplicitSuppress),
+				},
+				ElementType: types.StringType,
+				Description: `Parameters a validation run proved the upstream honors (` + "`" + `tools` + "`" + `, ` + "`" + `tool_choice` + "`" + `, ` + "`" + `response_format` + "`" + `, ` + "`" + `structured_outputs` + "`" + `, ` + "`" + `stop` + "`" + `). Read-only; cleared when the upstream configuration changes.`,
 			},
 			"upstream_model_id": schema.StringAttribute{
 				Required: true,
@@ -427,44 +464,82 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	}
 	pricingChanged, pricingDiags := privateEndpointPricingChanged(ctx, req)
 	resp.Diagnostics.Append(pricingDiags...)
+	declaredParametersChanged, declaredDiags := privateEndpointDeclaredParametersChanged(ctx, req)
+	resp.Diagnostics.Append(declaredDiags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if !pricingChanged {
+	if !pricingChanged && !declaredParametersChanged {
 		r.refreshPrivateEndpointWithoutPricingWrite(ctx, plan, data, resp)
 		return
 	}
 
-	request, requestDiags := data.ToOperationsUpdatePrivateEndpointPricingRequest(ctx)
-	resp.Diagnostics.Append(requestDiags...)
+	if pricingChanged {
+		request, requestDiags := data.ToOperationsUpdatePrivateEndpointPricingRequest(ctx)
+		resp.Diagnostics.Append(requestDiags...)
 
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	res, err := r.client.PrivateEndpoints.UpdatePricing(ctx, *request)
-	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
-		if res != nil && res.RawResponse != nil {
-			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		if resp.Diagnostics.HasError() {
+			return
 		}
-		return
-	}
-	if res == nil {
-		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
-		return
-	}
-	if res.StatusCode != 200 {
-		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
-		return
-	}
-	if !(res.PrivateEndpointResponse != nil) {
-		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
-		return
-	}
-	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
+		res, err := r.client.PrivateEndpoints.UpdatePricing(ctx, *request)
+		if err != nil {
+			resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+			if res != nil && res.RawResponse != nil {
+				resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+			}
+			return
+		}
+		if res == nil {
+			resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
+			return
+		}
+		if res.StatusCode != 200 {
+			resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
+			return
+		}
+		if !(res.PrivateEndpointResponse != nil) {
+			resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
+			return
+		}
+		resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
 
-	if resp.Diagnostics.HasError() {
-		return
+		if resp.Diagnostics.HasError() {
+			return
+		}
+	}
+
+	if declaredParametersChanged {
+		request1, request1Diags := data.ToOperationsUpdatePrivateEndpointParametersRequest(ctx)
+		resp.Diagnostics.Append(request1Diags...)
+
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		res1, err := r.client.PrivateEndpoints.UpdateParameters(ctx, *request1)
+		if err != nil {
+			resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+			if res1 != nil && res1.RawResponse != nil {
+				resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res1.RawResponse))
+			}
+			return
+		}
+		if res1 == nil {
+			resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res1))
+			return
+		}
+		if res1.StatusCode != 200 {
+			resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res1.StatusCode), debugResponse(res1.RawResponse))
+			return
+		}
+		if !(res1.PrivateEndpointResponse != nil) {
+			resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res1.RawResponse))
+			return
+		}
+		resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res1.PrivateEndpointResponse)...)
+
+		if resp.Diagnostics.HasError() {
+			return
+		}
 	}
 
 	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)

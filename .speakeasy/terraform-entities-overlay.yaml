@@ -380,12 +380,12 @@ actions:
       x-speakeasy-entity-operation: WorkspaceBudget#delete
   # ---------------------------------------------------------------------------
   # PrivateEndpoint  (POST /private-endpoints, GET/DELETE /private-endpoints/{id},
-  # PUT /private-endpoints/{id}/pricing). ECO-4315.
+  # PUT /private-endpoints/{id}/pricing and .../parameters). ECO-4315, ECO-5395.
   # Component-based: PrivateEndpoint is the read model, ManagedPrivateEndpoint
   # the create response. Create sends `activate` so one apply runs
   # create -> validate -> activate. The API only edits pricing in place once an
   # endpoint leaves draft, so every other create field forces replacement and
-  # PUT .../pricing is the sole update operation.
+  # PUT .../pricing and PUT .../parameters are the update operations.
   # ---------------------------------------------------------------------------
   - target: $["components"]["schemas"]["PrivateEndpoint"]
     update:
@@ -399,7 +399,7 @@ actions:
       x-speakeasy-entity-description: |-
         A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
 
-        Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+        Only `pricing` and `declared_parameters` change in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
 
         `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
 
@@ -407,6 +407,9 @@ actions:
 
         If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
   - target: $["components"]["schemas"]["UpdatePrivateEndpointPricingRequest"]
+    update:
+      x-speakeasy-entity: PrivateEndpoint
+  - target: $["components"]["schemas"]["UpdatePrivateEndpointParametersRequest"]
     update:
       x-speakeasy-entity: PrivateEndpoint
   - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["model_permaslug"]
@@ -450,6 +453,11 @@ actions:
   - target: $["paths"]["/private-endpoints/{id}/pricing"]["put"]
     update:
       x-speakeasy-entity-operation: PrivateEndpoint#update
+  # Declared parameters change in place too. Update() only sends the PUT whose
+  # attribute the plan changed (custom code in privateendpoint_resource.go).
+  - target: $["paths"]["/private-endpoints/{id}/parameters"]["put"]
+    update:
+      x-speakeasy-entity-operation: PrivateEndpoint#update#2
   - target: $["paths"]["/private-endpoints/{id}"]["delete"]
     update:
       x-speakeasy-entity-operation: PrivateEndpoint#delete
@@ -598,7 +606,7 @@ actions:
           - '429'
           - '5XX'
         retryConnectionErrors: true
-  - target: $["paths"]["/private-endpoints"]["post"]["parameters"][?(@.name == "Idempotency-Key")]
+  - target: $["paths"]["/private-endpoints"]["post"]["parameters"][?(@.name == "idempotency-key")]
     update:
       x-speakeasy-terraform-ignore: true
   # draft_only is a flag on one DELETE call, not a property of the endpoint.
@@ -616,9 +624,16 @@ actions:
   - target: $["components"]["schemas"]["PrivateEndpointActivation"]["properties"]["workspace_id"]
     update:
       x-speakeasy-param-force-new: false
+  # Declared parameters are edited in place through PUT .../parameters.
+  - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["declared_parameters"]
+    update:
+      x-speakeasy-param-force-new: false
   # Server-assigned attributes keep their state value in plans for in-place
   # (pricing) updates instead of showing as known after apply.
   - target: $["components"]["schemas"]["PrivateEndpoint"]["properties"]["id"]
+    update:
+      x-speakeasy-param-suppress-computed-diff: true
+  - target: $["components"]["schemas"]["PrivateEndpoint"]["properties"]["tested_parameters"]
     update:
       x-speakeasy-param-suppress-computed-diff: true
   # status is a $ref to the shared enum, where a sibling annotation is ignored.
