@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func TestPrivateEndpointCreateConflictDetail(t *testing.T) {
@@ -32,5 +34,33 @@ func TestPrivateEndpointCreateConflictDetail(t *testing.T) {
 	}
 	if got := privateEndpointCreateConflictDetail(&operations.CreatePrivateEndpointResponse{StatusCode: 409}); got == "" {
 		t.Fatal("detail without a raw response is empty")
+	}
+}
+
+func TestDeclaredParameterListChanged(t *testing.T) {
+	list := func(values ...string) types.List {
+		elements := make([]attr.Value, 0, len(values))
+		for _, value := range values {
+			elements = append(elements, types.StringValue(value))
+		}
+		return types.ListValueMust(types.StringType, elements)
+	}
+	cases := []struct {
+		name    string
+		planned types.List
+		current types.List
+		want    bool
+	}{
+		{"unset plan keeps the API value", types.ListNull(types.StringType), list("seed"), false},
+		{"unknown plan keeps the API value", types.ListUnknown(types.StringType), list("seed"), false},
+		{"same list", list("seed", "tools"), list("seed", "tools"), false},
+		{"added parameter", list("seed", "tools"), list("seed"), true},
+		{"cleared list", list(), list("seed"), true},
+		{"reordered list", list("tools", "seed"), list("seed", "tools"), true},
+	}
+	for _, tc := range cases {
+		if got := declaredParameterListChanged(tc.planned, tc.current); got != tc.want {
+			t.Errorf("%s: changed = %v, want %v", tc.name, got, tc.want)
+		}
 	}
 }

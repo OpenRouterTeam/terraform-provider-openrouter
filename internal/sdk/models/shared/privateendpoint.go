@@ -6,6 +6,8 @@ package shared
 type PrivateEndpoint struct {
 	// HTTPS base URL of your deployment, or `null` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 	BaseURL *string `json:"base_url"`
+	// Parameters you declared the upstream supports. Requests that use a parameter only route to this endpoint when it is tested or declared.
+	DeclaredParameters []string `json:"declared_parameters"`
 	// Where you attest this deployment processes data. `global` means not regional; `null` means undeclared.
 	DeclaredRegion *PrivateEndpointDeclaredRegion `json:"declared_region"`
 	// Whether you attest this deployment retains no prompt or completion data. `null` means undeclared.
@@ -26,6 +28,8 @@ type PrivateEndpoint struct {
 	ProviderSlug *string `json:"provider_slug"`
 	// Lifecycle state. `draft` endpoints are not routable until validated and activated; `disabled` endpoints are activated but temporarily not routable.
 	Status PrivateEndpointStatus `json:"status"`
+	// Parameters a validation run proved the upstream honors (`tools`, `tool_choice`, `response_format`, `structured_outputs`, `stop`). Read-only; cleared when the upstream configuration changes.
+	TestedParameters []string `json:"tested_parameters"`
 	// Model or deployment identifier sent to the upstream provider.
 	UpstreamModelID string `json:"upstream_model_id"`
 }
@@ -35,6 +39,13 @@ func (p *PrivateEndpoint) GetBaseURL() *string {
 		return nil
 	}
 	return p.BaseURL
+}
+
+func (p *PrivateEndpoint) GetDeclaredParameters() []string {
+	if p == nil {
+		return []string{}
+	}
+	return p.DeclaredParameters
 }
 
 func (p *PrivateEndpoint) GetDeclaredRegion() *PrivateEndpointDeclaredRegion {
@@ -105,6 +116,13 @@ func (p *PrivateEndpoint) GetStatus() PrivateEndpointStatus {
 		return PrivateEndpointStatus("")
 	}
 	return p.Status
+}
+
+func (p *PrivateEndpoint) GetTestedParameters() []string {
+	if p == nil {
+		return []string{}
+	}
+	return p.TestedParameters
 }
 
 func (p *PrivateEndpoint) GetUpstreamModelID() string {

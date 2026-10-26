@@ -30,18 +30,20 @@ type PrivateEndpointDataSource struct {
 
 // PrivateEndpointDataSourceModel describes the data model.
 type PrivateEndpointDataSourceModel struct {
-	BaseURL         types.String                    `tfsdk:"base_url"`
-	DeclaredRegion  types.String                    `tfsdk:"declared_region"`
-	DeclaredZdr     types.Bool                      `tfsdk:"declared_zdr"`
-	ID              types.String                    `tfsdk:"id"`
-	ModelName       types.String                    `tfsdk:"model_name"`
-	ModelPermaslug  types.String                    `tfsdk:"model_permaslug"`
-	ModelSlug       types.String                    `tfsdk:"model_slug"`
-	Pricing         *tfTypes.PrivateEndpointPricing `tfsdk:"pricing"`
-	ProviderName    types.String                    `tfsdk:"provider_name"`
-	ProviderSlug    types.String                    `tfsdk:"provider_slug"`
-	Status          types.String                    `tfsdk:"status"`
-	UpstreamModelID types.String                    `tfsdk:"upstream_model_id"`
+	BaseURL            types.String                    `tfsdk:"base_url"`
+	DeclaredParameters []types.String                  `tfsdk:"declared_parameters"`
+	DeclaredRegion     types.String                    `tfsdk:"declared_region"`
+	DeclaredZdr        types.Bool                      `tfsdk:"declared_zdr"`
+	ID                 types.String                    `tfsdk:"id"`
+	ModelName          types.String                    `tfsdk:"model_name"`
+	ModelPermaslug     types.String                    `tfsdk:"model_permaslug"`
+	ModelSlug          types.String                    `tfsdk:"model_slug"`
+	Pricing            *tfTypes.PrivateEndpointPricing `tfsdk:"pricing"`
+	ProviderName       types.String                    `tfsdk:"provider_name"`
+	ProviderSlug       types.String                    `tfsdk:"provider_slug"`
+	Status             types.String                    `tfsdk:"status"`
+	TestedParameters   []types.String                  `tfsdk:"tested_parameters"`
+	UpstreamModelID    types.String                    `tfsdk:"upstream_model_id"`
 }
 
 // Metadata returns the data source type name.
@@ -58,6 +60,11 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 			"base_url": schema.StringAttribute{
 				Computed:    true,
 				Description: `HTTPS base URL of your deployment, or ` + "`" + `null` + "`" + ` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).`,
+			},
+			"declared_parameters": schema.ListAttribute{
+				Computed:    true,
+				ElementType: types.StringType,
+				Description: `Parameters you declared the upstream supports. Requests that use a parameter only route to this endpoint when it is tested or declared.`,
 			},
 			"declared_region": schema.StringAttribute{
 				Computed:    true,
@@ -108,6 +115,11 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 			"status": schema.StringAttribute{
 				Computed:    true,
 				Description: `Lifecycle state. ` + "`" + `draft` + "`" + ` endpoints are not routable until validated and activated; ` + "`" + `disabled` + "`" + ` endpoints are activated but temporarily not routable.`,
+			},
+			"tested_parameters": schema.ListAttribute{
+				Computed:    true,
+				ElementType: types.StringType,
+				Description: `Parameters a validation run proved the upstream honors (` + "`" + `tools` + "`" + `, ` + "`" + `tool_choice` + "`" + `, ` + "`" + `response_format` + "`" + `, ` + "`" + `structured_outputs` + "`" + `, ` + "`" + `stop` + "`" + `). Read-only; cleared when the upstream configuration changes.`,
 			},
 			"upstream_model_id": schema.StringAttribute{
 				Computed:    true,

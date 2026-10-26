@@ -28,6 +28,7 @@ data "openrouter_private_endpoint" "my_privateendpoint" {
 ### Read-Only
 
 - `base_url` (String) HTTPS base URL of your deployment, or `null` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
+- `declared_parameters` (List of String) Parameters you declared the upstream supports. Requests that use a parameter only route to this endpoint when it is tested or declared.
 - `declared_region` (String) Where you attest this deployment processes data. `global` means not regional; `null` means undeclared.
 - `declared_zdr` (Boolean) Whether you attest this deployment retains no prompt or completion data. `null` means undeclared.
 - `model_name` (String) Display name of the model, or `null` when the model is no longer listed.
@@ -37,6 +38,7 @@ data "openrouter_private_endpoint" "my_privateendpoint" {
 - `provider_name` (String) Display name of the upstream provider.
 - `provider_slug` (String) Slug of the upstream provider, or `null` when the provider is no longer listed.
 - `status` (String) Lifecycle state. `draft` endpoints are not routable until validated and activated; `disabled` endpoints are activated but temporarily not routable.
+- `tested_parameters` (List of String) Parameters a validation run proved the upstream honors (`tools`, `tool_choice`, `response_format`, `structured_outputs`, `stop`). Read-only; cleared when the upstream configuration changes.
 - `upstream_model_id` (String) Model or deployment identifier sent to the upstream provider.
 
 <a id="nestedatt--pricing"></a>
