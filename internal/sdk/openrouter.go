@@ -3,7 +3,7 @@
 
 package sdk
 
-// Generated from OpenAPI doc version 1.0.0 and generator version 2.950.2
+// Generated from OpenAPI doc version 1.0.0 and generator version 2.952.5
 
 import (
 	"context"
@@ -91,9 +91,7 @@ type OpenRouter struct {
 	// Guardrails endpoints
 	Guardrails *Guardrails
 	// Images endpoints
-	Images *Images
-	// Create, inspect, update, provision, suspend and delete OpenRouter interns through an API key, and talk to them: the chat route streams OpenAI-compatible completions from one intern, pausing as an `openrouter.provide_input` tool call when the intern needs your permission or an answer. Available to interns programme members; other callers receive 404. See https://openrouter.ai/docs/guides/ori/intern-chat.
-	Interns *Interns
+	Images  *Images
 	APIKeys *APIKeys
 	// Model information endpoints
 	Models *Models
@@ -103,6 +101,8 @@ type OpenRouter struct {
 	Organization *Organization
 	// Presets endpoints
 	Presets *Presets
+	// Private Endpoints endpoints
+	PrivateEndpoints *PrivateEndpoints
 	// Provider information endpoints
 	Providers *Providers
 	// Rerank endpoints
@@ -119,8 +119,6 @@ type OpenRouter struct {
 	Videos          *Videos
 	// Workspaces endpoints
 	Workspaces *Workspaces
-	// Private Endpoints endpoints
-	PrivateEndpoints *PrivateEndpoints
 
 	sdkConfiguration config.SDKConfiguration
 	hooks            *hooks.Hooks
@@ -199,9 +197,9 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
 		SDKVersion: "0.3.126",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.3.126 2.950.2 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			UserAgent:         "speakeasy-sdk/terraform 0.3.126 2.952.5 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
 			SDKVersion:        "0.3.126",
-			GenVersion:        "2.950.2",
+			GenVersion:        "2.952.5",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
 		},
@@ -243,12 +241,12 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Generations = newGenerations(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Guardrails = newGuardrails(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Images = newImages(sdk, sdk.sdkConfiguration, sdk.hooks)
-	sdk.Interns = newInterns(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.APIKeys = newAPIKeys(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Models = newModels(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Observability = newObservability(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Organization = newOrganization(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Presets = newPresets(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Providers = newProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Rerank = newRerank(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Scim = newScim(sdk, sdk.sdkConfiguration, sdk.hooks)
@@ -258,7 +256,6 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.VideoGeneration = newVideoGeneration(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Videos = newVideos(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Workspaces = newWorkspaces(sdk, sdk.sdkConfiguration, sdk.hooks)
-	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 
 	return sdk
 }
