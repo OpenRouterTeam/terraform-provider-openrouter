@@ -1040,9 +1040,15 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				data.S3.BroadcastGenerationIdentity = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.BroadcastGenerationIdentity)
 				data.S3.BroadcastGenerationRequestContext = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.BroadcastGenerationRequestContext)
 				data.S3.Config = &tfTypes.ObservabilityDestinationConfigS3{}
-				data.S3.Config.AccessKeyID = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.AccessKeyID)
+				data.S3.Config.AccessKeyID = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.AccessKeyID)
+				if dataItem.ObservabilityDestinationObservabilityS3Destination.Config.AuthMode != nil {
+					data.S3.Config.AuthMode = types.StringValue(string(*dataItem.ObservabilityDestinationObservabilityS3Destination.Config.AuthMode))
+				} else {
+					data.S3.Config.AuthMode = types.StringNull()
+				}
 				data.S3.Config.BucketName = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.BucketName)
 				data.S3.Config.Endpoint = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Endpoint)
+				data.S3.Config.ExternalID = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.ExternalID)
 				if len(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Headers) > 0 {
 					data.S3.Config.Headers = make(map[string]types.String, len(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Headers))
 					for key12, value12 := range dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Headers {
@@ -1051,8 +1057,14 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 				}
 				data.S3.Config.PathTemplate = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.PathTemplate)
 				data.S3.Config.Prefix = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Prefix)
+				if dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Provider != nil {
+					data.S3.Config.Provider = types.StringValue(string(*dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Provider))
+				} else {
+					data.S3.Config.Provider = types.StringNull()
+				}
 				data.S3.Config.Region = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.Region)
-				data.S3.Config.SecretAccessKey = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.SecretAccessKey)
+				data.S3.Config.RoleArn = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.RoleArn)
+				data.S3.Config.SecretAccessKey = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.SecretAccessKey)
 				data.S3.Config.SessionToken = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Config.SessionToken)
 				data.S3.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityS3Destination.CreatedAt)
 				data.S3.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityS3Destination.Enabled)
