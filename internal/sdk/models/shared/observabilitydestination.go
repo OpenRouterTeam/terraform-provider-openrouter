@@ -10,17 +10,17 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type ObservabilityDestinationMethod string
+type ObservabilityDestinationObservabilityWebhookDestinationMethod string
 
 const (
-	ObservabilityDestinationMethodPost ObservabilityDestinationMethod = "POST"
-	ObservabilityDestinationMethodPut  ObservabilityDestinationMethod = "PUT"
+	ObservabilityDestinationObservabilityWebhookDestinationMethodPost ObservabilityDestinationObservabilityWebhookDestinationMethod = "POST"
+	ObservabilityDestinationObservabilityWebhookDestinationMethodPut  ObservabilityDestinationObservabilityWebhookDestinationMethod = "PUT"
 )
 
-func (e ObservabilityDestinationMethod) ToPointer() *ObservabilityDestinationMethod {
+func (e ObservabilityDestinationObservabilityWebhookDestinationMethod) ToPointer() *ObservabilityDestinationObservabilityWebhookDestinationMethod {
 	return &e
 }
-func (e *ObservabilityDestinationMethod) UnmarshalJSON(data []byte) error {
+func (e *ObservabilityDestinationObservabilityWebhookDestinationMethod) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -29,17 +29,17 @@ func (e *ObservabilityDestinationMethod) UnmarshalJSON(data []byte) error {
 	case "POST":
 		fallthrough
 	case "PUT":
-		*e = ObservabilityDestinationMethod(v)
+		*e = ObservabilityDestinationObservabilityWebhookDestinationMethod(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for ObservabilityDestinationMethod: %v", v)
+		return fmt.Errorf("invalid value for ObservabilityDestinationObservabilityWebhookDestinationMethod: %v", v)
 	}
 }
 
 type ObservabilityDestinationConfigWebhook struct {
-	Headers map[string]string               `json:"headers,omitzero"`
-	Method  *ObservabilityDestinationMethod `json:"method,omitzero"`
-	URL     string                          `json:"url"`
+	Headers map[string]string                                              `json:"headers,omitzero"`
+	Method  *ObservabilityDestinationObservabilityWebhookDestinationMethod `json:"method,omitzero"`
+	URL     string                                                         `json:"url"`
 }
 
 func (o ObservabilityDestinationConfigWebhook) MarshalJSON() ([]byte, error) {
@@ -60,7 +60,7 @@ func (o *ObservabilityDestinationConfigWebhook) GetHeaders() map[string]string {
 	return o.Headers
 }
 
-func (o *ObservabilityDestinationConfigWebhook) GetMethod() *ObservabilityDestinationMethod {
+func (o *ObservabilityDestinationConfigWebhook) GetMethod() *ObservabilityDestinationObservabilityWebhookDestinationMethod {
 	if o == nil {
 		return nil
 	}
@@ -900,18 +900,87 @@ func (o *ObservabilityDestinationObservabilitySentryDestination) GetWorkspaceID(
 	return o.WorkspaceID
 }
 
+// ObservabilityDestinationAuthMode - IAM role: OpenRouter assumes a role in your AWS account with short-lived STS credentials, so you don't share long-lived keys.
+type ObservabilityDestinationAuthMode string
+
+const (
+	ObservabilityDestinationAuthModeAccessKeys ObservabilityDestinationAuthMode = "access_keys"
+	ObservabilityDestinationAuthModeIamRole    ObservabilityDestinationAuthMode = "iam_role"
+)
+
+func (e ObservabilityDestinationAuthMode) ToPointer() *ObservabilityDestinationAuthMode {
+	return &e
+}
+func (e *ObservabilityDestinationAuthMode) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "access_keys":
+		fallthrough
+	case "iam_role":
+		*e = ObservabilityDestinationAuthMode(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for ObservabilityDestinationAuthMode: %v", v)
+	}
+}
+
+// ObservabilityDestinationProvider - The object storage service that hosts the bucket. AWS S3 supports IAM role authentication; the other providers use access keys.
+type ObservabilityDestinationProvider string
+
+const (
+	ObservabilityDestinationProviderAws          ObservabilityDestinationProvider = "aws"
+	ObservabilityDestinationProviderCloudflareR2 ObservabilityDestinationProvider = "cloudflare_r2"
+	ObservabilityDestinationProviderGcs          ObservabilityDestinationProvider = "gcs"
+	ObservabilityDestinationProviderOther        ObservabilityDestinationProvider = "other"
+)
+
+func (e ObservabilityDestinationProvider) ToPointer() *ObservabilityDestinationProvider {
+	return &e
+}
+func (e *ObservabilityDestinationProvider) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "aws":
+		fallthrough
+	case "cloudflare_r2":
+		fallthrough
+	case "gcs":
+		fallthrough
+	case "other":
+		*e = ObservabilityDestinationProvider(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for ObservabilityDestinationProvider: %v", v)
+	}
+}
+
 type ObservabilityDestinationConfigS3 struct {
-	AccessKeyID string `json:"accessKeyId"`
-	BucketName  string `json:"bucketName"`
+	AccessKeyID *string `json:"accessKeyId,omitzero"`
+	// IAM role: OpenRouter assumes a role in your AWS account with short-lived STS credentials, so you don't share long-lived keys.
+	AuthMode   *ObservabilityDestinationAuthMode `default:"access_keys" json:"authMode"`
+	BucketName string                            `json:"bucketName"`
 	// Only for S3-compatible services like Cloudflare R2 (https://account-id.r2.cloudflarestorage.com) or MinIO. Leave blank for standard AWS S3.
 	Endpoint *string `json:"endpoint,omitzero"`
+	// Generated by OpenRouter when you save. Require it as sts:ExternalId in your role's trust policy.
+	ExternalID *string `json:"externalId,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers map[string]string `json:"headers,omitzero"`
 	// Template for S3 object path. The filename ({traceId}-{timestamp}.json) is automatically appended. Available variables: {prefix}, {date}, {year}, {month}, {day}, {apiKeyName}
-	PathTemplate    *string `json:"pathTemplate,omitzero"`
-	Prefix          *string `json:"prefix,omitzero"`
-	Region          *string `json:"region,omitzero"`
-	SecretAccessKey string  `json:"secretAccessKey"`
+	PathTemplate *string `json:"pathTemplate,omitzero"`
+	Prefix       *string `json:"prefix,omitzero"`
+	// The object storage service that hosts the bucket. AWS S3 supports IAM role authentication; the other providers use access keys.
+	Provider *ObservabilityDestinationProvider `json:"provider,omitzero"`
+	// Required for IAM role authentication. With access keys, AWS S3 detects the bucket region when you leave this blank.
+	Region *string `json:"region,omitzero"`
+	// The IAM role in your account that OpenRouter assumes. Its trust policy must allow sts:AssumeRole from arn:aws:iam::536697249728:role/openrouter-broadcast-exporter and require the external ID below, and its permissions must allow s3:PutObject on the bucket and prefix (plus kms:GenerateDataKey for SSE-KMS buckets).
+	RoleArn         *string `json:"roleArn,omitzero"`
+	SecretAccessKey *string `json:"secretAccessKey,omitzero"`
 	SessionToken    *string `json:"sessionToken,omitzero"`
 }
 
@@ -926,11 +995,18 @@ func (o *ObservabilityDestinationConfigS3) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (o *ObservabilityDestinationConfigS3) GetAccessKeyID() string {
+func (o *ObservabilityDestinationConfigS3) GetAccessKeyID() *string {
 	if o == nil {
-		return ""
+		return nil
 	}
 	return o.AccessKeyID
+}
+
+func (o *ObservabilityDestinationConfigS3) GetAuthMode() *ObservabilityDestinationAuthMode {
+	if o == nil {
+		return nil
+	}
+	return o.AuthMode
 }
 
 func (o *ObservabilityDestinationConfigS3) GetBucketName() string {
@@ -945,6 +1021,13 @@ func (o *ObservabilityDestinationConfigS3) GetEndpoint() *string {
 		return nil
 	}
 	return o.Endpoint
+}
+
+func (o *ObservabilityDestinationConfigS3) GetExternalID() *string {
+	if o == nil {
+		return nil
+	}
+	return o.ExternalID
 }
 
 func (o *ObservabilityDestinationConfigS3) GetHeaders() map[string]string {
@@ -968,6 +1051,13 @@ func (o *ObservabilityDestinationConfigS3) GetPrefix() *string {
 	return o.Prefix
 }
 
+func (o *ObservabilityDestinationConfigS3) GetProvider() *ObservabilityDestinationProvider {
+	if o == nil {
+		return nil
+	}
+	return o.Provider
+}
+
 func (o *ObservabilityDestinationConfigS3) GetRegion() *string {
 	if o == nil {
 		return nil
@@ -975,9 +1065,16 @@ func (o *ObservabilityDestinationConfigS3) GetRegion() *string {
 	return o.Region
 }
 
-func (o *ObservabilityDestinationConfigS3) GetSecretAccessKey() string {
+func (o *ObservabilityDestinationConfigS3) GetRoleArn() *string {
 	if o == nil {
-		return ""
+		return nil
+	}
+	return o.RoleArn
+}
+
+func (o *ObservabilityDestinationConfigS3) GetSecretAccessKey() *string {
+	if o == nil {
+		return nil
 	}
 	return o.SecretAccessKey
 }
