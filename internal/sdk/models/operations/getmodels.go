@@ -513,6 +513,8 @@ type GetModelsResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*GetModelsResponse, error)
 }
@@ -582,4 +584,11 @@ func (g *GetModelsResponse) GetInternalServerResponse() *shared.InternalServerRe
 		return nil
 	}
 	return g.InternalServerResponse
+}
+
+func (g *GetModelsResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ServiceUnavailableResponse
 }
