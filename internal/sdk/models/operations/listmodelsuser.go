@@ -146,6 +146,8 @@ type ListModelsUserResponse struct {
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*ListModelsUserResponse, error)
 }
@@ -215,4 +217,11 @@ func (l *ListModelsUserResponse) GetInternalServerResponse() *shared.InternalSer
 		return nil
 	}
 	return l.InternalServerResponse
+}
+
+func (l *ListModelsUserResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }
