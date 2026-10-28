@@ -160,10 +160,12 @@ type VideoGenerationRequestOptions struct {
 	Openai                   map[string]any `json:"openai,omitzero"`
 	Parasail                 map[string]any `json:"parasail,omitzero"`
 	ParetoAlpha              map[string]any `json:"pareto-alpha,omitzero"`
+	ParticleAi               map[string]any `json:"particle-ai,omitzero"`
 	Perceptron               map[string]any `json:"perceptron,omitzero"`
 	Perplexity               map[string]any `json:"perplexity,omitzero"`
 	Phala                    map[string]any `json:"phala,omitzero"`
 	Poolside                 map[string]any `json:"poolside,omitzero"`
+	Primalabs                map[string]any `json:"primalabs,omitzero"`
 	Primeintellect           map[string]any `json:"primeintellect,omitzero"`
 	Quiver                   map[string]any `json:"quiver,omitzero"`
 	Recraft                  map[string]any `json:"recraft,omitzero"`
@@ -927,6 +929,13 @@ func (v *VideoGenerationRequestOptions) GetParetoAlpha() map[string]any {
 	return v.ParetoAlpha
 }
 
+func (v *VideoGenerationRequestOptions) GetParticleAi() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.ParticleAi
+}
+
 func (v *VideoGenerationRequestOptions) GetPerceptron() map[string]any {
 	if v == nil {
 		return nil
@@ -953,6 +962,13 @@ func (v *VideoGenerationRequestOptions) GetPoolside() map[string]any {
 		return nil
 	}
 	return v.Poolside
+}
+
+func (v *VideoGenerationRequestOptions) GetPrimalabs() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Primalabs
 }
 
 func (v *VideoGenerationRequestOptions) GetPrimeintellect() map[string]any {
