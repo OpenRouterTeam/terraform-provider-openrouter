@@ -91,6 +91,7 @@ const (
 	BYOKProviderSlugOpenai                   BYOKProviderSlug = "openai"
 	BYOKProviderSlugParasail                 BYOKProviderSlug = "parasail"
 	BYOKProviderSlugParetoAlpha              BYOKProviderSlug = "pareto-alpha"
+	BYOKProviderSlugParticleAi               BYOKProviderSlug = "particle-ai"
 	BYOKProviderSlugPerceptron               BYOKProviderSlug = "perceptron"
 	BYOKProviderSlugPerplexity               BYOKProviderSlug = "perplexity"
 	BYOKProviderSlugPhala                    BYOKProviderSlug = "phala"
@@ -297,6 +298,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "parasail":
 		fallthrough
 	case "pareto-alpha":
+		fallthrough
+	case "particle-ai":
 		fallthrough
 	case "perceptron":
 		fallthrough
