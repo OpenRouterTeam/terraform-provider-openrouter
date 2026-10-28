@@ -40,6 +40,8 @@ type GetPresetResponse struct {
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (g GetPresetResponse) MarshalJSON() ([]byte, error) {
@@ -114,4 +116,11 @@ func (g *GetPresetResponse) GetInternalServerResponse() *shared.InternalServerRe
 		return nil
 	}
 	return g.InternalServerResponse
+}
+
+func (g *GetPresetResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ServiceUnavailableResponse
 }
