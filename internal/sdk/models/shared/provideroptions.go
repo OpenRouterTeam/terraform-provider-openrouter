@@ -110,10 +110,12 @@ type ProviderOptions struct {
 	Openai                   map[string]any `json:"openai,omitzero"`
 	Parasail                 map[string]any `json:"parasail,omitzero"`
 	ParetoAlpha              map[string]any `json:"pareto-alpha,omitzero"`
+	ParticleAi               map[string]any `json:"particle-ai,omitzero"`
 	Perceptron               map[string]any `json:"perceptron,omitzero"`
 	Perplexity               map[string]any `json:"perplexity,omitzero"`
 	Phala                    map[string]any `json:"phala,omitzero"`
 	Poolside                 map[string]any `json:"poolside,omitzero"`
+	Primalabs                map[string]any `json:"primalabs,omitzero"`
 	Primeintellect           map[string]any `json:"primeintellect,omitzero"`
 	Quiver                   map[string]any `json:"quiver,omitzero"`
 	Recraft                  map[string]any `json:"recraft,omitzero"`
@@ -877,6 +879,13 @@ func (p *ProviderOptions) GetParetoAlpha() map[string]any {
 	return p.ParetoAlpha
 }
 
+func (p *ProviderOptions) GetParticleAi() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.ParticleAi
+}
+
 func (p *ProviderOptions) GetPerceptron() map[string]any {
 	if p == nil {
 		return nil
@@ -903,6 +912,13 @@ func (p *ProviderOptions) GetPoolside() map[string]any {
 		return nil
 	}
 	return p.Poolside
+}
+
+func (p *ProviderOptions) GetPrimalabs() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Primalabs
 }
 
 func (p *ProviderOptions) GetPrimeintellect() map[string]any {
