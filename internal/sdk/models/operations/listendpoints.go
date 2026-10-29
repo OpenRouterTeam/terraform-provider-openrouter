@@ -58,6 +58,8 @@ type ListEndpointsResponse struct {
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (l ListEndpointsResponse) MarshalJSON() ([]byte, error) {
@@ -118,4 +120,11 @@ func (l *ListEndpointsResponse) GetInternalServerResponse() *shared.InternalServ
 		return nil
 	}
 	return l.InternalServerResponse
+}
+
+func (l *ListEndpointsResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }
