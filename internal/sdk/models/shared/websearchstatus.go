@@ -15,6 +15,7 @@ const (
 	WebSearchStatusSearching  WebSearchStatus = "searching"
 	WebSearchStatusInProgress WebSearchStatus = "in_progress"
 	WebSearchStatusFailed     WebSearchStatus = "failed"
+	WebSearchStatusIncomplete WebSearchStatus = "incomplete"
 )
 
 func (e WebSearchStatus) ToPointer() *WebSearchStatus {
@@ -33,6 +34,8 @@ func (e *WebSearchStatus) UnmarshalJSON(data []byte) error {
 	case "in_progress":
 		fallthrough
 	case "failed":
+		fallthrough
+	case "incomplete":
 		*e = WebSearchStatus(v)
 		return nil
 	default:
