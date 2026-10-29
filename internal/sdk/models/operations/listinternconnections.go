@@ -35,6 +35,10 @@ func (l *ListInternConnectionsData) GetKey() string {
 // ListInternConnectionsResponseBody - The connections the intern can use.
 type ListInternConnectionsResponseBody struct {
 	Data []ListInternConnectionsData `json:"data"`
+	// The intern's routing table, for the intern's own key only; null for any other caller or when the vault could not build it in time. The keys still list.
+	Routing *shared.VaultRoutingTable `json:"routing"`
+	// The routing table as the plain lines the intern reads in its instructions' Connections section, or a notice that it could not be read; null for a caller other than the intern.
+	RoutingText *string `json:"routing_text"`
 }
 
 func (l *ListInternConnectionsResponseBody) GetData() []ListInternConnectionsData {
@@ -42,6 +46,20 @@ func (l *ListInternConnectionsResponseBody) GetData() []ListInternConnectionsDat
 		return []ListInternConnectionsData{}
 	}
 	return l.Data
+}
+
+func (l *ListInternConnectionsResponseBody) GetRouting() *shared.VaultRoutingTable {
+	if l == nil {
+		return nil
+	}
+	return l.Routing
+}
+
+func (l *ListInternConnectionsResponseBody) GetRoutingText() *string {
+	if l == nil {
+		return nil
+	}
+	return l.RoutingText
 }
 
 type ListInternConnectionsResponse struct {
