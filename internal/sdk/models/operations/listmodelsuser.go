@@ -144,8 +144,16 @@ type ListModelsUserResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
+	// Conflict - Resource conflict or concurrent modification
+	ConflictResponse *shared.ConflictResponse
+	// Too Many Requests - Rate limit exceeded
+	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*ListModelsUserResponse, error)
 }
@@ -210,9 +218,37 @@ func (l *ListModelsUserResponse) GetNotFoundResponse() *shared.NotFoundResponse 
 	return l.NotFoundResponse
 }
 
+func (l *ListModelsUserResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if l == nil {
+		return nil
+	}
+	return l.RequestTimeoutResponse
+}
+
+func (l *ListModelsUserResponse) GetConflictResponse() *shared.ConflictResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ConflictResponse
+}
+
+func (l *ListModelsUserResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
+	if l == nil {
+		return nil
+	}
+	return l.TooManyRequestsResponse
+}
+
 func (l *ListModelsUserResponse) GetInternalServerResponse() *shared.InternalServerResponse {
 	if l == nil {
 		return nil
 	}
 	return l.InternalServerResponse
+}
+
+func (l *ListModelsUserResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }
