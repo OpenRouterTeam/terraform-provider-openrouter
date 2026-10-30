@@ -32,21 +32,21 @@ func (d *Dimension) GetName() string {
 	return d.Name
 }
 
-// GranularityName - Granularity identifier
-type GranularityName string
+// Name - Granularity identifier
+type Name string
 
 const (
-	GranularityNameMinute GranularityName = "minute"
-	GranularityNameHour   GranularityName = "hour"
-	GranularityNameDay    GranularityName = "day"
-	GranularityNameWeek   GranularityName = "week"
-	GranularityNameMonth  GranularityName = "month"
+	NameMinute Name = "minute"
+	NameHour   Name = "hour"
+	NameDay    Name = "day"
+	NameWeek   Name = "week"
+	NameMonth  Name = "month"
 )
 
-func (e GranularityName) ToPointer() *GranularityName {
+func (e Name) ToPointer() *Name {
 	return &e
 }
-func (e *GranularityName) UnmarshalJSON(data []byte) error {
+func (e *Name) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -61,10 +61,10 @@ func (e *GranularityName) UnmarshalJSON(data []byte) error {
 	case "week":
 		fallthrough
 	case "month":
-		*e = GranularityName(v)
+		*e = Name(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for GranularityName: %v", v)
+		return fmt.Errorf("invalid value for Name: %v", v)
 	}
 }
 
@@ -72,7 +72,7 @@ type Granularity struct {
 	// Human-readable label
 	DisplayLabel string `json:"display_label"`
 	// Granularity identifier
-	Name GranularityName `json:"name"`
+	Name Name `json:"name"`
 }
 
 func (g *Granularity) GetDisplayLabel() string {
@@ -82,9 +82,9 @@ func (g *Granularity) GetDisplayLabel() string {
 	return g.DisplayLabel
 }
 
-func (g *Granularity) GetName() GranularityName {
+func (g *Granularity) GetName() Name {
 	if g == nil {
-		return GranularityName("")
+		return Name("")
 	}
 	return g.Name
 }
@@ -164,104 +164,11 @@ func (m *Metric) GetName() string {
 	return m.Name
 }
 
-// OperatorName - Operator identifier used in filter definitions
-type OperatorName string
-
-const (
-	OperatorNameEq    OperatorName = "eq"
-	OperatorNameNeq   OperatorName = "neq"
-	OperatorNameIn    OperatorName = "in"
-	OperatorNameNotIn OperatorName = "not_in"
-	OperatorNameGt    OperatorName = "gt"
-	OperatorNameGte   OperatorName = "gte"
-	OperatorNameLt    OperatorName = "lt"
-	OperatorNameLte   OperatorName = "lte"
-)
-
-func (e OperatorName) ToPointer() *OperatorName {
-	return &e
-}
-func (e *OperatorName) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "eq":
-		fallthrough
-	case "neq":
-		fallthrough
-	case "in":
-		fallthrough
-	case "not_in":
-		fallthrough
-	case "gt":
-		fallthrough
-	case "gte":
-		fallthrough
-	case "lt":
-		fallthrough
-	case "lte":
-		*e = OperatorName(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for OperatorName: %v", v)
-	}
-}
-
-// ValueType - Whether the operator expects a single value or an array
-type ValueType string
-
-const (
-	ValueTypeScalar ValueType = "scalar"
-	ValueTypeArray  ValueType = "array"
-)
-
-func (e ValueType) ToPointer() *ValueType {
-	return &e
-}
-func (e *ValueType) UnmarshalJSON(data []byte) error {
-	var v string
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	switch v {
-	case "scalar":
-		fallthrough
-	case "array":
-		*e = ValueType(v)
-		return nil
-	default:
-		return fmt.Errorf("invalid value for ValueType: %v", v)
-	}
-}
-
-type Operator struct {
-	// Operator identifier used in filter definitions
-	Name OperatorName `json:"name"`
-	// Whether the operator expects a single value or an array
-	ValueType ValueType `json:"value_type"`
-}
-
-func (o *Operator) GetName() OperatorName {
-	if o == nil {
-		return OperatorName("")
-	}
-	return o.Name
-}
-
-func (o *Operator) GetValueType() ValueType {
-	if o == nil {
-		return ValueType("")
-	}
-	return o.ValueType
-}
-
 type GetAnalyticsMetaData struct {
-	Dimensions    []Dimension   `json:"dimensions"`
-	Granularities []Granularity `json:"granularities"`
-	Metrics       []Metric      `json:"metrics"`
-	Operators     []Operator    `json:"operators"`
+	Dimensions    []Dimension       `json:"dimensions"`
+	Granularities []Granularity     `json:"granularities"`
+	Metrics       []Metric          `json:"metrics"`
+	Operators     []shared.Operator `json:"operators"`
 }
 
 func (g *GetAnalyticsMetaData) GetDimensions() []Dimension {
@@ -285,9 +192,9 @@ func (g *GetAnalyticsMetaData) GetMetrics() []Metric {
 	return g.Metrics
 }
 
-func (g *GetAnalyticsMetaData) GetOperators() []Operator {
+func (g *GetAnalyticsMetaData) GetOperators() []shared.Operator {
 	if g == nil {
-		return []Operator{}
+		return []shared.Operator{}
 	}
 	return g.Operators
 }

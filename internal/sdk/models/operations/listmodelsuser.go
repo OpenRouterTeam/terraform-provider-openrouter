@@ -79,6 +79,36 @@ func (e *ListModelsUserSort) UnmarshalJSON(data []byte) error {
 	}
 }
 
+// Client - Filter models and presets by the named harness's eligibility policy: tool calling is required, and when one of your guardrails sets `enforce_first_party_harness_models`, only the harness vendor's own models remain (OpenAI for codex, Anthropic for claude_code and claude_desktop). This filter doesn't apply the harness's ranking, caps or Claude Desktop model ID aliases, so returned IDs stay routable. One of: claude_code, claude_desktop, codex. Omit it to get every model you can use.
+type Client string
+
+const (
+	ClientClaudeCode    Client = "claude_code"
+	ClientClaudeDesktop Client = "claude_desktop"
+	ClientCodex         Client = "codex"
+)
+
+func (e Client) ToPointer() *Client {
+	return &e
+}
+func (e *Client) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "claude_code":
+		fallthrough
+	case "claude_desktop":
+		fallthrough
+	case "codex":
+		*e = Client(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for Client: %v", v)
+	}
+}
+
 type ListModelsUserRequest struct {
 	// Number of records to skip for pagination. When both offset and limit are omitted, the full list is returned
 	Offset *int64 `default:"0" queryParam:"style=form,explode=true,name=offset"`
@@ -88,6 +118,8 @@ type ListModelsUserRequest struct {
 	OutputModalities *string `queryParam:"style=form,explode=true,name=output_modalities"`
 	// Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved.
 	Sort *ListModelsUserSort `queryParam:"style=form,explode=true,name=sort"`
+	// Filter models and presets by the named harness's eligibility policy: tool calling is required, and when one of your guardrails sets `enforce_first_party_harness_models`, only the harness vendor's own models remain (OpenAI for codex, Anthropic for claude_code and claude_desktop). This filter doesn't apply the harness's ranking, caps or Claude Desktop model ID aliases, so returned IDs stay routable. One of: claude_code, claude_desktop, codex. Omit it to get every model you can use.
+	Client *Client `queryParam:"style=form,explode=true,name=client"`
 }
 
 func (l ListModelsUserRequest) MarshalJSON() ([]byte, error) {
@@ -129,6 +161,13 @@ func (l *ListModelsUserRequest) GetSort() *ListModelsUserSort {
 	return l.Sort
 }
 
+func (l *ListModelsUserRequest) GetClient() *Client {
+	if l == nil {
+		return nil
+	}
+	return l.Client
+}
+
 type ListModelsUserResponse struct {
 	// HTTP response content type for this operation
 	ContentType string
@@ -144,8 +183,16 @@ type ListModelsUserResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
+	// Conflict - Resource conflict or concurrent modification
+	ConflictResponse *shared.ConflictResponse
+	// Too Many Requests - Rate limit exceeded
+	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*ListModelsUserResponse, error)
 }
@@ -210,9 +257,37 @@ func (l *ListModelsUserResponse) GetNotFoundResponse() *shared.NotFoundResponse 
 	return l.NotFoundResponse
 }
 
+func (l *ListModelsUserResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if l == nil {
+		return nil
+	}
+	return l.RequestTimeoutResponse
+}
+
+func (l *ListModelsUserResponse) GetConflictResponse() *shared.ConflictResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ConflictResponse
+}
+
+func (l *ListModelsUserResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
+	if l == nil {
+		return nil
+	}
+	return l.TooManyRequestsResponse
+}
+
 func (l *ListModelsUserResponse) GetInternalServerResponse() *shared.InternalServerResponse {
 	if l == nil {
 		return nil
 	}
 	return l.InternalServerResponse
+}
+
+func (l *ListModelsUserResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }
