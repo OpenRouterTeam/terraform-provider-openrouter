@@ -54,6 +54,8 @@ type DeleteKeysResponse struct {
 	Object *DeleteKeysResponseBody
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Too Many Requests - Rate limit exceeded
@@ -106,6 +108,13 @@ func (d *DeleteKeysResponse) GetUnauthorizedResponse() *shared.UnauthorizedRespo
 		return nil
 	}
 	return d.UnauthorizedResponse
+}
+
+func (d *DeleteKeysResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if d == nil {
+		return nil
+	}
+	return d.ForbiddenResponse
 }
 
 func (d *DeleteKeysResponse) GetNotFoundResponse() *shared.NotFoundResponse {
