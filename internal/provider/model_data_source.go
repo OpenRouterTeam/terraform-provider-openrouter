@@ -187,6 +187,11 @@ func (r *ModelDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 						Computed:    true,
 						Description: `Description of the model`,
 					},
+					"endpoints": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Request API paths that serve this model, derived from the same modality and adapter rules the routers use. A model served only through an alpha surface lists only that path.`,
+					},
 					"expiration_date": schema.StringAttribute{
 						Computed:    true,
 						Description: `The date after which the model may be removed. ISO 8601 date string (YYYY-MM-DD) or null if no expiration.`,
