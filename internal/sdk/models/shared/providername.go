@@ -66,6 +66,7 @@ const (
 	ProviderNameIoNet               ProviderName = "Io Net"
 	ProviderNameInferactVLlm        ProviderName = "Inferact vLLM"
 	ProviderNameInflection          ProviderName = "Inflection"
+	ProviderNameKt                  ProviderName = "KT"
 	ProviderNameLiquid              ProviderName = "Liquid"
 	ProviderNameMakora              ProviderName = "Makora"
 	ProviderNameMara                ProviderName = "Mara"
@@ -90,7 +91,9 @@ const (
 	ProviderNameOpenInference       ProviderName = "OpenInference"
 	ProviderNameParasail            ProviderName = "Parasail"
 	ProviderNameParetoAlpha         ProviderName = "ParetoAlpha"
+	ProviderNameParticleAi          ProviderName = "Particle AI"
 	ProviderNamePoolside            ProviderName = "Poolside"
+	ProviderNamePrimaLabs           ProviderName = "PrimaLabs"
 	ProviderNamePrimeIntellect      ProviderName = "PrimeIntellect"
 	ProviderNamePerceptron          ProviderName = "Perceptron"
 	ProviderNamePerplexity          ProviderName = "Perplexity"
@@ -248,6 +251,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "Inflection":
 		fallthrough
+	case "KT":
+		fallthrough
 	case "Liquid":
 		fallthrough
 	case "Makora":
@@ -296,7 +301,11 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "ParetoAlpha":
 		fallthrough
+	case "Particle AI":
+		fallthrough
 	case "Poolside":
+		fallthrough
+	case "PrimaLabs":
 		fallthrough
 	case "PrimeIntellect":
 		fallthrough
