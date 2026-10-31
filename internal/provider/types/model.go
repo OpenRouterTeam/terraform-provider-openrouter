@@ -16,6 +16,7 @@ type Model struct {
 	Created             types.Int64        `tfsdk:"created"`
 	DefaultParameters   *DefaultParameters `tfsdk:"default_parameters"`
 	Description         types.String       `tfsdk:"description"`
+	Endpoints           []types.String     `tfsdk:"endpoints"`
 	ExpirationDate      types.String       `tfsdk:"expiration_date"`
 	HuggingFaceID       types.String       `tfsdk:"hugging_face_id"`
 	ID                  types.String       `tfsdk:"id"`

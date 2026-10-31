@@ -57,7 +57,7 @@ func (e *VideoGenerationRequestAspectRatio) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// VideoGenerationRequestOptions - Provider-specific options keyed by provider slug. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
+// VideoGenerationRequestOptions - Provider-specific options keyed by provider slug. The provider segment is case-insensitive; an endpoint tag after `/` must match the endpoint slug exactly. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
 type VideoGenerationRequestOptions struct {
 	Oneai                    map[string]any `json:"01ai,omitzero"`
 	Ai21                     map[string]any `json:"ai21,omitzero"`
@@ -129,6 +129,7 @@ type VideoGenerationRequestOptions struct {
 	Ionstream                map[string]any `json:"ionstream,omitzero"`
 	Klusterai                map[string]any `json:"klusterai,omitzero"`
 	Krea                     map[string]any `json:"krea,omitzero"`
+	Kt                       map[string]any `json:"kt,omitzero"`
 	Lambda                   map[string]any `json:"lambda,omitzero"`
 	Lepton                   map[string]any `json:"lepton,omitzero"`
 	Liquid                   map[string]any `json:"liquid,omitzero"`
@@ -160,10 +161,12 @@ type VideoGenerationRequestOptions struct {
 	Openai                   map[string]any `json:"openai,omitzero"`
 	Parasail                 map[string]any `json:"parasail,omitzero"`
 	ParetoAlpha              map[string]any `json:"pareto-alpha,omitzero"`
+	ParticleAi               map[string]any `json:"particle-ai,omitzero"`
 	Perceptron               map[string]any `json:"perceptron,omitzero"`
 	Perplexity               map[string]any `json:"perplexity,omitzero"`
 	Phala                    map[string]any `json:"phala,omitzero"`
 	Poolside                 map[string]any `json:"poolside,omitzero"`
+	Primalabs                map[string]any `json:"primalabs,omitzero"`
 	Primeintellect           map[string]any `json:"primeintellect,omitzero"`
 	Quiver                   map[string]any `json:"quiver,omitzero"`
 	Recraft                  map[string]any `json:"recraft,omitzero"`
@@ -710,6 +713,13 @@ func (v *VideoGenerationRequestOptions) GetKrea() map[string]any {
 	return v.Krea
 }
 
+func (v *VideoGenerationRequestOptions) GetKt() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Kt
+}
+
 func (v *VideoGenerationRequestOptions) GetLambda() map[string]any {
 	if v == nil {
 		return nil
@@ -927,6 +937,13 @@ func (v *VideoGenerationRequestOptions) GetParetoAlpha() map[string]any {
 	return v.ParetoAlpha
 }
 
+func (v *VideoGenerationRequestOptions) GetParticleAi() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.ParticleAi
+}
+
 func (v *VideoGenerationRequestOptions) GetPerceptron() map[string]any {
 	if v == nil {
 		return nil
@@ -953,6 +970,13 @@ func (v *VideoGenerationRequestOptions) GetPoolside() map[string]any {
 		return nil
 	}
 	return v.Poolside
+}
+
+func (v *VideoGenerationRequestOptions) GetPrimalabs() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Primalabs
 }
 
 func (v *VideoGenerationRequestOptions) GetPrimeintellect() map[string]any {
