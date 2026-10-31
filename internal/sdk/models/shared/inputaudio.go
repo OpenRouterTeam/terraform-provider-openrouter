@@ -9,17 +9,17 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type FormatEnum string
+type InputAudioFormat string
 
 const (
-	FormatEnumMp3 FormatEnum = "mp3"
-	FormatEnumWav FormatEnum = "wav"
+	InputAudioFormatMp3 InputAudioFormat = "mp3"
+	InputAudioFormatWav InputAudioFormat = "wav"
 )
 
-func (e FormatEnum) ToPointer() *FormatEnum {
+func (e InputAudioFormat) ToPointer() *InputAudioFormat {
 	return &e
 }
-func (e *FormatEnum) UnmarshalJSON(data []byte) error {
+func (e *InputAudioFormat) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -28,16 +28,16 @@ func (e *FormatEnum) UnmarshalJSON(data []byte) error {
 	case "mp3":
 		fallthrough
 	case "wav":
-		*e = FormatEnum(v)
+		*e = InputAudioFormat(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for FormatEnum: %v", v)
+		return fmt.Errorf("invalid value for InputAudioFormat: %v", v)
 	}
 }
 
 type InputAudioInputAudio struct {
-	Data   string     `json:"data"`
-	Format FormatEnum `json:"format"`
+	Data   string           `json:"data"`
+	Format InputAudioFormat `json:"format"`
 }
 
 func (i InputAudioInputAudio) MarshalJSON() ([]byte, error) {
@@ -58,9 +58,9 @@ func (i *InputAudioInputAudio) GetData() string {
 	return i.Data
 }
 
-func (i *InputAudioInputAudio) GetFormat() FormatEnum {
+func (i *InputAudioInputAudio) GetFormat() InputAudioFormat {
 	if i == nil {
-		return FormatEnum("")
+		return InputAudioFormat("")
 	}
 	return i.Format
 }
