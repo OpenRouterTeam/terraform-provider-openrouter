@@ -16,7 +16,7 @@ import (
 type External struct {
 	// Optional partner-supplied API key with a minimum length of 32 characters and sufficient entropy. Stored as a SHA-256 hash and never returned.
 	APIKey *string `json:"api_key,omitzero"`
-	// Partner's end-user identifier for attribution.
+	// Partner's external user identifier for attribution: 1 to 512 characters after surrounding whitespace is trimmed, well-formed Unicode, no NUL. For organization keys outside HIPAA workspaces, the value is registered as an external user if it does not exist yet, and the key is linked to it.
 	User string `json:"user"`
 }
 
@@ -79,7 +79,7 @@ type CreateKeysRequest struct {
 	LimitReset *CreateKeysLimitReset `json:"limit_reset,omitzero"`
 	// Name for the new API key
 	Name string `json:"name"`
-	// The workspace to create the API key in. Defaults to the default workspace if not provided.
+	// The workspace to create the API key in. Defaults to the default workspace for an organization-scoped management key, or to the management key's own workspace for a workspace-scoped one, which cannot create keys elsewhere.
 	WorkspaceID *string `json:"workspace_id,omitzero"`
 }
 

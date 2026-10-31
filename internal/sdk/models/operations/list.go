@@ -17,7 +17,7 @@ type ListRequest struct {
 	IncludeExpired *string `queryParam:"style=form,explode=true,name=include_expired"`
 	// Number of API keys to skip for pagination
 	Offset *int64 `queryParam:"style=form,explode=true,name=offset"`
-	// Filter API keys by workspace ID. By default, keys in the default workspace are returned.
+	// Filter API keys by workspace ID. By default an organization-scoped management key gets the default workspace; a workspace-scoped management key always gets its own workspace and cannot list another.
 	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
 }
 
@@ -296,6 +296,8 @@ type ListResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Too Many Requests - Rate limit exceeded
@@ -355,6 +357,13 @@ func (l *ListResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListResponse) GetNotFoundResponse() *shared.NotFoundResponse {
