@@ -39,33 +39,34 @@ type GuardrailResource struct {
 
 // GuardrailResourceModel describes the resource data model.
 type GuardrailResourceModel struct {
-	AllowedDataRegions         []types.String                      `tfsdk:"allowed_data_regions"`
-	AllowedModels              []types.String                      `tfsdk:"allowed_models"`
-	AllowedProviders           []types.String                      `tfsdk:"allowed_providers"`
-	AllowSafetyRetentionGoogle types.Bool                          `tfsdk:"allow_safety_retention_google"`
-	AllowSafetyRetentionOther  types.Bool                          `tfsdk:"allow_safety_retention_other"`
-	ContentFilterBuiltins      []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
-	ContentFilters             []tfTypes.ContentFilterEntry        `tfsdk:"content_filters"`
-	CreatedAt                  types.String                        `tfsdk:"created_at"`
-	Description                types.String                        `tfsdk:"description"`
-	EnableFreeModelPublication types.Bool                          `tfsdk:"enable_free_model_publication"`
-	EnableFreeModelTraining    types.Bool                          `tfsdk:"enable_free_model_training"`
-	EnablePaidModelTraining    types.Bool                          `tfsdk:"enable_paid_model_training"`
-	EnforceZdr                 types.Bool                          `tfsdk:"enforce_zdr"`
-	EnforceZdrAnthropic        types.Bool                          `tfsdk:"enforce_zdr_anthropic"`
-	EnforceZdrGoogle           types.Bool                          `tfsdk:"enforce_zdr_google"`
-	EnforceZdrOpenai           types.Bool                          `tfsdk:"enforce_zdr_openai"`
-	EnforceZdrOther            types.Bool                          `tfsdk:"enforce_zdr_other"`
-	EnforceZdrXai              types.Bool                          `tfsdk:"enforce_zdr_xai"`
-	ID                         types.String                        `tfsdk:"id"`
-	IgnoredModels              []types.String                      `tfsdk:"ignored_models"`
-	IgnoredProviders           []types.String                      `tfsdk:"ignored_providers"`
-	IncludeByokInBudgets       types.Bool                          `tfsdk:"include_byok_in_budgets"`
-	LimitUsd                   types.Float64                       `tfsdk:"limit_usd"`
-	Name                       types.String                        `tfsdk:"name"`
-	ResetInterval              types.String                        `tfsdk:"reset_interval"`
-	UpdatedAt                  types.String                        `tfsdk:"updated_at"`
-	WorkspaceID                types.String                        `tfsdk:"workspace_id"`
+	AllowedDataRegions             []types.String                      `tfsdk:"allowed_data_regions"`
+	AllowedModels                  []types.String                      `tfsdk:"allowed_models"`
+	AllowedProviders               []types.String                      `tfsdk:"allowed_providers"`
+	AllowSafetyRetentionGoogle     types.Bool                          `tfsdk:"allow_safety_retention_google"`
+	AllowSafetyRetentionOther      types.Bool                          `tfsdk:"allow_safety_retention_other"`
+	ContentFilterBuiltins          []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
+	ContentFilters                 []tfTypes.ContentFilterEntry        `tfsdk:"content_filters"`
+	CreatedAt                      types.String                        `tfsdk:"created_at"`
+	Description                    types.String                        `tfsdk:"description"`
+	EnableFreeModelPublication     types.Bool                          `tfsdk:"enable_free_model_publication"`
+	EnableFreeModelTraining        types.Bool                          `tfsdk:"enable_free_model_training"`
+	EnablePaidModelTraining        types.Bool                          `tfsdk:"enable_paid_model_training"`
+	EnforceFirstPartyHarnessModels types.Bool                          `tfsdk:"enforce_first_party_harness_models"`
+	EnforceZdr                     types.Bool                          `tfsdk:"enforce_zdr"`
+	EnforceZdrAnthropic            types.Bool                          `tfsdk:"enforce_zdr_anthropic"`
+	EnforceZdrGoogle               types.Bool                          `tfsdk:"enforce_zdr_google"`
+	EnforceZdrOpenai               types.Bool                          `tfsdk:"enforce_zdr_openai"`
+	EnforceZdrOther                types.Bool                          `tfsdk:"enforce_zdr_other"`
+	EnforceZdrXai                  types.Bool                          `tfsdk:"enforce_zdr_xai"`
+	ID                             types.String                        `tfsdk:"id"`
+	IgnoredModels                  []types.String                      `tfsdk:"ignored_models"`
+	IgnoredProviders               []types.String                      `tfsdk:"ignored_providers"`
+	IncludeByokInBudgets           types.Bool                          `tfsdk:"include_byok_in_budgets"`
+	LimitUsd                       types.Float64                       `tfsdk:"limit_usd"`
+	Name                           types.String                        `tfsdk:"name"`
+	ResetInterval                  types.String                        `tfsdk:"reset_interval"`
+	UpdatedAt                      types.String                        `tfsdk:"updated_at"`
+	WorkspaceID                    types.String                        `tfsdk:"workspace_id"`
 }
 
 func (r *GuardrailResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -245,6 +246,11 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 				Computed:    true,
 				Optional:    true,
 				Description: `Whether this guardrail allows paid endpoints that train on request data.`,
+			},
+			"enforce_first_party_harness_models": schema.BoolAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: `Whether coding harnesses list only their vendor's own models: Codex lists OpenAI models and Claude Code and Claude Desktop list Anthropic models. Affects only the model list those harnesses request from GET /models; a model the client names directly is still routed. Any true across the workspace default, member, and API key guardrails applies.`,
 			},
 			"enforce_zdr": schema.BoolAttribute{
 				Computed:           true,
