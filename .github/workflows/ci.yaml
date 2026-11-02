@@ -107,3 +107,27 @@ jobs:
         with:
           version: "~> v2"
           args: check
+
+  generated-code:
+    name: Generated code pairing
+    # Pull requests only: it compares the branch against its base. A push to
+    # main has no base to compare and the regen PR that produced it already ran
+    # this check.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          # The check diffs the branch against its base commit, so the history
+          # has to be there.
+          fetch-depth: 0
+
+      # Custom code only survives if a regeneration observes it, and
+      # regenerate.yaml is path-filtered to .speakeasy/**. A PR that edits
+      # generated Go alone never runs the generator, so its edit is never
+      # validated and the breakage lands on whatever PR regenerates next.
+      - name: Generated Go must come with a generator input
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: python3 .github/scripts/check_generated_pairing.py "$BASE_SHA" HEAD
