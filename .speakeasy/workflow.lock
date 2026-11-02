@@ -15,7 +15,7 @@ targets:
         sourceBlobDigest: sha256:342408933db1ff73e669791665466256b681db01f4373e8a32a6ad75dd382226
 workflow:
     workflowVersion: 1.0.0
-    speakeasyVersion: latest
+    speakeasyVersion: 1.803.1
     sources:
         OpenRouter API:
             inputs:
