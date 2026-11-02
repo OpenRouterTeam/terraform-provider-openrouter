@@ -28,6 +28,12 @@ generation:
   versioningStrategy: automatic
   persistentEdits:
     enabled: "true"
+# Custom code lives in a handful of generated files. Each one is a small
+# hand edit that regeneration merges back in, and each is guarded by a test
+# that fails if the edit disappears:
+#   internal/provider/scimgroupmapping_resource_sdk.go  -> keep_members on DELETE
+#     (internal/acceptance/scim_group_mapping_stub_test.go)
+# Keep the edits few and the logic in a hand-written file next to the package.
   tests:
     generateTests: false
     generateNewTests: true
