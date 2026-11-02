@@ -494,7 +494,7 @@ type ProviderPreferences struct {
 	MaxPrice *MaxPrice `json:"max_price,omitzero"`
 	// List of provider slugs to allow. If provided, this list is merged with your account-wide allowed provider settings for this request.
 	Only []ProviderPreferencesOnly `json:"only,omitzero"`
-	// Provider-specific options keyed by provider slug. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
+	// Provider-specific options keyed by provider slug. The provider segment is case-insensitive; an endpoint tag after `/` must match the endpoint slug exactly. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
 	Options *ProviderOptions `json:"options,omitzero"`
 	// An ordered list of provider slugs. The router will attempt to use the first provider in the subset of this list that supports your requested model, and fall back to the next if it is unavailable. If no providers are available, the request will fail with an error message.
 	Order []ProviderPreferencesOrder `json:"order,omitzero"`
