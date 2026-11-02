@@ -269,9 +269,11 @@ func (u State) MarshalJSON() ([]byte, error) {
 }
 
 type DecisionsRequest struct {
-	Model     string               `json:"model"`
-	Provider  *ProviderPreferences `json:"provider,omitzero"`
-	Questions map[string]Questions `json:"questions"`
+	// Images keyed by reference string, as in TypeSafe's API. Write a reference wherever the image belongs in `state`, `instructions`, or `criteria`; every asset must be referenced at least once. Jev reads a reference as a whole string value or inside longer text. Other Decisions models read a whole-string reference wherever they read an `image_url` part and reject a reference inside longer text.
+	Assets    map[string]DecisionsImageAsset `json:"assets,omitzero"`
+	Model     string                         `json:"model"`
+	Provider  *ProviderPreferences           `json:"provider,omitzero"`
+	Questions map[string]Questions           `json:"questions"`
 	// A unique identifier for grouping related requests (e.g., a conversation or agent workflow). Used for observability grouping in Broadcast and private logging; never sent to the provider. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters.
 	SessionID *string `json:"session_id,omitzero"`
 	// The content to evaluate: a plain string, or a JSON object or array of related context.
@@ -290,6 +292,13 @@ func (d *DecisionsRequest) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (d *DecisionsRequest) GetAssets() map[string]DecisionsImageAsset {
+	if d == nil {
+		return nil
+	}
+	return d.Assets
 }
 
 func (d *DecisionsRequest) GetModel() string {

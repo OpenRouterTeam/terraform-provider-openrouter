@@ -16,6 +16,7 @@ const (
 	APITypeEmbeddings  APIType = "embeddings"
 	APITypeRerank      APIType = "rerank"
 	APITypeDecisions   APIType = "decisions"
+	APITypeExtractions APIType = "extractions"
 	APITypeVideo       APIType = "video"
 	APITypeTts         APIType = "tts"
 	APITypeStt         APIType = "stt"
@@ -38,6 +39,8 @@ func (e *APIType) UnmarshalJSON(data []byte) error {
 	case "rerank":
 		fallthrough
 	case "decisions":
+		fallthrough
+	case "extractions":
 		fallthrough
 	case "video":
 		fallthrough
