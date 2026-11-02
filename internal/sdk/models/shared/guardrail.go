@@ -8,9 +8,9 @@ import (
 )
 
 type Guardrail struct {
-	// Whether ZDR-only requests to google/* models may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.
+	// Whether ZDR-only requests to google/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.
 	AllowSafetyRetentionGoogle *bool `json:"allow_safety_retention_google,omitzero"`
-	// Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.
+	// Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.
 	AllowSafetyRetentionOther *bool `json:"allow_safety_retention_other,omitzero"`
 	// Data regions through which requests governed by this guardrail must arrive. `global` is https://openrouter.ai, `europe` is https://eu.openrouter.ai, and `us` is https://us.openrouter.ai. Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value.
 	AllowedDataRegions []GuardrailDataRegion `json:"allowed_data_regions,omitzero"`
@@ -32,6 +32,8 @@ type Guardrail struct {
 	EnableFreeModelTraining *bool `json:"enable_free_model_training,omitzero"`
 	// Whether this guardrail allows paid endpoints that train on request data.
 	EnablePaidModelTraining *bool `json:"enable_paid_model_training,omitzero"`
+	// Whether coding harnesses list only their vendor's own models: Codex lists OpenAI models and Claude Code and Claude Desktop list Anthropic models. Affects only the model list those harnesses request from GET /models; a model the client names directly is still routed. Any true across the workspace default, member, and API key guardrails applies.
+	EnforceFirstPartyHarnessModels *bool `json:"enforce_first_party_harness_models,omitzero"`
 	// Deprecated. Use enforce_zdr_anthropic, enforce_zdr_openai, enforce_zdr_google, enforce_zdr_xai, and enforce_zdr_other instead. When provided, its value is copied into any of those per-provider fields that are not explicitly specified on the request.
 	//
 	// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
@@ -159,6 +161,13 @@ func (g *Guardrail) GetEnablePaidModelTraining() *bool {
 		return nil
 	}
 	return g.EnablePaidModelTraining
+}
+
+func (g *Guardrail) GetEnforceFirstPartyHarnessModels() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.EnforceFirstPartyHarnessModels
 }
 
 func (g *Guardrail) GetEnforceZdr() *bool {
