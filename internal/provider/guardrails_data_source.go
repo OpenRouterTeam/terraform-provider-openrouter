@@ -52,11 +52,11 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 					Attributes: map[string]schema.Attribute{
 						"allow_safety_retention_google": schema.BoolAttribute{
 							Computed:    true,
-							Description: `Whether ZDR-only requests to google/* models may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.`,
+							Description: `Whether ZDR-only requests to google/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.`,
 						},
 						"allow_safety_retention_other": schema.BoolAttribute{
 							Computed:    true,
-							Description: `Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.`,
+							Description: `Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.`,
 						},
 						"allowed_data_regions": schema.ListAttribute{
 							Computed:    true,
@@ -136,6 +136,10 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 						"enable_paid_model_training": schema.BoolAttribute{
 							Computed:    true,
 							Description: `Whether this guardrail allows paid endpoints that train on request data.`,
+						},
+						"enforce_first_party_harness_models": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether coding harnesses list only their vendor's own models: Codex lists OpenAI models and Claude Code and Claude Desktop list Anthropic models. Affects only the model list those harnesses request from GET /models; a model the client names directly is still routed. Any true across the workspace default, member, and API key guardrails applies.`,
 						},
 						"enforce_zdr": schema.BoolAttribute{
 							Computed:           true,
