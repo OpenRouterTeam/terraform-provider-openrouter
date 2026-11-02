@@ -10,17 +10,17 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type UpdateObservabilityDestinationResponseMethod string
+type UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod string
 
 const (
-	UpdateObservabilityDestinationResponseMethodPost UpdateObservabilityDestinationResponseMethod = "POST"
-	UpdateObservabilityDestinationResponseMethodPut  UpdateObservabilityDestinationResponseMethod = "PUT"
+	UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethodPost UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod = "POST"
+	UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethodPut  UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod = "PUT"
 )
 
-func (e UpdateObservabilityDestinationResponseMethod) ToPointer() *UpdateObservabilityDestinationResponseMethod {
+func (e UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod) ToPointer() *UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod {
 	return &e
 }
-func (e *UpdateObservabilityDestinationResponseMethod) UnmarshalJSON(data []byte) error {
+func (e *UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -29,17 +29,17 @@ func (e *UpdateObservabilityDestinationResponseMethod) UnmarshalJSON(data []byte
 	case "POST":
 		fallthrough
 	case "PUT":
-		*e = UpdateObservabilityDestinationResponseMethod(v)
+		*e = UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for UpdateObservabilityDestinationResponseMethod: %v", v)
+		return fmt.Errorf("invalid value for UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod: %v", v)
 	}
 }
 
 type UpdateObservabilityDestinationResponseConfigWebhook struct {
-	Headers map[string]string                             `json:"headers,omitzero"`
-	Method  *UpdateObservabilityDestinationResponseMethod `json:"method,omitzero"`
-	URL     string                                        `json:"url"`
+	Headers map[string]string                                                            `json:"headers,omitzero"`
+	Method  *UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod `json:"method,omitzero"`
+	URL     string                                                                       `json:"url"`
 }
 
 func (u UpdateObservabilityDestinationResponseConfigWebhook) MarshalJSON() ([]byte, error) {
@@ -60,7 +60,7 @@ func (u *UpdateObservabilityDestinationResponseConfigWebhook) GetHeaders() map[s
 	return u.Headers
 }
 
-func (u *UpdateObservabilityDestinationResponseConfigWebhook) GetMethod() *UpdateObservabilityDestinationResponseMethod {
+func (u *UpdateObservabilityDestinationResponseConfigWebhook) GetMethod() *UpdateObservabilityDestinationResponseObservabilityWebhookDestinationMethod {
 	if u == nil {
 		return nil
 	}
@@ -900,18 +900,87 @@ func (u *UpdateObservabilityDestinationResponseObservabilitySentryDestination) G
 	return u.WorkspaceID
 }
 
+// UpdateObservabilityDestinationResponseAuthMode - IAM role: OpenRouter assumes a role in your AWS account with short-lived STS credentials, so you don't share long-lived keys.
+type UpdateObservabilityDestinationResponseAuthMode string
+
+const (
+	UpdateObservabilityDestinationResponseAuthModeAccessKeys UpdateObservabilityDestinationResponseAuthMode = "access_keys"
+	UpdateObservabilityDestinationResponseAuthModeIamRole    UpdateObservabilityDestinationResponseAuthMode = "iam_role"
+)
+
+func (e UpdateObservabilityDestinationResponseAuthMode) ToPointer() *UpdateObservabilityDestinationResponseAuthMode {
+	return &e
+}
+func (e *UpdateObservabilityDestinationResponseAuthMode) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "access_keys":
+		fallthrough
+	case "iam_role":
+		*e = UpdateObservabilityDestinationResponseAuthMode(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UpdateObservabilityDestinationResponseAuthMode: %v", v)
+	}
+}
+
+// UpdateObservabilityDestinationResponseProvider - The object storage service that hosts the bucket. AWS S3 supports IAM role authentication; the other providers use access keys.
+type UpdateObservabilityDestinationResponseProvider string
+
+const (
+	UpdateObservabilityDestinationResponseProviderAws          UpdateObservabilityDestinationResponseProvider = "aws"
+	UpdateObservabilityDestinationResponseProviderCloudflareR2 UpdateObservabilityDestinationResponseProvider = "cloudflare_r2"
+	UpdateObservabilityDestinationResponseProviderGcs          UpdateObservabilityDestinationResponseProvider = "gcs"
+	UpdateObservabilityDestinationResponseProviderOther        UpdateObservabilityDestinationResponseProvider = "other"
+)
+
+func (e UpdateObservabilityDestinationResponseProvider) ToPointer() *UpdateObservabilityDestinationResponseProvider {
+	return &e
+}
+func (e *UpdateObservabilityDestinationResponseProvider) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "aws":
+		fallthrough
+	case "cloudflare_r2":
+		fallthrough
+	case "gcs":
+		fallthrough
+	case "other":
+		*e = UpdateObservabilityDestinationResponseProvider(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for UpdateObservabilityDestinationResponseProvider: %v", v)
+	}
+}
+
 type UpdateObservabilityDestinationResponseConfigS3 struct {
-	AccessKeyID string `json:"accessKeyId"`
-	BucketName  string `json:"bucketName"`
+	AccessKeyID *string `json:"accessKeyId,omitzero"`
+	// IAM role: OpenRouter assumes a role in your AWS account with short-lived STS credentials, so you don't share long-lived keys.
+	AuthMode   *UpdateObservabilityDestinationResponseAuthMode `default:"access_keys" json:"authMode"`
+	BucketName string                                          `json:"bucketName"`
 	// Only for S3-compatible services like Cloudflare R2 (https://account-id.r2.cloudflarestorage.com) or MinIO. Leave blank for standard AWS S3.
 	Endpoint *string `json:"endpoint,omitzero"`
+	// Generated by OpenRouter when you save. Require it as sts:ExternalId in your role's trust policy.
+	ExternalID *string `json:"externalId,omitzero"`
 	// Custom HTTP headers to include in requests to this destination.
 	Headers map[string]string `json:"headers,omitzero"`
 	// Template for S3 object path. The filename ({traceId}-{timestamp}.json) is automatically appended. Available variables: {prefix}, {date}, {year}, {month}, {day}, {apiKeyName}
-	PathTemplate    *string `json:"pathTemplate,omitzero"`
-	Prefix          *string `json:"prefix,omitzero"`
-	Region          *string `json:"region,omitzero"`
-	SecretAccessKey string  `json:"secretAccessKey"`
+	PathTemplate *string `json:"pathTemplate,omitzero"`
+	Prefix       *string `json:"prefix,omitzero"`
+	// The object storage service that hosts the bucket. AWS S3 supports IAM role authentication; the other providers use access keys.
+	Provider *UpdateObservabilityDestinationResponseProvider `json:"provider,omitzero"`
+	// Required for IAM role authentication. With access keys, AWS S3 detects the bucket region when you leave this blank.
+	Region *string `json:"region,omitzero"`
+	// The IAM role in your account that OpenRouter assumes. Its trust policy must allow sts:AssumeRole from arn:aws:iam::536697249728:role/openrouter-broadcast-exporter and require the external ID below, and its permissions must allow s3:PutObject on the bucket and prefix (plus kms:GenerateDataKey for SSE-KMS buckets).
+	RoleArn         *string `json:"roleArn,omitzero"`
+	SecretAccessKey *string `json:"secretAccessKey,omitzero"`
 	SessionToken    *string `json:"sessionToken,omitzero"`
 }
 
@@ -926,11 +995,18 @@ func (u *UpdateObservabilityDestinationResponseConfigS3) UnmarshalJSON(data []by
 	return nil
 }
 
-func (u *UpdateObservabilityDestinationResponseConfigS3) GetAccessKeyID() string {
+func (u *UpdateObservabilityDestinationResponseConfigS3) GetAccessKeyID() *string {
 	if u == nil {
-		return ""
+		return nil
 	}
 	return u.AccessKeyID
+}
+
+func (u *UpdateObservabilityDestinationResponseConfigS3) GetAuthMode() *UpdateObservabilityDestinationResponseAuthMode {
+	if u == nil {
+		return nil
+	}
+	return u.AuthMode
 }
 
 func (u *UpdateObservabilityDestinationResponseConfigS3) GetBucketName() string {
@@ -945,6 +1021,13 @@ func (u *UpdateObservabilityDestinationResponseConfigS3) GetEndpoint() *string {
 		return nil
 	}
 	return u.Endpoint
+}
+
+func (u *UpdateObservabilityDestinationResponseConfigS3) GetExternalID() *string {
+	if u == nil {
+		return nil
+	}
+	return u.ExternalID
 }
 
 func (u *UpdateObservabilityDestinationResponseConfigS3) GetHeaders() map[string]string {
@@ -968,6 +1051,13 @@ func (u *UpdateObservabilityDestinationResponseConfigS3) GetPrefix() *string {
 	return u.Prefix
 }
 
+func (u *UpdateObservabilityDestinationResponseConfigS3) GetProvider() *UpdateObservabilityDestinationResponseProvider {
+	if u == nil {
+		return nil
+	}
+	return u.Provider
+}
+
 func (u *UpdateObservabilityDestinationResponseConfigS3) GetRegion() *string {
 	if u == nil {
 		return nil
@@ -975,9 +1065,16 @@ func (u *UpdateObservabilityDestinationResponseConfigS3) GetRegion() *string {
 	return u.Region
 }
 
-func (u *UpdateObservabilityDestinationResponseConfigS3) GetSecretAccessKey() string {
+func (u *UpdateObservabilityDestinationResponseConfigS3) GetRoleArn() *string {
 	if u == nil {
-		return ""
+		return nil
+	}
+	return u.RoleArn
+}
+
+func (u *UpdateObservabilityDestinationResponseConfigS3) GetSecretAccessKey() *string {
+	if u == nil {
+		return nil
 	}
 	return u.SecretAccessKey
 }
