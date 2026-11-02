@@ -96,6 +96,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 	r.EnableFreeModelPublication = types.BoolPointerValue(resp.EnableFreeModelPublication)
 	r.EnableFreeModelTraining = types.BoolPointerValue(resp.EnableFreeModelTraining)
 	r.EnablePaidModelTraining = types.BoolPointerValue(resp.EnablePaidModelTraining)
+	r.EnforceFirstPartyHarnessModels = types.BoolPointerValue(resp.EnforceFirstPartyHarnessModels)
 	r.EnforceZdr = types.BoolPointerValue(resp.EnforceZdr)
 	r.EnforceZdrAnthropic = types.BoolPointerValue(resp.EnforceZdrAnthropic)
 	r.EnforceZdrGoogle = types.BoolPointerValue(resp.EnforceZdrGoogle)
@@ -217,6 +218,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 	r.EnableFreeModelPublication = types.BoolPointerValue(resp.EnableFreeModelPublication)
 	r.EnableFreeModelTraining = types.BoolPointerValue(resp.EnableFreeModelTraining)
 	r.EnablePaidModelTraining = types.BoolPointerValue(resp.EnablePaidModelTraining)
+	r.EnforceFirstPartyHarnessModels = types.BoolPointerValue(resp.EnforceFirstPartyHarnessModels)
 	r.EnforceZdr = types.BoolPointerValue(resp.EnforceZdr)
 	r.EnforceZdrAnthropic = types.BoolPointerValue(resp.EnforceZdrAnthropic)
 	r.EnforceZdrGoogle = types.BoolPointerValue(resp.EnforceZdrGoogle)
@@ -338,6 +340,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 	r.EnableFreeModelPublication = types.BoolPointerValue(resp.EnableFreeModelPublication)
 	r.EnableFreeModelTraining = types.BoolPointerValue(resp.EnableFreeModelTraining)
 	r.EnablePaidModelTraining = types.BoolPointerValue(resp.EnablePaidModelTraining)
+	r.EnforceFirstPartyHarnessModels = types.BoolPointerValue(resp.EnforceFirstPartyHarnessModels)
 	r.EnforceZdr = types.BoolPointerValue(resp.EnforceZdr)
 	r.EnforceZdrAnthropic = types.BoolPointerValue(resp.EnforceZdrAnthropic)
 	r.EnforceZdrGoogle = types.BoolPointerValue(resp.EnforceZdrGoogle)
@@ -529,6 +532,12 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 	} else {
 		enablePaidModelTraining = nil
 	}
+	enforceFirstPartyHarnessModels := new(bool)
+	if !r.EnforceFirstPartyHarnessModels.IsUnknown() && !r.EnforceFirstPartyHarnessModels.IsNull() {
+		*enforceFirstPartyHarnessModels = r.EnforceFirstPartyHarnessModels.ValueBool()
+	} else {
+		enforceFirstPartyHarnessModels = nil
+	}
 	enforceZdr := new(bool)
 	if !r.EnforceZdr.IsUnknown() && !r.EnforceZdr.IsNull() {
 		*enforceZdr = r.EnforceZdr.ValueBool()
@@ -607,30 +616,31 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 		workspaceID = nil
 	}
 	out := shared.CreateGuardrailRequest{
-		AllowSafetyRetentionGoogle: allowSafetyRetentionGoogle,
-		AllowSafetyRetentionOther:  allowSafetyRetentionOther,
-		AllowedDataRegions:         allowedDataRegions,
-		AllowedModels:              allowedModels,
-		AllowedProviders:           allowedProviders,
-		ContentFilterBuiltins:      contentFilterBuiltins,
-		ContentFilters:             contentFilters,
-		Description:                description,
-		EnableFreeModelPublication: enableFreeModelPublication,
-		EnableFreeModelTraining:    enableFreeModelTraining,
-		EnablePaidModelTraining:    enablePaidModelTraining,
-		EnforceZdr:                 enforceZdr,
-		EnforceZdrAnthropic:        enforceZdrAnthropic,
-		EnforceZdrGoogle:           enforceZdrGoogle,
-		EnforceZdrOpenai:           enforceZdrOpenai,
-		EnforceZdrOther:            enforceZdrOther,
-		EnforceZdrXai:              enforceZdrXai,
-		IgnoredModels:              ignoredModels,
-		IgnoredProviders:           ignoredProviders,
-		IncludeByokInBudgets:       includeByokInBudgets,
-		LimitUsd:                   limitUsd,
-		Name:                       name,
-		ResetInterval:              resetInterval,
-		WorkspaceID:                workspaceID,
+		AllowSafetyRetentionGoogle:     allowSafetyRetentionGoogle,
+		AllowSafetyRetentionOther:      allowSafetyRetentionOther,
+		AllowedDataRegions:             allowedDataRegions,
+		AllowedModels:                  allowedModels,
+		AllowedProviders:               allowedProviders,
+		ContentFilterBuiltins:          contentFilterBuiltins,
+		ContentFilters:                 contentFilters,
+		Description:                    description,
+		EnableFreeModelPublication:     enableFreeModelPublication,
+		EnableFreeModelTraining:        enableFreeModelTraining,
+		EnablePaidModelTraining:        enablePaidModelTraining,
+		EnforceFirstPartyHarnessModels: enforceFirstPartyHarnessModels,
+		EnforceZdr:                     enforceZdr,
+		EnforceZdrAnthropic:            enforceZdrAnthropic,
+		EnforceZdrGoogle:               enforceZdrGoogle,
+		EnforceZdrOpenai:               enforceZdrOpenai,
+		EnforceZdrOther:                enforceZdrOther,
+		EnforceZdrXai:                  enforceZdrXai,
+		IgnoredModels:                  ignoredModels,
+		IgnoredProviders:               ignoredProviders,
+		IncludeByokInBudgets:           includeByokInBudgets,
+		LimitUsd:                       limitUsd,
+		Name:                           name,
+		ResetInterval:                  resetInterval,
+		WorkspaceID:                    workspaceID,
 	}
 
 	return &out, diags
@@ -743,6 +753,12 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 	} else {
 		enablePaidModelTraining = nil
 	}
+	enforceFirstPartyHarnessModels := new(bool)
+	if !r.EnforceFirstPartyHarnessModels.IsUnknown() && !r.EnforceFirstPartyHarnessModels.IsNull() {
+		*enforceFirstPartyHarnessModels = r.EnforceFirstPartyHarnessModels.ValueBool()
+	} else {
+		enforceFirstPartyHarnessModels = nil
+	}
 	enforceZdr := new(bool)
 	if !r.EnforceZdr.IsUnknown() && !r.EnforceZdr.IsNull() {
 		*enforceZdr = r.EnforceZdr.ValueBool()
@@ -818,29 +834,30 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 		resetInterval = nil
 	}
 	out := shared.UpdateGuardrailRequest{
-		AllowSafetyRetentionGoogle: allowSafetyRetentionGoogle,
-		AllowSafetyRetentionOther:  allowSafetyRetentionOther,
-		AllowedDataRegions:         allowedDataRegions,
-		AllowedModels:              allowedModels,
-		AllowedProviders:           allowedProviders,
-		ContentFilterBuiltins:      contentFilterBuiltins,
-		ContentFilters:             contentFilters,
-		Description:                description,
-		EnableFreeModelPublication: enableFreeModelPublication,
-		EnableFreeModelTraining:    enableFreeModelTraining,
-		EnablePaidModelTraining:    enablePaidModelTraining,
-		EnforceZdr:                 enforceZdr,
-		EnforceZdrAnthropic:        enforceZdrAnthropic,
-		EnforceZdrGoogle:           enforceZdrGoogle,
-		EnforceZdrOpenai:           enforceZdrOpenai,
-		EnforceZdrOther:            enforceZdrOther,
-		EnforceZdrXai:              enforceZdrXai,
-		IgnoredModels:              ignoredModels,
-		IgnoredProviders:           ignoredProviders,
-		IncludeByokInBudgets:       includeByokInBudgets,
-		LimitUsd:                   limitUsd,
-		Name:                       name,
-		ResetInterval:              resetInterval,
+		AllowSafetyRetentionGoogle:     allowSafetyRetentionGoogle,
+		AllowSafetyRetentionOther:      allowSafetyRetentionOther,
+		AllowedDataRegions:             allowedDataRegions,
+		AllowedModels:                  allowedModels,
+		AllowedProviders:               allowedProviders,
+		ContentFilterBuiltins:          contentFilterBuiltins,
+		ContentFilters:                 contentFilters,
+		Description:                    description,
+		EnableFreeModelPublication:     enableFreeModelPublication,
+		EnableFreeModelTraining:        enableFreeModelTraining,
+		EnablePaidModelTraining:        enablePaidModelTraining,
+		EnforceFirstPartyHarnessModels: enforceFirstPartyHarnessModels,
+		EnforceZdr:                     enforceZdr,
+		EnforceZdrAnthropic:            enforceZdrAnthropic,
+		EnforceZdrGoogle:               enforceZdrGoogle,
+		EnforceZdrOpenai:               enforceZdrOpenai,
+		EnforceZdrOther:                enforceZdrOther,
+		EnforceZdrXai:                  enforceZdrXai,
+		IgnoredModels:                  ignoredModels,
+		IgnoredProviders:               ignoredProviders,
+		IncludeByokInBudgets:           includeByokInBudgets,
+		LimitUsd:                       limitUsd,
+		Name:                           name,
+		ResetInterval:                  resetInterval,
 	}
 
 	return &out, diags

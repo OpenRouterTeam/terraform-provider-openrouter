@@ -58,6 +58,8 @@ type ListPresetsResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*ListPresetsResponse, error)
 }
@@ -127,4 +129,11 @@ func (l *ListPresetsResponse) GetInternalServerResponse() *shared.InternalServer
 		return nil
 	}
 	return l.InternalServerResponse
+}
+
+func (l *ListPresetsResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }
