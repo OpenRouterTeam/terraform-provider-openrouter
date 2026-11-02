@@ -137,6 +137,10 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 							Computed:    true,
 							Description: `Whether this guardrail allows paid endpoints that train on request data.`,
 						},
+						"enforce_first_party_harness_models": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether coding harnesses list only their vendor's own models: Codex lists OpenAI models and Claude Code and Claude Desktop list Anthropic models. Affects only the model list those harnesses request from GET /models; a model the client names directly is still routed. Any true across the workspace default, member, and API key guardrails applies.`,
+						},
 						"enforce_zdr": schema.BoolAttribute{
 							Computed:           true,
 							DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
