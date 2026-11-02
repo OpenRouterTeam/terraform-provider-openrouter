@@ -11,6 +11,8 @@ import (
 type Alpha struct {
 	// Alpha feature endpoints for Decisions requests
 	Decisions *Decisions
+	// Alpha feature endpoints for Extractions requests
+	Extractions *Extractions
 
 	rootSDK          *OpenRouter
 	sdkConfiguration config.SDKConfiguration
@@ -23,5 +25,6 @@ func newAlpha(rootSDK *OpenRouter, sdkConfig config.SDKConfiguration, hooks *hoo
 		sdkConfiguration: sdkConfig,
 		hooks:            hooks,
 		Decisions:        newDecisions(rootSDK, sdkConfig, hooks),
+		Extractions:      newExtractions(rootSDK, sdkConfig, hooks),
 	}
 }

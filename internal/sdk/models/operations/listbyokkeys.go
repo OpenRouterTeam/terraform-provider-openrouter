@@ -71,6 +71,7 @@ const (
 	ProviderIoNet                    Provider = "io-net"
 	ProviderIonstream                Provider = "ionstream"
 	ProviderKrea                     Provider = "krea"
+	ProviderKt                       Provider = "kt"
 	ProviderLiquid                   Provider = "liquid"
 	ProviderMakora                   Provider = "makora"
 	ProviderMancer                   Provider = "mancer"
@@ -94,6 +95,7 @@ const (
 	ProviderOpenai                   Provider = "openai"
 	ProviderParasail                 Provider = "parasail"
 	ProviderParetoAlpha              Provider = "pareto-alpha"
+	ProviderParticleAi               Provider = "particle-ai"
 	ProviderPerceptron               Provider = "perceptron"
 	ProviderPerplexity               Provider = "perplexity"
 	ProviderPhala                    Provider = "phala"
@@ -255,6 +257,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "krea":
 		fallthrough
+	case "kt":
+		fallthrough
 	case "liquid":
 		fallthrough
 	case "makora":
@@ -300,6 +304,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "parasail":
 		fallthrough
 	case "pareto-alpha":
+		fallthrough
+	case "particle-ai":
 		fallthrough
 	case "perceptron":
 		fallthrough

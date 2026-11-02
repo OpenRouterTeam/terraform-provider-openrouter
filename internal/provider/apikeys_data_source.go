@@ -167,7 +167,7 @@ func (r *APIKeysDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			},
 			"workspace_id": schema.StringAttribute{
 				Optional:    true,
-				Description: `Filter API keys by workspace ID. By default, keys in the default workspace are returned.`,
+				Description: `Filter API keys by workspace ID. By default an organization-scoped management key gets the default workspace; a workspace-scoped management key always gets its own workspace and cannot list another.`,
 			},
 		},
 	}
