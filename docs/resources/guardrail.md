@@ -44,16 +44,17 @@ resource "openrouter_guardrail" "my_guardrail" {
       pattern = "\\b(sk-[a-zA-Z0-9]{48})\\b"
     }
   ]
-  description                   = "A guardrail for limiting API usage"
-  enable_free_model_publication = false
-  enable_free_model_training    = true
-  enable_paid_model_training    = true
-  enforce_zdr                   = false
-  enforce_zdr_anthropic         = false
-  enforce_zdr_google            = false
-  enforce_zdr_openai            = false
-  enforce_zdr_other             = false
-  enforce_zdr_xai               = false
+  description                        = "A guardrail for limiting API usage"
+  enable_free_model_publication      = false
+  enable_free_model_training         = true
+  enable_paid_model_training         = true
+  enforce_first_party_harness_models = false
+  enforce_zdr                        = false
+  enforce_zdr_anthropic              = false
+  enforce_zdr_google                 = false
+  enforce_zdr_openai                 = false
+  enforce_zdr_other                  = false
+  enforce_zdr_xai                    = false
   ignored_models = [
     "openai/gpt-4o-mini",
   ]
@@ -88,6 +89,7 @@ resource "openrouter_guardrail" "my_guardrail" {
 - `enable_free_model_publication` (Boolean) Whether this guardrail allows free endpoints that publish prompts.
 - `enable_free_model_training` (Boolean) Whether this guardrail allows free endpoints that train on request data.
 - `enable_paid_model_training` (Boolean) Whether this guardrail allows paid endpoints that train on request data.
+- `enforce_first_party_harness_models` (Boolean) Whether coding harnesses list only their vendor's own models: Codex lists OpenAI models and Claude Code and Claude Desktop list Anthropic models. Affects only the model list those harnesses request from GET /models; a model the client names directly is still routed. Any true across the workspace default, member, and API key guardrails applies.
 - `enforce_zdr` (Boolean, Deprecated) Deprecated. Use enforce_zdr_anthropic, enforce_zdr_openai, enforce_zdr_google, enforce_zdr_xai, and enforce_zdr_other instead. When provided, its value is copied into any of those per-provider fields that are not explicitly specified on the request.
 - `enforce_zdr_anthropic` (Boolean) Whether to enforce zero data retention for Anthropic models. Falls back to enforce_zdr when not provided.
 - `enforce_zdr_google` (Boolean) Whether to enforce zero data retention for Google models. Falls back to enforce_zdr when not provided.
