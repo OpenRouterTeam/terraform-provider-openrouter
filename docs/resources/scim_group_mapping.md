@@ -3,22 +3,26 @@
 page_title: "openrouter_scim_group_mapping Resource - terraform-provider-openrouter"
 subcategory: ""
 description: |-
-  ScimGroupMapping Resource
+  ScimGroupMapping Resource. Destroying the mapping, or replacing it because scim_group_id or workspace_id changed, deletes the mapping and sends keep_members: true leaves the workspace membership it granted intact as manually-managed, false also removes those members. Neither is set by default; the provider sends true.
 ---
 
 # openrouter_scim_group_mapping (Resource)
 
-ScimGroupMapping Resource
+ScimGroupMapping Resource. Destroying the mapping, or replacing it because `scim_group_id` or `workspace_id` changed, deletes the mapping and sends `keep_members`: `true` leaves the workspace membership it granted intact as manually-managed, `false` also removes those members. Neither is set by default; the provider sends `true`.
 
 ## Example Usage
 
 ```terraform
 resource "openrouter_scim_group_mapping" "my_scimgroupmapping" {
-  boolean           = false
-  keep_members_enum = "false"
-  role              = "member"
-  scim_group_id     = "9f9d5869-724b-48da-a4a5-e5d8480fcbf4"
-  workspace_id      = "813c2033-7245-4c1d-8434-1b393eb5d0af"
+  role          = "member"
+  scim_group_id = "9f9d5869-724b-48da-a4a5-e5d8480fcbf4"
+  workspace_id  = "813c2033-7245-4c1d-8434-1b393eb5d0af"
+
+  # Only used when this mapping is destroyed or replaced. Left unset, the
+  # provider sends keep_members=true: the mapping is deleted and the workspace
+  # membership it granted is kept as manually-managed. Uncomment to also remove
+  # the members the mapping granted.
+  # keep_members_enum = "false"
 }
 ```
 
@@ -33,8 +37,8 @@ resource "openrouter_scim_group_mapping" "my_scimgroupmapping" {
 
 ### Optional
 
-- `boolean` (Boolean)
-- `keep_members_enum` (String) must be one of ["true", "false"]
+- `boolean` (Boolean) Only takes effect when the mapping is destroyed or replaced: sent to DELETE /scim/group-mappings/{id} as keep_members. `true` deletes the mapping and leaves workspace membership intact as manually-managed; `false` also removes the members the mapping granted. If neither this attribute nor `keep_members_enum` is set, the provider sends `true`. Setting it does not change membership until then. Conflicts with `keep_members_enum`.
+- `keep_members_enum` (String) String form of `boolean`, must be one of ["true", "false"]. Only takes effect when the mapping is destroyed or replaced: sent to DELETE /scim/group-mappings/{id} as keep_members. If neither this attribute nor `boolean` is set, the provider sends `true`. Conflicts with `boolean`.
 
 ### Read-Only
 
