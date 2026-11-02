@@ -8,7 +8,7 @@ package acceptance
 // points the provider at an in-process stub that enforces the same contract,
 // so it needs no management key and no network access.
 //
-// Run: TF_ACC=1 go test ./internal/acceptance -run TestStubScimGroupMapping -v
+// Run: go test ./internal/acceptance -run TestStubScimGroupMapping -v
 
 import (
 	"encoding/json"
@@ -116,9 +116,10 @@ func newScimGroupMappingStub(t *testing.T) (*httptest.Server, *scimGroupMappingS
 			s.deleted = true
 			s.mu.Unlock()
 
+			// Mirrors DeleteScimGroupMappingResponseSchema: { deleted: true }.
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(`{}`))
+			_, _ = w.Write([]byte(`{"deleted":true}`))
 
 		default:
 			w.WriteHeader(http.StatusMethodNotAllowed)
@@ -149,6 +150,11 @@ resource "openrouter_scim_group_mapping" "test" {
 // the destroy path: with no keep_members attribute configured, destroy must
 // still send keep_members, and it must default to keeping membership.
 func TestStubScimGroupMappingDestroySendsKeepMembers(t *testing.T) {
+	// resource.Test skips unless TF_ACC is set. These cases drive a local
+	// httptest fixture and need no credentials, so they opt in like the other
+	// stub tests in this package and run in the default offline CI gate.
+	t.Setenv("TF_ACC", "1")
+
 	srv, stub := newScimGroupMappingStub(t)
 
 	resource.Test(t, resource.TestCase{
@@ -180,6 +186,8 @@ func TestStubScimGroupMappingDestroySendsKeepMembers(t *testing.T) {
 // destructive choice: keep_members_enum = "false" must reach the API so the
 // mapping's granted membership is removed with it.
 func TestStubScimGroupMappingDestroyKeepMembersFalse(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
 	srv, stub := newScimGroupMappingStub(t)
 
 	resource.Test(t, resource.TestCase{
