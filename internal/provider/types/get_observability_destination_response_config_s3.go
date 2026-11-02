@@ -9,12 +9,16 @@ import (
 
 type GetObservabilityDestinationResponseConfigS3 struct {
 	AccessKeyID     types.String            `tfsdk:"access_key_id"`
+	AuthMode        types.String            `tfsdk:"auth_mode"`
 	BucketName      types.String            `tfsdk:"bucket_name"`
 	Endpoint        types.String            `tfsdk:"endpoint"`
+	ExternalID      types.String            `tfsdk:"external_id"`
 	Headers         map[string]types.String `tfsdk:"headers"`
 	PathTemplate    types.String            `tfsdk:"path_template"`
 	Prefix          types.String            `tfsdk:"prefix"`
+	Provider        types.String            `tfsdk:"provider"`
 	Region          types.String            `tfsdk:"region"`
+	RoleArn         types.String            `tfsdk:"role_arn"`
 	SecretAccessKey types.String            `tfsdk:"secret_access_key"`
 	SessionToken    types.String            `tfsdk:"session_token"`
 }
