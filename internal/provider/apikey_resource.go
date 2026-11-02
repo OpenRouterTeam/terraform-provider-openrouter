@@ -10,6 +10,7 @@ import (
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators"
+	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -143,7 +144,7 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplaceIfConfigured(),
 						},
-						Description: `Partner's end-user identifier for attribution. Requires replacement if changed.`,
+						Description: `Partner's external user identifier for attribution: 1 to 512 characters after surrounding whitespace is trimmed, well-formed Unicode, no NUL. For organization keys outside HIPAA workspaces, the value is registered as an external user if it does not exist yet, and the key is linked to it. Requires replacement if changed.`,
 						Validators: []validator.String{
 							stringvalidator.UTF8LengthBetween(1, 512),
 						},
@@ -181,6 +182,9 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Computed:    true,
 				Optional:    true,
 				Description: `New spending limit for the API key in USD`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
 			},
 			"limit_remaining": schema.Float64Attribute{
 				Computed:    true,
@@ -202,7 +206,7 @@ func (r *APIKeyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Required:    true,
 				Description: `New name for the API key`,
 				Validators: []validator.String{
-					stringvalidator.UTF8LengthAtLeast(1),
+					stringvalidator.UTF8LengthBetween(1, 256),
 				},
 			},
 			"updated_at": schema.StringAttribute{
