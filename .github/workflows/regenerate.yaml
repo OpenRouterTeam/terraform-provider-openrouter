@@ -20,6 +20,8 @@ on:
     types: [opened, synchronize, reopened]
     branches:
       - main
+    # acceptance.yaml's gate mirrors this filter to know whether to wait for
+    # this check; keep the two in sync.
     paths:
       - .speakeasy/**
       - "!.speakeasy/gen.lock"
