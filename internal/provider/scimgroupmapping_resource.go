@@ -56,7 +56,8 @@ func (r *ScimGroupMappingResource) Schema(ctx context.Context, req resource.Sche
 		MarkdownDescription: "ScimGroupMapping Resource",
 		Attributes: map[string]schema.Attribute{
 			"boolean": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Sent to DELETE /scim/group-mappings/{id} as keep_members. `true` deletes the mapping and leaves workspace membership intact; `false` also removes the members the mapping granted. Defaults to `true` when neither this attribute nor `keep_members_enum` is set. Conflicts with `keep_members_enum`.",
 				Validators: []validator.Bool{
 					boolvalidator.ConflictsWith(path.Expressions{
 						path.MatchRelative().AtParent().AtName("keep_members_enum"),
@@ -71,7 +72,7 @@ func (r *ScimGroupMappingResource) Schema(ctx context.Context, req resource.Sche
 			},
 			"keep_members_enum": schema.StringAttribute{
 				Optional:    true,
-				Description: `must be one of ["true", "false"]`,
+				Description: "String form of `boolean`, must be one of [\"true\", \"false\"]. Sent to DELETE /scim/group-mappings/{id} as keep_members. Defaults to `true` when neither this attribute nor `boolean` is set. Conflicts with `boolean`.",
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.Expressions{
 						path.MatchRelative().AtParent().AtName("boolean"),

@@ -14,11 +14,14 @@ ScimGroupMapping Resource
 
 ```terraform
 resource "openrouter_scim_group_mapping" "my_scimgroupmapping" {
-  boolean           = false
-  keep_members_enum = "false"
-  role              = "member"
-  scim_group_id     = "9f9d5869-724b-48da-a4a5-e5d8480fcbf4"
-  workspace_id      = "813c2033-7245-4c1d-8434-1b393eb5d0af"
+  role          = "member"
+  scim_group_id = "9f9d5869-724b-48da-a4a5-e5d8480fcbf4"
+  workspace_id  = "813c2033-7245-4c1d-8434-1b393eb5d0af"
+
+  # keep_members defaults to true on destroy: the mapping is deleted and the
+  # workspace membership it granted is left intact. Set this to "false" to
+  # also remove the members the mapping granted.
+  keep_members_enum = "true"
 }
 ```
 
@@ -33,8 +36,8 @@ resource "openrouter_scim_group_mapping" "my_scimgroupmapping" {
 
 ### Optional
 
-- `boolean` (Boolean)
-- `keep_members_enum` (String) must be one of ["true", "false"]
+- `boolean` (Boolean) Sent to DELETE /scim/group-mappings/{id} as keep_members. `true` deletes the mapping and leaves workspace membership intact; `false` also removes the members the mapping granted. Defaults to `true` when neither this attribute nor `keep_members_enum` is set. Conflicts with `keep_members_enum`.
+- `keep_members_enum` (String) String form of `boolean`, must be one of ["true", "false"]. Sent to DELETE /scim/group-mappings/{id} as keep_members. Defaults to `true` when neither this attribute nor `boolean` is set. Conflicts with `boolean`.
 
 ### Read-Only
 

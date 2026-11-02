@@ -77,10 +77,36 @@ func (r *ScimGroupMappingResourceModel) ToOperationsDeleteScimGroupMappingReques
 	id = r.ID.ValueString()
 
 	out := operations.DeleteScimGroupMappingRequest{
-		ID: id,
+		ID:          id,
+		KeepMembers: r.keepMembersForDelete(),
 	}
 
 	return &out, diags
+}
+
+// keepMembersForDelete maps the keep_members union onto the delete request.
+//
+// DELETE /scim/group-mappings/{id} requires the keep_members query parameter
+// and returns 400 without it. Speakeasy emits the union as two optional
+// resource attributes but never wires either into the delete request builder,
+// so the generated request carried no query string and destroy always failed.
+//
+// The default is keep_members=true: deleting the mapping must not revoke
+// workspace membership the configuration never asked to revoke. Set
+// keep_members_enum = "false" to remove the members the mapping granted.
+//
+// This is a persistent edit (.speakeasy/gen.yaml sets persistentEdits), so a
+// Speakeasy regeneration preserves it.
+func (r *ScimGroupMappingResourceModel) keepMembersForDelete() operations.KeepMembers {
+	if !r.Boolean.IsNull() && !r.Boolean.IsUnknown() {
+		return operations.CreateKeepMembersBoolean(r.Boolean.ValueBool())
+	}
+	if !r.KeepMembersEnum.IsNull() && !r.KeepMembersEnum.IsUnknown() {
+		return operations.CreateKeepMembersKeepMembersEnum(
+			operations.KeepMembersEnum(r.KeepMembersEnum.ValueString()),
+		)
+	}
+	return operations.CreateKeepMembersBoolean(true)
 }
 
 func (r *ScimGroupMappingResourceModel) ToOperationsGetScimGroupMappingRequest(ctx context.Context) (*operations.GetScimGroupMappingRequest, diag.Diagnostics) {
