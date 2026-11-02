@@ -85,6 +85,10 @@ func (r *ModelDataSourceModel) RefreshFromSharedModelResponse(ctx context.Contex
 			r.Data.DefaultParameters.TopP = types.Float64PointerValue(resp.Data.DefaultParameters.TopP)
 		}
 		r.Data.Description = types.StringPointerValue(resp.Data.Description)
+		r.Data.Endpoints = make([]types.String, 0, len(resp.Data.Endpoints))
+		for _, v := range resp.Data.Endpoints {
+			r.Data.Endpoints = append(r.Data.Endpoints, types.StringValue(v))
+		}
 		r.Data.ExpirationDate = types.StringPointerValue(resp.Data.ExpirationDate)
 		r.Data.HuggingFaceID = types.StringPointerValue(resp.Data.HuggingFaceID)
 		r.Data.ID = types.StringValue(resp.Data.ID)
