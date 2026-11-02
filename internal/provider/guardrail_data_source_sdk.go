@@ -96,6 +96,7 @@ func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponseData(ctx
 	r.EnableFreeModelPublication = types.BoolPointerValue(resp.EnableFreeModelPublication)
 	r.EnableFreeModelTraining = types.BoolPointerValue(resp.EnableFreeModelTraining)
 	r.EnablePaidModelTraining = types.BoolPointerValue(resp.EnablePaidModelTraining)
+	r.EnforceFirstPartyHarnessModels = types.BoolPointerValue(resp.EnforceFirstPartyHarnessModels)
 	r.EnforceZdr = types.BoolPointerValue(resp.EnforceZdr)
 	r.EnforceZdrAnthropic = types.BoolPointerValue(resp.EnforceZdrAnthropic)
 	r.EnforceZdrGoogle = types.BoolPointerValue(resp.EnforceZdrGoogle)
