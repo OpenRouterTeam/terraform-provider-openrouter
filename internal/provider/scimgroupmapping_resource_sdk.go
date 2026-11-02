@@ -77,7 +77,8 @@ func (r *ScimGroupMappingResourceModel) ToOperationsDeleteScimGroupMappingReques
 	id = r.ID.ValueString()
 
 	out := operations.DeleteScimGroupMappingRequest{
-		ID: id,
+		ID:          id,
+		KeepMembers: r.keepMembersForDelete(), // custom code, see scim_group_mapping_keep_members.go
 	}
 
 	return &out, diags

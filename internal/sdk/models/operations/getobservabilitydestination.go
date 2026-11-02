@@ -32,6 +32,8 @@ type GetObservabilityDestinationResponse struct {
 	GetObservabilityDestinationResponse *shared.GetObservabilityDestinationResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -82,6 +84,13 @@ func (g *GetObservabilityDestinationResponse) GetUnauthorizedResponse() *shared.
 		return nil
 	}
 	return g.UnauthorizedResponse
+}
+
+func (g *GetObservabilityDestinationResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetObservabilityDestinationResponse) GetNotFoundResponse() *shared.NotFoundResponse {

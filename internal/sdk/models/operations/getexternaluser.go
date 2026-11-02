@@ -34,6 +34,8 @@ type GetExternalUserResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -91,6 +93,13 @@ func (g *GetExternalUserResponse) GetUnauthorizedResponse() *shared.Unauthorized
 		return nil
 	}
 	return g.UnauthorizedResponse
+}
+
+func (g *GetExternalUserResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetExternalUserResponse) GetNotFoundResponse() *shared.NotFoundResponse {

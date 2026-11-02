@@ -100,6 +100,7 @@ Read-Only:
 - `created` (Number) Unix timestamp of when the model was created
 - `default_parameters` (Attributes) Default parameters for this model (see [below for nested schema](#nestedatt--data--default_parameters))
 - `description` (String) Description of the model
+- `endpoints` (List of String) Request API paths that serve this model, derived from the same modality and adapter rules the routers use. A model served only through an alpha surface lists only that path.
 - `expiration_date` (String) The date after which the model may be removed. ISO 8601 date string (YYYY-MM-DD) or null if no expiration.
 - `hugging_face_id` (String) Hugging Face model identifier, if applicable
 - `id` (String) Unique identifier for the model

@@ -268,6 +268,8 @@ type GetKeyResponse struct {
 	Object *GetKeyResponseBody
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Too Many Requests - Rate limit exceeded
@@ -320,6 +322,13 @@ func (g *GetKeyResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse 
 		return nil
 	}
 	return g.UnauthorizedResponse
+}
+
+func (g *GetKeyResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetKeyResponse) GetNotFoundResponse() *shared.NotFoundResponse {

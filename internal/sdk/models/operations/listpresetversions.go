@@ -63,10 +63,14 @@ type ListPresetVersionsResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*ListPresetVersionsResponse, error)
 }
@@ -124,6 +128,13 @@ func (l *ListPresetVersionsResponse) GetUnauthorizedResponse() *shared.Unauthori
 	return l.UnauthorizedResponse
 }
 
+func (l *ListPresetVersionsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
+}
+
 func (l *ListPresetVersionsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
 	if l == nil {
 		return nil
@@ -136,4 +147,11 @@ func (l *ListPresetVersionsResponse) GetInternalServerResponse() *shared.Interna
 		return nil
 	}
 	return l.InternalServerResponse
+}
+
+func (l *ListPresetVersionsResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }

@@ -22,12 +22,18 @@ type SubmitGenerationFeedbackResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
+	// Conflict - Feedback was already submitted for this generation by this account. The first submission is kept.
+	ConflictResponse *shared.ConflictResponse
 	// Too Many Requests - Rate limit exceeded
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (s SubmitGenerationFeedbackResponse) MarshalJSON() ([]byte, error) {
@@ -83,11 +89,25 @@ func (s *SubmitGenerationFeedbackResponse) GetUnauthorizedResponse() *shared.Una
 	return s.UnauthorizedResponse
 }
 
+func (s *SubmitGenerationFeedbackResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if s == nil {
+		return nil
+	}
+	return s.ForbiddenResponse
+}
+
 func (s *SubmitGenerationFeedbackResponse) GetNotFoundResponse() *shared.NotFoundResponse {
 	if s == nil {
 		return nil
 	}
 	return s.NotFoundResponse
+}
+
+func (s *SubmitGenerationFeedbackResponse) GetConflictResponse() *shared.ConflictResponse {
+	if s == nil {
+		return nil
+	}
+	return s.ConflictResponse
 }
 
 func (s *SubmitGenerationFeedbackResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
@@ -102,4 +122,11 @@ func (s *SubmitGenerationFeedbackResponse) GetInternalServerResponse() *shared.I
 		return nil
 	}
 	return s.InternalServerResponse
+}
+
+func (s *SubmitGenerationFeedbackResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if s == nil {
+		return nil
+	}
+	return s.ServiceUnavailableResponse
 }

@@ -32,6 +32,8 @@ type GetGuardrailResponse struct {
 	GetGuardrailResponse *shared.GetGuardrailResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Guardrail not found, or the workspace default guardrail has not been configured yet.
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -82,6 +84,13 @@ func (g *GetGuardrailResponse) GetUnauthorizedResponse() *shared.UnauthorizedRes
 		return nil
 	}
 	return g.UnauthorizedResponse
+}
+
+func (g *GetGuardrailResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetGuardrailResponse) GetNotFoundResponse() *shared.NotFoundResponse {
