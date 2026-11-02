@@ -36,6 +36,8 @@ type GetGenerationResponse struct {
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Payment Required - Insufficient credits or quota to complete request
 	PaymentRequiredResponse *shared.PaymentRequiredResponse
+	// Forbidden - The management key does not have permission for this request
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Too Many Requests - Rate limit exceeded
@@ -108,6 +110,13 @@ func (g *GetGenerationResponse) GetPaymentRequiredResponse() *shared.PaymentRequ
 		return nil
 	}
 	return g.PaymentRequiredResponse
+}
+
+func (g *GetGenerationResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
 }
 
 func (g *GetGenerationResponse) GetNotFoundResponse() *shared.NotFoundResponse {
