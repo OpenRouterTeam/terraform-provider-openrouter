@@ -41,6 +41,8 @@ func TestScimGroupMappingDeleteKeepsMembers(t *testing.T) {
 		}
 	})
 
+	// The schema makes this combination unreachable (the two attributes
+	// ConflictWith each other); this only pins the helper's guard order.
 	t.Run("boolean wins when both are set", func(t *testing.T) {
 		req := deleteRequestFor(t, types.BoolValue(true), types.StringValue("false"))
 		if req.KeepMembers.Type != operations.KeepMembersTypeBoolean {

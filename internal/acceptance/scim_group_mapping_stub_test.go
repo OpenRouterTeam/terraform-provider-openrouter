@@ -211,3 +211,33 @@ func TestStubScimGroupMappingDestroyKeepMembersFalse(t *testing.T) {
 		}
 	}
 }
+
+// TestStubScimGroupMappingDestroyBooleanAttribute covers the boolean attribute
+// end to end. The unit test only proves the builder; this proves the value
+// survives create and refresh into state and reaches the API as false.
+func TestStubScimGroupMappingDestroyBooleanAttribute(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newScimGroupMappingStub(t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: scimGroupMappingStubConfig(srv.URL, "  boolean = false\n"),
+				Check:  resource.TestCheckResourceAttr("openrouter_scim_group_mapping.test", "boolean", "false"),
+			},
+		},
+	})
+
+	stub.mu.Lock()
+	defer stub.mu.Unlock()
+	if len(stub.deleteQueries) == 0 {
+		t.Fatal("destroy never issued a DELETE for the SCIM group mapping")
+	}
+	for i, q := range stub.deleteQueries {
+		if got := q.Get("keep_members"); got != "false" {
+			t.Errorf("delete call %d sent keep_members=%q, want %q", i, got, "false")
+		}
+	}
+}

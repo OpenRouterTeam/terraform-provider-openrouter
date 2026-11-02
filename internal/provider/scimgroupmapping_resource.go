@@ -53,11 +53,11 @@ func (r *ScimGroupMappingResource) Metadata(ctx context.Context, req resource.Me
 
 func (r *ScimGroupMappingResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "ScimGroupMapping Resource",
+		MarkdownDescription: "ScimGroupMapping Resource. Destroying the mapping, or replacing it because `scim_group_id` or `workspace_id` changed, deletes the mapping and sends `keep_members`: `true` leaves the workspace membership it granted intact as manually-managed, `false` also removes those members. Neither is set by default; the provider sends `true`.",
 		Attributes: map[string]schema.Attribute{
 			"boolean": schema.BoolAttribute{
 				Optional:    true,
-				Description: "Sent to DELETE /scim/group-mappings/{id} as keep_members. `true` deletes the mapping and leaves workspace membership intact; `false` also removes the members the mapping granted. Defaults to `true` when neither this attribute nor `keep_members_enum` is set. Conflicts with `keep_members_enum`.",
+				Description: "Only takes effect when the mapping is destroyed or replaced: sent to DELETE /scim/group-mappings/{id} as keep_members. `true` deletes the mapping and leaves workspace membership intact as manually-managed; `false` also removes the members the mapping granted. If neither this attribute nor `keep_members_enum` is set, the provider sends `true`. Setting it does not change membership until then. Conflicts with `keep_members_enum`.",
 				Validators: []validator.Bool{
 					boolvalidator.ConflictsWith(path.Expressions{
 						path.MatchRelative().AtParent().AtName("keep_members_enum"),
@@ -72,7 +72,7 @@ func (r *ScimGroupMappingResource) Schema(ctx context.Context, req resource.Sche
 			},
 			"keep_members_enum": schema.StringAttribute{
 				Optional:    true,
-				Description: "String form of `boolean`, must be one of [\"true\", \"false\"]. Sent to DELETE /scim/group-mappings/{id} as keep_members. Defaults to `true` when neither this attribute nor `boolean` is set. Conflicts with `boolean`.",
+				Description: "String form of `boolean`, must be one of [\"true\", \"false\"]. Only takes effect when the mapping is destroyed or replaced: sent to DELETE /scim/group-mappings/{id} as keep_members. If neither this attribute nor `boolean` is set, the provider sends `true`. Conflicts with `boolean`.",
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.Expressions{
 						path.MatchRelative().AtParent().AtName("boolean"),
