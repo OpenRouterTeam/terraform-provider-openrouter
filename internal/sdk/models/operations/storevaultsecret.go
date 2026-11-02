@@ -50,7 +50,7 @@ type StoreVaultSecretResponse struct {
 	RequestTimeoutResponse *shared.RequestTimeoutResponse
 	// Conflict - The secret belongs to a connection (for example an MCP or GitHub connection) and can only be replaced or removed by reconnecting or disconnecting it.
 	ConflictResponse *shared.ConflictResponse
-	// Payload Too Large - The JSON body exceeds 425000 bytes.
+	// Payload Too Large - The JSON body exceeds 1309643 bytes.
 	PayloadTooLargeResponse *shared.PayloadTooLargeResponse
 	// Too Many Requests - The vault rate limit was reached.
 	TooManyRequestsResponse *shared.TooManyRequestsResponse

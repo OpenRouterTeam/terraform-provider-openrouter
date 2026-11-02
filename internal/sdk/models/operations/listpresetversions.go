@@ -69,6 +69,8 @@ type ListPresetVersionsResponse struct {
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*ListPresetVersionsResponse, error)
 }
@@ -145,4 +147,11 @@ func (l *ListPresetVersionsResponse) GetInternalServerResponse() *shared.Interna
 		return nil
 	}
 	return l.InternalServerResponse
+}
+
+func (l *ListPresetVersionsResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }

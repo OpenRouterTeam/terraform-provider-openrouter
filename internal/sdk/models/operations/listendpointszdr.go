@@ -11,12 +11,12 @@ import (
 
 // ListEndpointsZdrResponseBody - Returns a list of endpoints
 type ListEndpointsZdrResponseBody struct {
-	Data []shared.PublicEndpoint `json:"data"`
+	Data []shared.PublicZdrEndpoint `json:"data"`
 }
 
-func (l *ListEndpointsZdrResponseBody) GetData() []shared.PublicEndpoint {
+func (l *ListEndpointsZdrResponseBody) GetData() []shared.PublicZdrEndpoint {
 	if l == nil {
-		return []shared.PublicEndpoint{}
+		return []shared.PublicZdrEndpoint{}
 	}
 	return l.Data
 }
@@ -34,6 +34,8 @@ type ListEndpointsZdrResponse struct {
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (l ListEndpointsZdrResponse) MarshalJSON() ([]byte, error) {
@@ -87,4 +89,11 @@ func (l *ListEndpointsZdrResponse) GetInternalServerResponse() *shared.InternalS
 		return nil
 	}
 	return l.InternalServerResponse
+}
+
+func (l *ListEndpointsZdrResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }
