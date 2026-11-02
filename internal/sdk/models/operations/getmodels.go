@@ -509,10 +509,22 @@ type GetModelsResponse struct {
 	Res *string
 	// Bad Request - Invalid request parameters or malformed input
 	BadRequestResponse *shared.BadRequestResponse
+	// Unauthorized - Authentication required or invalid credentials
+	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Forbidden - Authentication successful but insufficient permissions
 	ForbiddenResponse *shared.ForbiddenResponse
+	// Not Found - Resource does not exist
+	NotFoundResponse *shared.NotFoundResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
+	// Conflict - Resource conflict or concurrent modification
+	ConflictResponse *shared.ConflictResponse
+	// Too Many Requests - Rate limit exceeded
+	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*GetModelsResponse, error)
 }
@@ -570,6 +582,13 @@ func (g *GetModelsResponse) GetBadRequestResponse() *shared.BadRequestResponse {
 	return g.BadRequestResponse
 }
 
+func (g *GetModelsResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
+	if g == nil {
+		return nil
+	}
+	return g.UnauthorizedResponse
+}
+
 func (g *GetModelsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
 	if g == nil {
 		return nil
@@ -577,9 +596,44 @@ func (g *GetModelsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
 	return g.ForbiddenResponse
 }
 
+func (g *GetModelsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
+	if g == nil {
+		return nil
+	}
+	return g.NotFoundResponse
+}
+
+func (g *GetModelsResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if g == nil {
+		return nil
+	}
+	return g.RequestTimeoutResponse
+}
+
+func (g *GetModelsResponse) GetConflictResponse() *shared.ConflictResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ConflictResponse
+}
+
+func (g *GetModelsResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
+	if g == nil {
+		return nil
+	}
+	return g.TooManyRequestsResponse
+}
+
 func (g *GetModelsResponse) GetInternalServerResponse() *shared.InternalServerResponse {
 	if g == nil {
 		return nil
 	}
 	return g.InternalServerResponse
+}
+
+func (g *GetModelsResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ServiceUnavailableResponse
 }
