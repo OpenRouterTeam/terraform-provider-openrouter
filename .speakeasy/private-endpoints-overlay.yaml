@@ -1608,6 +1608,8 @@ actions:
           example: gpt-4o-prod
           minLength: 1
           type: string
+        settings:
+          $ref: '#/components/schemas/UpdatePrivateEndpointSettingsRequest'
       required:
       - upstream_model_id
       type: object
