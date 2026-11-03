@@ -4,7 +4,7 @@
 package shared
 
 type UpdatePrivateEndpointParametersRequest struct {
-	// Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. `tool_choice` requires `tools` to be tested or declared.
+	// Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. `tool_choice` requires `tools` to be tested or declared.
 	DeclaredParameters []PrivateEndpointDeclaredParameter `json:"declared_parameters"`
 }
 

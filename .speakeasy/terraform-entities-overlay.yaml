@@ -146,6 +146,11 @@ actions:
   - target: $["components"]["schemas"]["CreateBYOKKeyRequest"]["properties"]["provider"]
     update:
       x-speakeasy-name-override: provider_slug
+  # The API accepts only the declared_region values each provider supports
+  # (issue #767); reject the rest at plan time instead of at apply.
+  - target: $["components"]["schemas"]["CreateBYOKKeyRequest"]["properties"]["declared_region"]
+    update:
+      x-speakeasy-plan-validators: DeclaredRegionProviderValidator
 
   - target: $["paths"]["/byok"]["post"]
     update:

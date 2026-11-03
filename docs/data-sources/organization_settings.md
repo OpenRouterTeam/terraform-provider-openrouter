@@ -23,4 +23,4 @@ data "openrouter_organization_settings" "my_organizationsettings" {
 ### Read-Only
 
 - `id` (String) ID of the organization the settings belong to
-- `is_filtered_model_catalog_enabled` (Boolean) When true, `GET /api/v1/models` called with one of the organization's API keys returns only the models that key can use (the `/api/v1/models/user` catalog), and the signed-in dashboard shows the same list. Anonymous requests always receive the public catalog.
+- `is_filtered_model_catalog_enabled` (Boolean) When true, the signed-in dashboard lists only the models the organization can use. `GET /api/v1/models` called with an API key always returns only the models that key can use, whatever this setting says; anonymous requests receive the public catalog.
