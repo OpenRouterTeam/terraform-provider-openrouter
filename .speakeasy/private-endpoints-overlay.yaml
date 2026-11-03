@@ -1,7 +1,12 @@
 # Pinned copy of the /private-endpoints API (openrouter-web #47521 at
 # 8223a225: Idempotency-Key on create, 408 on every operation), plus
-# max_completion_tokens (added ahead of the openrouter-web change that ships
-# it), applied on top of the monorepo-synced .speakeasy/in.openapi.yaml.
+# max_completion_tokens, applied on top of the monorepo-synced
+# .speakeasy/in.openapi.yaml. The synced spec now carries
+# max_completion_tokens on CreatePrivateEndpointRequest and PrivateEndpoint,
+# but this pinned copy still supplies Idempotency-Key and the 408 responses
+# the sync lacks, and the actions below remove and re-add these schemas
+# wholesale, so the attribute stays declared here until the whole file is
+# retired. Never hand-edit the generated schema for it.
 #
 # The sdk-bot spec sync rewrites in.openapi.yaml wholesale, and the public spec
 # it copies still hides these routes until #47521 ships. Keeping them here means
