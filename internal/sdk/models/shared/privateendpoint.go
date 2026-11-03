@@ -12,6 +12,8 @@ type PrivateEndpoint struct {
 	DeclaredZdr *bool `json:"declared_zdr"`
 	// Stable identifier of the private endpoint.
 	ID string `json:"id"`
+	// Most completion tokens a request routed to this endpoint can produce, or `null` when the endpoint sets no cap beyond the model context length.
+	MaxCompletionTokens *int64 `json:"max_completion_tokens"`
 	// Display name of the model, or `null` when the model is no longer listed.
 	ModelName *string `json:"model_name"`
 	// Permanent slug of the model this endpoint serves.
@@ -56,6 +58,13 @@ func (p *PrivateEndpoint) GetID() string {
 		return ""
 	}
 	return p.ID
+}
+
+func (p *PrivateEndpoint) GetMaxCompletionTokens() *int64 {
+	if p == nil {
+		return nil
+	}
+	return p.MaxCompletionTokens
 }
 
 func (p *PrivateEndpoint) GetModelName() *string {
