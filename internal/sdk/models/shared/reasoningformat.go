@@ -18,6 +18,7 @@ const (
 	ReasoningFormatBedrockXaiResponsesV1    ReasoningFormat = "bedrock-xai-responses-v1"
 	ReasoningFormatXaiResponsesV1           ReasoningFormat = "xai-responses-v1"
 	ReasoningFormatMetaResponsesV1          ReasoningFormat = "meta-responses-v1"
+	ReasoningFormatOpenrouterStealthV1      ReasoningFormat = "openrouter-stealth-v1"
 	ReasoningFormatAnthropicClaudeV1        ReasoningFormat = "anthropic-claude-v1"
 	ReasoningFormatGoogleGeminiV1           ReasoningFormat = "google-gemini-v1"
 )
@@ -44,6 +45,8 @@ func (e *ReasoningFormat) UnmarshalJSON(data []byte) error {
 	case "xai-responses-v1":
 		fallthrough
 	case "meta-responses-v1":
+		fallthrough
+	case "openrouter-stealth-v1":
 		fallthrough
 	case "anthropic-claude-v1":
 		fallthrough
