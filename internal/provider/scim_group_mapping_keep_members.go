@@ -1,3 +1,9 @@
+// The only caller of the helpers below is one line of custom code inside a
+// generated file. A regeneration can drop that line before this package is
+// linted, so an unused-function finding here is a hazard of the generate
+// step, not a defect in this file.
+//
+//lint:file-ignore U1000 the caller is custom code in a generated file
 package provider
 
 // Hand-written, so a Speakeasy regeneration leaves it alone. The call site is a

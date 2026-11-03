@@ -77,9 +77,9 @@ jobs:
           # gh exits non-zero while checks are pending; the next completion
           # re-runs this job.
           PASSED=$(gh pr checks "$PR" --repo "$GITHUB_REPOSITORY" --json name,bucket \
-            --jq '[.[] | select(.bucket == "pass") | .name | select(. == "Regenerate" or . == "Build and test" or . == "Lint config")] | unique | length' || true)
-          if [ "$PASSED" != 3 ]; then
-            echo "Regenerate, Build and test and Lint config have not all passed on $SHA yet"
+            --jq '[.[] | select(.bucket == "pass") | .name | select(. == "Regenerate" or . == "Build and test" or . == "Lint config" or . == "Generated code pairing")] | unique | length' || true)
+          if [ "$PASSED" != 4 ]; then
+            echo "Regenerate, Build and test, Lint config and Generated code pairing have not all passed on $SHA yet"
             exit 0
           fi
 
