@@ -93,6 +93,10 @@ def main() -> int:
     # regenerate.yaml's path filter, so changing it is what makes a generation
     # observe the edit. The three lock/out files above are excluded because a
     # release bump alone touches them.
+    # `gen.yaml` counts even though regeneration rewrites it: it is also on
+    # regenerate.yaml's path filter, so changing it is what makes a generation
+    # observe the edit. The three lock/out files above are excluded because a
+    # release bump alone touches them.
     inputs = [
         f for f in files
         if f.startswith(".speakeasy/") and f not in GENERATED_LOCKS
