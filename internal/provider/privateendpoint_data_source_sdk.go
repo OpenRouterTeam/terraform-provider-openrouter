@@ -23,7 +23,6 @@ func (r *PrivateEndpointDataSourceModel) RefreshFromSharedPrivateEndpoint(ctx co
 	}
 	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.ID = types.StringValue(resp.ID)
-	r.MaxCompletionTokens = types.Int64PointerValue(resp.MaxCompletionTokens)
 	r.ModelName = types.StringPointerValue(resp.ModelName)
 	r.ModelPermaslug = types.StringValue(resp.ModelPermaslug)
 	r.ModelSlug = types.StringPointerValue(resp.ModelSlug)
