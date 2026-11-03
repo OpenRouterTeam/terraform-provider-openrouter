@@ -7,16 +7,19 @@ import (
 	"context"
 	"fmt"
 	speakeasy_boolplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
+	speakeasy_int64planmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/int64planmodifier"
 	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	speakeasy_stringvalidators "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators/stringvalidators"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -41,19 +44,20 @@ type PrivateEndpointResource struct {
 
 // PrivateEndpointResourceModel describes the resource data model.
 type PrivateEndpointResourceModel struct {
-	Activate        *tfTypes.PrivateEndpointActivation `tfsdk:"activate"`
-	BaseURL         types.String                       `tfsdk:"base_url"`
-	DeclaredRegion  types.String                       `tfsdk:"declared_region"`
-	DeclaredZdr     types.Bool                         `tfsdk:"declared_zdr"`
-	ID              types.String                       `tfsdk:"id"`
-	ModelName       types.String                       `tfsdk:"model_name"`
-	ModelPermaslug  types.String                       `tfsdk:"model_permaslug"`
-	ModelSlug       types.String                       `tfsdk:"model_slug"`
-	Pricing         *tfTypes.PrivateEndpointPricing    `tfsdk:"pricing"`
-	ProviderName    types.String                       `tfsdk:"provider_name"`
-	ProviderSlug    types.String                       `tfsdk:"provider_slug"`
-	Status          types.String                       `tfsdk:"status"`
-	UpstreamModelID types.String                       `tfsdk:"upstream_model_id"`
+	Activate            *tfTypes.PrivateEndpointActivation `tfsdk:"activate"`
+	BaseURL             types.String                       `tfsdk:"base_url"`
+	DeclaredRegion      types.String                       `tfsdk:"declared_region"`
+	DeclaredZdr         types.Bool                         `tfsdk:"declared_zdr"`
+	ID                  types.String                       `tfsdk:"id"`
+	MaxCompletionTokens types.Int64                        `tfsdk:"max_completion_tokens"`
+	ModelName           types.String                       `tfsdk:"model_name"`
+	ModelPermaslug      types.String                       `tfsdk:"model_permaslug"`
+	ModelSlug           types.String                       `tfsdk:"model_slug"`
+	Pricing             *tfTypes.PrivateEndpointPricing    `tfsdk:"pricing"`
+	ProviderName        types.String                       `tfsdk:"provider_name"`
+	ProviderSlug        types.String                       `tfsdk:"provider_slug"`
+	Status              types.String                       `tfsdk:"status"`
+	UpstreamModelID     types.String                       `tfsdk:"upstream_model_id"`
 }
 
 func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -62,7 +66,7 @@ func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.Met
 
 func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\nOnly `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
+		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\nOnly `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr`, `declared_region` or `max_completion_tokens` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
 		Attributes: map[string]schema.Attribute{
 			"activate": schema.SingleNestedAttribute{
 				Optional: true,
@@ -117,6 +121,18 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
 				Description: `Stable identifier of the private endpoint.`,
+			},
+			"max_completion_tokens": schema.Int64Attribute{
+				Computed: true,
+				Optional: true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplaceIfConfigured(),
+					speakeasy_int64planmodifier.SuppressDiff(speakeasy_int64planmodifier.ExplicitSuppress),
+				},
+				Description: `Cap on completion tokens per request. Requests asking for more skip this endpoint, and the default output length stays within it. When omitted, the cap is copied from the public endpoint for the same model and provider, if there is one. Requires replacement if changed.`,
+				Validators: []validator.Int64{
+					int64validator.Between(1, 2147483647),
+				},
 			},
 			"model_name": schema.StringAttribute{
 				Computed: true,

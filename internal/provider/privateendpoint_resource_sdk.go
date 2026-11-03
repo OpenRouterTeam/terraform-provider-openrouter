@@ -57,6 +57,7 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	}
 	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.ID = types.StringValue(resp.ID)
+	r.MaxCompletionTokens = types.Int64PointerValue(resp.MaxCompletionTokens)
 	r.ModelName = types.StringPointerValue(resp.ModelName)
 	r.ModelPermaslug = types.StringValue(resp.ModelPermaslug)
 	r.ModelSlug = types.StringPointerValue(resp.ModelSlug)
@@ -187,6 +188,12 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 	var modelPermaslug string
 	modelPermaslug = r.ModelPermaslug.ValueString()
 
+	maxCompletionTokens := new(int64)
+	if !r.MaxCompletionTokens.IsUnknown() && !r.MaxCompletionTokens.IsNull() {
+		*maxCompletionTokens = r.MaxCompletionTokens.ValueInt64()
+	} else {
+		maxCompletionTokens = nil
+	}
 	var pricing *shared.PrivateEndpointPricing
 	if r.Pricing != nil {
 		var completion string
@@ -207,14 +214,15 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 	upstreamModelID = r.UpstreamModelID.ValueString()
 
 	out := shared.CreatePrivateEndpointRequest{
-		Activate:        activate,
-		BaseURL:         baseURL,
-		DeclaredRegion:  declaredRegion,
-		DeclaredZdr:     declaredZdr,
-		ModelPermaslug:  modelPermaslug,
-		Pricing:         pricing,
-		ProviderSlug:    providerSlug,
-		UpstreamModelID: upstreamModelID,
+		Activate:            activate,
+		BaseURL:             baseURL,
+		DeclaredRegion:      declaredRegion,
+		DeclaredZdr:         declaredZdr,
+		ModelPermaslug:      modelPermaslug,
+		MaxCompletionTokens: maxCompletionTokens,
+		Pricing:             pricing,
+		ProviderSlug:        providerSlug,
+		UpstreamModelID:     upstreamModelID,
 	}
 
 	return &out, diags
