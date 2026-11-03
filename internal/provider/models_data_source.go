@@ -39,6 +39,7 @@ type ModelsDataSourceModel struct {
 	Context              types.Int64                      `queryParam:"style=form,explode=true,name=context" tfsdk:"context"`
 	Data                 []tfTypes.Model                  `tfsdk:"data"`
 	Distillable          types.String                     `queryParam:"style=form,explode=true,name=distillable" tfsdk:"distillable"`
+	Endpoints            types.String                     `queryParam:"style=form,explode=true,name=endpoints" tfsdk:"endpoints"`
 	InputModalities      types.String                     `queryParam:"style=form,explode=true,name=input_modalities" tfsdk:"input_modalities"`
 	Links                *tfTypes.ModelsListResponseLinks `tfsdk:"links"`
 	MaxAgeDays           types.Int64                      `queryParam:"style=form,explode=true,name=max_age_days" tfsdk:"max_age_days"`
@@ -483,6 +484,10 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 						"false",
 					),
 				},
+			},
+			"endpoints": schema.StringAttribute{
+				Optional:    true,
+				Description: `Filter models by the request API paths they serve, as listed in each model's ` + "`" + `endpoints` + "`" + ` field. Comma-separated; a model must serve every listed path. Valid values: /api/v1/chat/completions, /api/v1/completions, /api/v1/messages, /api/v1/responses, /api/v1/embeddings, /api/v1/rerank, /api/alpha/decisions, /api/alpha/extractions, /api/v1/videos, /api/v1/audio/speech, /api/v1/audio/transcriptions, /api/v1/images, /api/v1/batches. When set without ` + "`" + `output_modalities` + "`" + `, models of every output modality are considered (the companion ` + "`" + `/api/alpha/extractions` + "`" + ` route is served by text and decisions models alike).`,
 			},
 			"input_modalities": schema.StringAttribute{
 				Optional:    true,

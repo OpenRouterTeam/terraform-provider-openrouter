@@ -20,6 +20,7 @@ const (
 	BYOKProviderSlugAmazonBedrockClaudeOnAws BYOKProviderSlug = "amazon-bedrock/claude-on-aws"
 	BYOKProviderSlugAmazonNova               BYOKProviderSlug = "amazon-nova"
 	BYOKProviderSlugAmbient                  BYOKProviderSlug = "ambient"
+	BYOKProviderSlugAntdigital               BYOKProviderSlug = "antdigital"
 	BYOKProviderSlugAnthropic                BYOKProviderSlug = "anthropic"
 	BYOKProviderSlugAnthropic2               BYOKProviderSlug = "anthropic/2"
 	BYOKProviderSlugArceeAi                  BYOKProviderSlug = "arcee-ai"
@@ -158,6 +159,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "amazon-nova":
 		fallthrough
 	case "ambient":
+		fallthrough
+	case "antdigital":
 		fallthrough
 	case "anthropic":
 		fallthrough

@@ -3,6 +3,7 @@ data "openrouter_models" "my_models" {
   category               = "programming"
   context                = 128000
   distillable            = "true"
+  endpoints              = "/api/alpha/extractions"
   input_modalities       = "text,image"
   max_age_days           = 90
   max_agentic_index      = 100

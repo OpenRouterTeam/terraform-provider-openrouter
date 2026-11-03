@@ -23,6 +23,7 @@ const (
 	ProviderAmazonBedrockClaudeOnAws Provider = "amazon-bedrock/claude-on-aws"
 	ProviderAmazonNova               Provider = "amazon-nova"
 	ProviderAmbient                  Provider = "ambient"
+	ProviderAntdigital               Provider = "antdigital"
 	ProviderAnthropic                Provider = "anthropic"
 	ProviderAnthropic2               Provider = "anthropic/2"
 	ProviderArceeAi                  Provider = "arcee-ai"
@@ -161,6 +162,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "amazon-nova":
 		fallthrough
 	case "ambient":
+		fallthrough
+	case "antdigital":
 		fallthrough
 	case "anthropic":
 		fallthrough
