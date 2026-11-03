@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: b84e95b4663d991203e17a46fe846fd9
+  docChecksum: 713ac2d44a733b226f167450f628946d
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.132
-  configChecksum: ad7af97982682676f8e93960ec4ab6c4
+  releaseVersion: 0.3.133
+  configChecksum: dffcd45162dbef34f8ddd10f4def517f
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 22e7a797-acbf-44ab-bbc4-9121468fb216
-  pristine_commit_hash: 385f2bbd0323ee685469b944c086fedbe1652ed7
-  pristine_tree_hash: 0bb5b09d27e70ac67185d3c201f136d7e7238038
+  generation_id: 7273663b-3ab3-4210-b5c5-084a96695f9f
+  pristine_commit_hash: 6a7bfbfa27ceee95537ffb5d6d2c086cccae323f
+  pristine_tree_hash: 5b1de29c1963e6304307776ea96300854fb001ac
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:2f7671c75f11aabf6d35c3458ec633dd20136993
-    pristine_git_object: 8a2cb0b3ed381d5d278ec06a2f2dbe2d9f0d6236
+    last_write_checksum: sha1:d5fe8f4664952a22b0e07c4f4d98408d2f16fccc
+    pristine_git_object: 18e01b6062bef7038d602094633f157bd89da3e8
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -430,8 +430,8 @@ trackedFiles:
     pristine_git_object: 8902a8a0298560b7ca527bd385f793c83a2204d7
   internal/provider/byokkey_resource.go:
     id: 7c3b6c42a696
-    last_write_checksum: sha1:15ed18196e5938a5640286ad169f4759911351d9
-    pristine_git_object: fcf6704ad57d1a16a37902f51ad8b618076a5cc0
+    last_write_checksum: sha1:a9e4812a63aa21146b17c093684fe598c94f407b
+    pristine_git_object: 122a96e2ac96d51fc5850a0e5be5169bfe0293b0
   internal/provider/byokkey_resource_sdk.go:
     id: f02d4f42598a
     last_write_checksum: sha1:1a7920f20706feafe373d8ae0f8c2b2692e17dff
@@ -5186,8 +5186,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:cd1cae28914568be87ac9b6aa31a4e14a47057dc
-    pristine_git_object: 361669704f984654c8c84043611f8aaf602b6032
+    last_write_checksum: sha1:d6c379720574e835b678d34f7d99f0119d02cc32
+    pristine_git_object: 8f296fbd1a17e3418d85af1cff68e90e243abf6c
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
