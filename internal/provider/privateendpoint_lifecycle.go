@@ -11,6 +11,7 @@ import (
 
 	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -95,6 +96,17 @@ func privateEndpointErrorMessage(res *operations.CreatePrivateEndpointResponse) 
 // rates than state holds. Every PUT .../pricing inserts a new pricing version,
 // so updates that only touch other attributes (such as activate) must not send
 // one. Omitted pricing keeps the current rates.
+// privateEndpointSettingsForUpdate maps max_completion_tokens onto the settings
+// object the PATCH accepts. The API applies settings to drafts and active
+// endpoints, so a cap change never has to replace the endpoint.
+func privateEndpointSettingsForUpdate(model *PrivateEndpointResourceModel) *shared.UpdatePrivateEndpointSettingsRequest {
+	if model == nil || model.MaxCompletionTokens.IsNull() || model.MaxCompletionTokens.IsUnknown() {
+		return nil
+	}
+	cap := model.MaxCompletionTokens.ValueInt64()
+	return &shared.UpdatePrivateEndpointSettingsRequest{MaxCompletionTokens: &cap}
+}
+
 func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
 	var planned, current types.Object
 	diags := req.Plan.GetAttribute(ctx, path.Root("pricing"), &planned)

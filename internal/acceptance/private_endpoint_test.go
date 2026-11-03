@@ -56,6 +56,7 @@ type stubPrivateEndpoints struct {
 	byKey       map[string]string
 	deletes     []string
 	pricingPuts int
+	patches     int
 	failGets    int
 	// timeoutCreates answers that many creates with 408 after committing
 	// them, the way the API's timeout middleware leaves the handler running.
@@ -116,6 +117,20 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		}
 		s.pricingPuts++
 		endpoint.Pricing = body.Pricing
+	case len(parts) == 2 && r.Method == http.MethodPatch:
+		var body struct {
+			Settings *struct {
+				MaxCompletion *int64 `json:"max_completion_tokens"`
+			} `json:"settings"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			writeError(http.StatusBadRequest, "Invalid body")
+			return
+		}
+		s.patches++
+		if body.Settings != nil && body.Settings.MaxCompletion != nil {
+			endpoint.MaxCompletion = body.Settings.MaxCompletion
+		}
 	case len(parts) == 2 && r.Method == http.MethodGet:
 		if s.failGets > 0 {
 			s.failGets--

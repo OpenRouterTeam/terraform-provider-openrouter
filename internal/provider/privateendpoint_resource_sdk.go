@@ -297,6 +297,7 @@ func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointRequest(ctx 
 		BaseURL:         baseURL,
 		DeclaredRegion:  declaredRegion,
 		DeclaredZdr:     declaredZdr,
+		Settings:        privateEndpointSettingsForUpdate(r), // custom code, see privateendpoint_lifecycle.go
 		UpstreamModelID: upstreamModelID,
 	}
 
