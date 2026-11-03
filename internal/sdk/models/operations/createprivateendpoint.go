@@ -13,7 +13,7 @@ import (
 
 type CreatePrivateEndpointRequest struct {
 	// Retry-safe create: a repeated create with the same key from the same organization returns the endpoint the first request created instead of creating another. The endpoint is returned as it is now. Reusing a key with a different request body (model, provider, base URL, upstream model ID, declared ZDR or region, or pricing) is rejected with 422 `idempotency_key_reused`. `activate` is not compared, and later edits to the endpoint do not affect the comparison.
-	IdempotencyKey *string                             `header:"style=simple,explode=false,name=Idempotency-Key"`
+	IdempotencyKey *string                             `header:"style=simple,explode=false,name=idempotency-key"`
 	Body           shared.CreatePrivateEndpointRequest `request:"mediaType=application/json"`
 }
 
@@ -34,25 +34,16 @@ func (c *CreatePrivateEndpointRequest) GetBody() shared.CreatePrivateEndpointReq
 type CreatePrivateEndpointBadGatewayResponseBodyType string
 
 const (
-	CreatePrivateEndpointBadGatewayResponseBodyTypeBadGatewayResponse                            CreatePrivateEndpointBadGatewayResponseBodyType = "BadGatewayResponse"
 	CreatePrivateEndpointBadGatewayResponseBodyTypeCreatePrivateEndpointValidationFailedResponse CreatePrivateEndpointBadGatewayResponseBodyType = "CreatePrivateEndpointValidationFailedResponse"
+	CreatePrivateEndpointBadGatewayResponseBodyTypeBadGatewayResponse                            CreatePrivateEndpointBadGatewayResponseBodyType = "BadGatewayResponse"
 )
 
 // CreatePrivateEndpointBadGatewayResponseBody - An upstream dependency failed. When `activate` was passed and the draft was created, `data` carries it and any validation checks.
 type CreatePrivateEndpointBadGatewayResponseBody struct {
-	BadGatewayResponse                            *shared.BadGatewayResponse                            `queryParam:"inline" union:"member"`
 	CreatePrivateEndpointValidationFailedResponse *shared.CreatePrivateEndpointValidationFailedResponse `queryParam:"inline" union:"member"`
+	BadGatewayResponse                            *shared.BadGatewayResponse                            `queryParam:"inline" union:"member"`
 
 	Type CreatePrivateEndpointBadGatewayResponseBodyType
-}
-
-func CreateCreatePrivateEndpointBadGatewayResponseBodyBadGatewayResponse(badGatewayResponse shared.BadGatewayResponse) CreatePrivateEndpointBadGatewayResponseBody {
-	typ := CreatePrivateEndpointBadGatewayResponseBodyTypeBadGatewayResponse
-
-	return CreatePrivateEndpointBadGatewayResponseBody{
-		BadGatewayResponse: &badGatewayResponse,
-		Type:               typ,
-	}
 }
 
 func CreateCreatePrivateEndpointBadGatewayResponseBodyCreatePrivateEndpointValidationFailedResponse(createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse) CreatePrivateEndpointBadGatewayResponseBody {
@@ -61,6 +52,15 @@ func CreateCreatePrivateEndpointBadGatewayResponseBodyCreatePrivateEndpointValid
 	return CreatePrivateEndpointBadGatewayResponseBody{
 		CreatePrivateEndpointValidationFailedResponse: &createPrivateEndpointValidationFailedResponse,
 		Type: typ,
+	}
+}
+
+func CreateCreatePrivateEndpointBadGatewayResponseBodyBadGatewayResponse(badGatewayResponse shared.BadGatewayResponse) CreatePrivateEndpointBadGatewayResponseBody {
+	typ := CreatePrivateEndpointBadGatewayResponseBodyTypeBadGatewayResponse
+
+	return CreatePrivateEndpointBadGatewayResponseBody{
+		BadGatewayResponse: &badGatewayResponse,
+		Type:               typ,
 	}
 }
 
@@ -76,19 +76,19 @@ func (u *CreatePrivateEndpointBadGatewayResponseBody) UnmarshalJSON(data []byte)
 	var candidates []utils.UnionCandidate
 
 	// Collect all valid candidates
-	var badGatewayResponse shared.BadGatewayResponse = shared.BadGatewayResponse{}
-	if err := utils.UnmarshalJSON(data, &badGatewayResponse, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  CreatePrivateEndpointBadGatewayResponseBodyTypeBadGatewayResponse,
-			Value: &badGatewayResponse,
-		})
-	}
-
 	var createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse = shared.CreatePrivateEndpointValidationFailedResponse{}
 	if err := utils.UnmarshalJSON(data, &createPrivateEndpointValidationFailedResponse, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
 			Type:  CreatePrivateEndpointBadGatewayResponseBodyTypeCreatePrivateEndpointValidationFailedResponse,
 			Value: &createPrivateEndpointValidationFailedResponse,
+		})
+	}
+
+	var badGatewayResponse shared.BadGatewayResponse = shared.BadGatewayResponse{}
+	if err := utils.UnmarshalJSON(data, &badGatewayResponse, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  CreatePrivateEndpointBadGatewayResponseBodyTypeBadGatewayResponse,
+			Value: &badGatewayResponse,
 		})
 	}
 
@@ -105,11 +105,11 @@ func (u *CreatePrivateEndpointBadGatewayResponseBody) UnmarshalJSON(data []byte)
 	// Set the union type and value based on the best candidate
 	u.Type = best.Type.(CreatePrivateEndpointBadGatewayResponseBodyType)
 	switch best.Type {
-	case CreatePrivateEndpointBadGatewayResponseBodyTypeBadGatewayResponse:
-		u.BadGatewayResponse = best.Value.(*shared.BadGatewayResponse)
-		return nil
 	case CreatePrivateEndpointBadGatewayResponseBodyTypeCreatePrivateEndpointValidationFailedResponse:
 		u.CreatePrivateEndpointValidationFailedResponse = best.Value.(*shared.CreatePrivateEndpointValidationFailedResponse)
+		return nil
+	case CreatePrivateEndpointBadGatewayResponseBodyTypeBadGatewayResponse:
+		u.BadGatewayResponse = best.Value.(*shared.BadGatewayResponse)
 		return nil
 	}
 
@@ -117,12 +117,12 @@ func (u *CreatePrivateEndpointBadGatewayResponseBody) UnmarshalJSON(data []byte)
 }
 
 func (u CreatePrivateEndpointBadGatewayResponseBody) MarshalJSON() ([]byte, error) {
-	if u.BadGatewayResponse != nil {
-		return utils.MarshalJSON(u.BadGatewayResponse, "", true)
-	}
-
 	if u.CreatePrivateEndpointValidationFailedResponse != nil {
 		return utils.MarshalJSON(u.CreatePrivateEndpointValidationFailedResponse, "", true)
+	}
+
+	if u.BadGatewayResponse != nil {
+		return utils.MarshalJSON(u.BadGatewayResponse, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type CreatePrivateEndpointBadGatewayResponseBody: all fields are null")
@@ -131,25 +131,16 @@ func (u CreatePrivateEndpointBadGatewayResponseBody) MarshalJSON() ([]byte, erro
 type CreatePrivateEndpointInternalServerErrorResponseBodyType string
 
 const (
-	CreatePrivateEndpointInternalServerErrorResponseBodyTypeInternalServerResponse                        CreatePrivateEndpointInternalServerErrorResponseBodyType = "InternalServerResponse"
 	CreatePrivateEndpointInternalServerErrorResponseBodyTypeCreatePrivateEndpointValidationFailedResponse CreatePrivateEndpointInternalServerErrorResponseBodyType = "CreatePrivateEndpointValidationFailedResponse"
+	CreatePrivateEndpointInternalServerErrorResponseBodyTypeInternalServerResponse                        CreatePrivateEndpointInternalServerErrorResponseBodyType = "InternalServerResponse"
 )
 
 // CreatePrivateEndpointInternalServerErrorResponseBody - Internal server error. When `activate` was passed and the draft was created, `data` carries it and any validation checks.
 type CreatePrivateEndpointInternalServerErrorResponseBody struct {
-	InternalServerResponse                        *shared.InternalServerResponse                        `queryParam:"inline" union:"member"`
 	CreatePrivateEndpointValidationFailedResponse *shared.CreatePrivateEndpointValidationFailedResponse `queryParam:"inline" union:"member"`
+	InternalServerResponse                        *shared.InternalServerResponse                        `queryParam:"inline" union:"member"`
 
 	Type CreatePrivateEndpointInternalServerErrorResponseBodyType
-}
-
-func CreateCreatePrivateEndpointInternalServerErrorResponseBodyInternalServerResponse(internalServerResponse shared.InternalServerResponse) CreatePrivateEndpointInternalServerErrorResponseBody {
-	typ := CreatePrivateEndpointInternalServerErrorResponseBodyTypeInternalServerResponse
-
-	return CreatePrivateEndpointInternalServerErrorResponseBody{
-		InternalServerResponse: &internalServerResponse,
-		Type:                   typ,
-	}
 }
 
 func CreateCreatePrivateEndpointInternalServerErrorResponseBodyCreatePrivateEndpointValidationFailedResponse(createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse) CreatePrivateEndpointInternalServerErrorResponseBody {
@@ -158,6 +149,15 @@ func CreateCreatePrivateEndpointInternalServerErrorResponseBodyCreatePrivateEndp
 	return CreatePrivateEndpointInternalServerErrorResponseBody{
 		CreatePrivateEndpointValidationFailedResponse: &createPrivateEndpointValidationFailedResponse,
 		Type: typ,
+	}
+}
+
+func CreateCreatePrivateEndpointInternalServerErrorResponseBodyInternalServerResponse(internalServerResponse shared.InternalServerResponse) CreatePrivateEndpointInternalServerErrorResponseBody {
+	typ := CreatePrivateEndpointInternalServerErrorResponseBodyTypeInternalServerResponse
+
+	return CreatePrivateEndpointInternalServerErrorResponseBody{
+		InternalServerResponse: &internalServerResponse,
+		Type:                   typ,
 	}
 }
 
@@ -173,19 +173,19 @@ func (u *CreatePrivateEndpointInternalServerErrorResponseBody) UnmarshalJSON(dat
 	var candidates []utils.UnionCandidate
 
 	// Collect all valid candidates
-	var internalServerResponse shared.InternalServerResponse = shared.InternalServerResponse{}
-	if err := utils.UnmarshalJSON(data, &internalServerResponse, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  CreatePrivateEndpointInternalServerErrorResponseBodyTypeInternalServerResponse,
-			Value: &internalServerResponse,
-		})
-	}
-
 	var createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse = shared.CreatePrivateEndpointValidationFailedResponse{}
 	if err := utils.UnmarshalJSON(data, &createPrivateEndpointValidationFailedResponse, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
 			Type:  CreatePrivateEndpointInternalServerErrorResponseBodyTypeCreatePrivateEndpointValidationFailedResponse,
 			Value: &createPrivateEndpointValidationFailedResponse,
+		})
+	}
+
+	var internalServerResponse shared.InternalServerResponse = shared.InternalServerResponse{}
+	if err := utils.UnmarshalJSON(data, &internalServerResponse, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  CreatePrivateEndpointInternalServerErrorResponseBodyTypeInternalServerResponse,
+			Value: &internalServerResponse,
 		})
 	}
 
@@ -202,11 +202,11 @@ func (u *CreatePrivateEndpointInternalServerErrorResponseBody) UnmarshalJSON(dat
 	// Set the union type and value based on the best candidate
 	u.Type = best.Type.(CreatePrivateEndpointInternalServerErrorResponseBodyType)
 	switch best.Type {
-	case CreatePrivateEndpointInternalServerErrorResponseBodyTypeInternalServerResponse:
-		u.InternalServerResponse = best.Value.(*shared.InternalServerResponse)
-		return nil
 	case CreatePrivateEndpointInternalServerErrorResponseBodyTypeCreatePrivateEndpointValidationFailedResponse:
 		u.CreatePrivateEndpointValidationFailedResponse = best.Value.(*shared.CreatePrivateEndpointValidationFailedResponse)
+		return nil
+	case CreatePrivateEndpointInternalServerErrorResponseBodyTypeInternalServerResponse:
+		u.InternalServerResponse = best.Value.(*shared.InternalServerResponse)
 		return nil
 	}
 
@@ -214,12 +214,12 @@ func (u *CreatePrivateEndpointInternalServerErrorResponseBody) UnmarshalJSON(dat
 }
 
 func (u CreatePrivateEndpointInternalServerErrorResponseBody) MarshalJSON() ([]byte, error) {
-	if u.InternalServerResponse != nil {
-		return utils.MarshalJSON(u.InternalServerResponse, "", true)
-	}
-
 	if u.CreatePrivateEndpointValidationFailedResponse != nil {
 		return utils.MarshalJSON(u.CreatePrivateEndpointValidationFailedResponse, "", true)
+	}
+
+	if u.InternalServerResponse != nil {
+		return utils.MarshalJSON(u.InternalServerResponse, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type CreatePrivateEndpointInternalServerErrorResponseBody: all fields are null")
@@ -228,25 +228,16 @@ func (u CreatePrivateEndpointInternalServerErrorResponseBody) MarshalJSON() ([]b
 type CreatePrivateEndpointUnprocessableEntityResponseBodyType string
 
 const (
-	CreatePrivateEndpointUnprocessableEntityResponseBodyTypeUnprocessableEntityResponse                   CreatePrivateEndpointUnprocessableEntityResponseBodyType = "UnprocessableEntityResponse"
 	CreatePrivateEndpointUnprocessableEntityResponseBodyTypeCreatePrivateEndpointValidationFailedResponse CreatePrivateEndpointUnprocessableEntityResponseBodyType = "CreatePrivateEndpointValidationFailedResponse"
+	CreatePrivateEndpointUnprocessableEntityResponseBodyTypeUnprocessableEntityResponse                   CreatePrivateEndpointUnprocessableEntityResponseBodyType = "UnprocessableEntityResponse"
 )
 
 // CreatePrivateEndpointUnprocessableEntityResponseBody - The request was invalid, or validation failed. When `activate` was passed and the draft was created, `data` carries it and any validation checks.
 type CreatePrivateEndpointUnprocessableEntityResponseBody struct {
-	UnprocessableEntityResponse                   *shared.UnprocessableEntityResponse                   `queryParam:"inline" union:"member"`
 	CreatePrivateEndpointValidationFailedResponse *shared.CreatePrivateEndpointValidationFailedResponse `queryParam:"inline" union:"member"`
+	UnprocessableEntityResponse                   *shared.UnprocessableEntityResponse                   `queryParam:"inline" union:"member"`
 
 	Type CreatePrivateEndpointUnprocessableEntityResponseBodyType
-}
-
-func CreateCreatePrivateEndpointUnprocessableEntityResponseBodyUnprocessableEntityResponse(unprocessableEntityResponse shared.UnprocessableEntityResponse) CreatePrivateEndpointUnprocessableEntityResponseBody {
-	typ := CreatePrivateEndpointUnprocessableEntityResponseBodyTypeUnprocessableEntityResponse
-
-	return CreatePrivateEndpointUnprocessableEntityResponseBody{
-		UnprocessableEntityResponse: &unprocessableEntityResponse,
-		Type:                        typ,
-	}
 }
 
 func CreateCreatePrivateEndpointUnprocessableEntityResponseBodyCreatePrivateEndpointValidationFailedResponse(createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse) CreatePrivateEndpointUnprocessableEntityResponseBody {
@@ -255,6 +246,15 @@ func CreateCreatePrivateEndpointUnprocessableEntityResponseBodyCreatePrivateEndp
 	return CreatePrivateEndpointUnprocessableEntityResponseBody{
 		CreatePrivateEndpointValidationFailedResponse: &createPrivateEndpointValidationFailedResponse,
 		Type: typ,
+	}
+}
+
+func CreateCreatePrivateEndpointUnprocessableEntityResponseBodyUnprocessableEntityResponse(unprocessableEntityResponse shared.UnprocessableEntityResponse) CreatePrivateEndpointUnprocessableEntityResponseBody {
+	typ := CreatePrivateEndpointUnprocessableEntityResponseBodyTypeUnprocessableEntityResponse
+
+	return CreatePrivateEndpointUnprocessableEntityResponseBody{
+		UnprocessableEntityResponse: &unprocessableEntityResponse,
+		Type:                        typ,
 	}
 }
 
@@ -270,19 +270,19 @@ func (u *CreatePrivateEndpointUnprocessableEntityResponseBody) UnmarshalJSON(dat
 	var candidates []utils.UnionCandidate
 
 	// Collect all valid candidates
-	var unprocessableEntityResponse shared.UnprocessableEntityResponse = shared.UnprocessableEntityResponse{}
-	if err := utils.UnmarshalJSON(data, &unprocessableEntityResponse, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  CreatePrivateEndpointUnprocessableEntityResponseBodyTypeUnprocessableEntityResponse,
-			Value: &unprocessableEntityResponse,
-		})
-	}
-
 	var createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse = shared.CreatePrivateEndpointValidationFailedResponse{}
 	if err := utils.UnmarshalJSON(data, &createPrivateEndpointValidationFailedResponse, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
 			Type:  CreatePrivateEndpointUnprocessableEntityResponseBodyTypeCreatePrivateEndpointValidationFailedResponse,
 			Value: &createPrivateEndpointValidationFailedResponse,
+		})
+	}
+
+	var unprocessableEntityResponse shared.UnprocessableEntityResponse = shared.UnprocessableEntityResponse{}
+	if err := utils.UnmarshalJSON(data, &unprocessableEntityResponse, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  CreatePrivateEndpointUnprocessableEntityResponseBodyTypeUnprocessableEntityResponse,
+			Value: &unprocessableEntityResponse,
 		})
 	}
 
@@ -299,11 +299,11 @@ func (u *CreatePrivateEndpointUnprocessableEntityResponseBody) UnmarshalJSON(dat
 	// Set the union type and value based on the best candidate
 	u.Type = best.Type.(CreatePrivateEndpointUnprocessableEntityResponseBodyType)
 	switch best.Type {
-	case CreatePrivateEndpointUnprocessableEntityResponseBodyTypeUnprocessableEntityResponse:
-		u.UnprocessableEntityResponse = best.Value.(*shared.UnprocessableEntityResponse)
-		return nil
 	case CreatePrivateEndpointUnprocessableEntityResponseBodyTypeCreatePrivateEndpointValidationFailedResponse:
 		u.CreatePrivateEndpointValidationFailedResponse = best.Value.(*shared.CreatePrivateEndpointValidationFailedResponse)
+		return nil
+	case CreatePrivateEndpointUnprocessableEntityResponseBodyTypeUnprocessableEntityResponse:
+		u.UnprocessableEntityResponse = best.Value.(*shared.UnprocessableEntityResponse)
 		return nil
 	}
 
@@ -311,12 +311,12 @@ func (u *CreatePrivateEndpointUnprocessableEntityResponseBody) UnmarshalJSON(dat
 }
 
 func (u CreatePrivateEndpointUnprocessableEntityResponseBody) MarshalJSON() ([]byte, error) {
-	if u.UnprocessableEntityResponse != nil {
-		return utils.MarshalJSON(u.UnprocessableEntityResponse, "", true)
-	}
-
 	if u.CreatePrivateEndpointValidationFailedResponse != nil {
 		return utils.MarshalJSON(u.CreatePrivateEndpointValidationFailedResponse, "", true)
+	}
+
+	if u.UnprocessableEntityResponse != nil {
+		return utils.MarshalJSON(u.UnprocessableEntityResponse, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type CreatePrivateEndpointUnprocessableEntityResponseBody: all fields are null")
@@ -325,25 +325,16 @@ func (u CreatePrivateEndpointUnprocessableEntityResponseBody) MarshalJSON() ([]b
 type CreatePrivateEndpointConflictResponseBodyType string
 
 const (
-	CreatePrivateEndpointConflictResponseBodyTypeConflictResponse                              CreatePrivateEndpointConflictResponseBodyType = "ConflictResponse"
 	CreatePrivateEndpointConflictResponseBodyTypeCreatePrivateEndpointValidationFailedResponse CreatePrivateEndpointConflictResponseBodyType = "CreatePrivateEndpointValidationFailedResponse"
+	CreatePrivateEndpointConflictResponseBodyTypeConflictResponse                              CreatePrivateEndpointConflictResponseBodyType = "ConflictResponse"
 )
 
 // CreatePrivateEndpointConflictResponseBody - The request conflicts with the endpoint state, such as a stale validation. When `activate` was passed and the draft was created, `data` carries it and any validation checks.
 type CreatePrivateEndpointConflictResponseBody struct {
-	ConflictResponse                              *shared.ConflictResponse                              `queryParam:"inline" union:"member"`
 	CreatePrivateEndpointValidationFailedResponse *shared.CreatePrivateEndpointValidationFailedResponse `queryParam:"inline" union:"member"`
+	ConflictResponse                              *shared.ConflictResponse                              `queryParam:"inline" union:"member"`
 
 	Type CreatePrivateEndpointConflictResponseBodyType
-}
-
-func CreateCreatePrivateEndpointConflictResponseBodyConflictResponse(conflictResponse shared.ConflictResponse) CreatePrivateEndpointConflictResponseBody {
-	typ := CreatePrivateEndpointConflictResponseBodyTypeConflictResponse
-
-	return CreatePrivateEndpointConflictResponseBody{
-		ConflictResponse: &conflictResponse,
-		Type:             typ,
-	}
 }
 
 func CreateCreatePrivateEndpointConflictResponseBodyCreatePrivateEndpointValidationFailedResponse(createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse) CreatePrivateEndpointConflictResponseBody {
@@ -352,6 +343,15 @@ func CreateCreatePrivateEndpointConflictResponseBodyCreatePrivateEndpointValidat
 	return CreatePrivateEndpointConflictResponseBody{
 		CreatePrivateEndpointValidationFailedResponse: &createPrivateEndpointValidationFailedResponse,
 		Type: typ,
+	}
+}
+
+func CreateCreatePrivateEndpointConflictResponseBodyConflictResponse(conflictResponse shared.ConflictResponse) CreatePrivateEndpointConflictResponseBody {
+	typ := CreatePrivateEndpointConflictResponseBodyTypeConflictResponse
+
+	return CreatePrivateEndpointConflictResponseBody{
+		ConflictResponse: &conflictResponse,
+		Type:             typ,
 	}
 }
 
@@ -367,19 +367,19 @@ func (u *CreatePrivateEndpointConflictResponseBody) UnmarshalJSON(data []byte) (
 	var candidates []utils.UnionCandidate
 
 	// Collect all valid candidates
-	var conflictResponse shared.ConflictResponse = shared.ConflictResponse{}
-	if err := utils.UnmarshalJSON(data, &conflictResponse, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  CreatePrivateEndpointConflictResponseBodyTypeConflictResponse,
-			Value: &conflictResponse,
-		})
-	}
-
 	var createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse = shared.CreatePrivateEndpointValidationFailedResponse{}
 	if err := utils.UnmarshalJSON(data, &createPrivateEndpointValidationFailedResponse, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
 			Type:  CreatePrivateEndpointConflictResponseBodyTypeCreatePrivateEndpointValidationFailedResponse,
 			Value: &createPrivateEndpointValidationFailedResponse,
+		})
+	}
+
+	var conflictResponse shared.ConflictResponse = shared.ConflictResponse{}
+	if err := utils.UnmarshalJSON(data, &conflictResponse, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  CreatePrivateEndpointConflictResponseBodyTypeConflictResponse,
+			Value: &conflictResponse,
 		})
 	}
 
@@ -396,11 +396,11 @@ func (u *CreatePrivateEndpointConflictResponseBody) UnmarshalJSON(data []byte) (
 	// Set the union type and value based on the best candidate
 	u.Type = best.Type.(CreatePrivateEndpointConflictResponseBodyType)
 	switch best.Type {
-	case CreatePrivateEndpointConflictResponseBodyTypeConflictResponse:
-		u.ConflictResponse = best.Value.(*shared.ConflictResponse)
-		return nil
 	case CreatePrivateEndpointConflictResponseBodyTypeCreatePrivateEndpointValidationFailedResponse:
 		u.CreatePrivateEndpointValidationFailedResponse = best.Value.(*shared.CreatePrivateEndpointValidationFailedResponse)
+		return nil
+	case CreatePrivateEndpointConflictResponseBodyTypeConflictResponse:
+		u.ConflictResponse = best.Value.(*shared.ConflictResponse)
 		return nil
 	}
 
@@ -408,12 +408,12 @@ func (u *CreatePrivateEndpointConflictResponseBody) UnmarshalJSON(data []byte) (
 }
 
 func (u CreatePrivateEndpointConflictResponseBody) MarshalJSON() ([]byte, error) {
-	if u.ConflictResponse != nil {
-		return utils.MarshalJSON(u.ConflictResponse, "", true)
-	}
-
 	if u.CreatePrivateEndpointValidationFailedResponse != nil {
 		return utils.MarshalJSON(u.CreatePrivateEndpointValidationFailedResponse, "", true)
+	}
+
+	if u.ConflictResponse != nil {
+		return utils.MarshalJSON(u.ConflictResponse, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type CreatePrivateEndpointConflictResponseBody: all fields are null")
@@ -422,25 +422,16 @@ func (u CreatePrivateEndpointConflictResponseBody) MarshalJSON() ([]byte, error)
 type CreatePrivateEndpointNotFoundResponseBodyType string
 
 const (
-	CreatePrivateEndpointNotFoundResponseBodyTypeNotFoundResponse                              CreatePrivateEndpointNotFoundResponseBodyType = "NotFoundResponse"
 	CreatePrivateEndpointNotFoundResponseBodyTypeCreatePrivateEndpointValidationFailedResponse CreatePrivateEndpointNotFoundResponseBodyType = "CreatePrivateEndpointValidationFailedResponse"
+	CreatePrivateEndpointNotFoundResponseBodyTypeNotFoundResponse                              CreatePrivateEndpointNotFoundResponseBodyType = "NotFoundResponse"
 )
 
 // CreatePrivateEndpointNotFoundResponseBody - The model, provider, or validation workspace was not found. When `activate` was passed and the draft was created, `data` carries it and any validation checks.
 type CreatePrivateEndpointNotFoundResponseBody struct {
-	NotFoundResponse                              *shared.NotFoundResponse                              `queryParam:"inline" union:"member"`
 	CreatePrivateEndpointValidationFailedResponse *shared.CreatePrivateEndpointValidationFailedResponse `queryParam:"inline" union:"member"`
+	NotFoundResponse                              *shared.NotFoundResponse                              `queryParam:"inline" union:"member"`
 
 	Type CreatePrivateEndpointNotFoundResponseBodyType
-}
-
-func CreateCreatePrivateEndpointNotFoundResponseBodyNotFoundResponse(notFoundResponse shared.NotFoundResponse) CreatePrivateEndpointNotFoundResponseBody {
-	typ := CreatePrivateEndpointNotFoundResponseBodyTypeNotFoundResponse
-
-	return CreatePrivateEndpointNotFoundResponseBody{
-		NotFoundResponse: &notFoundResponse,
-		Type:             typ,
-	}
 }
 
 func CreateCreatePrivateEndpointNotFoundResponseBodyCreatePrivateEndpointValidationFailedResponse(createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse) CreatePrivateEndpointNotFoundResponseBody {
@@ -449,6 +440,15 @@ func CreateCreatePrivateEndpointNotFoundResponseBodyCreatePrivateEndpointValidat
 	return CreatePrivateEndpointNotFoundResponseBody{
 		CreatePrivateEndpointValidationFailedResponse: &createPrivateEndpointValidationFailedResponse,
 		Type: typ,
+	}
+}
+
+func CreateCreatePrivateEndpointNotFoundResponseBodyNotFoundResponse(notFoundResponse shared.NotFoundResponse) CreatePrivateEndpointNotFoundResponseBody {
+	typ := CreatePrivateEndpointNotFoundResponseBodyTypeNotFoundResponse
+
+	return CreatePrivateEndpointNotFoundResponseBody{
+		NotFoundResponse: &notFoundResponse,
+		Type:             typ,
 	}
 }
 
@@ -464,19 +464,19 @@ func (u *CreatePrivateEndpointNotFoundResponseBody) UnmarshalJSON(data []byte) (
 	var candidates []utils.UnionCandidate
 
 	// Collect all valid candidates
-	var notFoundResponse shared.NotFoundResponse = shared.NotFoundResponse{}
-	if err := utils.UnmarshalJSON(data, &notFoundResponse, "", true, nil); err == nil {
-		candidates = append(candidates, utils.UnionCandidate{
-			Type:  CreatePrivateEndpointNotFoundResponseBodyTypeNotFoundResponse,
-			Value: &notFoundResponse,
-		})
-	}
-
 	var createPrivateEndpointValidationFailedResponse shared.CreatePrivateEndpointValidationFailedResponse = shared.CreatePrivateEndpointValidationFailedResponse{}
 	if err := utils.UnmarshalJSON(data, &createPrivateEndpointValidationFailedResponse, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
 			Type:  CreatePrivateEndpointNotFoundResponseBodyTypeCreatePrivateEndpointValidationFailedResponse,
 			Value: &createPrivateEndpointValidationFailedResponse,
+		})
+	}
+
+	var notFoundResponse shared.NotFoundResponse = shared.NotFoundResponse{}
+	if err := utils.UnmarshalJSON(data, &notFoundResponse, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  CreatePrivateEndpointNotFoundResponseBodyTypeNotFoundResponse,
+			Value: &notFoundResponse,
 		})
 	}
 
@@ -493,11 +493,11 @@ func (u *CreatePrivateEndpointNotFoundResponseBody) UnmarshalJSON(data []byte) (
 	// Set the union type and value based on the best candidate
 	u.Type = best.Type.(CreatePrivateEndpointNotFoundResponseBodyType)
 	switch best.Type {
-	case CreatePrivateEndpointNotFoundResponseBodyTypeNotFoundResponse:
-		u.NotFoundResponse = best.Value.(*shared.NotFoundResponse)
-		return nil
 	case CreatePrivateEndpointNotFoundResponseBodyTypeCreatePrivateEndpointValidationFailedResponse:
 		u.CreatePrivateEndpointValidationFailedResponse = best.Value.(*shared.CreatePrivateEndpointValidationFailedResponse)
+		return nil
+	case CreatePrivateEndpointNotFoundResponseBodyTypeNotFoundResponse:
+		u.NotFoundResponse = best.Value.(*shared.NotFoundResponse)
 		return nil
 	}
 
@@ -505,12 +505,12 @@ func (u *CreatePrivateEndpointNotFoundResponseBody) UnmarshalJSON(data []byte) (
 }
 
 func (u CreatePrivateEndpointNotFoundResponseBody) MarshalJSON() ([]byte, error) {
-	if u.NotFoundResponse != nil {
-		return utils.MarshalJSON(u.NotFoundResponse, "", true)
-	}
-
 	if u.CreatePrivateEndpointValidationFailedResponse != nil {
 		return utils.MarshalJSON(u.CreatePrivateEndpointValidationFailedResponse, "", true)
+	}
+
+	if u.NotFoundResponse != nil {
+		return utils.MarshalJSON(u.NotFoundResponse, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type CreatePrivateEndpointNotFoundResponseBody: all fields are null")
