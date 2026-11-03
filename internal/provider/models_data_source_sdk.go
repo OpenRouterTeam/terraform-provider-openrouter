@@ -264,6 +264,12 @@ func (r *ModelsDataSourceModel) ToOperationsGetModelsRequest(ctx context.Context
 	} else {
 		inputModalities = nil
 	}
+	endpoints := new(string)
+	if !r.Endpoints.IsUnknown() && !r.Endpoints.IsNull() {
+		*endpoints = r.Endpoints.ValueString()
+	} else {
+		endpoints = nil
+	}
 	contextVar := new(int64)
 	if !r.Context.IsUnknown() && !r.Context.IsNull() {
 		*contextVar = r.Context.ValueInt64()
@@ -399,6 +405,7 @@ func (r *ModelsDataSourceModel) ToOperationsGetModelsRequest(ctx context.Context
 		UseRssChatLinks:      useRssChatLinks,
 		Q:                    q,
 		InputModalities:      inputModalities,
+		Endpoints:            endpoints,
 		Context:              contextVar,
 		MinPrice:             minPrice,
 		MaxPrice:             maxPrice,

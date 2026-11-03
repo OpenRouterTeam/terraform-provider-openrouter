@@ -18,6 +18,7 @@ data "openrouter_models" "my_models" {
   category               = "programming"
   context                = 128000
   distillable            = "true"
+  endpoints              = "/api/alpha/extractions"
   input_modalities       = "text,image"
   max_age_days           = 90
   max_agentic_index      = 100
@@ -55,6 +56,7 @@ data "openrouter_models" "my_models" {
 - `category` (String) Filter models by use case category. must be one of ["programming", "roleplay", "marketing", "marketing/seo", "technology", "science", "translation", "legal", "finance", "health", "trivia", "academia"]
 - `context` (Number) Minimum context length (tokens). Models with smaller context are excluded.
 - `distillable` (String) Filter by distillation capability. "true" returns only distillable models, "false" excludes them. must be one of ["true", "false"]
+- `endpoints` (String) Filter models by the request API paths they serve, as listed in each model's `endpoints` field. Comma-separated; a model must serve every listed path. Valid values: /api/v1/chat/completions, /api/v1/completions, /api/v1/messages, /api/v1/responses, /api/v1/embeddings, /api/v1/rerank, /api/alpha/decisions, /api/alpha/extractions, /api/v1/videos, /api/v1/audio/speech, /api/v1/audio/transcriptions, /api/v1/images, /api/v1/batches. When set without `output_modalities`, models of every output modality are considered (the companion `/api/alpha/extractions` route is served by text and decisions models alike).
 - `input_modalities` (String) Filter models by input modality. Comma-separated list of: text, image, audio, file.
 - `max_age_days` (Number) Maximum model age in days since its creation date.
 - `max_agentic_index` (Number) Maximum Artificial Analysis agentic index.
