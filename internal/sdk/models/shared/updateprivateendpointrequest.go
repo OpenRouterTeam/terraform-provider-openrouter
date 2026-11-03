@@ -6,6 +6,7 @@ package shared
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 // UpdatePrivateEndpointRequestDeclaredRegion - Attest where this deployment processes data.
@@ -47,6 +48,19 @@ type UpdatePrivateEndpointRequest struct {
 	DeclaredZdr *bool `json:"declared_zdr,omitzero"`
 	// Model or deployment identifier sent to the upstream provider.
 	UpstreamModelID string `json:"upstream_model_id"`
+	// Capabilities and limits to set over the ones copied from the public endpoint for this model and provider (or from the model). Omitted fields keep the copied values.
+	Settings *UpdatePrivateEndpointSettingsRequest `json:"settings,omitzero"`
+}
+
+func (u UpdatePrivateEndpointRequest) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(u, "", false)
+}
+
+func (u *UpdatePrivateEndpointRequest) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &u, "", false, nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (u *UpdatePrivateEndpointRequest) GetBaseURL() *string {
@@ -75,4 +89,11 @@ func (u *UpdatePrivateEndpointRequest) GetUpstreamModelID() string {
 		return ""
 	}
 	return u.UpstreamModelID
+}
+
+func (u *UpdatePrivateEndpointRequest) GetSettings() *UpdatePrivateEndpointSettingsRequest {
+	if u == nil {
+		return nil
+	}
+	return u.Settings
 }

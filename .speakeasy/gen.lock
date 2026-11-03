@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 70fc262dbaeb9e50f5cea999eac71a49
+  docChecksum: 2b013218d6f1752b1351ddc887c0520e
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: e151530a-b251-4c5c-9469-9a8a6b69d023
-  pristine_commit_hash: b43d8659e91df92194f1312a10f63bff89ba9368
-  pristine_tree_hash: 53be0ee54e45c996816e7bddec1ca151ad293df2
+  generation_id: 051fb2fa-08ad-424d-84f0-860cdbda24a0
+  pristine_commit_hash: 56d1808059d4a1321e6ce4343fb0775242ada647
+  pristine_tree_hash: b1904049aeccaab196cc443c06f8735e38e6fa04
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -582,12 +582,12 @@ trackedFiles:
     pristine_git_object: 639a6a828f88073ed9b80be5d28cae38f805431e
   internal/provider/privateendpoint_resource.go:
     id: a64a2acbf118
-    last_write_checksum: sha1:5497984dc2050b87f0f88c172b2ebf9a107af4c7
-    pristine_git_object: 8abf9b1da1ce67f0c05b03c03902ddfc575a6dd9
+    last_write_checksum: sha1:f65a48a6fef5eb8fdf35a6cef0e4e0847319dff1
+    pristine_git_object: 1b4c1ae53c1a608055b353880507cdcdb3e6ef2a
   internal/provider/privateendpoint_resource_sdk.go:
     id: f78a28b90402
-    last_write_checksum: sha1:b0f3afd46732d2260c6c823e813da7a6ca8b31db
-    pristine_git_object: b1d257267e4fce8d0c065e2786f73dc9714e9692
+    last_write_checksum: sha1:2cd7ba116cf653d18a2ca4c6735eb62de29f3daa
+    pristine_git_object: 5f31fff6c2d71a9255e05255be9d5b827bc9ff17
   internal/provider/provider.go:
     id: 1e7e86841cf3
     last_write_checksum: sha1:540e106dee055bc2661c0cbb6c751ef311811e67
@@ -4328,6 +4328,14 @@ trackedFiles:
     id: 05a04c2a77e1
     last_write_checksum: sha1:5d3ad7fcc668a41f322c61881773358aa2825ae6
     pristine_git_object: a1e4991241b22ed8ea79636390d7986bf0208953
+  internal/sdk/models/shared/privateendpointquantization.go:
+    id: 255434c246e7
+    last_write_checksum: sha1:b9cc66b41afb1a5b54e8a26aae3a773a91f5e0e6
+    pristine_git_object: b8968c245b5c2d3d147dba55e253adc3dcab9dc7
+  internal/sdk/models/shared/privateendpointreasoningreturnmechanism.go:
+    id: 30f7b53912c3
+    last_write_checksum: sha1:dacdb06520d856d71a345dcddd5ae5c1121d6f71
+    pristine_git_object: c970146a20008122c794ea80ac8a06a89ae61e32
   internal/sdk/models/shared/privateendpointresponse.go:
     id: ab36076979a5
     last_write_checksum: sha1:c9856c2fa104f9fb29e0aa1bf1c2b16e41f802dc
@@ -4986,8 +4994,12 @@ trackedFiles:
     pristine_git_object: a7598bdf19421171dafc98abed449f1b22f66ffa
   internal/sdk/models/shared/updateprivateendpointrequest.go:
     id: 0f798d733d36
-    last_write_checksum: sha1:b73f89fbbd7968bb4418b9fae028c3a0caa4dd86
-    pristine_git_object: a44ae084d86715a5d76706940f87f52944a1dd7b
+    last_write_checksum: sha1:f0454d7dce36dc4c29aedd36715eb91f1796e51d
+    pristine_git_object: 2b627bee4c08955fba13dc99f24d1a27e082d201
+  internal/sdk/models/shared/updateprivateendpointsettingsrequest.go:
+    id: 2ba6cf53fc1f
+    last_write_checksum: sha1:408c8f1859a245ae257a717f32fb0f607f581d10
+    pristine_git_object: 7da5bc6a4e325738ec7af453750ef17d8a4aad22
   internal/sdk/models/shared/updateprivateproviderrequest.go:
     id: 47bf55019cce
     last_write_checksum: sha1:8212dab07f82ba394d162fcb7cb341ce9736ac0c
@@ -8790,7 +8802,7 @@ examples:
         path:
           id: "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11"
       requestBody:
-        application/json: {"base_url": "https://contoso.openai.azure.com", "declared_region": "us", "upstream_model_id": "gpt-4o-prod"}
+        application/json: {"base_url": "https://contoso.openai.azure.com", "declared_region": "us", "upstream_model_id": "gpt-4o-prod", "settings": {"context_length": 128000, "reasoning": {"supported": true}}}
       responses:
         "200":
           application/json: {"data": {"base_url": "https://api.openai.com/v1", "declared_region": "us", "declared_zdr": true, "id": "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", "max_completion_tokens": 131072, "model_name": "OpenAI: GPT-4o", "model_permaslug": "openai/gpt-4o-2024-08-06", "model_slug": "openai/gpt-4o", "pricing": {"completion": "0.00001", "prompt": "0.0000025"}, "provider_name": "OpenAI", "provider_slug": "openai", "status": "active", "upstream_model_id": "gpt-4o-2024-08-06"}}

@@ -5,7 +5,7 @@ subcategory: ""
 description: |-
   A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set activate to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
   Only pricing changes in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr, declared_region or max_completion_tokens destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
-  base_url is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing / or /chat/completions); a config that differs from the stored value only in those ways is not a change.
+  base_url is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. max_completion_tokens changes in place through the settings update; removing it from config keeps the cap the API stored rather than re-copying the public endpoint's. The API stores it normalized (lowercase scheme and host, no trailing / or /chat/completions); a config that differs from the stored value only in those ways is not a change.
   activate is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after terraform import you can keep it in config without replacing the endpoint.
   If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
 ---
@@ -16,7 +16,7 @@ A private endpoint: your own upstream deployment of a public model, which OpenRo
 
 Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr`, `declared_region` or `max_completion_tokens` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
 
-`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
+`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. `max_completion_tokens` changes in place through the settings update; removing it from config keeps the cap the API stored rather than re-copying the public endpoint's. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
 
 `activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.
 

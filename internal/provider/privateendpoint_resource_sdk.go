@@ -155,6 +155,27 @@ func (r *PrivateEndpointResourceModel) ToOperationsUpdatePrivateEndpointPricingR
 	return &out, diags
 }
 
+func (r *PrivateEndpointResourceModel) ToOperationsUpdatePrivateEndpointRequest(ctx context.Context) (*operations.UpdatePrivateEndpointRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	var id string
+	id = r.ID.ValueString()
+
+	body, bodyDiags := r.ToSharedUpdatePrivateEndpointRequest(ctx)
+	diags.Append(bodyDiags...)
+
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	out := operations.UpdatePrivateEndpointRequest{
+		ID:   id,
+		Body: *body,
+	}
+
+	return &out, diags
+}
+
 func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx context.Context) (*shared.CreatePrivateEndpointRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -243,6 +264,40 @@ func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointPricingReque
 	}
 	out := shared.UpdatePrivateEndpointPricingRequest{
 		Pricing: pricing,
+	}
+
+	return &out, diags
+}
+
+func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointRequest(ctx context.Context) (*shared.UpdatePrivateEndpointRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	baseURL := new(string)
+	if !r.BaseURL.IsUnknown() && !r.BaseURL.IsNull() {
+		*baseURL = r.BaseURL.ValueString()
+	} else {
+		baseURL = nil
+	}
+	declaredRegion := new(shared.UpdatePrivateEndpointRequestDeclaredRegion)
+	if !r.DeclaredRegion.IsUnknown() && !r.DeclaredRegion.IsNull() {
+		*declaredRegion = shared.UpdatePrivateEndpointRequestDeclaredRegion(r.DeclaredRegion.ValueString())
+	} else {
+		declaredRegion = nil
+	}
+	declaredZdr := new(bool)
+	if !r.DeclaredZdr.IsUnknown() && !r.DeclaredZdr.IsNull() {
+		*declaredZdr = r.DeclaredZdr.ValueBool()
+	} else {
+		declaredZdr = nil
+	}
+	var upstreamModelID string
+	upstreamModelID = r.UpstreamModelID.ValueString()
+
+	out := shared.UpdatePrivateEndpointRequest{
+		BaseURL:         baseURL,
+		DeclaredRegion:  declaredRegion,
+		DeclaredZdr:     declaredZdr,
+		UpstreamModelID: upstreamModelID,
 	}
 
 	return &out, diags
