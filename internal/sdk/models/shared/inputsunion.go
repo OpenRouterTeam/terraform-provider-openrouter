@@ -977,6 +977,7 @@ const (
 	InputsUnion1TypeMcpCallItem                         InputsUnion1Type = "McpCallItem"
 	InputsUnion1TypeCustomToolCallItem                  InputsUnion1Type = "CustomToolCallItem"
 	InputsUnion1TypeCustomToolCallOutputItem            InputsUnion1Type = "CustomToolCallOutputItem"
+	InputsUnion1TypeCompactionTriggerItem               InputsUnion1Type = "CompactionTriggerItem"
 	InputsUnion1TypeCompactionItem                      InputsUnion1Type = "CompactionItem"
 	InputsUnion1TypeContextCompactionItem               InputsUnion1Type = "ContextCompactionItem"
 	InputsUnion1TypeItemReferenceItem                   InputsUnion1Type = "ItemReferenceItem"
@@ -1032,6 +1033,7 @@ type InputsUnion1 struct {
 	McpCallItem                         *McpCallItem                         `queryParam:"inline" union:"member"`
 	CustomToolCallItem                  *CustomToolCallItem                  `queryParam:"inline" union:"member"`
 	CustomToolCallOutputItem            *CustomToolCallOutputItem            `queryParam:"inline" union:"member"`
+	CompactionTriggerItem               *CompactionTriggerItem               `queryParam:"inline" union:"member"`
 	CompactionItem                      *CompactionItem                      `queryParam:"inline" union:"member"`
 	ContextCompactionItem               *ContextCompactionItem               `queryParam:"inline" union:"member"`
 	ItemReferenceItem                   *ItemReferenceItem                   `queryParam:"inline" union:"member"`
@@ -1437,6 +1439,15 @@ func CreateInputsUnion1CustomToolCallOutputItem(customToolCallOutputItem CustomT
 	return InputsUnion1{
 		CustomToolCallOutputItem: &customToolCallOutputItem,
 		Type:                     typ,
+	}
+}
+
+func CreateInputsUnion1CompactionTriggerItem(compactionTriggerItem CompactionTriggerItem) InputsUnion1 {
+	typ := InputsUnion1TypeCompactionTriggerItem
+
+	return InputsUnion1{
+		CompactionTriggerItem: &compactionTriggerItem,
+		Type:                  typ,
 	}
 }
 
@@ -1876,6 +1887,14 @@ func (u *InputsUnion1) UnmarshalJSON(data []byte) (err error) {
 		})
 	}
 
+	var compactionTriggerItem CompactionTriggerItem = CompactionTriggerItem{}
+	if err := utils.UnmarshalJSON(data, &compactionTriggerItem, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  InputsUnion1TypeCompactionTriggerItem,
+			Value: &compactionTriggerItem,
+		})
+	}
+
 	var compactionItem CompactionItem = CompactionItem{}
 	if err := utils.UnmarshalJSON(data, &compactionItem, "", true, nil); err == nil {
 		candidates = append(candidates, utils.UnionCandidate{
@@ -2085,6 +2104,9 @@ func (u *InputsUnion1) UnmarshalJSON(data []byte) (err error) {
 	case InputsUnion1TypeCustomToolCallOutputItem:
 		u.CustomToolCallOutputItem = best.Value.(*CustomToolCallOutputItem)
 		return nil
+	case InputsUnion1TypeCompactionTriggerItem:
+		u.CompactionTriggerItem = best.Value.(*CompactionTriggerItem)
+		return nil
 	case InputsUnion1TypeCompactionItem:
 		u.CompactionItem = best.Value.(*CompactionItem)
 		return nil
@@ -2289,6 +2311,10 @@ func (u InputsUnion1) MarshalJSON() ([]byte, error) {
 
 	if u.CustomToolCallOutputItem != nil {
 		return utils.MarshalJSON(u.CustomToolCallOutputItem, "", true)
+	}
+
+	if u.CompactionTriggerItem != nil {
+		return utils.MarshalJSON(u.CompactionTriggerItem, "", true)
 	}
 
 	if u.CompactionItem != nil {
