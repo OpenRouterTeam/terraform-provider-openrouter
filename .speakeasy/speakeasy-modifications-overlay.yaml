@@ -13,9 +13,12 @@ info:
     before: ""
     type: speakeasy-modifications
 # Persistent edits in privateendpoint_resource.go filter PATCH to changed mutable
-# groups, omit draft-only fields, and settle computed state through a full GET.
+# groups, omit draft-only fields, settle computed state through a full GET, and
+# restore declared parameters that validation has since proven so the read model's
+# filtered projection does not turn into a permanent diff.
 # Comparison helpers live in privateendpoint_lifecycle.go; generation must retain
-# their Update() call sites rather than restore a pricing-only write gate.
+# their Update(), Create() and Read() call sites rather than restore a
+# pricing-only write gate.
 actions:
   - target: $["paths"]["/guardrails/assignments/keys"]["get"]
     update:
