@@ -94,6 +94,7 @@ const (
 	ProviderOllama                   Provider = "ollama"
 	ProviderOpenInference            Provider = "open-inference"
 	ProviderOpenai                   Provider = "openai"
+	ProviderParallel                 Provider = "parallel"
 	ProviderParasail                 Provider = "parasail"
 	ProviderParetoAlpha              Provider = "pareto-alpha"
 	ProviderParticleAi               Provider = "particle-ai"
@@ -304,6 +305,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "open-inference":
 		fallthrough
 	case "openai":
+		fallthrough
+	case "parallel":
 		fallthrough
 	case "parasail":
 		fallthrough
