@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 7a7074ea6cd63a67581b52582b8827c2
+  docChecksum: f02b06cf15d736b653e0efd65021db1e
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.150
-  configChecksum: 95a4413c9a8318b6b005bbbb388b552a
+  releaseVersion: 0.3.151
+  configChecksum: 2305cfed1bf771a514c49786f8a4702f
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 26af4b70-a5dc-4d9a-b089-94da581e8a16
-  pristine_commit_hash: b3cd9de13a5516f30b1148953ca61d0e7d0700df
-  pristine_tree_hash: a54430fe9f7f1a189e54c753f2ccea3847fb9047
+  generation_id: d5face27-bb81-46d5-9701-fc9bf611814f
+  pristine_commit_hash: 0e479c1edfeafc40c1b6725dd30cecd5f98487a7
+  pristine_tree_hash: 6725107ae496bb07fc73b244e40431e7390b23f6
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:75068823e887d38040c267025e40fb78d598234a
-    pristine_git_object: cd29b76deea71fe119d115678b3ff8767b724c79
+    last_write_checksum: sha1:f6ebca57d7db36bdca6ba08721d41bca247c6e1a
+    pristine_git_object: e7a9996d86e97d22b36e8601898f85d5365a2ac1
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1666,8 +1666,8 @@ trackedFiles:
     pristine_git_object: 643e0d7debb850002de0d8aa24ed0711432ea1c6
   internal/sdk/models/operations/gettaskclassifications.go:
     id: 9593171b6f89
-    last_write_checksum: sha1:272fa9a144e4e9fbb3c52cda9b36126fb7e8b230
-    pristine_git_object: 9e72e5039a49a0d701642f1ae16bc863e62443d3
+    last_write_checksum: sha1:5b16c6d789d29535cab019495c470558224640b9
+    pristine_git_object: f721a72575baa6ca0b8c039484f0a89f618c307a
   internal/sdk/models/operations/gettool.go:
     id: 506137bb157a
     last_write_checksum: sha1:ee70f8614123d2970a196d69303319ac56e8b719
@@ -1804,6 +1804,10 @@ trackedFiles:
     id: ff08ed4076f6
     last_write_checksum: sha1:87355662fe3fc544401da37cafa1b1ee25156aff
     pristine_git_object: f7763614b46a7471b191b57f6e08770cc0277097
+  internal/sdk/models/operations/listproviderendpoints.go:
+    id: a23893e36ef6
+    last_write_checksum: sha1:8c9ce7d8f02d8cb9726205e4cf2d0fc7ab7837f1
+    pristine_git_object: 7d7af7d503f2cd14c7418e31be941fab56ebb704
   internal/sdk/models/operations/listproviders.go:
     id: b665031c7add
     last_write_checksum: sha1:d83baf28a87c7f225f4c6f2984ac8c6b4be9da93
@@ -3176,6 +3180,14 @@ trackedFiles:
     id: fcc0abc6e87b
     last_write_checksum: sha1:81f36ef90875c51317deb2c4ab24c4e58dc6188c
     pristine_git_object: b9eefe0dc531cd1e20b25108820531bcb9cc97ab
+  internal/sdk/models/shared/endpointsummary.go:
+    id: 4ed6e1a852b1
+    last_write_checksum: sha1:1aa9c984c01aac1165a48671a3c3d52c19ed9501
+    pristine_git_object: 4a8230243fb37809451e86ad9e8d5ee0b6339e60
+  internal/sdk/models/shared/endpointtestprofile.go:
+    id: a444f7bcc36c
+    last_write_checksum: sha1:ba733248ef440fc90c88d2e7a59532d37755ae0a
+    pristine_git_object: f42eb85485c60c36c999a85466ee364e9a49c0d2
   internal/sdk/models/shared/enumcapability.go:
     id: 7b1eb3d697fd
     last_write_checksum: sha1:956a9f5c393da1dc7e1216f4242dac4a99d23eef
@@ -4368,6 +4380,26 @@ trackedFiles:
     id: 4b7f2431c120
     last_write_checksum: sha1:f6fc0472dfce4b071c64b4f638b001a68b672a67
     pristine_git_object: 8603f8974a13f8dd8ac76c8a6f2724549a5a28ec
+  internal/sdk/models/shared/providerendpoints.go:
+    id: 63e13f552b5a
+    last_write_checksum: sha1:941480a5bacccccfd07a53bd0e61300c742051d8
+    pristine_git_object: 8bde88f8da5b00a9549eb77dd05d6791b87cbfb5
+  internal/sdk/models/shared/providerendpointsresponse.go:
+    id: d835c19365a6
+    last_write_checksum: sha1:692d4310efdc5983eff1bf41923a465731c64f8e
+    pristine_git_object: 8ce5a756cbce1bf68a23c42361c3e026d822aa67
+  internal/sdk/models/shared/providerendpointstats.go:
+    id: 1228a904d1a6
+    last_write_checksum: sha1:150ed42198d0839b5d842ad88a539e10c80d11d5
+    pristine_git_object: 8a14f19194ef1b80b6e77ec344368d2965857c0d
+  internal/sdk/models/shared/providerendpointstatsavailable.go:
+    id: a0aa8008d8d5
+    last_write_checksum: sha1:19e43b698e49b2401624086fbae3e8022400640c
+    pristine_git_object: 0e6b8b1bd20b71b4ab6eb15a59d23569baf3575c
+  internal/sdk/models/shared/providerendpointstatsunavailable.go:
+    id: 16a779ba4fe5
+    last_write_checksum: sha1:c3745a07a63ba61b1bdc6e9ef41981afb8cc422e
+    pristine_git_object: 4c9ed6ee53ccdc791041870beb02839d3513196a
   internal/sdk/models/shared/providername.go:
     id: a46a24e9a977
     last_write_checksum: sha1:bf2e05e812f72c8ea89af5acbcdd2766f92d9611
@@ -5182,8 +5214,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:a3ae0f74e853297abd32f726d3cdd05187eeb8d4
-    pristine_git_object: 27668965ec0a73db5a1de9824231c57aa89999f6
+    last_write_checksum: sha1:d00653cc2ee3c80aad7f5d6cea072d4f9b31ef7c
+    pristine_git_object: 9e1e92f5716adea27b074c9e63e18fbd3039aeb2
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -5210,8 +5242,8 @@ trackedFiles:
     pristine_git_object: c23369b15fda026d9064ddaee7a0d882719e1ad0
   internal/sdk/providers.go:
     id: 3c6c5c46b0f8
-    last_write_checksum: sha1:11db9cebc5018f96e8c15af884bf457b25516550
-    pristine_git_object: de2bd9024d2073ac8e1979e00bf56f0a964d3588
+    last_write_checksum: sha1:a1eaab4cbfc50502bc916206548a7fbe1004b5cc
+    pristine_git_object: 13a12fbfb2afb4d3d7007859e34116aa8275664c
   internal/sdk/redact/redact.go:
     id: c1be9124d2ee
     last_write_checksum: sha1:f910076ae897d18185a3f02b9c20716e8e6fb7c1
@@ -9838,4 +9870,27 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "502":
           application/json: {"error": {"code": 502, "message": "Provider returned error"}}
+  listProviderEndpoints:
+    speakeasy-default-list-provider-endpoints:
+      parameters:
+        path:
+          provider_slug: "fireworks"
+        query:
+          window: "1d"
+          perf_workload: "text_generation"
+      responses:
+        "200":
+          application/json: {"data": {"endpoints": [{"endpoint_id": "0198c3f1-7b9a-7c31-a2d4-5e6f7a8b9c0d", "model_slug": "z-ai/glm-5.3", "created_at": "2026-08-20T00:00:00.000Z", "model_permaslug": "z-ai/glm-5.3-20260101", "provider_model_id": "accounts/fireworks/models/glm-5p3", "provider_name": "Fireworks", "provider_region": "us", "service_tier": "priority", "test_profile": {"context_length": 128000, "default_reasoning_return_mechanism": "reasoning-content", "effective_adapter_name": "openai", "endpoint_features": {"key": "<value>", "key1": "<value>"}, "is_lab_trusted": false, "model": {"features": {}, "input_modalities": [], "output_modalities": [], "reasoning_config": {}, "slug": "z-ai/glm-5.3", "supports_reasoning": false}}, "variant": "standard", "visibility": "visible"}], "stats": {"endpoint_count": 12, "error_rate_percent": 0.8, "latency_ms": {"p50": 9608.36, "p90": 7481.68}, "quality_percent": 8520.51, "rate_limited_percent": null, "reliability_percent": 4403.61, "requests": 120000, "status": "available", "throughput_tokens_per_second": {"p50": 6877.93, "p90": 3053.2}, "uptime_percent": 99.2}, "window": "1d"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "429":
+          application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
