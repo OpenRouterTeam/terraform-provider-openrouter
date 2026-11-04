@@ -38,7 +38,7 @@ resource "openrouter_api_key" "my_apikey" {
 
 ### Optional
 
-- `creator_user_id` (String) Optional user ID of the key creator. Only meaningful for organization-owned keys where a specific member is creating the key. Requires replacement if changed.
+- `creator_user_id` (String) Optional user ID of the key creator. Only meaningful for organization-owned keys where a specific member is creating the key. A workspace-scoped management key may only name a member of its own workspace. Requires replacement if changed.
 - `disabled` (Boolean) Whether to disable the API key
 - `expires_at` (String) Optional ISO 8601 UTC expiration timestamp. Must include seconds (YYYY-MM-DDTHH:MM:SSZ; fractional seconds allowed); minute-precision timestamps are rejected. Requires replacement if changed.
 - `external` (Attributes) Optional partner-defined identity associated with the created API key. Requires replacement if changed. (see [below for nested schema](#nestedatt--external))
