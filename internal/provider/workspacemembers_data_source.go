@@ -62,7 +62,7 @@ func (r *WorkspaceMembersDataSource) Schema(ctx context.Context, req datasource.
 						},
 						"role": schema.StringAttribute{
 							Computed:    true,
-							Description: `Role of the member in the workspace`,
+							Description: `Role of the member in the workspace. ` + "`" + `viewer` + "`" + ` and ` + "`" + `restricted_viewer` + "`" + ` are read-only: ` + "`" + `viewer` + "`" + ` can view the whole workspace, and ` + "`" + `restricted_viewer` + "`" + ` can view only their own activity.`,
 						},
 						"user_id": schema.StringAttribute{
 							Computed:    true,
