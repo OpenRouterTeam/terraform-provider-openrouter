@@ -17,6 +17,7 @@ const (
 	ProviderNameAionLabs            ProviderName = "AionLabs"
 	ProviderNameAlibaba             ProviderName = "Alibaba"
 	ProviderNameAmbient             ProviderName = "Ambient"
+	ProviderNameAntDigital          ProviderName = "Ant Digital"
 	ProviderNameBaidu               ProviderName = "Baidu"
 	ProviderNameAmazonBedrock       ProviderName = "Amazon Bedrock"
 	ProviderNameAmazonNova          ProviderName = "Amazon Nova"
@@ -92,6 +93,7 @@ const (
 	ProviderNameParasail            ProviderName = "Parasail"
 	ProviderNameParetoAlpha         ProviderName = "ParetoAlpha"
 	ProviderNameParticleAi          ProviderName = "Particle AI"
+	ProviderNamePearlResearch       ProviderName = "Pearl Research"
 	ProviderNamePoolside            ProviderName = "Poolside"
 	ProviderNamePrimaLabs           ProviderName = "PrimaLabs"
 	ProviderNamePrimeIntellect      ProviderName = "PrimeIntellect"
@@ -152,6 +154,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "Alibaba":
 		fallthrough
 	case "Ambient":
+		fallthrough
+	case "Ant Digital":
 		fallthrough
 	case "Baidu":
 		fallthrough
@@ -302,6 +306,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "ParetoAlpha":
 		fallthrough
 	case "Particle AI":
+		fallthrough
+	case "Pearl Research":
 		fallthrough
 	case "Poolside":
 		fallthrough

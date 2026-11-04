@@ -18,6 +18,7 @@ type ProviderOptions struct {
 	AmazonBedrockClaudeOnAws map[string]any `json:"amazon-bedrock/claude-on-aws,omitzero"`
 	AmazonNova               map[string]any `json:"amazon-nova,omitzero"`
 	Ambient                  map[string]any `json:"ambient,omitzero"`
+	Antdigital               map[string]any `json:"antdigital,omitzero"`
 	Anthropic                map[string]any `json:"anthropic,omitzero"`
 	Anthropic2               map[string]any `json:"anthropic/2,omitzero"`
 	Anyscale                 map[string]any `json:"anyscale,omitzero"`
@@ -112,6 +113,7 @@ type ProviderOptions struct {
 	Parasail                 map[string]any `json:"parasail,omitzero"`
 	ParetoAlpha              map[string]any `json:"pareto-alpha,omitzero"`
 	ParticleAi               map[string]any `json:"particle-ai,omitzero"`
+	PearlResearch            map[string]any `json:"pearl-research,omitzero"`
 	Perceptron               map[string]any `json:"perceptron,omitzero"`
 	Perplexity               map[string]any `json:"perplexity,omitzero"`
 	Phala                    map[string]any `json:"phala,omitzero"`
@@ -234,6 +236,13 @@ func (p *ProviderOptions) GetAmbient() map[string]any {
 		return nil
 	}
 	return p.Ambient
+}
+
+func (p *ProviderOptions) GetAntdigital() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Antdigital
 }
 
 func (p *ProviderOptions) GetAnthropic() map[string]any {
@@ -892,6 +901,13 @@ func (p *ProviderOptions) GetParticleAi() map[string]any {
 		return nil
 	}
 	return p.ParticleAi
+}
+
+func (p *ProviderOptions) GetPearlResearch() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.PearlResearch
 }
 
 func (p *ProviderOptions) GetPerceptron() map[string]any {

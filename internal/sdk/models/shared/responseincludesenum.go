@@ -15,6 +15,7 @@ const (
 	ResponseIncludesEnumMessageInputImageImageURL        ResponseIncludesEnum = "message.input_image.image_url"
 	ResponseIncludesEnumComputerCallOutputOutputImageURL ResponseIncludesEnum = "computer_call_output.output.image_url"
 	ResponseIncludesEnumReasoningEncryptedContent        ResponseIncludesEnum = "reasoning.encrypted_content"
+	ResponseIncludesEnumOutputEncryptedContent           ResponseIncludesEnum = "output.encrypted_content"
 	ResponseIncludesEnumCodeInterpreterCallOutputs       ResponseIncludesEnum = "code_interpreter_call.outputs"
 )
 
@@ -34,6 +35,8 @@ func (e *ResponseIncludesEnum) UnmarshalJSON(data []byte) error {
 	case "computer_call_output.output.image_url":
 		fallthrough
 	case "reasoning.encrypted_content":
+		fallthrough
+	case "output.encrypted_content":
 		fallthrough
 	case "code_interpreter_call.outputs":
 		*e = ResponseIncludesEnum(v)
