@@ -101,6 +101,8 @@ type OpenRouter struct {
 	Organization *Organization
 	// Presets endpoints
 	Presets *Presets
+	// Private Endpoints endpoints
+	PrivateEndpoints *PrivateEndpoints
 	// Private Providers endpoints
 	PrivateProviders *PrivateProviders
 	// Provider information endpoints
@@ -119,8 +121,6 @@ type OpenRouter struct {
 	Videos          *Videos
 	// Workspaces endpoints
 	Workspaces *Workspaces
-	// Private Endpoints endpoints
-	PrivateEndpoints *PrivateEndpoints
 
 	sdkConfiguration config.SDKConfiguration
 	hooks            *hooks.Hooks
@@ -197,10 +197,10 @@ func WithTimeout(timeout time.Duration) SDKOption {
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *OpenRouter {
 	sdk := &OpenRouter{
-		SDKVersion: "0.3.153",
+		SDKVersion: "0.3.154",
 		sdkConfiguration: config.SDKConfiguration{
-			UserAgent:         "speakeasy-sdk/terraform 0.3.153 2.950.2 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
-			SDKVersion:        "0.3.153",
+			UserAgent:         "speakeasy-sdk/terraform 0.3.154 2.950.2 1.0.0 github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk",
+			SDKVersion:        "0.3.154",
 			GenVersion:        "2.950.2",
 			OpenAPIDocVersion: "1.0.0",
 			ServerList:        ServerList,
@@ -248,6 +248,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Observability = newObservability(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Organization = newOrganization(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Presets = newPresets(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.PrivateProviders = newPrivateProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Providers = newProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Rerank = newRerank(sdk, sdk.sdkConfiguration, sdk.hooks)
@@ -258,7 +259,6 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.VideoGeneration = newVideoGeneration(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Videos = newVideos(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Workspaces = newWorkspaces(sdk, sdk.sdkConfiguration, sdk.hooks)
-	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 
 	return sdk
 }
