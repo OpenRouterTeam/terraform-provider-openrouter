@@ -22,7 +22,6 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedManagedPrivateEndpoint(c
 	}
 	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.ID = types.StringValue(resp.ID)
-	r.MaxCompletionTokens = types.Int64PointerValue(resp.MaxCompletionTokens)
 	r.ModelName = types.StringPointerValue(resp.ModelName)
 	r.ModelPermaslug = types.StringValue(resp.ModelPermaslug)
 	r.ModelSlug = types.StringPointerValue(resp.ModelSlug)
@@ -51,10 +50,6 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	var diags diag.Diagnostics
 
 	r.BaseURL = privateEndpointBaseURL(r.BaseURL, resp.BaseURL)
-	r.DeclaredParameters = make([]types.String, 0, len(resp.DeclaredParameters))
-	for _, v := range resp.DeclaredParameters {
-		r.DeclaredParameters = append(r.DeclaredParameters, types.StringValue(v))
-	}
 	if resp.DeclaredRegion != nil {
 		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))
 	} else {
@@ -62,66 +57,19 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	}
 	r.DeclaredZdr = types.BoolPointerValue(resp.DeclaredZdr)
 	r.ID = types.StringValue(resp.ID)
-	r.MaxCompletionTokens = types.Int64PointerValue(resp.MaxCompletionTokens)
 	r.ModelName = types.StringPointerValue(resp.ModelName)
 	r.ModelPermaslug = types.StringValue(resp.ModelPermaslug)
 	r.ModelSlug = types.StringPointerValue(resp.ModelSlug)
 	if r.Pricing == nil {
 		r.Pricing = &tfTypes.PrivateEndpointPricing{}
 	}
-	r.Pricing.CacheRead = types.StringPointerValue(resp.Pricing.CacheRead)
-	r.Pricing.CacheWrite = types.StringPointerValue(resp.Pricing.CacheWrite)
 	r.Pricing.Completion = types.StringValue(resp.Pricing.Completion)
 	r.Pricing.Prompt = types.StringValue(resp.Pricing.Prompt)
 	r.ProviderName = types.StringValue(resp.ProviderName)
 	if resp.ProviderSlug != nil {
 		r.ProviderSlug = types.StringValue(*resp.ProviderSlug)
 	}
-	if r.Settings == nil {
-		r.Settings = &tfTypes.UpdatePrivateEndpointSettingsRequest{}
-	}
-	if r.Settings.Completions == nil {
-		r.Settings.Completions = &tfTypes.UpdatePrivateEndpointSettingsRequestCompletions{}
-	}
-	r.Settings.Completions.Chat = types.BoolPointerValue(resp.Settings.Completions.Chat)
-	r.Settings.Completions.Text = types.BoolPointerValue(resp.Settings.Completions.Text)
-	r.Settings.ContextLength = types.Int64PointerValue(resp.Settings.ContextLength)
-	r.Settings.ExcludedParameters = make([]types.String, 0, len(resp.Settings.ExcludedParameters))
-	for _, v := range resp.Settings.ExcludedParameters {
-		r.Settings.ExcludedParameters = append(r.Settings.ExcludedParameters, types.StringValue(string(v)))
-	}
-	if r.Settings.Inputs == nil {
-		r.Settings.Inputs = &tfTypes.UpdatePrivateEndpointSettingsRequestInputs{}
-	}
-	r.Settings.Inputs.Audio = types.BoolPointerValue(resp.Settings.Inputs.Audio)
-	r.Settings.Inputs.Base64Files = types.BoolPointerValue(resp.Settings.Inputs.Base64Files)
-	r.Settings.Inputs.Base64Images = types.BoolPointerValue(resp.Settings.Inputs.Base64Images)
-	r.Settings.Inputs.FileUrls = types.BoolPointerValue(resp.Settings.Inputs.FileUrls)
-	r.Settings.Inputs.ImageUrls = types.BoolPointerValue(resp.Settings.Inputs.ImageUrls)
-	r.Settings.MaxCompletionTokens = types.Int64PointerValue(resp.Settings.MaxCompletionTokens)
-	r.Settings.MaxPromptTokens = types.Int64PointerValue(resp.Settings.MaxPromptTokens)
-	r.Settings.Quantization = types.StringValue(string(resp.Settings.Quantization))
-	if r.Settings.Reasoning == nil {
-		r.Settings.Reasoning = &tfTypes.UpdatePrivateEndpointSettingsRequestReasoning{}
-	}
-	if resp.Settings.Reasoning.ReturnMechanism != nil {
-		r.Settings.Reasoning.ReturnMechanism = types.StringValue(string(*resp.Settings.Reasoning.ReturnMechanism))
-	} else {
-		r.Settings.Reasoning.ReturnMechanism = types.StringNull()
-	}
-	r.Settings.Reasoning.Supported = types.BoolValue(resp.Settings.Reasoning.Supported)
-	if r.Settings.ToolChoice == nil {
-		r.Settings.ToolChoice = &tfTypes.UpdatePrivateEndpointSettingsRequestToolChoice{}
-	}
-	r.Settings.ToolChoice.Auto = types.BoolValue(resp.Settings.ToolChoice.Auto)
-	r.Settings.ToolChoice.Function = types.BoolValue(resp.Settings.ToolChoice.Function)
-	r.Settings.ToolChoice.None = types.BoolValue(resp.Settings.ToolChoice.None)
-	r.Settings.ToolChoice.Required = types.BoolValue(resp.Settings.ToolChoice.Required)
 	r.Status = types.StringValue(string(resp.Status))
-	r.TestedParameters = make([]types.String, 0, len(resp.TestedParameters))
-	for _, v := range resp.TestedParameters {
-		r.TestedParameters = append(r.TestedParameters, types.StringValue(v))
-	}
 	r.UpstreamModelID = types.StringValue(resp.UpstreamModelID)
 
 	return diags
@@ -145,12 +93,6 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpointResponse(
 func (r *PrivateEndpointResourceModel) ToOperationsCreatePrivateEndpointRequest(ctx context.Context) (*operations.CreatePrivateEndpointRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	idempotencyKey := new(string)
-	if !r.IdempotencyKey.IsUnknown() && !r.IdempotencyKey.IsNull() {
-		*idempotencyKey = r.IdempotencyKey.ValueString()
-	} else {
-		idempotencyKey = nil
-	}
 	body, bodyDiags := r.ToSharedCreatePrivateEndpointRequest(ctx)
 	diags.Append(bodyDiags...)
 
@@ -159,8 +101,7 @@ func (r *PrivateEndpointResourceModel) ToOperationsCreatePrivateEndpointRequest(
 	}
 
 	out := operations.CreatePrivateEndpointRequest{
-		IdempotencyKey: idempotencyKey,
-		Body:           *body,
+		Body: *body,
 	}
 
 	return &out, diags
@@ -192,20 +133,20 @@ func (r *PrivateEndpointResourceModel) ToOperationsGetPrivateEndpointRequest(ctx
 	return &out, diags
 }
 
-func (r *PrivateEndpointResourceModel) ToOperationsUpdatePrivateEndpointRequest(ctx context.Context) (*operations.UpdatePrivateEndpointRequest, diag.Diagnostics) {
+func (r *PrivateEndpointResourceModel) ToOperationsUpdatePrivateEndpointPricingRequest(ctx context.Context) (*operations.UpdatePrivateEndpointPricingRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	var id string
 	id = r.ID.ValueString()
 
-	body, bodyDiags := r.ToSharedUpdatePrivateEndpointRequest(ctx)
+	body, bodyDiags := r.ToSharedUpdatePrivateEndpointPricingRequest(ctx)
 	diags.Append(bodyDiags...)
 
 	if diags.HasError() {
 		return nil, diags
 	}
 
-	out := operations.UpdatePrivateEndpointRequest{
+	out := operations.UpdatePrivateEndpointPricingRequest{
 		ID:   id,
 		Body: *body,
 	}
@@ -231,10 +172,6 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 	} else {
 		baseURL = nil
 	}
-	declaredParameters := make([]shared.PrivateEndpointDeclaredParameter, 0, len(r.DeclaredParameters))
-	for _, declaredParametersItem := range r.DeclaredParameters {
-		declaredParameters = append(declaredParameters, shared.PrivateEndpointDeclaredParameter(declaredParametersItem.ValueString()))
-	}
 	declaredRegion := new(shared.CreatePrivateEndpointRequestDeclaredRegion)
 	if !r.DeclaredRegion.IsUnknown() && !r.DeclaredRegion.IsNull() {
 		*declaredRegion = shared.CreatePrivateEndpointRequestDeclaredRegion(r.DeclaredRegion.ValueString())
@@ -252,18 +189,6 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 
 	var pricing *shared.PrivateEndpointPricing
 	if r.Pricing != nil {
-		cacheRead := new(string)
-		if !r.Pricing.CacheRead.IsUnknown() && !r.Pricing.CacheRead.IsNull() {
-			*cacheRead = r.Pricing.CacheRead.ValueString()
-		} else {
-			cacheRead = nil
-		}
-		cacheWrite := new(string)
-		if !r.Pricing.CacheWrite.IsUnknown() && !r.Pricing.CacheWrite.IsNull() {
-			*cacheWrite = r.Pricing.CacheWrite.ValueString()
-		} else {
-			cacheWrite = nil
-		}
 		var completion string
 		completion = r.Pricing.Completion.ValueString()
 
@@ -271,8 +196,6 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 		prompt = r.Pricing.Prompt.ValueString()
 
 		pricing = &shared.PrivateEndpointPricing{
-			CacheRead:  cacheRead,
-			CacheWrite: cacheWrite,
 			Completion: completion,
 			Prompt:     prompt,
 		}
@@ -280,397 +203,38 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 	var providerSlug string
 	providerSlug = r.ProviderSlug.ValueString()
 
-	var settings *shared.UpdatePrivateEndpointSettingsRequest
-	if r.Settings != nil {
-		var completions *shared.UpdatePrivateEndpointSettingsRequestCompletions
-		if r.Settings.Completions != nil {
-			chat := new(bool)
-			if !r.Settings.Completions.Chat.IsUnknown() && !r.Settings.Completions.Chat.IsNull() {
-				*chat = r.Settings.Completions.Chat.ValueBool()
-			} else {
-				chat = nil
-			}
-			text := new(bool)
-			if !r.Settings.Completions.Text.IsUnknown() && !r.Settings.Completions.Text.IsNull() {
-				*text = r.Settings.Completions.Text.ValueBool()
-			} else {
-				text = nil
-			}
-			completions = &shared.UpdatePrivateEndpointSettingsRequestCompletions{
-				Chat: chat,
-				Text: text,
-			}
-		}
-		contextLength := new(int64)
-		if !r.Settings.ContextLength.IsUnknown() && !r.Settings.ContextLength.IsNull() {
-			*contextLength = r.Settings.ContextLength.ValueInt64()
-		} else {
-			contextLength = nil
-		}
-		excludedParameters := make([]shared.UpdatePrivateEndpointSettingsRequestExcludedParameter, 0, len(r.Settings.ExcludedParameters))
-		for _, excludedParametersItem := range r.Settings.ExcludedParameters {
-			excludedParameters = append(excludedParameters, shared.UpdatePrivateEndpointSettingsRequestExcludedParameter(excludedParametersItem.ValueString()))
-		}
-		var inputs *shared.UpdatePrivateEndpointSettingsRequestInputs
-		if r.Settings.Inputs != nil {
-			audio := new(bool)
-			if !r.Settings.Inputs.Audio.IsUnknown() && !r.Settings.Inputs.Audio.IsNull() {
-				*audio = r.Settings.Inputs.Audio.ValueBool()
-			} else {
-				audio = nil
-			}
-			base64Files := new(bool)
-			if !r.Settings.Inputs.Base64Files.IsUnknown() && !r.Settings.Inputs.Base64Files.IsNull() {
-				*base64Files = r.Settings.Inputs.Base64Files.ValueBool()
-			} else {
-				base64Files = nil
-			}
-			base64Images := new(bool)
-			if !r.Settings.Inputs.Base64Images.IsUnknown() && !r.Settings.Inputs.Base64Images.IsNull() {
-				*base64Images = r.Settings.Inputs.Base64Images.ValueBool()
-			} else {
-				base64Images = nil
-			}
-			fileUrls := new(bool)
-			if !r.Settings.Inputs.FileUrls.IsUnknown() && !r.Settings.Inputs.FileUrls.IsNull() {
-				*fileUrls = r.Settings.Inputs.FileUrls.ValueBool()
-			} else {
-				fileUrls = nil
-			}
-			imageUrls := new(bool)
-			if !r.Settings.Inputs.ImageUrls.IsUnknown() && !r.Settings.Inputs.ImageUrls.IsNull() {
-				*imageUrls = r.Settings.Inputs.ImageUrls.ValueBool()
-			} else {
-				imageUrls = nil
-			}
-			inputs = &shared.UpdatePrivateEndpointSettingsRequestInputs{
-				Audio:        audio,
-				Base64Files:  base64Files,
-				Base64Images: base64Images,
-				FileUrls:     fileUrls,
-				ImageUrls:    imageUrls,
-			}
-		}
-		maxCompletionTokens := new(int64)
-		if !r.Settings.MaxCompletionTokens.IsUnknown() && !r.Settings.MaxCompletionTokens.IsNull() {
-			*maxCompletionTokens = r.Settings.MaxCompletionTokens.ValueInt64()
-		} else {
-			maxCompletionTokens = nil
-		}
-		maxPromptTokens := new(int64)
-		if !r.Settings.MaxPromptTokens.IsUnknown() && !r.Settings.MaxPromptTokens.IsNull() {
-			*maxPromptTokens = r.Settings.MaxPromptTokens.ValueInt64()
-		} else {
-			maxPromptTokens = nil
-		}
-		quantization := new(shared.PrivateEndpointQuantization)
-		if !r.Settings.Quantization.IsUnknown() && !r.Settings.Quantization.IsNull() {
-			*quantization = shared.PrivateEndpointQuantization(r.Settings.Quantization.ValueString())
-		} else {
-			quantization = nil
-		}
-		var reasoning *shared.UpdatePrivateEndpointSettingsRequestReasoning
-		if r.Settings.Reasoning != nil {
-			returnMechanism := new(shared.PrivateEndpointReasoningReturnMechanism)
-			if !r.Settings.Reasoning.ReturnMechanism.IsUnknown() && !r.Settings.Reasoning.ReturnMechanism.IsNull() {
-				*returnMechanism = shared.PrivateEndpointReasoningReturnMechanism(r.Settings.Reasoning.ReturnMechanism.ValueString())
-			} else {
-				returnMechanism = nil
-			}
-			supported := new(bool)
-			if !r.Settings.Reasoning.Supported.IsUnknown() && !r.Settings.Reasoning.Supported.IsNull() {
-				*supported = r.Settings.Reasoning.Supported.ValueBool()
-			} else {
-				supported = nil
-			}
-			reasoning = &shared.UpdatePrivateEndpointSettingsRequestReasoning{
-				ReturnMechanism: returnMechanism,
-				Supported:       supported,
-			}
-		}
-		var toolChoice *shared.UpdatePrivateEndpointSettingsRequestToolChoice
-		if r.Settings.ToolChoice != nil {
-			auto := new(bool)
-			if !r.Settings.ToolChoice.Auto.IsUnknown() && !r.Settings.ToolChoice.Auto.IsNull() {
-				*auto = r.Settings.ToolChoice.Auto.ValueBool()
-			} else {
-				auto = nil
-			}
-			function := new(bool)
-			if !r.Settings.ToolChoice.Function.IsUnknown() && !r.Settings.ToolChoice.Function.IsNull() {
-				*function = r.Settings.ToolChoice.Function.ValueBool()
-			} else {
-				function = nil
-			}
-			none := new(bool)
-			if !r.Settings.ToolChoice.None.IsUnknown() && !r.Settings.ToolChoice.None.IsNull() {
-				*none = r.Settings.ToolChoice.None.ValueBool()
-			} else {
-				none = nil
-			}
-			required := new(bool)
-			if !r.Settings.ToolChoice.Required.IsUnknown() && !r.Settings.ToolChoice.Required.IsNull() {
-				*required = r.Settings.ToolChoice.Required.ValueBool()
-			} else {
-				required = nil
-			}
-			toolChoice = &shared.UpdatePrivateEndpointSettingsRequestToolChoice{
-				Auto:     auto,
-				Function: function,
-				None:     none,
-				Required: required,
-			}
-		}
-		settings = &shared.UpdatePrivateEndpointSettingsRequest{
-			Completions:         completions,
-			ContextLength:       contextLength,
-			ExcludedParameters:  excludedParameters,
-			Inputs:              inputs,
-			MaxCompletionTokens: maxCompletionTokens,
-			MaxPromptTokens:     maxPromptTokens,
-			Quantization:        quantization,
-			Reasoning:           reasoning,
-			ToolChoice:          toolChoice,
-		}
-	}
 	var upstreamModelID string
 	upstreamModelID = r.UpstreamModelID.ValueString()
 
 	out := shared.CreatePrivateEndpointRequest{
-		Activate:           activate,
-		BaseURL:            baseURL,
-		DeclaredParameters: declaredParameters,
-		DeclaredRegion:     declaredRegion,
-		DeclaredZdr:        declaredZdr,
-		ModelPermaslug:     modelPermaslug,
-		Pricing:            pricing,
-		ProviderSlug:       providerSlug,
-		Settings:           settings,
-		UpstreamModelID:    upstreamModelID,
+		Activate:        activate,
+		BaseURL:         baseURL,
+		DeclaredRegion:  declaredRegion,
+		DeclaredZdr:     declaredZdr,
+		ModelPermaslug:  modelPermaslug,
+		Pricing:         pricing,
+		ProviderSlug:    providerSlug,
+		UpstreamModelID: upstreamModelID,
 	}
 
 	return &out, diags
 }
 
-func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointRequest(ctx context.Context) (*shared.UpdatePrivateEndpointRequest, diag.Diagnostics) {
+func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointPricingRequest(ctx context.Context) (*shared.UpdatePrivateEndpointPricingRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	baseURL := new(string)
-	if !r.BaseURL.IsUnknown() && !r.BaseURL.IsNull() {
-		*baseURL = r.BaseURL.ValueString()
-	} else {
-		baseURL = nil
-	}
-	declaredParameters := make([]shared.PrivateEndpointDeclaredParameter, 0, len(r.DeclaredParameters))
-	for _, declaredParametersItem := range r.DeclaredParameters {
-		declaredParameters = append(declaredParameters, shared.PrivateEndpointDeclaredParameter(declaredParametersItem.ValueString()))
-	}
-	declaredRegion := new(shared.UpdatePrivateEndpointRequestDeclaredRegion)
-	if !r.DeclaredRegion.IsUnknown() && !r.DeclaredRegion.IsNull() {
-		*declaredRegion = shared.UpdatePrivateEndpointRequestDeclaredRegion(r.DeclaredRegion.ValueString())
-	} else {
-		declaredRegion = nil
-	}
-	declaredZdr := new(bool)
-	if !r.DeclaredZdr.IsUnknown() && !r.DeclaredZdr.IsNull() {
-		*declaredZdr = r.DeclaredZdr.ValueBool()
-	} else {
-		declaredZdr = nil
-	}
-	var pricing *shared.PrivateEndpointPricing
-	if r.Pricing != nil {
-		cacheRead := new(string)
-		if !r.Pricing.CacheRead.IsUnknown() && !r.Pricing.CacheRead.IsNull() {
-			*cacheRead = r.Pricing.CacheRead.ValueString()
-		} else {
-			cacheRead = nil
-		}
-		cacheWrite := new(string)
-		if !r.Pricing.CacheWrite.IsUnknown() && !r.Pricing.CacheWrite.IsNull() {
-			*cacheWrite = r.Pricing.CacheWrite.ValueString()
-		} else {
-			cacheWrite = nil
-		}
-		var completion string
-		completion = r.Pricing.Completion.ValueString()
+	var completion string
+	completion = r.Pricing.Completion.ValueString()
 
-		var prompt string
-		prompt = r.Pricing.Prompt.ValueString()
+	var prompt string
+	prompt = r.Pricing.Prompt.ValueString()
 
-		pricing = &shared.PrivateEndpointPricing{
-			CacheRead:  cacheRead,
-			CacheWrite: cacheWrite,
-			Completion: completion,
-			Prompt:     prompt,
-		}
+	pricing := shared.PrivateEndpointPricing{
+		Completion: completion,
+		Prompt:     prompt,
 	}
-	var settings *shared.UpdatePrivateEndpointSettingsRequest
-	if r.Settings != nil {
-		var completions *shared.UpdatePrivateEndpointSettingsRequestCompletions
-		if r.Settings.Completions != nil {
-			chat := new(bool)
-			if !r.Settings.Completions.Chat.IsUnknown() && !r.Settings.Completions.Chat.IsNull() {
-				*chat = r.Settings.Completions.Chat.ValueBool()
-			} else {
-				chat = nil
-			}
-			text := new(bool)
-			if !r.Settings.Completions.Text.IsUnknown() && !r.Settings.Completions.Text.IsNull() {
-				*text = r.Settings.Completions.Text.ValueBool()
-			} else {
-				text = nil
-			}
-			completions = &shared.UpdatePrivateEndpointSettingsRequestCompletions{
-				Chat: chat,
-				Text: text,
-			}
-		}
-		contextLength := new(int64)
-		if !r.Settings.ContextLength.IsUnknown() && !r.Settings.ContextLength.IsNull() {
-			*contextLength = r.Settings.ContextLength.ValueInt64()
-		} else {
-			contextLength = nil
-		}
-		excludedParameters := make([]shared.UpdatePrivateEndpointSettingsRequestExcludedParameter, 0, len(r.Settings.ExcludedParameters))
-		for _, excludedParametersItem := range r.Settings.ExcludedParameters {
-			excludedParameters = append(excludedParameters, shared.UpdatePrivateEndpointSettingsRequestExcludedParameter(excludedParametersItem.ValueString()))
-		}
-		var inputs *shared.UpdatePrivateEndpointSettingsRequestInputs
-		if r.Settings.Inputs != nil {
-			audio := new(bool)
-			if !r.Settings.Inputs.Audio.IsUnknown() && !r.Settings.Inputs.Audio.IsNull() {
-				*audio = r.Settings.Inputs.Audio.ValueBool()
-			} else {
-				audio = nil
-			}
-			base64Files := new(bool)
-			if !r.Settings.Inputs.Base64Files.IsUnknown() && !r.Settings.Inputs.Base64Files.IsNull() {
-				*base64Files = r.Settings.Inputs.Base64Files.ValueBool()
-			} else {
-				base64Files = nil
-			}
-			base64Images := new(bool)
-			if !r.Settings.Inputs.Base64Images.IsUnknown() && !r.Settings.Inputs.Base64Images.IsNull() {
-				*base64Images = r.Settings.Inputs.Base64Images.ValueBool()
-			} else {
-				base64Images = nil
-			}
-			fileUrls := new(bool)
-			if !r.Settings.Inputs.FileUrls.IsUnknown() && !r.Settings.Inputs.FileUrls.IsNull() {
-				*fileUrls = r.Settings.Inputs.FileUrls.ValueBool()
-			} else {
-				fileUrls = nil
-			}
-			imageUrls := new(bool)
-			if !r.Settings.Inputs.ImageUrls.IsUnknown() && !r.Settings.Inputs.ImageUrls.IsNull() {
-				*imageUrls = r.Settings.Inputs.ImageUrls.ValueBool()
-			} else {
-				imageUrls = nil
-			}
-			inputs = &shared.UpdatePrivateEndpointSettingsRequestInputs{
-				Audio:        audio,
-				Base64Files:  base64Files,
-				Base64Images: base64Images,
-				FileUrls:     fileUrls,
-				ImageUrls:    imageUrls,
-			}
-		}
-		maxCompletionTokens := new(int64)
-		if !r.Settings.MaxCompletionTokens.IsUnknown() && !r.Settings.MaxCompletionTokens.IsNull() {
-			*maxCompletionTokens = r.Settings.MaxCompletionTokens.ValueInt64()
-		} else {
-			maxCompletionTokens = nil
-		}
-		maxPromptTokens := new(int64)
-		if !r.Settings.MaxPromptTokens.IsUnknown() && !r.Settings.MaxPromptTokens.IsNull() {
-			*maxPromptTokens = r.Settings.MaxPromptTokens.ValueInt64()
-		} else {
-			maxPromptTokens = nil
-		}
-		quantization := new(shared.PrivateEndpointQuantization)
-		if !r.Settings.Quantization.IsUnknown() && !r.Settings.Quantization.IsNull() {
-			*quantization = shared.PrivateEndpointQuantization(r.Settings.Quantization.ValueString())
-		} else {
-			quantization = nil
-		}
-		var reasoning *shared.UpdatePrivateEndpointSettingsRequestReasoning
-		if r.Settings.Reasoning != nil {
-			returnMechanism := new(shared.PrivateEndpointReasoningReturnMechanism)
-			if !r.Settings.Reasoning.ReturnMechanism.IsUnknown() && !r.Settings.Reasoning.ReturnMechanism.IsNull() {
-				*returnMechanism = shared.PrivateEndpointReasoningReturnMechanism(r.Settings.Reasoning.ReturnMechanism.ValueString())
-			} else {
-				returnMechanism = nil
-			}
-			supported := new(bool)
-			if !r.Settings.Reasoning.Supported.IsUnknown() && !r.Settings.Reasoning.Supported.IsNull() {
-				*supported = r.Settings.Reasoning.Supported.ValueBool()
-			} else {
-				supported = nil
-			}
-			reasoning = &shared.UpdatePrivateEndpointSettingsRequestReasoning{
-				ReturnMechanism: returnMechanism,
-				Supported:       supported,
-			}
-		}
-		var toolChoice *shared.UpdatePrivateEndpointSettingsRequestToolChoice
-		if r.Settings.ToolChoice != nil {
-			auto := new(bool)
-			if !r.Settings.ToolChoice.Auto.IsUnknown() && !r.Settings.ToolChoice.Auto.IsNull() {
-				*auto = r.Settings.ToolChoice.Auto.ValueBool()
-			} else {
-				auto = nil
-			}
-			function := new(bool)
-			if !r.Settings.ToolChoice.Function.IsUnknown() && !r.Settings.ToolChoice.Function.IsNull() {
-				*function = r.Settings.ToolChoice.Function.ValueBool()
-			} else {
-				function = nil
-			}
-			none := new(bool)
-			if !r.Settings.ToolChoice.None.IsUnknown() && !r.Settings.ToolChoice.None.IsNull() {
-				*none = r.Settings.ToolChoice.None.ValueBool()
-			} else {
-				none = nil
-			}
-			required := new(bool)
-			if !r.Settings.ToolChoice.Required.IsUnknown() && !r.Settings.ToolChoice.Required.IsNull() {
-				*required = r.Settings.ToolChoice.Required.ValueBool()
-			} else {
-				required = nil
-			}
-			toolChoice = &shared.UpdatePrivateEndpointSettingsRequestToolChoice{
-				Auto:     auto,
-				Function: function,
-				None:     none,
-				Required: required,
-			}
-		}
-		settings = &shared.UpdatePrivateEndpointSettingsRequest{
-			Completions:         completions,
-			ContextLength:       contextLength,
-			ExcludedParameters:  excludedParameters,
-			Inputs:              inputs,
-			MaxCompletionTokens: maxCompletionTokens,
-			MaxPromptTokens:     maxPromptTokens,
-			Quantization:        quantization,
-			Reasoning:           reasoning,
-			ToolChoice:          toolChoice,
-		}
-	}
-	upstreamModelID := new(string)
-	if !r.UpstreamModelID.IsUnknown() && !r.UpstreamModelID.IsNull() {
-		*upstreamModelID = r.UpstreamModelID.ValueString()
-	} else {
-		upstreamModelID = nil
-	}
-	out := shared.UpdatePrivateEndpointRequest{
-		BaseURL:            baseURL,
-		DeclaredParameters: declaredParameters,
-		DeclaredRegion:     declaredRegion,
-		DeclaredZdr:        declaredZdr,
-		Pricing:            pricing,
-		Settings:           settings,
-		UpstreamModelID:    upstreamModelID,
+	out := shared.UpdatePrivateEndpointPricingRequest{
+		Pricing: pricing,
 	}
 
 	return &out, diags
