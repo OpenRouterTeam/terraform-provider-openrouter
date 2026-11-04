@@ -7,7 +7,16 @@ permissions:
       - main
     paths:
       - .speakeasy/gen.lock
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      skip_vuln_gate:
+        description: Bypass vulnerability checks for an advisory without a fix
+        type: boolean
+        default: false
+      vuln_gate_reason:
+        description: Reason for bypassing the vulnerability checks
+        type: string
+        default: ""
 
 concurrency:
   group: speakeasy-publish
@@ -36,14 +45,31 @@ jobs:
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_wrapper: false
+      - name: Record vulnerability gate bypass
+        if: inputs.skip_vuln_gate == true
+        env:
+          REASON: ${{ inputs.vuln_gate_reason }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          if [ -z "$(printf '%s' "$REASON" | tr -d '[:space:]')" ]; then
+            echo "::error::vuln_gate_reason is required when skip_vuln_gate is true"
+            exit 1
+          fi
+          {
+            echo '### Vulnerability gate bypass'
+            echo "Requested by: $ACTOR"
+            echo 'Reason:'
+            echo "$REASON"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Build provider
         run: go build ./...
       # Scans the same toolchain and module graph GoReleaser ships. A newly
       # published Go advisory fails this step, so releases stop until go.mod
       # is bumped to the fixed version. A go.mod-only change does not touch
-      # gen.lock, so after merging the fix, re-run this Publish workflow via
-      # workflow_dispatch.
+      # gen.lock, so a never-published version can be dispatched after a fix;
+      # an already-released version needs a new regeneration and version bump.
       - name: Check provider binary for known vulnerabilities
+        if: inputs.skip_vuln_gate != true
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
           CGO_ENABLED=0 go build -trimpath -o "$RUNNER_TEMP/terraform-provider-openrouter" .
@@ -140,6 +166,38 @@ jobs:
           gpg_private_key: ${{ secrets.TERRAFORM_GPG_SECRET_KEY }}
           passphrase: ${{ secrets.TERRAFORM_GPG_PASSPHRASE }}
 
+      # Build release archives without publishing, then scan their binaries.
+      # Fix advisories in go.mod and gen.yaml before publishing; for unfixed
+      # advisories, dispatch with skip_vuln_gate and a documented reason.
+      - name: Stage GoReleaser artifacts for vulnerability scan
+        if: steps.exists.outputs.skip != 'true' && inputs.skip_vuln_gate != true
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          version: "~> v2"
+          args: release --clean --skip=publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GORELEASER_CURRENT_TAG: ${{ steps.version.outputs.tag }}
+
+      - name: Scan linux_amd64 and darwin_arm64 release archives
+        if: steps.exists.outputs.skip != 'true' && inputs.skip_vuln_gate != true
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+          for target in linux_amd64 darwin_arm64; do
+            archive="dist/terraform-provider-openrouter_${VERSION}_${target}.zip"
+            binary="terraform-provider-openrouter_v${VERSION}"
+            output="$RUNNER_TEMP/vuln-scan/$target/$binary"
+            mkdir -p "$(dirname "$output")"
+            unzip -p "$archive" "$binary" > "$output"
+            "$(go env GOPATH)/bin/govulncheck" -mode=binary "$output"
+          done
+
+      # Publish only after the staged archives pass; GoReleaser OSS rebuilds
+      # artifacts for this run, so keep the release-time check above as well.
       - name: Run GoReleaser
         if: steps.exists.outputs.skip != 'true'
         uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
