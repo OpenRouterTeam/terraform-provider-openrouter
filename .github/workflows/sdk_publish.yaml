@@ -1,13 +1,26 @@
 name: Publish
 permissions:
   contents: write
+
+env:
+  # Same floor CI enforces; the release path must not trust a regenerated go.mod.
+  MIN_GO: "1.26.10"
 "on":
   push:
     branches:
       - main
     paths:
       - .speakeasy/gen.lock
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      skip_vuln_gate:
+        description: Bypass vulnerability checks for an advisory without a fix
+        type: boolean
+        default: false
+      vuln_gate_reason:
+        description: Reason for bypassing the vulnerability checks
+        type: string
+        default: ""
 
 concurrency:
   group: speakeasy-publish
@@ -36,8 +49,63 @@ jobs:
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_wrapper: false
+      - name: Record vulnerability gate bypass
+        if: inputs.skip_vuln_gate == true
+        env:
+          REASON: ${{ inputs.vuln_gate_reason }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          if [ -z "$(printf '%s' "$REASON" | tr -d '[:space:]')" ]; then
+            echo "::error::vuln_gate_reason is required when skip_vuln_gate is true"
+            exit 1
+          fi
+          {
+            echo '### Vulnerability gate bypass'
+            echo "Requested by: $ACTOR"
+            echo 'Reason:'
+            echo "$REASON"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Enforce the Go floor in go.mod
+        run: |
+          python3 - <<'PY'
+          import os
+          import pathlib
+          import re
+          import sys
+
+          minimum = tuple(int(part) for part in os.environ['MIN_GO'].split('.'))
+          match = re.search(r'^go[ \t]+(\d+)\.(\d+)(?:\.(\d+))?[ \t]*(?://.*)?$', pathlib.Path('go.mod').read_text(), re.M)
+          found = tuple(int(part or 0) for part in match.groups()) if match else None
+          if found is None or found < minimum:
+              sys.exit('go.mod must declare Go ' + os.environ['MIN_GO'] + ' or newer')
+          PY
+
       - name: Build provider
         run: go build ./...
+      # Scans the same toolchain and module graph GoReleaser ships. Binary mode
+      # fails the release only on a vulnerability the provider can reach; a
+      # module-level advisory is printed but does not stop a release, so this is
+      # a reachability gate, not a "no advisories in the graph" gate. A
+      # go.mod-only change does not touch gen.lock, so a never-published version
+      # can be dispatched after a fix; an already-released version needs a new
+      # regeneration and version bump.
+      - name: Check provider binary for known vulnerabilities
+        if: inputs.skip_vuln_gate != true
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+          GOVULNCHECK="$(go env GOPATH)/bin/govulncheck"
+          if [ ! -x "$GOVULNCHECK" ]; then
+            echo "::error::govulncheck was not installed, so the vulnerability gate did not run"
+            exit 1
+          fi
+          CGO_ENABLED=0 go build -trimpath -o "$RUNNER_TEMP/terraform-provider-openrouter" .
+          # Exit 3 means vulnerabilities were found; anything else is a tool error.
+          rc=0
+          "$GOVULNCHECK" -mode=binary "$RUNNER_TEMP/terraform-provider-openrouter" || rc=$?
+          if [ "$rc" -eq 3 ]; then
+            echo "::error::govulncheck found a reachable known vulnerability (see 'Fixed in' above). Fix: raise the go directive in go.mod to the fixed Go release, or go get <module>@<fixed version> and raise its minimum in .speakeasy/gen.yaml additionalDependencies; then go mod tidy, merge the fix, then re-run the Publish workflow via workflow_dispatch."
+          fi
+          exit "$rc"
       - name: Run acceptance tests
         env:
           TF_ACC: "1"
@@ -78,37 +146,50 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
-      # Idempotency: re-runs (e.g. after a flaky acceptance gate) must not
-      # fail on an existing tag or double-publish an existing release.
-      - name: Check for existing release
-        id: exists
+      # Idempotency: re-runs (e.g. after a flaky acceptance gate) must not fail
+      # on an existing tag or double-publish a finished release. A draft or a
+      # release whose upload aborted is not finished: skipping it would leave a
+      # version permanently uninstallable, because the next run would see "a
+      # release exists" and do nothing.
+      - id: exists
+        name: Check for existing release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           TAG="${{ steps.version.outputs.tag }}"
-          if gh release view "$TAG" --repo "${{ github.repository }}" > /dev/null 2>&1; then
-            echo "Release $TAG already exists — nothing to publish"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
+          skip=false
+          if gh release view "$TAG" --repo "${{ github.repository }}" --json isDraft,assets > "$RUNNER_TEMP/release.json" 2>/dev/null; then
+            draft=$(jq -r '.isDraft' "$RUNNER_TEMP/release.json")
+            names=$(jq -r '.assets[].name' "$RUNNER_TEMP/release.json")
+            if [ "$draft" = "false" ] \
+              && grep -q '_SHA256SUMS$' <<< "$names" \
+              && grep -q '_manifest.json$' <<< "$names"; then
+              echo "Release $TAG already exists with checksums and a manifest — nothing to publish"
+              skip=true
+            else
+              echo "::warning::Release $TAG exists but is a draft or incomplete (draft=$draft); publishing over it"
+            fi
           fi
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
 
-      - name: Create and push tag
+      # The tag is what GoReleaser keys the build off, so it must exist locally
+      # before staging. It is deliberately not pushed here: a tag pushed before
+      # the scan leaves a release version pinned to a commit whose artifacts
+      # failed, and the next dispatch would rebuild that commit while the
+      # acceptance gate graded the newer one. See .github/scripts/release-tag.sh
+      # and its tests for the recovery path this protects.
+      - name: Prepare release tag (local only)
         if: steps.exists.outputs.skip != 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
           set -euo pipefail
-          TAG="${{ steps.version.outputs.tag }}"
-          if git rev-parse -q --verify "refs/tags/$TAG" > /dev/null; then
-            echo "Tag $TAG already exists (previous run failed after tagging)"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git tag -a "$TAG" -m "Release $TAG"
-            git push origin "refs/tags/$TAG"
+          echo "tag state: $(bash .github/scripts/release-tag.sh "$TAG" resolve)"
+          if [ "$(git rev-parse 'HEAD^{commit}')" != "$(git rev-parse "$TAG^{commit}")" ]; then
+            echo "::error::Refusing to release: the tag and the checked-out commit differ"
+            exit 1
           fi
-          # Release exactly the tagged tree, even if main moved since.
-          git checkout "refs/tags/$TAG"
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         if: steps.exists.outputs.skip != 'true'
@@ -124,6 +205,54 @@ jobs:
           gpg_private_key: ${{ secrets.TERRAFORM_GPG_SECRET_KEY }}
           passphrase: ${{ secrets.TERRAFORM_GPG_PASSPHRASE }}
 
+      # Build release archives without publishing, then scan their binaries.
+      # Fix advisories in go.mod and gen.yaml before publishing; for unfixed
+      # advisories, dispatch with skip_vuln_gate and a documented reason.
+      - name: Stage GoReleaser artifacts for vulnerability scan
+        if: steps.exists.outputs.skip != 'true' && inputs.skip_vuln_gate != true
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          version: "~> v2"
+          args: release --clean --skip=publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GORELEASER_CURRENT_TAG: ${{ steps.version.outputs.tag }}
+
+      - name: Scan linux_amd64 and darwin_arm64 release archives
+        if: steps.exists.outputs.skip != 'true' && inputs.skip_vuln_gate != true
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+          GOVULNCHECK="$(go env GOPATH)/bin/govulncheck"
+          if [ ! -x "$GOVULNCHECK" ]; then
+            echo "::error::govulncheck was not installed, so the release archives were not scanned"
+            exit 1
+          fi
+          for target in linux_amd64 darwin_arm64; do
+            archive="dist/terraform-provider-openrouter_${VERSION}_${target}.zip"
+            binary="terraform-provider-openrouter_v${VERSION}"
+            output="$RUNNER_TEMP/vuln-scan/$target/$binary"
+            mkdir -p "$(dirname "$output")"
+            unzip -p "$archive" "$binary" > "$output"
+            "$GOVULNCHECK" -mode=binary "$output"
+          done
+
+      # Publish the tag only now that the staged artifacts have passed. A failed
+      # scan therefore leaves no tag behind, so the documented recovery path
+      # (fix the dependency, merge, dispatch again) releases the fixed commit.
+      # If a tag is somehow already pinned to a different commit, the script
+      # fails and asks for a version bump instead of re-releasing the old tree.
+      - name: Push release tag
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          state=$(bash .github/scripts/release-tag.sh "$TAG" push)
+          echo "tag push: $state"
       - name: Run GoReleaser
         if: steps.exists.outputs.skip != 'true'
         uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
