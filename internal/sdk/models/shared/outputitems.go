@@ -15,6 +15,7 @@ type OutputItemsType string
 const (
 	OutputItemsTypeApplyPatchCall                     OutputItemsType = "apply_patch_call"
 	OutputItemsTypeCodeInterpreterCall                OutputItemsType = "code_interpreter_call"
+	OutputItemsTypeCompaction                         OutputItemsType = "compaction"
 	OutputItemsTypeComputerCall                       OutputItemsType = "computer_call"
 	OutputItemsTypeCustomToolCall                     OutputItemsType = "custom_tool_call"
 	OutputItemsTypeFileSearchCall                     OutputItemsType = "file_search_call"
@@ -68,6 +69,7 @@ type OutputItems struct {
 	OutputTextEditorServerToolItem      *OutputTextEditorServerToolItem      `queryParam:"inline" union:"member"`
 	OutputApplyPatchServerToolItem      *OutputApplyPatchServerToolItem      `queryParam:"inline" union:"member"`
 	OutputApplyPatchCallItem            *OutputApplyPatchCallItem            `queryParam:"inline" union:"member"`
+	OutputCompactionItem                *OutputCompactionItem                `queryParam:"inline" union:"member"`
 	OutputShellCallItem                 *OutputShellCallItem                 `queryParam:"inline" union:"member"`
 	OutputShellCallOutputItem           *OutputShellCallOutputItem           `queryParam:"inline" union:"member"`
 	OutputShellServerToolItem           *OutputShellServerToolItem           `queryParam:"inline" union:"member"`
@@ -105,6 +107,15 @@ func CreateOutputItemsCodeInterpreterCall(codeInterpreterCall OutputCodeInterpre
 	return OutputItems{
 		OutputCodeInterpreterCallItem: &codeInterpreterCall,
 		Type:                          typ,
+	}
+}
+
+func CreateOutputItemsCompaction(compaction OutputCompactionItem) OutputItems {
+	typ := OutputItemsTypeCompaction
+
+	return OutputItems{
+		OutputCompactionItem: &compaction,
+		Type:                 typ,
 	}
 }
 
@@ -496,6 +507,15 @@ func (u *OutputItems) UnmarshalJSON(data []byte) (err error) {
 		u.OutputCodeInterpreterCallItem = outputCodeInterpreterCallItem
 		u.Type = OutputItemsTypeCodeInterpreterCall
 		return nil
+	case "compaction":
+		outputCompactionItem := new(OutputCompactionItem)
+		if err := utils.UnmarshalJSON(data, &outputCompactionItem, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == compaction) type OutputCompactionItem within OutputItems: %w", string(data), err)
+		}
+
+		u.OutputCompactionItem = outputCompactionItem
+		u.Type = OutputItemsTypeCompaction
+		return nil
 	case "computer_call":
 		outputComputerCallItem := new(OutputComputerCallItem)
 		if err := utils.UnmarshalJSON(data, &outputComputerCallItem, "", true, nil); err != nil {
@@ -851,6 +871,10 @@ func (u OutputItems) MarshalJSON() ([]byte, error) {
 
 	if u.OutputApplyPatchCallItem != nil {
 		return utils.MarshalJSON(u.OutputApplyPatchCallItem, "", true)
+	}
+
+	if u.OutputCompactionItem != nil {
+		return utils.MarshalJSON(u.OutputCompactionItem, "", true)
 	}
 
 	if u.OutputShellCallItem != nil {
