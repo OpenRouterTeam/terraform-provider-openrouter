@@ -146,21 +146,32 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
-      # Idempotency: re-runs (e.g. after a flaky acceptance gate) must not
-      # fail on an existing tag or double-publish an existing release.
-      - name: Check for existing release
-        id: exists
+      # Idempotency: re-runs (e.g. after a flaky acceptance gate) must not fail
+      # on an existing tag or double-publish a finished release. A draft or a
+      # release whose upload aborted is not finished: skipping it would leave a
+      # version permanently uninstallable, because the next run would see "a
+      # release exists" and do nothing.
+      - id: exists
+        name: Check for existing release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           TAG="${{ steps.version.outputs.tag }}"
-          if gh release view "$TAG" --repo "${{ github.repository }}" > /dev/null 2>&1; then
-            echo "Release $TAG already exists — nothing to publish"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
+          skip=false
+          if gh release view "$TAG" --repo "${{ github.repository }}" --json isDraft,assets > "$RUNNER_TEMP/release.json" 2>/dev/null; then
+            draft=$(jq -r '.isDraft' "$RUNNER_TEMP/release.json")
+            names=$(jq -r '.assets[].name' "$RUNNER_TEMP/release.json")
+            if [ "$draft" = "false" ] \
+              && grep -q '_SHA256SUMS$' <<< "$names" \
+              && grep -q '_manifest.json$' <<< "$names"; then
+              echo "Release $TAG already exists with checksums and a manifest — nothing to publish"
+              skip=true
+            else
+              echo "::warning::Release $TAG exists but is a draft or incomplete (draft=$draft); publishing over it"
+            fi
           fi
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
 
       # The tag is what GoReleaser keys the build off, so it must exist locally
       # before staging. It is deliberately not pushed here: a tag pushed before

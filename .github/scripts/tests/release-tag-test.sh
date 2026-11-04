@@ -30,6 +30,8 @@ new_fixture() {
   echo "$name" > "$base/work/file.txt"
   git -C "$base/work" add -A
   git -C "$base/work" commit -q -m "base $(basename "$name")"
+  # A fresh clone needs the branch on the remote, not just a local commit.
+  git -C "$base/work" push -q origin HEAD
   echo "$base"
 }
 
@@ -130,7 +132,41 @@ else
     && pass "push step goes through release-tag.sh" || fail "push step bypasses release-tag.sh"
   sed -n "${prepare},${stage}p" "$WORKFLOW" | grep -q 'release-tag.sh "$TAG" resolve' \
     && pass "prepare step goes through the script" || fail "prepare step does not use the script"
+  # A later `continue-on-error` or `if: always()` would let the job reach the push
+  # step after a failed scan, which is the whole failure mode being fixed.
+  if grep -qE 'continue-on-error|always\(\)' "$WORKFLOW"; then
+    fail "workflow can skip past a failed step (continue-on-error or always())"
+  else
+    pass "no continue-on-error or always() in the publish workflow"
+  fi
 fi
+
+echo "8. an annotated tag already pushed at HEAD is reported as exists"
+# Regression test for the peeled-ref bug: a tag's ref holds a tag object's sha,
+# so comparing the raw ref to HEAD made every re-run of a pushed version abort
+# with a version-bump demand even on the identical commit.
+base=$(new_fixture annotated-rerun)
+(cd "$base/work" && bash "$SCRIPT" "$TAG" resolve > /dev/null 2>&1 && bash "$SCRIPT" "$TAG" push > /dev/null 2>&1)
+[ -n "$(remote_tag_sha "$base")" ] && pass "annotated tag reached the remote" || fail "tag was not pushed"
+rerun=$(fresh_clone "$base" annotated-rerun2)
+out=$(cd "$rerun" && bash "$SCRIPT" "$TAG" resolve 2>&1); status=$?
+[ "$status" -eq 0 ] && [ "$out" = "exists" ] \
+  && pass "re-run on the same commit reports exists" \
+  || fail "re-run of a pushed version aborted: '$out' (exit $status)"
+out=$(cd "$rerun" && bash "$SCRIPT" "$TAG" push 2>/dev/null); status=$?
+[ "$status" -eq 0 ] && [ "$out" = "exists" ] \
+  && pass "push is a no-op when the remote tag already matches" \
+  || fail "push on a matching tag failed: '$out' (exit $status)"
+
+echo "9. push refuses to run without the tag that prepare should have created"
+base=$(new_fixture no-local-tag)
+out=$(cd "$base/work" && bash "$SCRIPT" "$TAG" push 2>&1); status=$?
+[ "$status" -ne 0 ] && pass "push exits non-zero" || fail "push created a tag after the scan"
+case "$out" in
+  *"prepare it before staging"*) pass "says the prepare step must run first" ;;
+  *) fail "unexpected message: $out" ;;
+esac
+[ -z "$(remote_tag_sha "$base")" ] && pass "nothing reached the remote" || fail "a tag was pushed anyway"
 
 if [ "$failures" -ne 0 ]; then
   printf '\n%d check(s) failed\n' "$failures"
