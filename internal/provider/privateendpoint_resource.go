@@ -544,11 +544,15 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res1.RawResponse))
 		return
 	}
+	priorDeclaredParameters := data.DeclaredParameters
+
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res1.PrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
 
 	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
 
@@ -608,11 +612,18 @@ func (r *PrivateEndpointResource) Read(ctx context.Context, req resource.ReadReq
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
+	priorDeclaredParameters := data.DeclaredParameters
+
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	// Custom code: the API reports declared parameters minus the ones a probe has
+	// since proven, so names still recorded in state are restored from the
+	// previous read once they appear in tested_parameters.
+	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)

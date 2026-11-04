@@ -150,6 +150,49 @@ func privateEndpointValueChanged(planned, current attr.Value) bool {
 	}
 }
 
+// declaredParametersWithProven restores declared parameters that a validation run
+// has since proven. The detail response returns declared_parameters as stored minus
+// tested_parameters, so a proven name disappears from the read and Terraform would
+// propose adding it again on every plan.
+func declaredParametersWithProven(prior, declared, tested []types.String) []types.String {
+	proven := make(map[string]struct{}, len(tested))
+	for _, name := range tested {
+		if name.IsNull() || name.IsUnknown() {
+			continue
+		}
+		proven[name.ValueString()] = struct{}{}
+	}
+
+	out := make([]types.String, 0, len(declared)+len(prior))
+	seen := make(map[string]struct{}, len(declared)+len(prior))
+	for _, value := range declared {
+		if value.IsNull() || value.IsUnknown() {
+			continue
+		}
+		name := value.ValueString()
+		if _, ok := seen[name]; ok {
+			continue
+		}
+		out = append(out, types.StringValue(name))
+		seen[name] = struct{}{}
+	}
+	for _, value := range prior {
+		if value.IsNull() || value.IsUnknown() {
+			continue
+		}
+		name := value.ValueString()
+		if _, ok := proven[name]; !ok {
+			continue
+		}
+		if _, ok := seen[name]; ok {
+			continue
+		}
+		out = append(out, types.StringValue(name))
+		seen[name] = struct{}{}
+	}
+	return out
+}
+
 // refreshPrivateEndpointWithoutPricingWrite settles state with a full GET,
 // either when no mutable group changed or after a successful PATCH. A limited
 // PATCH response must not erase computed attributes missing from that response.
@@ -180,11 +223,15 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
+	priorDeclaredParameters := data.DeclaredParameters
+
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
 
 	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
 

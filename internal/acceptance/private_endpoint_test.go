@@ -142,7 +142,27 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		writeError(http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
-	_ = json.NewEncoder(w).Encode(map[string]any{"data": endpoint})
+	_ = json.NewEncoder(w).Encode(map[string]any{"data": stubDetailFiltered(*endpoint)})
+}
+
+// stubDetailFiltered mirrors the API read model: declared_parameters is returned as
+// stored minus every name a validation run has already proven.
+func stubDetailFiltered(endpoint stubPrivateEndpoint) stubPrivateEndpoint {
+	filtered := endpoint
+	filtered.DeclaredParameters = nil
+	for _, name := range endpoint.DeclaredParameters {
+		proven := false
+		for _, tested := range endpoint.TestedParameters {
+			if tested == name {
+				proven = true
+				break
+			}
+		}
+		if !proven {
+			filtered.DeclaredParameters = append(filtered.DeclaredParameters, name)
+		}
+	}
+	return filtered
 }
 
 func (s *stubPrivateEndpoints) patch(w http.ResponseWriter, r *http.Request, endpoint *stubPrivateEndpoint, writeError func(int, string)) {
@@ -1172,4 +1192,39 @@ func TestStubPrivateEndpointRejectsNonHTTPSBaseURL(t *testing.T) {
 	if len(api.creates) != 0 {
 		t.Fatalf("server saw %d creates for an http base_url, want 0", len(api.creates))
 	}
+}
+
+// A validation run moves a proven name out of the declared list, and the detail
+// response only returns the names that are still undeclared. Declaring a name that
+// the endpoint has already proven must not produce a plan on every refresh.
+func TestStubPrivateEndpointDeclaredParameterSurvivesPromotion(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	config := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["tools"]`)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy:             api.checkDeletesWithoutDraftOnly,
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "1"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.0", "tools"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.#", "2"),
+					api.checkCreateCount(1),
+					api.checkDeleteCount(0),
+				),
+			},
+			{
+				// Identical config: the step fails if the read dropped the proven
+				// name and the resulting plan proposes it again.
+				Config: config,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "1"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.0", "tools"),
+					api.checkPatches(0, ""),
+				),
+			},
+		},
+	})
 }
