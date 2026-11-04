@@ -122,6 +122,22 @@ actions:
   # PascalCase name (ByokKey -> openrouter_byok_key); the raw BYOKKey component
   # name would produce broken underscore naming. The provider credential `key`
   # is write-only at the API level (never echoed back) and must stay sensitive.
+  #
+  # Terraform write-only input (`key_wo` + `key_wo_version`) is NOT declared
+  # here on purpose. `x-speakeasy-terraform-write-only` maps one spec property
+  # to one attribute, so it can make `key` itself write-only but cannot produce
+  # the additive pair that keeps existing configurations working: a write-only
+  # `key_wo` next to the legacy persistent `key`, both sending the API's single
+  # `key` field. Making `key` write-only outright would break every existing
+  # configuration on upgrade, which is the compatibility decision the feature
+  # request rules out.
+  #
+  # Those attributes are hand-written provider code registered as Speakeasy
+  # custom code (see MAINTAINING.md, "Where code comes from"), which keeps them
+  # across `speakeasy run` without a legacy patch file. `TestWriteOnlySchemas`
+  # in internal/provider/write_only_test.go fails the offline gate if a
+  # regeneration ever drops them, so the durability requirement is enforced by
+  # CI rather than by this comment.
   # ---------------------------------------------------------------------------
   - target: $["components"]["schemas"]["BYOKKey"]
     update:
