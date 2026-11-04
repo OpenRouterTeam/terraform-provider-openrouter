@@ -12,8 +12,8 @@ import (
 	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/hashicorp/go-uuid"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -91,22 +91,68 @@ func privateEndpointErrorMessage(res *operations.CreatePrivateEndpointResponse) 
 	return body.Error.Message
 }
 
-// privateEndpointPricingChanged reports whether an update asks for different
-// rates than state holds. Every PUT .../pricing inserts a new pricing version,
-// so updates that only touch other attributes (such as activate) must not send
-// one. Omitted pricing keeps the current rates.
-func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
-	var planned, current types.Object
-	diags := req.Plan.GetAttribute(ctx, path.Root("pricing"), &planned)
-	diags.Append(req.State.GetAttribute(ctx, path.Root("pricing"), &current)...)
-	if diags.HasError() || planned.IsNull() || planned.IsUnknown() {
-		return false, diags
-	}
-	return !planned.Equal(current), diags
+type privateEndpointChanges struct {
+	pricing, settings, declaredParameters bool
 }
 
-// refreshPrivateEndpointWithoutPricingWrite finishes an update that changes no
-// pricing by reading the endpoint instead of writing a pricing version.
+// privateEndpointChangesForUpdate compares the mutable groups with prior state.
+// Null or unknown groups do not request a write. Unknown nested computed values
+// keep their state value, so an unrelated change must not rewrite pricing.
+func privateEndpointChangesForUpdate(ctx context.Context, req resource.UpdateRequest) (privateEndpointChanges, diag.Diagnostics) {
+	var planned, current types.Object
+	diags := req.Plan.Get(ctx, &planned)
+	diags.Append(req.State.Get(ctx, &current)...)
+	var changes privateEndpointChanges
+	if diags.HasError() {
+		return changes, diags
+	}
+	plannedAttributes, currentAttributes := planned.Attributes(), current.Attributes()
+	for name, changed := range map[string]*bool{
+		"pricing": &changes.pricing, "settings": &changes.settings, "declared_parameters": &changes.declaredParameters,
+	} {
+		value := plannedAttributes[name]
+		*changed = !value.IsNull() && privateEndpointValueChanged(value, currentAttributes[name])
+	}
+	return changes, diags
+}
+
+func privateEndpointValueChanged(planned, current attr.Value) bool {
+	if planned.IsUnknown() || planned.Equal(current) {
+		return false
+	}
+	switch value := planned.(type) {
+	case types.Object:
+		prior, ok := current.(types.Object)
+		if !ok || value.IsNull() || prior.IsNull() || prior.IsUnknown() {
+			return true
+		}
+		priorAttributes := prior.Attributes()
+		for name, attribute := range value.Attributes() {
+			if privateEndpointValueChanged(attribute, priorAttributes[name]) {
+				return true
+			}
+		}
+		return false
+	case types.List:
+		prior, ok := current.(types.List)
+		if !ok || value.IsNull() || prior.IsNull() || prior.IsUnknown() || len(value.Elements()) != len(prior.Elements()) {
+			return true
+		}
+		priorElements := prior.Elements()
+		for i, element := range value.Elements() {
+			if privateEndpointValueChanged(element, priorElements[i]) {
+				return true
+			}
+		}
+		return false
+	default:
+		return true
+	}
+}
+
+// refreshPrivateEndpointWithoutPricingWrite settles state with a full GET,
+// either when no mutable group changed or after a successful PATCH. A limited
+// PATCH response must not erase computed attributes missing from that response.
 func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx context.Context, plan types.Object, data *PrivateEndpointResourceModel, resp *resource.UpdateResponse) {
 	request, requestDiags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
