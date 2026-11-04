@@ -162,21 +162,23 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Create and push tag
+      # The tag is what GoReleaser keys the build off, so it must exist locally
+      # before staging. It is deliberately not pushed here: a tag pushed before
+      # the scan leaves a release version pinned to a commit whose artifacts
+      # failed, and the next dispatch would rebuild that commit while the
+      # acceptance gate graded the newer one. See .github/scripts/release-tag.sh
+      # and its tests for the recovery path this protects.
+      - name: Prepare release tag (local only)
         if: steps.exists.outputs.skip != 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
           set -euo pipefail
-          TAG="${{ steps.version.outputs.tag }}"
-          if git rev-parse -q --verify "refs/tags/$TAG" > /dev/null; then
-            echo "Tag $TAG already exists (previous run failed after tagging)"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git tag -a "$TAG" -m "Release $TAG"
-            git push origin "refs/tags/$TAG"
+          echo "tag state: $(bash .github/scripts/release-tag.sh "$TAG" resolve)"
+          if [ "$(git rev-parse 'HEAD^{commit}')" != "$(git rev-parse "$TAG^{commit}")" ]; then
+            echo "::error::Refusing to release: the tag and the checked-out commit differ"
+            exit 1
           fi
-          # Release exactly the tagged tree, even if main moved since.
-          git checkout "refs/tags/$TAG"
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         if: steps.exists.outputs.skip != 'true'
@@ -227,8 +229,19 @@ jobs:
             "$GOVULNCHECK" -mode=binary "$output"
           done
 
-      # Publish only after the staged archives pass; GoReleaser OSS rebuilds
-      # artifacts for this run, so keep the release-time check above as well.
+      # Publish the tag only now that the staged artifacts have passed. A failed
+      # scan therefore leaves no tag behind, so the documented recovery path
+      # (fix the dependency, merge, dispatch again) releases the fixed commit.
+      # If a tag is somehow already pinned to a different commit, the script
+      # fails and asks for a version bump instead of re-releasing the old tree.
+      - name: Push release tag
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          state=$(bash .github/scripts/release-tag.sh "$TAG" push)
+          echo "tag push: $state"
       - name: Run GoReleaser
         if: steps.exists.outputs.skip != 'true'
         uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0

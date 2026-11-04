@@ -41,6 +41,12 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # The release gate's recovery path is a behaviour, not a comment: a failed
+      # scan must not leave a tag that a later dispatch would reuse to rebuild
+      # the vulnerable commit. Tested with throwaway repositories, no network.
+      - name: Test the release tag lifecycle
+        run: bash .github/scripts/tests/release-tag-test.sh
+
       # .speakeasy regeneration owns go.mod, so this is the only thing that
       # keeps the toolchain floor from silently regressing.
       - name: Enforce the Go floor in go.mod
