@@ -5,6 +5,7 @@ package shared
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
@@ -55,6 +56,198 @@ func (e *VideoGenerationRequestAspectRatio) UnmarshalJSON(data []byte) error {
 	default:
 		return fmt.Errorf("invalid value for VideoGenerationRequestAspectRatio: %v", v)
 	}
+}
+
+type VideoGenerationRequestIgnoreType string
+
+const (
+	VideoGenerationRequestIgnoreTypeProviderName VideoGenerationRequestIgnoreType = "ProviderName"
+	VideoGenerationRequestIgnoreTypeStr          VideoGenerationRequestIgnoreType = "str"
+)
+
+type VideoGenerationRequestIgnore struct {
+	ProviderName *ProviderName `queryParam:"inline" union:"member"`
+	Str          *string       `queryParam:"inline" union:"member"`
+
+	Type VideoGenerationRequestIgnoreType
+}
+
+func CreateVideoGenerationRequestIgnoreProviderName(providerName ProviderName) VideoGenerationRequestIgnore {
+	typ := VideoGenerationRequestIgnoreTypeProviderName
+
+	return VideoGenerationRequestIgnore{
+		ProviderName: &providerName,
+		Type:         typ,
+	}
+}
+
+func CreateVideoGenerationRequestIgnoreStr(str string) VideoGenerationRequestIgnore {
+	typ := VideoGenerationRequestIgnoreTypeStr
+
+	return VideoGenerationRequestIgnore{
+		Str:  &str,
+		Type: typ,
+	}
+}
+
+func (u *VideoGenerationRequestIgnore) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = VideoGenerationRequestIgnore{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
+
+	var candidates []utils.UnionCandidate
+
+	// Collect all valid candidates
+	var providerName ProviderName = ProviderName("")
+	if err := utils.UnmarshalJSON(data, &providerName, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  VideoGenerationRequestIgnoreTypeProviderName,
+			Value: &providerName,
+		})
+	}
+
+	var str string = ""
+	if err := utils.UnmarshalJSON(data, &str, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  VideoGenerationRequestIgnoreTypeStr,
+			Value: &str,
+		})
+	}
+
+	if len(candidates) == 0 {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestIgnore", string(data))
+	}
+
+	// Pick the best candidate using multi-stage filtering
+	best := utils.PickBestUnionCandidate(candidates, data)
+	if best == nil {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestIgnore", string(data))
+	}
+
+	// Set the union type and value based on the best candidate
+	u.Type = best.Type.(VideoGenerationRequestIgnoreType)
+	switch best.Type {
+	case VideoGenerationRequestIgnoreTypeProviderName:
+		u.ProviderName = best.Value.(*ProviderName)
+		return nil
+	case VideoGenerationRequestIgnoreTypeStr:
+		u.Str = best.Value.(*string)
+		return nil
+	}
+
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestIgnore", string(data))
+}
+
+func (u VideoGenerationRequestIgnore) MarshalJSON() ([]byte, error) {
+	if u.ProviderName != nil {
+		return utils.MarshalJSON(u.ProviderName, "", true)
+	}
+
+	if u.Str != nil {
+		return utils.MarshalJSON(u.Str, "", true)
+	}
+
+	return nil, errors.New("could not marshal union type VideoGenerationRequestIgnore: all fields are null")
+}
+
+type VideoGenerationRequestOnlyType string
+
+const (
+	VideoGenerationRequestOnlyTypeProviderName VideoGenerationRequestOnlyType = "ProviderName"
+	VideoGenerationRequestOnlyTypeStr          VideoGenerationRequestOnlyType = "str"
+)
+
+type VideoGenerationRequestOnly struct {
+	ProviderName *ProviderName `queryParam:"inline" union:"member"`
+	Str          *string       `queryParam:"inline" union:"member"`
+
+	Type VideoGenerationRequestOnlyType
+}
+
+func CreateVideoGenerationRequestOnlyProviderName(providerName ProviderName) VideoGenerationRequestOnly {
+	typ := VideoGenerationRequestOnlyTypeProviderName
+
+	return VideoGenerationRequestOnly{
+		ProviderName: &providerName,
+		Type:         typ,
+	}
+}
+
+func CreateVideoGenerationRequestOnlyStr(str string) VideoGenerationRequestOnly {
+	typ := VideoGenerationRequestOnlyTypeStr
+
+	return VideoGenerationRequestOnly{
+		Str:  &str,
+		Type: typ,
+	}
+}
+
+func (u *VideoGenerationRequestOnly) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = VideoGenerationRequestOnly{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
+
+	var candidates []utils.UnionCandidate
+
+	// Collect all valid candidates
+	var providerName ProviderName = ProviderName("")
+	if err := utils.UnmarshalJSON(data, &providerName, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  VideoGenerationRequestOnlyTypeProviderName,
+			Value: &providerName,
+		})
+	}
+
+	var str string = ""
+	if err := utils.UnmarshalJSON(data, &str, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  VideoGenerationRequestOnlyTypeStr,
+			Value: &str,
+		})
+	}
+
+	if len(candidates) == 0 {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestOnly", string(data))
+	}
+
+	// Pick the best candidate using multi-stage filtering
+	best := utils.PickBestUnionCandidate(candidates, data)
+	if best == nil {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestOnly", string(data))
+	}
+
+	// Set the union type and value based on the best candidate
+	u.Type = best.Type.(VideoGenerationRequestOnlyType)
+	switch best.Type {
+	case VideoGenerationRequestOnlyTypeProviderName:
+		u.ProviderName = best.Value.(*ProviderName)
+		return nil
+	case VideoGenerationRequestOnlyTypeStr:
+		u.Str = best.Value.(*string)
+		return nil
+	}
+
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestOnly", string(data))
+}
+
+func (u VideoGenerationRequestOnly) MarshalJSON() ([]byte, error) {
+	if u.ProviderName != nil {
+		return utils.MarshalJSON(u.ProviderName, "", true)
+	}
+
+	if u.Str != nil {
+		return utils.MarshalJSON(u.Str, "", true)
+	}
+
+	return nil, errors.New("could not marshal union type VideoGenerationRequestOnly: all fields are null")
 }
 
 // VideoGenerationRequestOptions - Provider-specific options keyed by provider slug. The provider segment is case-insensitive; an endpoint tag after `/` must match the endpoint slug exactly. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
@@ -1304,9 +1497,111 @@ func (v *VideoGenerationRequestOptions) GetZAi() map[string]any {
 	return v.ZAi
 }
 
-// VideoGenerationRequestProvider - Provider-specific passthrough configuration
+type VideoGenerationRequestOrderType string
+
+const (
+	VideoGenerationRequestOrderTypeProviderName VideoGenerationRequestOrderType = "ProviderName"
+	VideoGenerationRequestOrderTypeStr          VideoGenerationRequestOrderType = "str"
+)
+
+type VideoGenerationRequestOrder struct {
+	ProviderName *ProviderName `queryParam:"inline" union:"member"`
+	Str          *string       `queryParam:"inline" union:"member"`
+
+	Type VideoGenerationRequestOrderType
+}
+
+func CreateVideoGenerationRequestOrderProviderName(providerName ProviderName) VideoGenerationRequestOrder {
+	typ := VideoGenerationRequestOrderTypeProviderName
+
+	return VideoGenerationRequestOrder{
+		ProviderName: &providerName,
+		Type:         typ,
+	}
+}
+
+func CreateVideoGenerationRequestOrderStr(str string) VideoGenerationRequestOrder {
+	typ := VideoGenerationRequestOrderTypeStr
+
+	return VideoGenerationRequestOrder{
+		Str:  &str,
+		Type: typ,
+	}
+}
+
+func (u *VideoGenerationRequestOrder) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = VideoGenerationRequestOrder{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
+
+	var candidates []utils.UnionCandidate
+
+	// Collect all valid candidates
+	var providerName ProviderName = ProviderName("")
+	if err := utils.UnmarshalJSON(data, &providerName, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  VideoGenerationRequestOrderTypeProviderName,
+			Value: &providerName,
+		})
+	}
+
+	var str string = ""
+	if err := utils.UnmarshalJSON(data, &str, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  VideoGenerationRequestOrderTypeStr,
+			Value: &str,
+		})
+	}
+
+	if len(candidates) == 0 {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestOrder", string(data))
+	}
+
+	// Pick the best candidate using multi-stage filtering
+	best := utils.PickBestUnionCandidate(candidates, data)
+	if best == nil {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestOrder", string(data))
+	}
+
+	// Set the union type and value based on the best candidate
+	u.Type = best.Type.(VideoGenerationRequestOrderType)
+	switch best.Type {
+	case VideoGenerationRequestOrderTypeProviderName:
+		u.ProviderName = best.Value.(*ProviderName)
+		return nil
+	case VideoGenerationRequestOrderTypeStr:
+		u.Str = best.Value.(*string)
+		return nil
+	}
+
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for VideoGenerationRequestOrder", string(data))
+}
+
+func (u VideoGenerationRequestOrder) MarshalJSON() ([]byte, error) {
+	if u.ProviderName != nil {
+		return utils.MarshalJSON(u.ProviderName, "", true)
+	}
+
+	if u.Str != nil {
+		return utils.MarshalJSON(u.Str, "", true)
+	}
+
+	return nil, errors.New("could not marshal union type VideoGenerationRequestOrder: all fields are null")
+}
+
+// VideoGenerationRequestProvider - Provider routing preferences (order, only, ignore) and provider-specific passthrough configuration
 type VideoGenerationRequestProvider struct {
+	// List of provider slugs to ignore. If provided, this list is merged with your account-wide ignored provider settings for this request.
+	Ignore []VideoGenerationRequestIgnore `json:"ignore,omitzero"`
+	// List of provider slugs to allow. If provided, this list is merged with your account-wide allowed provider settings for this request.
+	Only    []VideoGenerationRequestOnly   `json:"only,omitzero"`
 	Options *VideoGenerationRequestOptions `json:"options,omitzero"`
+	// An ordered list of provider slugs. The router will attempt to use the first provider in the subset of this list that supports your requested model, and fall back to the next if it is unavailable. If no providers are available, the request will fail with an error message.
+	Order []VideoGenerationRequestOrder `json:"order,omitzero"`
 }
 
 func (v VideoGenerationRequestProvider) MarshalJSON() ([]byte, error) {
@@ -1320,11 +1615,32 @@ func (v *VideoGenerationRequestProvider) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (v *VideoGenerationRequestProvider) GetIgnore() []VideoGenerationRequestIgnore {
+	if v == nil {
+		return nil
+	}
+	return v.Ignore
+}
+
+func (v *VideoGenerationRequestProvider) GetOnly() []VideoGenerationRequestOnly {
+	if v == nil {
+		return nil
+	}
+	return v.Only
+}
+
 func (v *VideoGenerationRequestProvider) GetOptions() *VideoGenerationRequestOptions {
 	if v == nil {
 		return nil
 	}
 	return v.Options
+}
+
+func (v *VideoGenerationRequestProvider) GetOrder() []VideoGenerationRequestOrder {
+	if v == nil {
+		return nil
+	}
+	return v.Order
 }
 
 // VideoGenerationRequestResolution - Resolution of the generated video
@@ -1392,7 +1708,7 @@ type VideoGenerationRequest struct {
 	PreviousJobID *string `json:"previous_job_id,omitzero"`
 	// Text prompt describing the video to generate. Optional for models that support generating a video from image input alone; required by all other models.
 	Prompt *string `json:"prompt,omitzero"`
-	// Provider-specific passthrough configuration
+	// Provider routing preferences (order, only, ignore) and provider-specific passthrough configuration
 	Provider *VideoGenerationRequestProvider `json:"provider,omitzero"`
 	// Resolution of the generated video
 	Resolution *VideoGenerationRequestResolution `json:"resolution,omitzero"`
