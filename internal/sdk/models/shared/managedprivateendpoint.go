@@ -26,6 +26,8 @@ type ManagedPrivateEndpoint struct {
 	DeclaredRegion *PrivateEndpointDeclaredRegion `json:"declared_region"`
 	// Whether you attest this deployment retains no prompt or completion data. `null` means undeclared.
 	DeclaredZdr *bool `json:"declared_zdr"`
+	// Most completion tokens a request routed to this endpoint can produce, or `null` when the endpoint sets no cap beyond the model context length.
+	MaxCompletionTokens *int64 `json:"max_completion_tokens,omitzero"`
 }
 
 func (m ManagedPrivateEndpoint) MarshalJSON() ([]byte, error) {
@@ -100,4 +102,11 @@ func (m *ManagedPrivateEndpoint) GetDeclaredZdr() *bool {
 		return nil
 	}
 	return m.DeclaredZdr
+}
+
+func (m *ManagedPrivateEndpoint) GetMaxCompletionTokens() *int64 {
+	if m == nil {
+		return nil
+	}
+	return m.MaxCompletionTokens
 }
