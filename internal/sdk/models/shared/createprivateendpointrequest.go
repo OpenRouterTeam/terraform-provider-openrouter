@@ -44,6 +44,8 @@ type CreatePrivateEndpointRequest struct {
 	Activate *PrivateEndpointActivation `json:"activate,omitzero"`
 	// HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 	BaseURL *string `json:"base_url,omitzero"`
+	// Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. `tool_choice` requires `tools` to be tested or declared.
+	DeclaredParameters []PrivateEndpointDeclaredParameter `json:"declared_parameters,omitzero"`
 	// Attest where this deployment processes data.
 	DeclaredRegion *CreatePrivateEndpointRequestDeclaredRegion `json:"declared_region,omitzero"`
 	// Attest that this deployment retains no prompt or completion data.
@@ -54,6 +56,8 @@ type CreatePrivateEndpointRequest struct {
 	Pricing *PrivateEndpointPricing `json:"pricing,omitzero"`
 	// Slug of the upstream provider.
 	ProviderSlug string `json:"provider_slug"`
+	// Capabilities and limits to set over the ones copied from the public endpoint for this model and provider (or from the model). Omitted fields keep the copied values.
+	Settings *UpdatePrivateEndpointSettingsRequest `json:"settings,omitzero"`
 	// Model or deployment identifier sent to the upstream provider.
 	UpstreamModelID string `json:"upstream_model_id"`
 }
@@ -81,6 +85,13 @@ func (c *CreatePrivateEndpointRequest) GetBaseURL() *string {
 		return nil
 	}
 	return c.BaseURL
+}
+
+func (c *CreatePrivateEndpointRequest) GetDeclaredParameters() []PrivateEndpointDeclaredParameter {
+	if c == nil {
+		return nil
+	}
+	return c.DeclaredParameters
 }
 
 func (c *CreatePrivateEndpointRequest) GetDeclaredRegion() *CreatePrivateEndpointRequestDeclaredRegion {
@@ -116,6 +127,13 @@ func (c *CreatePrivateEndpointRequest) GetProviderSlug() string {
 		return ""
 	}
 	return c.ProviderSlug
+}
+
+func (c *CreatePrivateEndpointRequest) GetSettings() *UpdatePrivateEndpointSettingsRequest {
+	if c == nil {
+		return nil
+	}
+	return c.Settings
 }
 
 func (c *CreatePrivateEndpointRequest) GetUpstreamModelID() string {
