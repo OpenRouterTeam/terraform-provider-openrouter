@@ -101,8 +101,6 @@ type OpenRouter struct {
 	Organization *Organization
 	// Presets endpoints
 	Presets *Presets
-	// Private Endpoints endpoints
-	PrivateEndpoints *PrivateEndpoints
 	// Private Providers endpoints
 	PrivateProviders *PrivateProviders
 	// Provider information endpoints
@@ -121,6 +119,8 @@ type OpenRouter struct {
 	Videos          *Videos
 	// Workspaces endpoints
 	Workspaces *Workspaces
+	// Private Endpoints endpoints
+	PrivateEndpoints *PrivateEndpoints
 
 	sdkConfiguration config.SDKConfiguration
 	hooks            *hooks.Hooks
@@ -248,7 +248,6 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Observability = newObservability(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Organization = newOrganization(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Presets = newPresets(sdk, sdk.sdkConfiguration, sdk.hooks)
-	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.PrivateProviders = newPrivateProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Providers = newProviders(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Rerank = newRerank(sdk, sdk.sdkConfiguration, sdk.hooks)
@@ -259,6 +258,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.VideoGeneration = newVideoGeneration(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Videos = newVideos(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Workspaces = newWorkspaces(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.PrivateEndpoints = newPrivateEndpoints(sdk, sdk.sdkConfiguration, sdk.hooks)
 
 	return sdk
 }
