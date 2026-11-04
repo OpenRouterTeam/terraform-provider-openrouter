@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"regexp"
 	"strings"
 	"sync"
@@ -23,39 +24,48 @@ const (
 )
 
 type stubPricing struct {
-	Prompt     string `json:"prompt"`
-	Completion string `json:"completion"`
+	Prompt     string  `json:"prompt"`
+	Completion string  `json:"completion"`
+	CacheRead  *string `json:"cache_read"`
+	CacheWrite *string `json:"cache_write"`
 }
 
 type stubPrivateEndpoint struct {
-	ID              string      `json:"id"`
-	Status          string      `json:"status"`
-	ModelPermaslug  string      `json:"model_permaslug"`
-	ModelSlug       string      `json:"model_slug"`
-	ModelName       string      `json:"model_name"`
-	ProviderName    string      `json:"provider_name"`
-	ProviderSlug    *string     `json:"provider_slug"`
-	BaseURL         *string     `json:"base_url"`
-	UpstreamModelID string      `json:"upstream_model_id"`
-	DeclaredZDR     *bool       `json:"declared_zdr"`
-	DeclaredRegion  *string     `json:"declared_region"`
-	Pricing         stubPricing `json:"pricing"`
-	CreatedAt       string      `json:"created_at"`
+	ID                  string         `json:"id"`
+	Status              string         `json:"status"`
+	ModelPermaslug      string         `json:"model_permaslug"`
+	ModelSlug           string         `json:"model_slug"`
+	ModelName           string         `json:"model_name"`
+	ProviderName        string         `json:"provider_name"`
+	ProviderSlug        *string        `json:"provider_slug"`
+	BaseURL             *string        `json:"base_url"`
+	UpstreamModelID     string         `json:"upstream_model_id"`
+	DeclaredZDR         *bool          `json:"declared_zdr"`
+	DeclaredRegion      *string        `json:"declared_region"`
+	DeclaredParameters  []string       `json:"declared_parameters"`
+	TestedParameters    []string       `json:"tested_parameters"`
+	MaxCompletionTokens any            `json:"max_completion_tokens"`
+	Settings            map[string]any `json:"settings"`
+	Pricing             stubPricing    `json:"pricing"`
+	CreatedAt           string         `json:"created_at"`
 }
 
-// Mirrors the /private-endpoints contract: create returns the summary shape
-// (no pricing or upstream fields), reads return the full endpoint, and only
-// pricing is editable once the endpoint left draft.
+// Create and PATCH return the limited managed summary. GET returns the full
+// endpoint, including the settings, tested parameters and effective token cap.
+// Active endpoints accept only pricing, settings and declared_parameters edits.
 type stubPrivateEndpoints struct {
-	mu          sync.Mutex
-	nextID      int
-	endpoints   map[string]*stubPrivateEndpoint
-	creates     []map[string]any
-	createKeys  []string
-	byKey       map[string]string
-	deletes     []string
-	pricingPuts int
-	failGets    int
+	mu             sync.Mutex
+	nextID         int
+	endpoints      map[string]*stubPrivateEndpoint
+	creates        []map[string]any
+	createKeys     []string
+	byKey          map[string]string
+	deletes        []string
+	patches        []map[string]any
+	puts           int
+	getsAfterPatch int
+	awaitingGet    bool
+	failGets       int
 	// timeoutCreates answers that many creates with 408 after committing
 	// them, the way the API's timeout middleware leaves the handler running.
 	timeoutCreates int
@@ -87,6 +97,11 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		writeError(http.StatusNotFound, "Not found")
 		return
 	}
+	if r.Method == http.MethodPut {
+		s.puts++
+		writeError(http.StatusMethodNotAllowed, "PUT is obsolete; use PATCH /private-endpoints/{id}")
+		return
+	}
 	if len(parts) == 1 {
 		if r.Method != http.MethodPost {
 			writeError(http.StatusMethodNotAllowed, "Method not allowed")
@@ -101,21 +116,18 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	switch {
-	case len(parts) == 3 && parts[2] == "pricing" && r.Method == http.MethodPut:
-		var body struct {
-			Pricing stubPricing `json:"pricing"`
-		}
-		if err := json.NewDecoder(r.Body).Decode(&body); err != nil || body.Pricing.Prompt == "" {
-			writeError(http.StatusBadRequest, "Invalid pricing")
-			return
-		}
-		s.pricingPuts++
-		endpoint.Pricing = body.Pricing
+	case len(parts) == 2 && r.Method == http.MethodPatch:
+		s.patch(w, r, endpoint, writeError)
+		return
 	case len(parts) == 2 && r.Method == http.MethodGet:
 		if s.failGets > 0 {
 			s.failGets--
 			writeError(http.StatusForbidden, "Forbidden")
 			return
+		}
+		if s.awaitingGet {
+			s.getsAfterPatch++
+			s.awaitingGet = false
 		}
 	case len(parts) == 2 && r.Method == http.MethodDelete:
 		if r.URL.Query().Get("draft_only") == "true" && endpoint.Status != "draft" {
@@ -131,6 +143,92 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	_ = json.NewEncoder(w).Encode(map[string]any{"data": endpoint})
+}
+
+func (s *stubPrivateEndpoints) patch(w http.ResponseWriter, r *http.Request, endpoint *stubPrivateEndpoint, writeError func(int, string)) {
+	var raw map[string]any
+	if err := json.NewDecoder(r.Body).Decode(&raw); err != nil || len(raw) == 0 {
+		writeError(http.StatusBadRequest, "Invalid or empty PATCH body")
+		return
+	}
+	s.patches = append(s.patches, raw)
+	for _, key := range []string{"base_url", "upstream_model_id", "declared_region", "declared_zdr"} {
+		if _, present := raw[key]; present && endpoint.Status != "draft" {
+			writeError(http.StatusConflict, "draft-only field on active endpoint: "+key)
+			return
+		}
+	}
+	for key := range raw {
+		switch key {
+		case "pricing", "settings", "declared_parameters":
+		default:
+			writeError(http.StatusBadRequest, "Unexpected PATCH field: "+key)
+			return
+		}
+	}
+	encoded, _ := json.Marshal(raw)
+	var body struct {
+		Pricing            *stubPricing   `json:"pricing"`
+		Settings           map[string]any `json:"settings"`
+		DeclaredParameters *[]string      `json:"declared_parameters"`
+	}
+	if err := json.Unmarshal(encoded, &body); err != nil ||
+		(body.Pricing != nil && (body.Pricing.Prompt == "" || body.Pricing.Completion == "")) {
+		writeError(http.StatusBadRequest, "Invalid PATCH body")
+		return
+	}
+	if body.Pricing != nil {
+		// Pricing replaces all four rates. Omitted cache rates return to the
+		// fixture's pricing strategy defaults, not their earlier values.
+		endpoint.Pricing = stubPricingDefaults(*body.Pricing)
+	}
+	if body.Settings != nil {
+		stubMergePrivateEndpointSettings(endpoint.Settings, body.Settings)
+		endpoint.MaxCompletionTokens = endpoint.Settings["max_completion_tokens"]
+	}
+	if body.DeclaredParameters != nil {
+		endpoint.DeclaredParameters = *body.DeclaredParameters
+	}
+	s.awaitingGet = true
+	// Deliberately omit settings, pricing, tested_parameters and the effective
+	// max_completion_tokens. Only the subsequent full GET is authoritative.
+	_ = json.NewEncoder(w).Encode(map[string]any{"data": stubSummary(endpoint)})
+}
+
+func stubPricingDefaults(pricing stubPricing) stubPricing {
+	if pricing.CacheRead == nil {
+		value := "0.000001"
+		pricing.CacheRead = &value
+	}
+	if pricing.CacheWrite == nil {
+		value := "0.000003"
+		pricing.CacheWrite = &value
+	}
+	return pricing
+}
+
+func stubPrivateEndpointSettings() map[string]any {
+	return map[string]any{
+		"completions":    map[string]any{"chat": true, "text": false},
+		"context_length": 128000, "max_prompt_tokens": 120000, "max_completion_tokens": 4096,
+		"excluded_parameters": []string{},
+		"inputs":              map[string]any{"audio": false, "base64_files": false, "base64_images": true, "file_urls": false, "image_urls": true},
+		"quantization":        "unknown",
+		"reasoning":           map[string]any{"return_mechanism": nil, "supported": false},
+		"tool_choice":         map[string]any{"auto": true, "function": true, "none": true, "required": true},
+	}
+}
+
+func stubMergePrivateEndpointSettings(settings, patch map[string]any) {
+	for key, value := range patch {
+		if nested, ok := value.(map[string]any); ok {
+			if existing, ok := settings[key].(map[string]any); ok {
+				stubMergePrivateEndpointSettings(existing, nested)
+				continue
+			}
+		}
+		settings[key] = value
+	}
 }
 
 func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, writeError func(int, string)) {
@@ -151,37 +249,47 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 	}
 	encoded, _ := json.Marshal(raw)
 	var body struct {
-		ModelPermaslug  string       `json:"model_permaslug"`
-		ProviderSlug    string       `json:"provider_slug"`
-		UpstreamModelID string       `json:"upstream_model_id"`
-		BaseURL         *string      `json:"base_url"`
-		DeclaredZDR     *bool        `json:"declared_zdr"`
-		DeclaredRegion  *string      `json:"declared_region"`
-		Pricing         *stubPricing `json:"pricing"`
-		Activate        *struct {
+		ModelPermaslug     string         `json:"model_permaslug"`
+		ProviderSlug       string         `json:"provider_slug"`
+		UpstreamModelID    string         `json:"upstream_model_id"`
+		BaseURL            *string        `json:"base_url"`
+		DeclaredZDR        *bool          `json:"declared_zdr"`
+		DeclaredRegion     *string        `json:"declared_region"`
+		DeclaredParameters []string       `json:"declared_parameters"`
+		Settings           map[string]any `json:"settings"`
+		Pricing            *stubPricing   `json:"pricing"`
+		Activate           *struct {
 			WorkspaceID string `json:"workspace_id"`
 		} `json:"activate"`
 	}
 	_ = json.Unmarshal(encoded, &body)
 	s.nextID++
 	endpoint := &stubPrivateEndpoint{
-		ID:              fmt.Sprintf("00000000-0000-4000-8000-%012d", s.nextID),
-		Status:          "draft",
-		ModelPermaslug:  body.ModelPermaslug,
-		ModelSlug:       body.ModelPermaslug,
-		ModelName:       "GPT-4o",
-		ProviderName:    "OpenAI",
-		ProviderSlug:    &body.ProviderSlug,
-		BaseURL:         body.BaseURL,
-		UpstreamModelID: body.UpstreamModelID,
-		DeclaredZDR:     body.DeclaredZDR,
-		DeclaredRegion:  body.DeclaredRegion,
-		Pricing:         stubPricing{Prompt: "0.0000025", Completion: "0.00001"},
-		CreatedAt:       "2026-09-26T12:00:00Z",
+		ID:                 fmt.Sprintf("00000000-0000-4000-8000-%012d", s.nextID),
+		Status:             "draft",
+		ModelPermaslug:     body.ModelPermaslug,
+		ModelSlug:          body.ModelPermaslug,
+		ModelName:          "GPT-4o",
+		ProviderName:       "OpenAI",
+		ProviderSlug:       &body.ProviderSlug,
+		BaseURL:            body.BaseURL,
+		UpstreamModelID:    body.UpstreamModelID,
+		DeclaredZDR:        body.DeclaredZDR,
+		DeclaredRegion:     body.DeclaredRegion,
+		DeclaredParameters: body.DeclaredParameters,
+		TestedParameters:   []string{},
+		Settings:           stubPrivateEndpointSettings(),
+		Pricing:            stubPricingDefaults(stubPricing{Prompt: "0.0000025", Completion: "0.00001"}),
+		CreatedAt:          "2026-09-26T12:00:00Z",
 	}
 	if body.Pricing != nil {
-		endpoint.Pricing = *body.Pricing
+		endpoint.Pricing = stubPricingDefaults(*body.Pricing)
 	}
+	if endpoint.DeclaredParameters == nil {
+		endpoint.DeclaredParameters = []string{}
+	}
+	stubMergePrivateEndpointSettings(endpoint.Settings, body.Settings)
+	endpoint.MaxCompletionTokens = endpoint.Settings["max_completion_tokens"]
 	if body.BaseURL != nil {
 		normalized := stubNormalizeBaseURL(*body.BaseURL)
 		endpoint.BaseURL = &normalized
@@ -218,6 +326,7 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 			return
 		}
 		endpoint.Status = "active"
+		endpoint.TestedParameters = []string{"tools", "stop"}
 	}
 	s.endpoints[endpoint.ID] = endpoint
 	if s.timeoutCreates > 0 {
@@ -286,12 +395,63 @@ func (s *stubPrivateEndpoints) checkEndpointCount(want int) resource.TestCheckFu
 	}
 }
 
-func (s *stubPrivateEndpoints) checkPricingPuts(want int) resource.TestCheckFunc {
+func (s *stubPrivateEndpoints) checkPatches(want int, wantLastBody string) resource.TestCheckFunc {
 	return func(_ *terraform.State) error {
 		s.mu.Lock()
 		defer s.mu.Unlock()
-		if s.pricingPuts != want {
-			return fmt.Errorf("server saw %d PUT /pricing calls, want %d", s.pricingPuts, want)
+		if s.puts != 0 || len(s.patches) != want {
+			return fmt.Errorf("server saw %d PUT and %d PATCH calls, want 0 PUT and %d PATCH", s.puts, len(s.patches), want)
+		}
+		if s.getsAfterPatch != want || s.awaitingGet {
+			return fmt.Errorf("server saw %d full GETs after %d PATCH calls, want one refresh per PATCH", s.getsAfterPatch, want)
+		}
+		if wantLastBody == "" {
+			return nil
+		}
+		var expected map[string]any
+		if err := json.Unmarshal([]byte(wantLastBody), &expected); err != nil {
+			return fmt.Errorf("invalid expected PATCH body: %w", err)
+		}
+		if want == 0 || !reflect.DeepEqual(s.patches[want-1], expected) {
+			return fmt.Errorf("PATCH bodies = %#v, want last body %#v", s.patches, expected)
+		}
+		return nil
+	}
+}
+
+// Settings contains optional computed attributes, so unknown fields may be
+// populated from prior state by the provider. Assert the exact top-level group
+// and every configured nested value without prescribing those computed fields.
+func (s *stubPrivateEndpoints) checkSettingsPatch(want int, maxCompletionTokens int, audio, required bool) resource.TestCheckFunc {
+	return resource.ComposeAggregateTestCheckFunc(
+		s.checkPatches(want, ""),
+		func(_ *terraform.State) error {
+			s.mu.Lock()
+			defer s.mu.Unlock()
+			if len(s.patches) != want || want == 0 {
+				return fmt.Errorf("server saw %d PATCH calls, want %d", len(s.patches), want)
+			}
+			body := s.patches[want-1]
+			settings, ok := body["settings"].(map[string]any)
+			if !ok || len(body) != 1 {
+				return fmt.Errorf("PATCH body = %#v, want only settings", body)
+			}
+			inputs, _ := settings["inputs"].(map[string]any)
+			toolChoice, _ := settings["tool_choice"].(map[string]any)
+			if settings["max_completion_tokens"] != float64(maxCompletionTokens) || inputs["audio"] != audio || toolChoice["required"] != required {
+				return fmt.Errorf("PATCH settings = %#v, want max_completion_tokens=%d, inputs.audio=%t, tool_choice.required=%t", settings, maxCompletionTokens, audio, required)
+			}
+			return nil
+		},
+	)
+}
+
+func (s *stubPrivateEndpoints) checkDeleteCount(want int) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		if len(s.deletes) != want {
+			return fmt.Errorf("server saw %d deletes, want %d", len(s.deletes), want)
 		}
 		return nil
 	}
@@ -335,11 +495,14 @@ resource "openrouter_private_endpoint" "test" {
   model_permaslug   = "openai/gpt-4o"
   provider_slug     = "openai"
   upstream_model_id = %q
+  base_url          = "https://deployment.example.com/v1"
   declared_zdr      = true
   declared_region   = "us"
   pricing = {
     prompt     = %q
     completion = "0.000008"
+    cache_read = "0.0000005"
+    cache_write = "0.0000025"
   }
   activate = {
     workspace_id = %q
@@ -382,7 +545,8 @@ func TestStubPrivateEndpointLifecycle(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(name, "pricing.prompt", "0.0000015"),
 					api.checkCreateCount(1),
-					api.checkPricingPuts(1),
+					api.checkPatches(1, `{"pricing":{"prompt":"0.0000015","completion":"0.000008","cache_read":"0.0000005","cache_write":"0.0000025"}}`),
+					api.checkDeleteCount(0),
 				),
 			},
 			{
@@ -393,7 +557,10 @@ func TestStubPrivateEndpointLifecycle(t *testing.T) {
 						plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate),
 					},
 				},
-				Check: resource.TestCheckResourceAttr(name, "pricing.prompt", "0.0000015"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "pricing.prompt", "0.0000015"),
+					api.checkPatches(2, `{"pricing":{"prompt":"0.0000015","completion":"0.000008","cache_read":"0.0000005","cache_write":"0.0000025"}}`),
+				),
 			},
 			{
 				Config: privateEndpointConfig(srv.URL, "gpt-4o-2024-11-20", "0.0000015"),
@@ -413,6 +580,228 @@ func TestStubPrivateEndpointLifecycle(t *testing.T) {
 				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{"activate"},
 			},
+		},
+	})
+}
+
+func privateEndpointMutableConfig(serverURL, prompt string, maxCompletionTokens int, audio, required bool, declaredParameters string) string {
+	config := privateEndpointConfig(serverURL, "gpt-4o-prod", prompt)
+	return strings.Replace(config, "  pricing = {", fmt.Sprintf(`  declared_parameters = %s
+  settings = {
+    max_completion_tokens = %d
+    inputs = { audio = %t }
+    tool_choice = { required = %t }
+  }
+  pricing = {`, declaredParameters, maxCompletionTokens, audio, required), 1)
+}
+
+func TestStubPrivateEndpointSettingsOnlyUpdate(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	initial := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["temperature", "response_format"]`)
+	updated := privateEndpointMutableConfig(srv.URL, "0.000002", 8192, true, false, `["temperature", "response_format"]`)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy:             api.checkDeletesWithoutDraftOnly,
+		Steps: []resource.TestStep{
+			{Config: initial, Check: api.checkPatches(0, "")},
+			{
+				Config: updated,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate)},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "id", "00000000-0000-4000-8000-000000000001"),
+					resource.TestCheckResourceAttr(name, "status", "active"),
+					resource.TestCheckResourceAttr(name, "settings.max_completion_tokens", "8192"),
+					resource.TestCheckResourceAttr(name, "settings.inputs.audio", "true"),
+					resource.TestCheckResourceAttr(name, "settings.tool_choice.required", "false"),
+					// Unconfigured defaults survive the partial settings update.
+					resource.TestCheckResourceAttr(name, "settings.context_length", "128000"),
+					resource.TestCheckResourceAttr(name, "settings.inputs.image_urls", "true"),
+					resource.TestCheckResourceAttr(name, "settings.tool_choice.auto", "true"),
+					resource.TestCheckResourceAttr(name, "pricing.prompt", "0.000002"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "2"),
+					// The limited PATCH response has neither of these computed fields.
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "8192"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.#", "2"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.0", "tools"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.1", "stop"),
+					api.checkSettingsPatch(1, 8192, true, false),
+					api.checkCreateCount(1),
+					api.checkDeleteCount(0),
+				),
+			},
+			{Config: updated, PlanOnly: true},
+			{Config: updated, Check: api.checkSettingsPatch(1, 8192, true, false)},
+		},
+	})
+}
+
+func TestStubPrivateEndpointPricingUpdatePreservesCacheRates(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	initial := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["temperature"]`)
+	updated := privateEndpointMutableConfig(srv.URL, "0.0000015", 4096, false, true, `["temperature"]`)
+	cacheUpdated := strings.ReplaceAll(strings.ReplaceAll(updated, `cache_read = "0.0000005"`, `cache_read = "0.0000004"`), `cache_write = "0.0000025"`, `cache_write = "0.000002"`)
+	inPlace := resource.ConfigPlanChecks{
+		PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate)},
+	}
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy:             api.checkDeletesWithoutDraftOnly,
+		Steps: []resource.TestStep{
+			{Config: initial},
+			{
+				Config:           updated,
+				ConfigPlanChecks: inPlace,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "id", "00000000-0000-4000-8000-000000000001"),
+					resource.TestCheckResourceAttr(name, "pricing.prompt", "0.0000015"),
+					resource.TestCheckResourceAttr(name, "pricing.completion", "0.000008"),
+					resource.TestCheckResourceAttr(name, "pricing.cache_read", "0.0000005"),
+					resource.TestCheckResourceAttr(name, "pricing.cache_write", "0.0000025"),
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "4096"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.#", "2"),
+					api.checkPatches(1, `{"pricing":{"prompt":"0.0000015","completion":"0.000008","cache_read":"0.0000005","cache_write":"0.0000025"}}`),
+					api.checkCreateCount(1),
+					api.checkDeleteCount(0),
+				),
+			},
+			{
+				Config:           cacheUpdated,
+				ConfigPlanChecks: inPlace,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "pricing.cache_read", "0.0000004"),
+					resource.TestCheckResourceAttr(name, "pricing.cache_write", "0.000002"),
+					api.checkPatches(2, `{"pricing":{"prompt":"0.0000015","completion":"0.000008","cache_read":"0.0000004","cache_write":"0.000002"}}`),
+					api.checkCreateCount(1),
+					api.checkDeleteCount(0),
+				),
+			},
+			{Config: cacheUpdated, PlanOnly: true},
+		},
+	})
+}
+
+func TestStubPrivateEndpointPricingUpdatePreservesComputedCacheRates(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	config := func(prompt string) string {
+		value := privateEndpointConfig(srv.URL, "gpt-4o-prod", prompt)
+		value = strings.Replace(value, `    cache_read = "0.0000005"`, "", 1)
+		return strings.Replace(value, `    cache_write = "0.0000025"`, "", 1)
+	}
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config("0.000002")},
+			{
+				Config: config("0.0000015"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate)},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "pricing.cache_read", "0.000001"),
+					resource.TestCheckResourceAttr(name, "pricing.cache_write", "0.000003"),
+					api.checkPatches(1, `{"pricing":{"prompt":"0.0000015","completion":"0.000008","cache_read":"0.000001","cache_write":"0.000003"}}`),
+					api.checkCreateCount(1),
+					api.checkDeleteCount(0),
+				),
+			},
+		},
+	})
+}
+
+func TestStubPrivateEndpointDeclaredParametersOnlyUpdate(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	initial := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["temperature", "response_format"]`)
+	updated := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["structured_outputs"]`)
+	cleared := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `[]`)
+	inPlace := resource.ConfigPlanChecks{
+		PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate)},
+	}
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy:             api.checkDeletesWithoutDraftOnly,
+		Steps: []resource.TestStep{
+			{Config: initial},
+			{
+				Config:           updated,
+				ConfigPlanChecks: inPlace,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "id", "00000000-0000-4000-8000-000000000001"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "1"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.0", "structured_outputs"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.#", "2"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.0", "tools"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.1", "stop"),
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "4096"),
+					api.checkPatches(1, `{"declared_parameters":["structured_outputs"]}`),
+					api.checkCreateCount(1),
+					api.checkDeleteCount(0),
+				),
+			},
+			{
+				Config:           cleared,
+				ConfigPlanChecks: inPlace,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "0"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.#", "2"),
+					api.checkPatches(2, `{"declared_parameters":[]}`),
+					api.checkCreateCount(1),
+					api.checkDeleteCount(0),
+				),
+			},
+			{Config: cleared, PlanOnly: true},
+		},
+	})
+}
+
+func TestStubPrivateEndpointCombinedUpdateUsesOnePatch(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	initial := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["temperature"]`)
+	updated := privateEndpointMutableConfig(srv.URL, "0.0000015", 8192, true, false, `["structured_outputs"]`)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy:             api.checkDeletesWithoutDraftOnly,
+		Steps: []resource.TestStep{
+			{Config: initial},
+			{
+				Config: updated,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate)},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					api.checkPatches(1, ""),
+					api.checkCreateCount(1),
+					api.checkDeleteCount(0),
+					resource.TestCheckResourceAttr(name, "id", "00000000-0000-4000-8000-000000000001"),
+					resource.TestCheckResourceAttr(name, "max_completion_tokens", "8192"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.#", "2"),
+					func(_ *terraform.State) error {
+						api.mu.Lock()
+						defer api.mu.Unlock()
+						if len(api.patches) != 1 {
+							return fmt.Errorf("server saw %d PATCH calls, want 1", len(api.patches))
+						}
+						body := api.patches[0]
+						wantPricing := map[string]any{"prompt": "0.0000015", "completion": "0.000008", "cache_read": "0.0000005", "cache_write": "0.0000025"}
+						settings, _ := body["settings"].(map[string]any)
+						inputs, _ := settings["inputs"].(map[string]any)
+						toolChoice, _ := settings["tool_choice"].(map[string]any)
+						if len(body) != 3 || !reflect.DeepEqual(body["pricing"], wantPricing) ||
+							!reflect.DeepEqual(body["declared_parameters"], []any{"structured_outputs"}) ||
+							settings["max_completion_tokens"] != float64(8192) || inputs["audio"] != true || toolChoice["required"] != false {
+							return fmt.Errorf("PATCH body = %#v, want only the three changed groups with planned values", body)
+						}
+						return nil
+					},
+				),
+			},
+			{Config: updated, PlanOnly: true},
 		},
 	})
 }
@@ -557,7 +946,8 @@ func TestStubPrivateEndpointBaseURLNormalizationConverges(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(name, "base_url", "https://contoso.openai.azure.com/openai/v1/"),
 					api.checkCreateCount(1),
-					api.checkPricingPuts(0),
+					api.checkPatches(0, ""),
+					api.checkDeleteCount(0),
 				),
 			},
 			{
@@ -613,7 +1003,8 @@ func TestStubPrivateEndpointImportKeepsEndpoint(t *testing.T) {
 					resource.TestCheckResourceAttr(name, "activate.workspace_id", privateEndpointWorkspaceID),
 					resource.TestCheckResourceAttr(name, "base_url", "https://contoso.openai.azure.com/"),
 					api.checkCreateCount(1),
-					api.checkPricingPuts(0),
+					api.checkPatches(0, ""),
+					api.checkDeleteCount(0),
 				),
 			},
 			{Config: config, PlanOnly: true},
@@ -639,15 +1030,22 @@ func TestStubPrivateEndpointActivateIsCreateOnly(t *testing.T) {
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
 		Steps: []resource.TestStep{
 			{Config: config},
-			{Config: otherWorkspace, ConfigPlanChecks: inPlace},
-			{Config: withoutActivate, ConfigPlanChecks: inPlace},
+			{
+				Config: otherWorkspace, ConfigPlanChecks: inPlace,
+				Check: resource.ComposeAggregateTestCheckFunc(api.checkPatches(0, ""), api.checkCreateCount(1), api.checkDeleteCount(0)),
+			},
+			{
+				Config: withoutActivate, ConfigPlanChecks: inPlace,
+				Check: resource.ComposeAggregateTestCheckFunc(api.checkPatches(0, ""), api.checkCreateCount(1), api.checkDeleteCount(0)),
+			},
 			{
 				Config: withoutActivate,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckNoResourceAttr(name, "activate"),
 					resource.TestCheckResourceAttr(name, "status", "active"),
 					api.checkCreateCount(1),
-					api.checkPricingPuts(0),
+					api.checkPatches(0, ""),
+					api.checkDeleteCount(0),
 				),
 			},
 		},

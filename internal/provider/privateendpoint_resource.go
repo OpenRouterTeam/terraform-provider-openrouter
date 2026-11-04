@@ -631,12 +631,12 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	pricingChanged, pricingDiags := privateEndpointPricingChanged(ctx, req)
-	resp.Diagnostics.Append(pricingDiags...)
+	changes, changeDiags := privateEndpointChangesForUpdate(ctx, req)
+	resp.Diagnostics.Append(changeDiags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if !pricingChanged {
+	if !changes.pricing && !changes.settings && !changes.declaredParameters {
 		r.refreshPrivateEndpointWithoutPricingWrite(ctx, plan, data, resp)
 		return
 	}
@@ -646,6 +646,21 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 
 	if resp.Diagnostics.HasError() {
 		return
+	}
+	// PATCH rejects draft-only fields on active endpoints. Only send changed
+	// mutable groups: resending pricing replaces it, including cache rates.
+	request.Body.BaseURL = nil
+	request.Body.UpstreamModelID = nil
+	request.Body.DeclaredRegion = nil
+	request.Body.DeclaredZdr = nil
+	if !changes.pricing {
+		request.Body.Pricing = nil
+	}
+	if !changes.settings {
+		request.Body.Settings = nil
+	}
+	if !changes.declaredParameters {
+		request.Body.DeclaredParameters = nil
 	}
 	res, err := r.client.PrivateEndpoints.Update(ctx, *request)
 	if err != nil {
@@ -667,20 +682,9 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
-	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Save updated data into Terraform state
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	// Settle computed attributes from the full read response, not the PATCH
+	// response, which may omit them.
+	r.refreshPrivateEndpointWithoutPricingWrite(ctx, plan, data, resp)
 }
 
 func (r *PrivateEndpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
