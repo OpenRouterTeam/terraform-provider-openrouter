@@ -544,11 +544,15 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res1.RawResponse))
 		return
 	}
+	priorDeclaredParameters := data.DeclaredParameters
+
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res1.PrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
 
 	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
 
@@ -608,13 +612,20 @@ func (r *PrivateEndpointResource) Read(ctx context.Context, req resource.ReadReq
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
+	priorDeclaredParameters := data.DeclaredParameters
+
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Save updated data into Terraform state
+	// Custom code: the API reports declared parameters minus the ones a probe has
+	// since proven, so names recorded in state are kept once they appear in
+	// tested_parameters.
+	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
+
+	// Save updated state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -631,12 +642,12 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	pricingChanged, pricingDiags := privateEndpointPricingChanged(ctx, req)
-	resp.Diagnostics.Append(pricingDiags...)
+	changes, changeDiags := privateEndpointChangesForUpdate(ctx, req)
+	resp.Diagnostics.Append(changeDiags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if !pricingChanged {
+	if !changes.pricing && !changes.settings && !changes.declaredParameters {
 		r.refreshPrivateEndpointWithoutPricingWrite(ctx, plan, data, resp)
 		return
 	}
@@ -646,6 +657,21 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 
 	if resp.Diagnostics.HasError() {
 		return
+	}
+	// PATCH rejects draft-only fields on active endpoints. Only send changed
+	// mutable groups: resending pricing replaces it, including cache rates.
+	request.Body.BaseURL = nil
+	request.Body.UpstreamModelID = nil
+	request.Body.DeclaredRegion = nil
+	request.Body.DeclaredZdr = nil
+	if !changes.pricing {
+		request.Body.Pricing = nil
+	}
+	if !changes.settings {
+		request.Body.Settings = nil
+	}
+	if !changes.declaredParameters {
+		request.Body.DeclaredParameters = nil
 	}
 	res, err := r.client.PrivateEndpoints.Update(ctx, *request)
 	if err != nil {
@@ -663,24 +689,9 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
 		return
 	}
-	if !(res.PrivateEndpointResponse != nil) {
-		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
-		return
-	}
-	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Save updated data into Terraform state
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	// The PATCH response is partial, so settle computed attributes with a full
+	// read rather than trusting the write response.
+	r.refreshPrivateEndpointWithoutPricingWrite(ctx, plan, data, resp)
 }
 
 func (r *PrivateEndpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
