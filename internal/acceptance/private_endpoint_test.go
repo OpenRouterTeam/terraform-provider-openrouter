@@ -1225,6 +1225,16 @@ func TestStubPrivateEndpointDeclaredParameterSurvivesPromotion(t *testing.T) {
 					api.checkPatches(0, ""),
 				),
 			},
+			{
+				// Explicitly removing a proven name must still clear it: the
+				// reconciliation restores from the write's intended collection,
+				// not from stale state.
+				Config: privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `[]`),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "0"),
+					api.checkPatches(1, `{"declared_parameters":[]}`),
+				),
+			},
 		},
 	})
 }
