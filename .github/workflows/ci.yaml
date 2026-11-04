@@ -22,6 +22,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # Single source for the toolchain floor enforced by the checks below.
+  MIN_GO: "1.26.10"
+
 # A new PR revision cancels the older run. Pushes and dispatches get a group
 # per run, so every main commit is checked: a shared group would let a newer
 # queued run replace an older pending one.
@@ -37,6 +41,29 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # The release gate's recovery path is a behaviour, not a comment: a failed
+      # scan must not leave a tag that a later dispatch would reuse to rebuild
+      # the vulnerable commit. Tested with throwaway repositories, no network.
+      - name: Test the release tag lifecycle
+        run: bash .github/scripts/tests/release-tag-test.sh
+
+      # .speakeasy regeneration owns go.mod, so this is the only thing that
+      # keeps the toolchain floor from silently regressing.
+      - name: Enforce the Go floor in go.mod
+        run: |
+          python3 - <<'PY'
+          import os
+          import pathlib
+          import re
+          import sys
+
+          minimum = tuple(int(part) for part in os.environ['MIN_GO'].split('.'))
+          match = re.search(r'^go[ \t]+(\d+)\.(\d+)(?:\.(\d+))?[ \t]*(?://.*)?$', pathlib.Path('go.mod').read_text(), re.M)
+          found = tuple(int(part or 0) for part in match.groups()) if match else None
+          if found is None or found < minimum:
+              sys.exit('go.mod must declare Go ' + os.environ['MIN_GO'] + ' or newer')
+          PY
+
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
@@ -50,6 +77,26 @@ jobs:
 
       - name: Build
         run: go build ./...
+
+      - name: Check provider binary for known vulnerabilities
+        continue-on-error: true
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+          GOVULNCHECK="$(go env GOPATH)/bin/govulncheck"
+          if [ ! -x "$GOVULNCHECK" ]; then
+            echo "::error::govulncheck was not installed, so the advisory scan did not run"
+            exit 1
+          fi
+          CGO_ENABLED=0 go build -trimpath -o "$RUNNER_TEMP/terraform-provider-openrouter" .
+          # Binary mode exits 3 only for a vulnerability the binary can reach.
+          # Module-level advisories are printed but do not fail, so this is a
+          # reachability check, not a "no advisories in the graph" check.
+          rc=0
+          "$GOVULNCHECK" -mode=binary "$RUNNER_TEMP/terraform-provider-openrouter" || rc=$?
+          if [ "$rc" -eq 3 ]; then
+            echo "::error::govulncheck found a reachable known vulnerability (see 'Fixed in' above). Fix: raise the go directive in go.mod to the fixed Go release, or go get <module>@<fixed version> and raise its minimum in .speakeasy/gen.yaml additionalDependencies; then go mod tidy and open a PR."
+          fi
+          exit "$rc"
 
       - name: go mod tidy
         run: go mod tidy -diff
