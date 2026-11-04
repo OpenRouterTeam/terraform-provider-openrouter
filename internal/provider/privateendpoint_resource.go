@@ -7,9 +7,6 @@ import (
 	"context"
 	"fmt"
 	speakeasy_boolplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/boolplanmodifier"
-	speakeasy_int64planmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/int64planmodifier"
-	speakeasy_listplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/listplanmodifier"
-	speakeasy_objectplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/objectplanmodifier"
 	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	speakeasy_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
@@ -22,9 +19,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -75,7 +69,7 @@ func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.Met
 
 func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\nOnly `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
+		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\n`pricing`, `settings` and `declared_parameters` can change in place on drafts and active endpoints through PATCH. `pricing` replaces the whole object: omitting `cache_read` or `cache_write` reverts that rate to the pricing strategy default. `settings` changes only the fields it names; an omitted field keeps its stored value, and `null` clears a limit or restores the provider default. `declared_parameters` replaces the whole declaration list; tested parameters stay.\n\nThe API accepts `base_url`, `upstream_model_id`, `declared_zdr` and `declared_region` only to re-point a draft; naming any of them on an active endpoint returns 409 and writes nothing. Terraform keeps these fields create-only: changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
 		Attributes: map[string]schema.Attribute{
 			"activate": schema.SingleNestedAttribute{
 				Optional: true,
@@ -100,14 +94,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 			},
 			"declared_parameters": schema.ListAttribute{
-				Computed: true,
-				Optional: true,
-				PlanModifiers: []planmodifier.List{
-					listplanmodifier.RequiresReplaceIfConfigured(),
-					speakeasy_listplanmodifier.SuppressDiff(speakeasy_listplanmodifier.ExplicitSuppress),
-				},
+				Computed:    true,
+				Optional:    true,
 				ElementType: types.StringType,
-				Description: `Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. ` + "`" + `tool_choice` + "`" + ` requires ` + "`" + `tools` + "`" + ` to be tested or declared. Requires replacement if changed.`,
+				Description: `Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. ` + "`" + `tool_choice` + "`" + ` requires ` + "`" + `tools` + "`" + ` to be tested or declared.`,
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(25),
 				},
@@ -186,63 +176,43 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 			"pricing": schema.SingleNestedAttribute{
 				Computed: true,
 				Optional: true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplaceIfConfigured(),
-					speakeasy_objectplanmodifier.SuppressDiff(speakeasy_objectplanmodifier.ExplicitSuppress),
-				},
 				Attributes: map[string]schema.Attribute{
 					"cache_read": schema.StringAttribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
-						},
-						Description: `USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads. Requires replacement if changed.`,
+						Computed:    true,
+						Optional:    true,
+						Description: `USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads.`,
 						Validators: []validator.String{
 							stringvalidator.RegexMatches(regexp.MustCompile(`^\d+(\.\d+)?$`), "must match pattern "+regexp.MustCompile(`^\d+(\.\d+)?$`).String()),
 						},
 					},
 					"cache_write": schema.StringAttribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
-						},
-						Description: `USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes. Requires replacement if changed.`,
+						Computed:    true,
+						Optional:    true,
+						Description: `USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes.`,
 						Validators: []validator.String{
 							stringvalidator.RegexMatches(regexp.MustCompile(`^\d+(\.\d+)?$`), "must match pattern "+regexp.MustCompile(`^\d+(\.\d+)?$`).String()),
 						},
 					},
 					"completion": schema.StringAttribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
-						},
-						Description: `USD per completion token, as a decimal string. Not Null; Requires replacement if changed.`,
+						Computed:    true,
+						Optional:    true,
+						Description: `USD per completion token, as a decimal string. Not Null`,
 						Validators: []validator.String{
 							speakeasy_stringvalidators.NotNull(),
 							stringvalidator.RegexMatches(regexp.MustCompile(`^\d+(\.\d+)?$`), "must match pattern "+regexp.MustCompile(`^\d+(\.\d+)?$`).String()),
 						},
 					},
 					"prompt": schema.StringAttribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
-						},
-						Description: `USD per prompt token, as a decimal string. Not Null; Requires replacement if changed.`,
+						Computed:    true,
+						Optional:    true,
+						Description: `USD per prompt token, as a decimal string. Not Null`,
 						Validators: []validator.String{
 							speakeasy_stringvalidators.NotNull(),
 							stringvalidator.RegexMatches(regexp.MustCompile(`^\d+(\.\d+)?$`), "must match pattern "+regexp.MustCompile(`^\d+(\.\d+)?$`).String()),
 						},
 					},
 				},
-				Description: `Negotiated per-token rates reported for requests routed to this endpoint. Requires replacement if changed.`,
+				Description: `Negotiated per-token rates reported for requests routed to this endpoint.`,
 			},
 			"provider_name": schema.StringAttribute{
 				Computed: true,
@@ -265,150 +235,88 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 			"settings": schema.SingleNestedAttribute{
 				Computed: true,
 				Optional: true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplaceIfConfigured(),
-					speakeasy_objectplanmodifier.SuppressDiff(speakeasy_objectplanmodifier.ExplicitSuppress),
-				},
 				Attributes: map[string]schema.Attribute{
 					"completions": schema.SingleNestedAttribute{
 						Computed: true,
 						Optional: true,
-						PlanModifiers: []planmodifier.Object{
-							objectplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_objectplanmodifier.SuppressDiff(speakeasy_objectplanmodifier.ExplicitSuppress),
-						},
 						Attributes: map[string]schema.Attribute{
 							"chat": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Serves ` + "`" + `/chat/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Serves ` + "`" + `/chat/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default.`,
 							},
 							"text": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Serves ` + "`" + `/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Serves ` + "`" + `/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default.`,
 							},
 						},
-						Description: `Requires replacement if changed.`,
 					},
 					"context_length": schema.Int64Attribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_int64planmodifier.SuppressDiff(speakeasy_int64planmodifier.ExplicitSuppress),
-						},
-						Description: `Longest prompt plus completion, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default. Requires replacement if changed.`,
+						Computed:    true,
+						Optional:    true,
+						Description: `Longest prompt plus completion, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default.`,
 						Validators: []validator.Int64{
 							int64validator.AtLeast(1),
 						},
 					},
 					"excluded_parameters": schema.ListAttribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_listplanmodifier.SuppressDiff(speakeasy_listplanmodifier.ExplicitSuppress),
-						},
+						Computed:    true,
+						Optional:    true,
 						ElementType: types.StringType,
-						Description: `Request parameters the upstream rejects even though the model supports them; requests using one do not route here. Cannot name a tested parameter. Requires replacement if changed.`,
+						Description: `Request parameters the upstream rejects even though the model supports them; requests using one do not route here. Cannot name a tested parameter.`,
 					},
 					"inputs": schema.SingleNestedAttribute{
 						Computed: true,
 						Optional: true,
-						PlanModifiers: []planmodifier.Object{
-							objectplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_objectplanmodifier.SuppressDiff(speakeasy_objectplanmodifier.ExplicitSuppress),
-						},
 						Attributes: map[string]schema.Attribute{
 							"audio": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts audio input. ` + "`" + `null` + "`" + ` keeps the provider default. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts audio input. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 							"base64_files": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts base64 file data. ` + "`" + `null` + "`" + ` keeps the provider default. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts base64 file data. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 							"base64_images": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts base64 image data. ` + "`" + `null` + "`" + ` keeps the provider default. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts base64 image data. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 							"file_urls": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts file URLs. ` + "`" + `null` + "`" + ` keeps the provider default. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts file URLs. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 							"image_urls": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts image URLs. ` + "`" + `null` + "`" + ` keeps the provider default. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts image URLs. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 						},
-						Description: `Requires replacement if changed.`,
 					},
 					"max_completion_tokens": schema.Int64Attribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_int64planmodifier.SuppressDiff(speakeasy_int64planmodifier.ExplicitSuppress),
-						},
-						Description: `Longest completion the upstream returns, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default. Requires replacement if changed.`,
+						Computed:    true,
+						Optional:    true,
+						Description: `Longest completion the upstream returns, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default.`,
 						Validators: []validator.Int64{
 							int64validator.AtLeast(1),
 						},
 					},
 					"max_prompt_tokens": schema.Int64Attribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_int64planmodifier.SuppressDiff(speakeasy_int64planmodifier.ExplicitSuppress),
-						},
-						Description: `Longest prompt, in tokens, or ` + "`" + `null` + "`" + ` for no cap below the context length. Cannot exceed ` + "`" + `context_length` + "`" + `, or the model context length while ` + "`" + `context_length` + "`" + ` is ` + "`" + `null` + "`" + `. Requires replacement if changed.`,
+						Computed:    true,
+						Optional:    true,
+						Description: `Longest prompt, in tokens, or ` + "`" + `null` + "`" + ` for no cap below the context length. Cannot exceed ` + "`" + `context_length` + "`" + `, or the model context length while ` + "`" + `context_length` + "`" + ` is ` + "`" + `null` + "`" + `.`,
 						Validators: []validator.Int64{
 							int64validator.AtLeast(1),
 						},
 					},
 					"quantization": schema.StringAttribute{
-						Computed: true,
-						Optional: true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
-						},
-						Description: `Weight precision the deployment runs at; ` + "`" + `unknown` + "`" + ` when not stated. must be one of ["int4", "int8", "fp4", "mxfp4", "nvfp4", "fp6", "fp8", "mxfp8", "fp16", "bf16", "fp32", "unknown"]; Requires replacement if changed.`,
+						Computed:    true,
+						Optional:    true,
+						Description: `Weight precision the deployment runs at; ` + "`" + `unknown` + "`" + ` when not stated. must be one of ["int4", "int8", "fp4", "mxfp4", "nvfp4", "fp6", "fp8", "mxfp8", "fp16", "bf16", "fp32", "unknown"]`,
 						Validators: []validator.String{
 							stringvalidator.OneOf(
 								"int4",
@@ -429,19 +337,11 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 					"reasoning": schema.SingleNestedAttribute{
 						Computed: true,
 						Optional: true,
-						PlanModifiers: []planmodifier.Object{
-							objectplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_objectplanmodifier.SuppressDiff(speakeasy_objectplanmodifier.ExplicitSuppress),
-						},
 						Attributes: map[string]schema.Attribute{
 							"return_mechanism": schema.StringAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.String{
-									stringplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
-								},
-								Description: `Where the upstream puts reasoning tokens in its response: ` + "`" + `reasoning` + "`" + ` and ` + "`" + `reasoning-content` + "`" + ` are response fields, ` + "`" + `content-string` + "`" + ` is inline in the message, ` + "`" + `none` + "`" + ` returns no reasoning. ` + "`" + `null` + "`" + ` uses the provider default. must be one of ["content-string", "reasoning-content", "reasoning", "none"]; Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Where the upstream puts reasoning tokens in its response: ` + "`" + `reasoning` + "`" + ` and ` + "`" + `reasoning-content` + "`" + ` are response fields, ` + "`" + `content-string` + "`" + ` is inline in the message, ` + "`" + `none` + "`" + ` returns no reasoning. ` + "`" + `null` + "`" + ` uses the provider default. must be one of ["content-string", "reasoning-content", "reasoning", "none"]`,
 								Validators: []validator.String{
 									stringvalidator.OneOf(
 										"content-string",
@@ -452,66 +352,40 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 								},
 							},
 							"supported": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Whether requests with ` + "`" + `reasoning` + "`" + ` route to this endpoint. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Whether requests with ` + "`" + `reasoning` + "`" + ` route to this endpoint.`,
 							},
 						},
-						Description: `Requires replacement if changed.`,
 					},
 					"tool_choice": schema.SingleNestedAttribute{
 						Computed: true,
 						Optional: true,
-						PlanModifiers: []planmodifier.Object{
-							objectplanmodifier.RequiresReplaceIfConfigured(),
-							speakeasy_objectplanmodifier.SuppressDiff(speakeasy_objectplanmodifier.ExplicitSuppress),
-						},
 						Attributes: map[string]schema.Attribute{
 							"auto": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts ` + "`" + `tool_choice: "auto"` + "`" + `. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts ` + "`" + `tool_choice: "auto"` + "`" + `.`,
 							},
 							"function": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts a named function in ` + "`" + `tool_choice` + "`" + `. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts a named function in ` + "`" + `tool_choice` + "`" + `.`,
 							},
 							"none": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts ` + "`" + `tool_choice: "none"` + "`" + `. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts ` + "`" + `tool_choice: "none"` + "`" + `.`,
 							},
 							"required": schema.BoolAttribute{
-								Computed: true,
-								Optional: true,
-								PlanModifiers: []planmodifier.Bool{
-									boolplanmodifier.RequiresReplaceIfConfigured(),
-									speakeasy_boolplanmodifier.SuppressDiff(speakeasy_boolplanmodifier.ExplicitSuppress),
-								},
-								Description: `Accepts ` + "`" + `tool_choice: "required"` + "`" + `. Requires replacement if changed.`,
+								Computed:    true,
+								Optional:    true,
+								Description: `Accepts ` + "`" + `tool_choice: "required"` + "`" + `.`,
 							},
 						},
-						Description: `Requires replacement if changed.`,
 					},
 				},
-				Description: `Capabilities and limits to set over the ones copied from the public endpoint for this model and provider (or from the model). Omitted fields keep the copied values. Requires replacement if changed.`,
+				Description: `Capabilities and limits to set over the ones copied from the public endpoint for this model and provider (or from the model). Omitted fields keep the copied values.`,
 			},
 			"status": schema.StringAttribute{
 				Computed: true,
@@ -736,7 +610,43 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	// Not Implemented; all attributes marked as RequiresReplace
+	request, requestDiags := data.ToOperationsUpdatePrivateEndpointRequest(ctx)
+	resp.Diagnostics.Append(requestDiags...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	res, err := r.client.PrivateEndpoints.Update(ctx, *request)
+	if err != nil {
+		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
+		return
+	}
+	if res == nil {
+		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
+		return
+	}
+	if res.StatusCode != 200 {
+		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
+		return
+	}
+	if !(res.PrivateEndpointResponse != nil) {
+		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
+		return
+	}
+	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
