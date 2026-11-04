@@ -32,6 +32,8 @@ type ListWorkspaceBudgetsResponse struct {
 	ListWorkspaceBudgetsResponse *shared.ListWorkspaceBudgetsResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -82,6 +84,13 @@ func (l *ListWorkspaceBudgetsResponse) GetUnauthorizedResponse() *shared.Unautho
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListWorkspaceBudgetsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListWorkspaceBudgetsResponse) GetNotFoundResponse() *shared.NotFoundResponse {

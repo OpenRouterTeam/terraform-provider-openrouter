@@ -20,6 +20,8 @@ on:
     types: [opened, synchronize, reopened]
     branches:
       - main
+    # acceptance.yaml's gate mirrors this filter to know whether to wait for
+    # this check; keep the two in sync.
     paths:
       - .speakeasy/**
       - "!.speakeasy/gen.lock"
@@ -47,26 +49,26 @@ jobs:
     steps:
       - name: Generate GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           app-id: ${{ secrets.GH_DOCS_SYNC_APP_ID }}
           private-key: ${{ secrets.GH_DOCS_SYNC_APP_PRIVATE_KEY }}
 
       # The event's head commit, not the branch: if the branch moved since,
       # the push below is rejected and the newer push's run takes over.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
           cache: true
 
       # go generate renders docs (tfplugindocs) through the Terraform CLI.
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_wrapper: false
 

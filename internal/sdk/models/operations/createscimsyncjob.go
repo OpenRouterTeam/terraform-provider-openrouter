@@ -20,6 +20,8 @@ type CreateScimSyncJobResponse struct {
 	CreateScimSyncJobResponse *shared.CreateScimSyncJobResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -71,6 +73,13 @@ func (c *CreateScimSyncJobResponse) GetUnauthorizedResponse() *shared.Unauthoriz
 		return nil
 	}
 	return c.UnauthorizedResponse
+}
+
+func (c *CreateScimSyncJobResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if c == nil {
+		return nil
+	}
+	return c.ForbiddenResponse
 }
 
 func (c *CreateScimSyncJobResponse) GetNotFoundResponse() *shared.NotFoundResponse {

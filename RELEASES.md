@@ -2629,3 +2629,133 @@ Based on:
 - [terraform v0.3.114] .
 ### Releases
 - [Terraform v0.3.114] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.114 - .
+
+## 2026-10-21 21:58:50
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.116] .
+### Releases
+- [Terraform v0.3.116] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.116 - .
+
+## 2026-10-22 00:04:02
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.118] .
+### Releases
+- [Terraform v0.3.118] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.118 - .
+
+## 2026-10-22 01:19:32
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.120] .
+### Releases
+- [Terraform v0.3.120] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.120 - .
+
+## 2026-10-22 18:14:20
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.122] .
+### Releases
+- [Terraform v0.3.122] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.122 - .
+
+## 2026-10-22 23:42:45
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.124] .
+### Releases
+- [Terraform v0.3.124] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.124 - .
+
+## 2026-10-23 02:36:44
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.126] .
+### Releases
+- [Terraform v0.3.126] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.126 - .
+
+## 2026-11-03 16:02:17
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.130] .
+### Releases
+- [Terraform v0.3.130] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.130 - .
+
+## 2026-11-03 17:37:28
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.132] .
+### Releases
+- [Terraform v0.3.132] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.132 - .
+
+## 2026-11-03 18:28:11
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.134] .
+### Releases
+- [Terraform v0.3.134] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.134 - .
+
+## 2026-11-03 20:23:37
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.136] .
+### Releases
+- [Terraform v0.3.136] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.136 - .
+
+## 2026-11-03 21:02:42
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.138] .
+### Releases
+- [Terraform v0.3.138] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.138 - .
+
+## 2026-11-03 22:28:26
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.140] .
+### Releases
+- [Terraform v0.3.140] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.140 - .
+
+## 2026-11-03 23:43:03
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.142] .
+### Releases
+- [Terraform v0.3.142] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.142 - .

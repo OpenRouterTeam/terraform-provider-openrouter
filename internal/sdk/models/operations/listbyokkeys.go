@@ -23,6 +23,7 @@ const (
 	ProviderAmazonBedrockClaudeOnAws Provider = "amazon-bedrock/claude-on-aws"
 	ProviderAmazonNova               Provider = "amazon-nova"
 	ProviderAmbient                  Provider = "ambient"
+	ProviderAntdigital               Provider = "antdigital"
 	ProviderAnthropic                Provider = "anthropic"
 	ProviderAnthropic2               Provider = "anthropic/2"
 	ProviderArceeAi                  Provider = "arcee-ai"
@@ -71,6 +72,7 @@ const (
 	ProviderIoNet                    Provider = "io-net"
 	ProviderIonstream                Provider = "ionstream"
 	ProviderKrea                     Provider = "krea"
+	ProviderKt                       Provider = "kt"
 	ProviderLiquid                   Provider = "liquid"
 	ProviderMakora                   Provider = "makora"
 	ProviderMancer                   Provider = "mancer"
@@ -94,6 +96,8 @@ const (
 	ProviderOpenai                   Provider = "openai"
 	ProviderParasail                 Provider = "parasail"
 	ProviderParetoAlpha              Provider = "pareto-alpha"
+	ProviderParticleAi               Provider = "particle-ai"
+	ProviderPearlResearch            Provider = "pearl-research"
 	ProviderPerceptron               Provider = "perceptron"
 	ProviderPerplexity               Provider = "perplexity"
 	ProviderPhala                    Provider = "phala"
@@ -158,6 +162,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "amazon-nova":
 		fallthrough
 	case "ambient":
+		fallthrough
+	case "antdigital":
 		fallthrough
 	case "anthropic":
 		fallthrough
@@ -255,6 +261,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "krea":
 		fallthrough
+	case "kt":
+		fallthrough
 	case "liquid":
 		fallthrough
 	case "makora":
@@ -300,6 +308,10 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "parasail":
 		fallthrough
 	case "pareto-alpha":
+		fallthrough
+	case "particle-ai":
+		fallthrough
+	case "pearl-research":
 		fallthrough
 	case "perceptron":
 		fallthrough
@@ -446,6 +458,8 @@ type ListBYOKKeysResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 
@@ -503,6 +517,13 @@ func (l *ListBYOKKeysResponse) GetUnauthorizedResponse() *shared.UnauthorizedRes
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListBYOKKeysResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListBYOKKeysResponse) GetInternalServerResponse() *shared.InternalServerResponse {

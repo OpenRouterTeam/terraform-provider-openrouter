@@ -20,6 +20,7 @@ const (
 	BYOKProviderSlugAmazonBedrockClaudeOnAws BYOKProviderSlug = "amazon-bedrock/claude-on-aws"
 	BYOKProviderSlugAmazonNova               BYOKProviderSlug = "amazon-nova"
 	BYOKProviderSlugAmbient                  BYOKProviderSlug = "ambient"
+	BYOKProviderSlugAntdigital               BYOKProviderSlug = "antdigital"
 	BYOKProviderSlugAnthropic                BYOKProviderSlug = "anthropic"
 	BYOKProviderSlugAnthropic2               BYOKProviderSlug = "anthropic/2"
 	BYOKProviderSlugArceeAi                  BYOKProviderSlug = "arcee-ai"
@@ -68,6 +69,7 @@ const (
 	BYOKProviderSlugIoNet                    BYOKProviderSlug = "io-net"
 	BYOKProviderSlugIonstream                BYOKProviderSlug = "ionstream"
 	BYOKProviderSlugKrea                     BYOKProviderSlug = "krea"
+	BYOKProviderSlugKt                       BYOKProviderSlug = "kt"
 	BYOKProviderSlugLiquid                   BYOKProviderSlug = "liquid"
 	BYOKProviderSlugMakora                   BYOKProviderSlug = "makora"
 	BYOKProviderSlugMancer                   BYOKProviderSlug = "mancer"
@@ -91,6 +93,8 @@ const (
 	BYOKProviderSlugOpenai                   BYOKProviderSlug = "openai"
 	BYOKProviderSlugParasail                 BYOKProviderSlug = "parasail"
 	BYOKProviderSlugParetoAlpha              BYOKProviderSlug = "pareto-alpha"
+	BYOKProviderSlugParticleAi               BYOKProviderSlug = "particle-ai"
+	BYOKProviderSlugPearlResearch            BYOKProviderSlug = "pearl-research"
 	BYOKProviderSlugPerceptron               BYOKProviderSlug = "perceptron"
 	BYOKProviderSlugPerplexity               BYOKProviderSlug = "perplexity"
 	BYOKProviderSlugPhala                    BYOKProviderSlug = "phala"
@@ -155,6 +159,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "amazon-nova":
 		fallthrough
 	case "ambient":
+		fallthrough
+	case "antdigital":
 		fallthrough
 	case "anthropic":
 		fallthrough
@@ -252,6 +258,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "krea":
 		fallthrough
+	case "kt":
+		fallthrough
 	case "liquid":
 		fallthrough
 	case "makora":
@@ -297,6 +305,10 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "parasail":
 		fallthrough
 	case "pareto-alpha":
+		fallthrough
+	case "particle-ai":
+		fallthrough
+	case "pearl-research":
 		fallthrough
 	case "perceptron":
 		fallthrough

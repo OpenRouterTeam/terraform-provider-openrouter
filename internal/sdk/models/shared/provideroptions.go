@@ -7,7 +7,7 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// ProviderOptions - Provider-specific options keyed by provider slug. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
+// ProviderOptions - Provider-specific options keyed by provider slug. The provider segment is case-insensitive; an endpoint tag after `/` must match the endpoint slug exactly. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.
 type ProviderOptions struct {
 	Oneai                    map[string]any `json:"01ai,omitzero"`
 	Ai21                     map[string]any `json:"ai21,omitzero"`
@@ -18,6 +18,7 @@ type ProviderOptions struct {
 	AmazonBedrockClaudeOnAws map[string]any `json:"amazon-bedrock/claude-on-aws,omitzero"`
 	AmazonNova               map[string]any `json:"amazon-nova,omitzero"`
 	Ambient                  map[string]any `json:"ambient,omitzero"`
+	Antdigital               map[string]any `json:"antdigital,omitzero"`
 	Anthropic                map[string]any `json:"anthropic,omitzero"`
 	Anthropic2               map[string]any `json:"anthropic/2,omitzero"`
 	Anyscale                 map[string]any `json:"anyscale,omitzero"`
@@ -79,6 +80,7 @@ type ProviderOptions struct {
 	Ionstream                map[string]any `json:"ionstream,omitzero"`
 	Klusterai                map[string]any `json:"klusterai,omitzero"`
 	Krea                     map[string]any `json:"krea,omitzero"`
+	Kt                       map[string]any `json:"kt,omitzero"`
 	Lambda                   map[string]any `json:"lambda,omitzero"`
 	Lepton                   map[string]any `json:"lepton,omitzero"`
 	Liquid                   map[string]any `json:"liquid,omitzero"`
@@ -110,10 +112,13 @@ type ProviderOptions struct {
 	Openai                   map[string]any `json:"openai,omitzero"`
 	Parasail                 map[string]any `json:"parasail,omitzero"`
 	ParetoAlpha              map[string]any `json:"pareto-alpha,omitzero"`
+	ParticleAi               map[string]any `json:"particle-ai,omitzero"`
+	PearlResearch            map[string]any `json:"pearl-research,omitzero"`
 	Perceptron               map[string]any `json:"perceptron,omitzero"`
 	Perplexity               map[string]any `json:"perplexity,omitzero"`
 	Phala                    map[string]any `json:"phala,omitzero"`
 	Poolside                 map[string]any `json:"poolside,omitzero"`
+	Primalabs                map[string]any `json:"primalabs,omitzero"`
 	Primeintellect           map[string]any `json:"primeintellect,omitzero"`
 	Quiver                   map[string]any `json:"quiver,omitzero"`
 	Recraft                  map[string]any `json:"recraft,omitzero"`
@@ -231,6 +236,13 @@ func (p *ProviderOptions) GetAmbient() map[string]any {
 		return nil
 	}
 	return p.Ambient
+}
+
+func (p *ProviderOptions) GetAntdigital() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Antdigital
 }
 
 func (p *ProviderOptions) GetAnthropic() map[string]any {
@@ -660,6 +672,13 @@ func (p *ProviderOptions) GetKrea() map[string]any {
 	return p.Krea
 }
 
+func (p *ProviderOptions) GetKt() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Kt
+}
+
 func (p *ProviderOptions) GetLambda() map[string]any {
 	if p == nil {
 		return nil
@@ -877,6 +896,20 @@ func (p *ProviderOptions) GetParetoAlpha() map[string]any {
 	return p.ParetoAlpha
 }
 
+func (p *ProviderOptions) GetParticleAi() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.ParticleAi
+}
+
+func (p *ProviderOptions) GetPearlResearch() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.PearlResearch
+}
+
 func (p *ProviderOptions) GetPerceptron() map[string]any {
 	if p == nil {
 		return nil
@@ -903,6 +936,13 @@ func (p *ProviderOptions) GetPoolside() map[string]any {
 		return nil
 	}
 	return p.Poolside
+}
+
+func (p *ProviderOptions) GetPrimalabs() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Primalabs
 }
 
 func (p *ProviderOptions) GetPrimeintellect() map[string]any {

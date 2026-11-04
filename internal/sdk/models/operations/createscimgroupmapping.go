@@ -22,6 +22,8 @@ type CreateScimGroupMappingResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Conflict - Resource conflict or concurrent modification
@@ -81,6 +83,13 @@ func (c *CreateScimGroupMappingResponse) GetUnauthorizedResponse() *shared.Unaut
 		return nil
 	}
 	return c.UnauthorizedResponse
+}
+
+func (c *CreateScimGroupMappingResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if c == nil {
+		return nil
+	}
+	return c.ForbiddenResponse
 }
 
 func (c *CreateScimGroupMappingResponse) GetNotFoundResponse() *shared.NotFoundResponse {

@@ -52,6 +52,8 @@ type ListWorkspacesResponse struct {
 	ListWorkspacesResponse *shared.ListWorkspacesResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 
@@ -102,6 +104,13 @@ func (l *ListWorkspacesResponse) GetUnauthorizedResponse() *shared.UnauthorizedR
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListWorkspacesResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListWorkspacesResponse) GetInternalServerResponse() *shared.InternalServerResponse {

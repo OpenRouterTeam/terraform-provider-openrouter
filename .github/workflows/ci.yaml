@@ -3,11 +3,12 @@ name: CI
 # Offline PR gate: build, static checks and every test that needs no
 # credentials (unit tests plus the httptest-backed stub acceptance tests in
 # internal/acceptance). Live acceptance tests skip here because TF_ACC is
-# unset; they run in acceptance.yaml (nightly, dispatch, or a PR carrying the
-# `run-acceptance` label) and as the release gate in sdk_publish.yaml.
+# unset; they run in acceptance.yaml (nightly, dispatch, and every same-repo
+# PR after its regeneration) and as the release gate in sdk_publish.yaml.
 #
-# Speakeasy regen PRs are opened with GITHUB_TOKEN, which does not trigger
-# pull_request workflows, so the push-to-main run is their validation.
+# Bot PRs (spec updates and Speakeasy regen PRs) are opened by the
+# GH_DOCS_SYNC app, so this runs on them, and auto-merge-bot-prs.yaml waits
+# for it before merging.
 
 on:
   pull_request:
@@ -34,16 +35,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
           cache: true
 
       # The stub acceptance tests drive a real Terraform CLI against httptest
       # servers.
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_wrapper: false
 
@@ -76,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: actionlint
         env:
@@ -89,20 +90,44 @@ jobs:
           tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" actionlint
           "$RUNNER_TEMP/actionlint" -color
 
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_wrapper: false
 
       - name: terraform fmt (examples)
         run: terraform fmt -check -recursive -diff examples
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
           cache: false
 
       - name: goreleaser check
-        uses: goreleaser/goreleaser-action@v7
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:
           version: "~> v2"
           args: check
+
+  generated-code:
+    name: Generated code pairing
+    # Pull requests only: it compares the branch against its base. A push to
+    # main has no base to compare and the regen PR that produced it already ran
+    # this check.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The check diffs the branch against its base commit, so the history
+          # has to be there.
+          fetch-depth: 0
+
+      # Custom code only survives if a regeneration observes it, and
+      # regenerate.yaml is path-filtered to .speakeasy/**. A PR that edits
+      # generated Go alone never runs the generator, so its edit is never
+      # validated and the breakage lands on whatever PR regenerates next.
+      - name: Generated Go must come with a generator input
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: python3 .github/scripts/check_generated_pairing.py "$BASE_SHA" HEAD

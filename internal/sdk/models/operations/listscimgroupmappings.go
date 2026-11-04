@@ -52,6 +52,8 @@ type ListScimGroupMappingsResponse struct {
 	ListScimGroupMappingsResponse *shared.ListScimGroupMappingsResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
@@ -104,6 +106,13 @@ func (l *ListScimGroupMappingsResponse) GetUnauthorizedResponse() *shared.Unauth
 		return nil
 	}
 	return l.UnauthorizedResponse
+}
+
+func (l *ListScimGroupMappingsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ForbiddenResponse
 }
 
 func (l *ListScimGroupMappingsResponse) GetNotFoundResponse() *shared.NotFoundResponse {

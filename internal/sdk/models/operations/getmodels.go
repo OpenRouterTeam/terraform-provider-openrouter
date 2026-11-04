@@ -224,6 +224,8 @@ type GetModelsRequest struct {
 	Q *string `queryParam:"style=form,explode=true,name=q"`
 	// Filter models by input modality. Comma-separated list of: text, image, audio, file.
 	InputModalities *string `queryParam:"style=form,explode=true,name=input_modalities"`
+	// Filter models by the request API paths they serve, as listed in each model's `endpoints` field. Comma-separated; a model must serve every listed path. Valid values: /api/v1/chat/completions, /api/v1/completions, /api/v1/messages, /api/v1/responses, /api/v1/embeddings, /api/v1/rerank, /api/alpha/decisions, /api/alpha/extractions, /api/v1/videos, /api/v1/audio/speech, /api/v1/audio/transcriptions, /api/v1/images, /api/v1/batches. When set without `output_modalities`, models of every output modality are considered (the companion `/api/alpha/extractions` route is served by text and decisions models alike).
+	Endpoints *string `queryParam:"style=form,explode=true,name=endpoints"`
 	// Minimum context length (tokens). Models with smaller context are excluded.
 	Context *int64 `queryParam:"style=form,explode=true,name=context"`
 	// Minimum prompt price in $/M tokens.
@@ -347,6 +349,13 @@ func (g *GetModelsRequest) GetInputModalities() *string {
 		return nil
 	}
 	return g.InputModalities
+}
+
+func (g *GetModelsRequest) GetEndpoints() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Endpoints
 }
 
 func (g *GetModelsRequest) GetContext() *int64 {
@@ -509,10 +518,22 @@ type GetModelsResponse struct {
 	Res *string
 	// Bad Request - Invalid request parameters or malformed input
 	BadRequestResponse *shared.BadRequestResponse
+	// Unauthorized - Authentication required or invalid credentials
+	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Forbidden - Authentication successful but insufficient permissions
 	ForbiddenResponse *shared.ForbiddenResponse
+	// Not Found - Resource does not exist
+	NotFoundResponse *shared.NotFoundResponse
+	// Request Timeout - Operation exceeded time limit
+	RequestTimeoutResponse *shared.RequestTimeoutResponse
+	// Conflict - Resource conflict or concurrent modification
+	ConflictResponse *shared.ConflictResponse
+	// Too Many Requests - Rate limit exceeded
+	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 
 	Next func() (*GetModelsResponse, error)
 }
@@ -570,6 +591,13 @@ func (g *GetModelsResponse) GetBadRequestResponse() *shared.BadRequestResponse {
 	return g.BadRequestResponse
 }
 
+func (g *GetModelsResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
+	if g == nil {
+		return nil
+	}
+	return g.UnauthorizedResponse
+}
+
 func (g *GetModelsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
 	if g == nil {
 		return nil
@@ -577,9 +605,44 @@ func (g *GetModelsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
 	return g.ForbiddenResponse
 }
 
+func (g *GetModelsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
+	if g == nil {
+		return nil
+	}
+	return g.NotFoundResponse
+}
+
+func (g *GetModelsResponse) GetRequestTimeoutResponse() *shared.RequestTimeoutResponse {
+	if g == nil {
+		return nil
+	}
+	return g.RequestTimeoutResponse
+}
+
+func (g *GetModelsResponse) GetConflictResponse() *shared.ConflictResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ConflictResponse
+}
+
+func (g *GetModelsResponse) GetTooManyRequestsResponse() *shared.TooManyRequestsResponse {
+	if g == nil {
+		return nil
+	}
+	return g.TooManyRequestsResponse
+}
+
 func (g *GetModelsResponse) GetInternalServerResponse() *shared.InternalServerResponse {
 	if g == nil {
 		return nil
 	}
 	return g.InternalServerResponse
+}
+
+func (g *GetModelsResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ServiceUnavailableResponse
 }

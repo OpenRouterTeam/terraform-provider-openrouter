@@ -97,6 +97,12 @@ func (r *ModelsDataSourceModel) RefreshFromSharedModelsListResponse(ctx context.
 				data.DefaultParameters.TopP = types.Float64PointerValue(dataItem.DefaultParameters.TopP)
 			}
 			data.Description = types.StringPointerValue(dataItem.Description)
+			if data.Endpoints == nil {
+				data.Endpoints = make([]types.String, 0, len(dataItem.Endpoints))
+			}
+			for _, v := range dataItem.Endpoints {
+				data.Endpoints = append(data.Endpoints, types.StringValue(v))
+			}
 			data.ExpirationDate = types.StringPointerValue(dataItem.ExpirationDate)
 			data.HuggingFaceID = types.StringPointerValue(dataItem.HuggingFaceID)
 			data.ID = types.StringValue(dataItem.ID)
@@ -258,6 +264,12 @@ func (r *ModelsDataSourceModel) ToOperationsGetModelsRequest(ctx context.Context
 	} else {
 		inputModalities = nil
 	}
+	endpoints := new(string)
+	if !r.Endpoints.IsUnknown() && !r.Endpoints.IsNull() {
+		*endpoints = r.Endpoints.ValueString()
+	} else {
+		endpoints = nil
+	}
 	contextVar := new(int64)
 	if !r.Context.IsUnknown() && !r.Context.IsNull() {
 		*contextVar = r.Context.ValueInt64()
@@ -393,6 +405,7 @@ func (r *ModelsDataSourceModel) ToOperationsGetModelsRequest(ctx context.Context
 		UseRssChatLinks:      useRssChatLinks,
 		Q:                    q,
 		InputModalities:      inputModalities,
+		Endpoints:            endpoints,
 		Context:              contextVar,
 		MinPrice:             minPrice,
 		MaxPrice:             maxPrice,

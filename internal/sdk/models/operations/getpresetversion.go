@@ -43,10 +43,14 @@ type GetPresetVersionResponse struct {
 	BadRequestResponse *shared.BadRequestResponse
 	// Unauthorized - Authentication required or invalid credentials
 	UnauthorizedResponse *shared.UnauthorizedResponse
+	// Forbidden - Authentication successful but insufficient permissions
+	ForbiddenResponse *shared.ForbiddenResponse
 	// Not Found - Resource does not exist
 	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (g GetPresetVersionResponse) MarshalJSON() ([]byte, error) {
@@ -102,6 +106,13 @@ func (g *GetPresetVersionResponse) GetUnauthorizedResponse() *shared.Unauthorize
 	return g.UnauthorizedResponse
 }
 
+func (g *GetPresetVersionResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ForbiddenResponse
+}
+
 func (g *GetPresetVersionResponse) GetNotFoundResponse() *shared.NotFoundResponse {
 	if g == nil {
 		return nil
@@ -114,4 +125,11 @@ func (g *GetPresetVersionResponse) GetInternalServerResponse() *shared.InternalS
 		return nil
 	}
 	return g.InternalServerResponse
+}
+
+func (g *GetPresetVersionResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if g == nil {
+		return nil
+	}
+	return g.ServiceUnavailableResponse
 }
