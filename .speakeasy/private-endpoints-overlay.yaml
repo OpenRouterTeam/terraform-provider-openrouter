@@ -1201,8 +1201,11 @@ actions:
           minimum: 1
           maximum: 2147483647
           type: integer
+          x-speakeasy-terraform-ignore: true
         pricing:
           $ref: '#/components/schemas/PrivateEndpointPricing'
+        settings:
+          $ref: '#/components/schemas/UpdatePrivateEndpointSettingsRequest'
         provider_slug:
           description: Slug of the upstream provider.
           example: azure
