@@ -112,6 +112,26 @@ out=$(cd "$base/work" && bash "$SCRIPT" "$TAG" resolve 2>&1); status=$?
 [ "$status" -eq 0 ] && [ "$out" = "exists" ] \
   && pass "matching tag reported as exists" || fail "expected 'exists', got '$out' (exit $status)"
 
+echo "7. the publish workflow pushes the tag after the scan, not before"
+WORKFLOW="$(cd "$(dirname "$0")/../.." && pwd)/workflows/sdk_publish.yaml"
+line_of() { grep -n "$1" "$WORKFLOW" | head -1 | cut -d: -f1; }
+prepare=$(line_of 'name: Prepare release tag')
+stage=$(grep -n 'name: Stage GoReleaser artifacts' "$WORKFLOW" | head -1 | cut -d: -f1)
+scan=$(line_of 'name: Scan linux_amd64')
+push=$(line_of 'name: Push release tag')
+release=$(line_of 'name: Run GoReleaser')
+if [ -z "$prepare" ] || [ -z "$stage" ] || [ -z "$scan" ] || [ -z "$push" ] || [ -z "$release" ]; then
+  fail "workflow steps not found (prepare=$prepare stage=$stage scan=$scan push=$push release=$release)"
+else
+  [ "$prepare" -lt "$stage" ] && pass "tag prepared before staging" || fail "prepare is not before staging"
+  [ "$scan" -lt "$push" ] && pass "tag pushed after the scan" || fail "tag is pushed before the scan (the P1 regressed)"
+  [ "$push" -lt "$release" ] && pass "tag pushed before the release" || fail "push is not before the release"
+  grep -q 'release-tag.sh "$TAG" push' "$WORKFLOW" \
+    && pass "push step goes through release-tag.sh" || fail "push step bypasses release-tag.sh"
+  sed -n "${prepare},${stage}p" "$WORKFLOW" | grep -q 'release-tag.sh "$TAG" resolve' \
+    && pass "prepare step goes through the script" || fail "prepare step does not use the script"
+fi
+
 if [ "$failures" -ne 0 ]; then
   printf '\n%d check(s) failed\n' "$failures"
   exit 1

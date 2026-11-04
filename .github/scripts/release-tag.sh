@@ -26,6 +26,11 @@ REMOTE="${REMOTE:-origin}"
 head_sha=$(git rev-parse --verify 'HEAD^{commit}')
 remote_sha=$(git ls-remote --tags --refs "$REMOTE" "refs/tags/$TAG" | awk '{print $1}')
 
+ensure_identity() {
+  git config user.name "github-actions[bot]"
+  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+}
+
 bump_advice() {
   cat >&2 <<EOF
 ::error::Tag $TAG is at $1 but this run is releasing $head_sha. Reusing it rebuilds a
@@ -55,8 +60,7 @@ case "$MODE" in
       echo "exists"
       exit 0
     fi
-    git config user.name "github-actions[bot]"
-    git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    ensure_identity
     git tag -a "$TAG" -m "Release $TAG"
     echo "created"
     ;;
@@ -69,7 +73,10 @@ case "$MODE" in
       echo "pushed"
       exit 0
     fi
-    git rev-parse -q --verify "refs/tags/$TAG" > /dev/null || git tag -a "$TAG" -m "Release $TAG"
+    if ! git rev-parse -q --verify "refs/tags/$TAG" > /dev/null; then
+      ensure_identity
+      git tag -a "$TAG" -m "Release $TAG"
+    fi
     # Keep stdout machine-readable for the caller.
     git push "$REMOTE" "refs/tags/$TAG" >&2
     echo "pushed"
