@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -139,6 +140,8 @@ func TestFederatedTokenSourceRereadsTokenFile(t *testing.T) {
 	if err := os.WriteFile(path, []byte("rotated-jwt"), 0o600); err != nil {
 		t.Fatal(err)
 	}
+	// The grant is 1s, so move past it: a live 1s grant is now cached for part of its lifetime.
+	source.now = func() time.Time { return time.Now().Add(2 * time.Second) }
 	if _, err := source.Security(context.Background()); err != nil {
 		t.Fatalf("second Security: %v", err)
 	}
@@ -168,11 +171,15 @@ func TestFederatedTokenSourceRegistersEachSubjectTokenForRedactionOnce(t *testin
 		return n
 	}
 
-	// A 1s token is always inside the refresh skew, so every call re-exchanges.
+	// Each grant is 1s, so advance the clock past it before the next call. The point of
+	// this test is that a subject token read again is not registered twice, not caching.
+	now := time.Now()
+	source.now = func() time.Time { return now }
 	for range 3 {
 		if _, err := source.Security(context.Background()); err != nil {
 			t.Fatalf("Security: %v", err)
 		}
+		now = now.Add(2 * time.Second)
 	}
 	if err := os.WriteFile(path, []byte("dedupe-rotated-jwt"), 0o600); err != nil {
 		t.Fatal(err)
@@ -642,5 +649,79 @@ func TestFederatedTokenSourceWaitsForRefreshWhenCachedTokenIsAboutToExpire(t *te
 	close(release)
 	if got := <-waiter; got != "refreshed" {
 		t.Fatalf("got %q, want refreshed", got)
+	}
+}
+
+func TestFederatedTokenSourceReusesShortLivedGrant(t *testing.T) {
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, call int32) {
+		grantToken(w, fmt.Sprintf("short-%d", call), 60)
+	})
+	src := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	for i := 0; i < 3; i++ {
+		if _, err := src.Security(context.Background()); err != nil {
+			t.Fatalf("Security call %d: %v", i, err)
+		}
+	}
+	if got := server.calls.Load(); got != 1 {
+		t.Fatalf("exchanges = %d, want 1: a 60s grant must be reused, not refreshed on every call", got)
+	}
+}
+
+func TestFederatedTokenSourceRefreshesShortLivedGrantAtItsScaledSkew(t *testing.T) {
+	server := newExchangeServer(t, func(w http.ResponseWriter, _ *http.Request, call int32) {
+		grantToken(w, fmt.Sprintf("short-%d", call), 60)
+	})
+	src := newTestSource(t, server.URL, federatedTokenSourceConfig{oidcToken: "subject-jwt"})
+	now := time.Now()
+	src.now = func() time.Time { return now }
+
+	if _, err := src.Security(context.Background()); err != nil {
+		t.Fatalf("Security: %v", err)
+	}
+	// A 60s grant refreshes a third of its lifetime early, so 30s in it is still cached.
+	now = now.Add(30 * time.Second)
+	if _, err := src.Security(context.Background()); err != nil {
+		t.Fatalf("Security: %v", err)
+	}
+	if got := server.calls.Load(); got != 1 {
+		t.Fatalf("exchanges = %d at 30s of a 60s grant, want 1", got)
+	}
+	// 45s in the 20s window is entered, so the token is exchanged again.
+	now = now.Add(15 * time.Second)
+	if _, err := src.Security(context.Background()); err != nil {
+		t.Fatalf("Security: %v", err)
+	}
+	if got := server.calls.Load(); got != 2 {
+		t.Fatalf("exchanges = %d at 45s of a 60s grant, want 2", got)
+	}
+}
+
+func TestRefreshSkewFor(t *testing.T) {
+	for _, tc := range []struct {
+		expiresIn int64
+		want      time.Duration
+	}{
+		{900, federatedTokenRefreshSkew},
+		{180, federatedTokenRefreshSkew},
+		{61, 61 * time.Second / 3},
+		{60, 20 * time.Second},
+		{6, 2 * time.Second},
+		{1, time.Second / 3},
+	} {
+		if got := refreshSkewFor(tc.expiresIn); got != tc.want {
+			t.Errorf("refreshSkewFor(%d) = %v, want %v", tc.expiresIn, got, tc.want)
+		}
+	}
+}
+
+func TestParseTokenExchangeResponseRegistersTokenBeforeScopeCheck(t *testing.T) {
+	const token = "rejected-scope-token-value"
+	body := []byte(fmt.Sprintf(`{"access_token":%q,"expires_in":900,"scope":"inference"}`, token))
+
+	if _, err := parseTokenExchangeResponse(body); err == nil {
+		t.Fatal("want an error for a scope other than management")
+	}
+	if redacted := redactSensitiveValues(context.Background(), "Authorization: Bearer "+token); strings.Contains(redacted, token) {
+		t.Fatalf("token from a rejected response was not registered for redaction: %q", redacted)
 	}
 }

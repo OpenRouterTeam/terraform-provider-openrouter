@@ -1,3 +1,8 @@
+# Provider custom code (see CONTRIBUTING.md): internal/provider/provider.go carries the
+# workload identity federation schema attributes (oidc_token, oidc_token_file,
+# federation_policy_id) and their Configure hook. They stay as persistent edits because the
+# spec does not model provider attributes. Editing this file is what makes regenerate.yaml
+# run on a PR that changes that generated code.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:

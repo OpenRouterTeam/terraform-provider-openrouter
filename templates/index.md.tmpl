@@ -25,9 +25,9 @@ Configuring both an API key and federation is an error, including an API key tha
 
 ### Token lifetime
 
-The provider caches the exchanged access token and exchanges again one minute before it expires, so a run can outlast a single access token. Each exchange needs a subject token that has not expired yet:
+The provider caches the exchanged access token and exchanges again one minute before it expires, or a third of the way through a grant shorter than three minutes, so a run can outlast a single access token. Each exchange needs a subject token that has not expired yet:
 
-- With `oidc_token` (or `OPENROUTER_OIDC_TOKEN`), the provider has one fixed subject token for the whole run. Once that token expires, the next exchange fails, and the run fails when the cached access token runs out. If an exchange grants a token for a minute or less, for example because its lifetime is capped at the subject token's remaining lifetime, the provider exchanges again on every request.
+- With `oidc_token` (or `OPENROUTER_OIDC_TOKEN`), the provider has one fixed subject token for the whole run. Once that token expires, the next exchange fails, and the run fails when the cached access token runs out. If an exchange grants a token for a minute or less, for example because its lifetime is capped at the subject token's remaining lifetime, the provider shrinks the refresh window to a third of the grant instead of exchanging again on every request.
 - With `oidc_token_file` (or `OPENROUTER_OIDC_TOKEN_FILE`), the provider rereads the file on every exchange. Replace the file's contents with a fresh token before the old one expires and the provider picks it up.
 
 For runs that can outlast the CI platform's OIDC token, use `oidc_token_file` and refresh the file.

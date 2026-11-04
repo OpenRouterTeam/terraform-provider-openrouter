@@ -1,3 +1,4 @@
+//lint:file-ignore U1000 Called only from persistent edits to provider.go, which the generator lints before applying them.
 package provider
 
 import (
@@ -24,7 +25,9 @@ const (
 	federatedManagementScope = "management"
 
 	// Re-exchange this long before expiry so a request never carries a token
-	// that lapses in flight.
+	// that lapses in flight. Grants shorter than three times this window use a
+	// window a third of their lifetime instead, so a short-lived grant is still
+	// cached rather than exchanged again on every request.
 	federatedTokenRefreshSkew = time.Minute
 	// A cached token is still handed out during a refresh only if it outlives the request by this much.
 	federatedTokenMinRemaining = 15 * time.Second
@@ -50,6 +53,7 @@ type federatedTokenSource struct {
 	mu          sync.Mutex
 	accessToken string
 	expiresAt   time.Time
+	refreshSkew time.Duration
 	refreshing  chan struct{}
 	// registeredSubjectToken is the last subject token passed to registerSensitiveValues,
 	// whose registry is global and never trimmed, so an unchanged token is not appended again.
@@ -109,7 +113,7 @@ func newFederatedTokenSource(cfg federatedTokenSourceConfig) (*federatedTokenSou
 func (s *federatedTokenSource) Security(ctx context.Context) (shared.Security, error) {
 	for {
 		s.mu.Lock()
-		if s.validLocked(federatedTokenRefreshSkew) {
+		if s.validLocked(s.cachedRefreshSkewLocked()) {
 			return s.securityLocked()
 		}
 		if s.refreshing != nil {
@@ -150,6 +154,7 @@ func (s *federatedTokenSource) refresh(ctx context.Context, done chan struct{}) 
 	if err == nil {
 		s.accessToken = exchanged.AccessToken
 		s.expiresAt = s.now().Add(time.Duration(exchanged.ExpiresIn) * time.Second)
+		s.refreshSkew = refreshSkewFor(exchanged.ExpiresIn)
 	} else if !s.validLocked(federatedTokenMinRemaining) {
 		s.mu.Unlock()
 		return shared.Security{}, err
@@ -159,6 +164,24 @@ func (s *federatedTokenSource) refresh(ctx context.Context, done chan struct{}) 
 
 func (s *federatedTokenSource) validLocked(skew time.Duration) bool {
 	return s.accessToken != "" && s.now().Add(skew).Before(s.expiresAt)
+}
+
+// refreshSkewFor is the refresh window for a grant: the default skew, unless
+// the grant is shorter than three times it, in which case a third of the grant.
+func refreshSkewFor(expiresIn int64) time.Duration {
+	skew := time.Duration(expiresIn) * time.Second / 3
+	if skew <= 0 || skew > federatedTokenRefreshSkew {
+		return federatedTokenRefreshSkew
+	}
+	return skew
+}
+
+// cachedRefreshSkewLocked is the refresh window for the cached token. s.mu is held.
+func (s *federatedTokenSource) cachedRefreshSkewLocked() time.Duration {
+	if s.refreshSkew <= 0 {
+		return federatedTokenRefreshSkew
+	}
+	return s.refreshSkew
 }
 
 // securityLocked returns the cached token and releases s.mu.
@@ -285,13 +308,17 @@ func parseTokenExchangeResponse(body []byte) (tokenExchangeResponse, error) {
 	if err := json.Unmarshal(body, &parsed); err != nil {
 		return tokenExchangeResponse{}, fmt.Errorf("decoding token exchange response: %w", err)
 	}
+	// Register before validating so a token from a response we reject is still
+	// redacted if it ever reaches a diagnostic or a debug dump.
+	if parsed.AccessToken != "" {
+		registerSensitiveValues(parsed.AccessToken)
+	}
 	if parsed.AccessToken == "" || parsed.ExpiresIn <= 0 {
 		return tokenExchangeResponse{}, errors.New("token exchange response is missing access_token or expires_in")
 	}
 	if parsed.Scope != federatedManagementScope {
 		return tokenExchangeResponse{}, fmt.Errorf("token exchange granted scope %q, want %q", parsed.Scope, federatedManagementScope)
 	}
-	registerSensitiveValues(parsed.AccessToken)
 	return parsed, nil
 }
 
