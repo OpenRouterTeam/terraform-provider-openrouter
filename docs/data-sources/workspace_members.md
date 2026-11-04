@@ -37,6 +37,6 @@ Read-Only:
 
 - `created_at` (String) ISO 8601 timestamp of when the membership was created
 - `id` (String) Unique identifier for the workspace membership
-- `role` (String) Role of the member in the workspace
+- `role` (String) Role of the member in the workspace. `viewer` and `restricted_viewer` are read-only: `viewer` can view the whole workspace, and `restricted_viewer` can view only their own activity.
 - `user_id` (String) Clerk user ID of the member
 - `workspace_id` (String) ID of the workspace
