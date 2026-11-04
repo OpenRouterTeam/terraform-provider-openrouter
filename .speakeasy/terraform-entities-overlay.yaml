@@ -384,13 +384,18 @@ actions:
     update:
       x-speakeasy-entity-operation: WorkspaceBudget#delete
   # ---------------------------------------------------------------------------
-  # PrivateEndpoint  (POST /private-endpoints, GET/DELETE /private-endpoints/{id},
-  # PUT /private-endpoints/{id}/pricing). ECO-4315.
+  # PrivateEndpoint  (POST /private-endpoints,
+  # GET/PATCH/DELETE /private-endpoints/{id}). ECO-4315.
   # Component-based: PrivateEndpoint is the read model, ManagedPrivateEndpoint
   # the create response. Create sends `activate` so one apply runs
-  # create -> validate -> activate. The API only edits pricing in place once an
-  # endpoint leaves draft, so every other create field forces replacement and
-  # PUT .../pricing is the sole update operation.
+  # create -> validate -> activate. PATCH updates drafts and active endpoints:
+  # pricing replaces the whole object (omitted cache rates revert to the pricing
+  # strategy default), declared_parameters replaces the whole list, and settings
+  # changes only named fields (null clears a limit or restores a provider default).
+  # base_url, upstream_model_id, declared_zdr and declared_region re-point drafts
+  # only; naming any of them on an active endpoint returns 409 and writes nothing.
+  # These upstream fields, model_permaslug and provider_slug retain Terraform
+  # replacement behavior.
   # ---------------------------------------------------------------------------
   - target: $["components"]["schemas"]["PrivateEndpoint"]
     update:
@@ -404,16 +409,15 @@ actions:
       x-speakeasy-entity-description: |-
         A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
 
-        Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+        `pricing`, `settings` and `declared_parameters` can change in place on drafts and active endpoints through PATCH. `pricing` replaces the whole object: omitting `cache_read` or `cache_write` reverts that rate to the pricing strategy default. `settings` changes only the fields it names; an omitted field keeps its stored value, and `null` clears a limit or restores the provider default. `declared_parameters` replaces the whole declaration list; tested parameters stay.
+
+        The API accepts `base_url`, `upstream_model_id`, `declared_zdr` and `declared_region` only to re-point a draft; naming any of them on an active endpoint returns 409 and writes nothing. Terraform keeps these fields create-only: changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
 
         `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
 
         `activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.
 
         If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
-  - target: $["components"]["schemas"]["UpdatePrivateEndpointPricingRequest"]
-    update:
-      x-speakeasy-entity: PrivateEndpoint
   - target: $["components"]["schemas"]["CreatePrivateEndpointRequest"]["properties"]["model_permaslug"]
     update:
       x-speakeasy-param-force-new: true
@@ -452,7 +456,7 @@ actions:
       x-speakeasy-entity-operation:
         - PrivateEndpoint#create#2
         - PrivateEndpoint#read
-  - target: $["paths"]["/private-endpoints/{id}/pricing"]["put"]
+  - target: $["paths"]["/private-endpoints/{id}"]["patch"]
     update:
       x-speakeasy-entity-operation: PrivateEndpoint#update
   - target: $["paths"]["/private-endpoints/{id}"]["delete"]
