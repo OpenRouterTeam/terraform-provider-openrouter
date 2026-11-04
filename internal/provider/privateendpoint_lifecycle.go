@@ -241,3 +241,16 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
+
+// privateEndpointPricingChanged is the pre-PATCH guard the generated update body
+// still calls. The custom dispatch returns before it runs, and it stays so the
+// generated code compiles on the regeneration that records the custom path.
+func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
+	var planned, current types.Object
+	diags := req.Plan.GetAttribute(ctx, path.Root("pricing"), &planned)
+	diags.Append(req.State.GetAttribute(ctx, path.Root("pricing"), &current)...)
+	if diags.HasError() || planned.IsNull() || planned.IsUnknown() {
+		return false, diags
+	}
+	return !planned.Equal(current), diags
+}
