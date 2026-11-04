@@ -122,8 +122,8 @@ func addObservabilityWriteOnlyAttributes(s *schema.Schema) {
 func addIncludeSensitiveConfigAttribute(s *datasourceschema.Schema) {
 	s.Attributes["include_sensitive_config"] = datasourceschema.BoolAttribute{
 		Optional: true,
-		Description: "Whether to include credential-bearing fields in the `config` blocks. Set to `false` to omit credentials, headers, " +
-			"and URLs, so they are not stored in state. Defaults to `true`.",
+		Description: "Whether to include credential-bearing fields in the `config` blocks. Set to `true` to include credentials, headers, " +
+			"and URLs, so they are stored in state. Defaults to `false`: the `config` blocks then keep only a known-public set of fields.",
 	}
 }
 
@@ -325,10 +325,12 @@ func clearObservabilityImported(ctx context.Context, private providerPrivateStat
 	return private.SetKey(ctx, observabilityImportedKey, nil)
 }
 
-// scrubObservabilityDataSource filters the computed config blocks when
-// include_sensitive_config is false.
+// scrubObservabilityDataSource filters the computed config blocks unless
+// include_sensitive_config is explicitly true. An unset attribute means the
+// safe default: a data source read must not persist credentials, headers or
+// undeclared URLs into state.
 func scrubObservabilityDataSource(include types.Bool, data any) {
-	if include.IsNull() || include.IsUnknown() || include.ValueBool() {
+	if !include.IsNull() && !include.IsUnknown() && include.ValueBool() {
 		return
 	}
 	scrubObservabilityConfigBlocks(reflect.ValueOf(data), nil)

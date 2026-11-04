@@ -23,7 +23,7 @@ data "openrouter_observability_destinations" "my_observabilitydestinations" {
 
 ### Optional
 
-- `include_sensitive_config` (Boolean) Whether to include credential-bearing fields in the `config` blocks. Set to `false` to omit credentials, headers, and URLs, so they are not stored in state. Defaults to `true`.
+- `include_sensitive_config` (Boolean) Whether to include credential-bearing fields in the `config` blocks. Set to `true` to include credentials, headers, and URLs, so they are stored in state. Defaults to `false`: the `config` blocks then keep only a known-public set of fields.
 - `workspace_id` (String) Optional workspace ID to filter by. Defaults to the authenticated entity's default workspace.
 
 ### Read-Only
