@@ -21,6 +21,7 @@ const (
 	OutputItemsTypeFileSearchCall                     OutputItemsType = "file_search_call"
 	OutputItemsTypeFunctionCall                       OutputItemsType = "function_call"
 	OutputItemsTypeImageGenerationCall                OutputItemsType = "image_generation_call"
+	OutputItemsTypeMcpApprovalRequest                 OutputItemsType = "mcp_approval_request"
 	OutputItemsTypeMcpCall                            OutputItemsType = "mcp_call"
 	OutputItemsTypeMcpListTools                       OutputItemsType = "mcp_list_tools"
 	OutputItemsTypeMessage                            OutputItemsType = "message"
@@ -79,6 +80,7 @@ type OutputItems struct {
 	OutputMemoryServerToolItem          *OutputMemoryServerToolItem          `queryParam:"inline" union:"member"`
 	McpListToolsItem                    *McpListToolsItem                    `queryParam:"inline" union:"member"`
 	McpCallItem                         *McpCallItem                         `queryParam:"inline" union:"member"`
+	McpApprovalRequestItem              *McpApprovalRequestItem              `queryParam:"inline" union:"member"`
 	OutputSearchModelsServerToolItem    *OutputSearchModelsServerToolItem    `queryParam:"inline" union:"member"`
 	OutputFusionServerToolItem          *OutputFusionServerToolItem          `queryParam:"inline" union:"member"`
 	OutputAdvisorServerToolItem         *OutputAdvisorServerToolItem         `queryParam:"inline" union:"member"`
@@ -172,6 +174,18 @@ func CreateOutputItemsImageGenerationCall(imageGenerationCall OutputImageGenerat
 	return OutputItems{
 		OutputImageGenerationCallItem: &imageGenerationCall,
 		Type:                          typ,
+	}
+}
+
+func CreateOutputItemsMcpApprovalRequest(mcpApprovalRequest McpApprovalRequestItem) OutputItems {
+	typ := OutputItemsTypeMcpApprovalRequest
+
+	typStr := McpApprovalRequestItemType(typ)
+	mcpApprovalRequest.Type = typStr
+
+	return OutputItems{
+		McpApprovalRequestItem: &mcpApprovalRequest,
+		Type:                   typ,
 	}
 }
 
@@ -575,6 +589,15 @@ func (u *OutputItems) UnmarshalJSON(data []byte) (err error) {
 		u.OutputImageGenerationCallItem = outputImageGenerationCallItem
 		u.Type = OutputItemsTypeImageGenerationCall
 		return nil
+	case "mcp_approval_request":
+		mcpApprovalRequestItem := new(McpApprovalRequestItem)
+		if err := utils.UnmarshalJSON(data, &mcpApprovalRequestItem, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == mcp_approval_request) type McpApprovalRequestItem within OutputItems: %w", string(data), err)
+		}
+
+		u.McpApprovalRequestItem = mcpApprovalRequestItem
+		u.Type = OutputItemsTypeMcpApprovalRequest
+		return nil
 	case "mcp_call":
 		mcpCallItem := new(McpCallItem)
 		if err := utils.UnmarshalJSON(data, &mcpCallItem, "", true, nil); err != nil {
@@ -930,6 +953,10 @@ func (u OutputItems) MarshalJSON() ([]byte, error) {
 
 	if u.McpCallItem != nil {
 		return utils.MarshalJSON(u.McpCallItem, "", true)
+	}
+
+	if u.McpApprovalRequestItem != nil {
+		return utils.MarshalJSON(u.McpApprovalRequestItem, "", true)
 	}
 
 	if u.OutputSearchModelsServerToolItem != nil {

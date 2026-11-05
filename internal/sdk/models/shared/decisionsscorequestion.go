@@ -258,7 +258,7 @@ func (u DecisionsScoreQuestionInstructions) MarshalJSON() ([]byte, error) {
 type DecisionsScoreQuestion struct {
 	Criteria []Criterion `json:"criteria"`
 	// A plain string, or a JSON object or array of structured guidance.
-	Instructions DecisionsScoreQuestionInstructions `json:"instructions"`
+	Instructions *DecisionsScoreQuestionInstructions `json:"instructions,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"score" json:"type"`
 }
@@ -281,9 +281,9 @@ func (d *DecisionsScoreQuestion) GetCriteria() []Criterion {
 	return d.Criteria
 }
 
-func (d *DecisionsScoreQuestion) GetInstructions() DecisionsScoreQuestionInstructions {
+func (d *DecisionsScoreQuestion) GetInstructions() *DecisionsScoreQuestionInstructions {
 	if d == nil {
-		return DecisionsScoreQuestionInstructions{}
+		return nil
 	}
 	return d.Instructions
 }
