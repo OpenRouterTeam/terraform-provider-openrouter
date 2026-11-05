@@ -5,14 +5,14 @@ management:
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.166
-  configChecksum: cc01f97b4d93fc12e9a5f9b07ef17357
+  releaseVersion: 0.3.167
+  configChecksum: 5565b88210928a9dce42168241f14c28
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: dc76f256-34d8-4490-b8a2-9536831eee3a
-  pristine_commit_hash: 931739f1ab5d4097538420fb0a09b99698cbb8aa
-  pristine_tree_hash: d7f64e4b5c5811b69cd697604de2d0325c23b594
+  generation_id: 97cf718c-9246-44a7-83b5-f4d5e6dc9791
+  pristine_commit_hash: 41c01fc8aec0d4a6b28ab325ca580f6fb569d155
+  pristine_tree_hash: a3efb832ff7dbaecba04211f67f110dacba3bd7f
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:b2b50b31687337dcf5015844ab5a3d1267316f62
-    pristine_git_object: 31f9f6c62a800d8d1ba1bb8caab40bd3503ab023
+    last_write_checksum: sha1:56e45c43bfc04c96324e06819215b0a99312739f
+    pristine_git_object: 577c44a38a0390943dde6e9746d9d15229d18771
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -5206,8 +5206,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:310290c2c76cc202cc9ff98f5ffb13f2fe67f03e
-    pristine_git_object: 934afcd3371598b8abba6879e8e28677a605620c
+    last_write_checksum: sha1:ff04ba9b108dc64483d40a4df9ee2d7d84cbf6cc
+    pristine_git_object: bcc7c32e208d594da221887da55c55ddd4da1793
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
