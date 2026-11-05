@@ -1,0 +1,35 @@
+diff --git a/internal/provider/privateendpoint_resource.go b/internal/provider/privateendpoint_resource.go
+--- a/internal/provider/privateendpoint_resource.go
++++ b/internal/provider/privateendpoint_resource.go
+@@ -610,12 +610,31 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
+ 		return
+ 	}
+ 
++	// The PATCH replaces `pricing` and `declared_parameters` wholesale, so a group
++	// the plan did not change must be omitted rather than resent from state.
++	changes, changeDiags := privateEndpointChangesForUpdate(ctx, req)
++	resp.Diagnostics.Append(changeDiags...)
++
++	if resp.Diagnostics.HasError() {
++		return
++	}
++
+ 	request, requestDiags := data.ToOperationsUpdatePrivateEndpointRequest(ctx)
+ 	resp.Diagnostics.Append(requestDiags...)
+ 
+ 	if resp.Diagnostics.HasError() {
+ 		return
+ 	}
++	if !changes.pricing {
++		request.Body.Pricing = nil
++	}
++	if !changes.settings {
++		request.Body.Settings = nil
++	}
++	if !changes.declaredParameters {
++		request.Body.DeclaredParameters = nil
++	}
++
+ 	res, err := r.client.PrivateEndpoints.Update(ctx, *request)
+ 	if err != nil {
+ 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
