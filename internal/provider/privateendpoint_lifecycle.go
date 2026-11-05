@@ -12,6 +12,7 @@ import (
 	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/hashicorp/go-uuid"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -23,8 +24,14 @@ import (
 // no trailing "/" or "/chat/completions"). Storing the server value instead
 // would differ from config on every plan.
 func privateEndpointBaseURL(prior types.String, server *string) types.String {
-	if server != nil && !prior.IsNull() && !prior.IsUnknown() &&
-		custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(prior.ValueString()) == custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(*server) {
+	if server == nil {
+		return prior
+	}
+	normalized := custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(*server)
+	if prior.IsUnknown() || prior.IsNull() {
+		return types.StringValue(normalized)
+	}
+	if custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(prior.ValueString()) == normalized {
 		return prior
 	}
 	return types.StringPointerValue(server)
@@ -91,22 +98,111 @@ func privateEndpointErrorMessage(res *operations.CreatePrivateEndpointResponse) 
 	return body.Error.Message
 }
 
-// privateEndpointPricingChanged reports whether an update asks for different
-// rates than state holds. Every PUT .../pricing inserts a new pricing version,
-// so updates that only touch other attributes (such as activate) must not send
-// one. Omitted pricing keeps the current rates.
-func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
-	var planned, current types.Object
-	diags := req.Plan.GetAttribute(ctx, path.Root("pricing"), &planned)
-	diags.Append(req.State.GetAttribute(ctx, path.Root("pricing"), &current)...)
-	if diags.HasError() || planned.IsNull() || planned.IsUnknown() {
-		return false, diags
-	}
-	return !planned.Equal(current), diags
+type privateEndpointChanges struct {
+	pricing, settings, declaredParameters bool
 }
 
-// refreshPrivateEndpointWithoutPricingWrite finishes an update that changes no
-// pricing by reading the endpoint instead of writing a pricing version.
+// privateEndpointChangesForUpdate compares the mutable groups with prior state.
+// Null or unknown groups do not request a write. Unknown nested computed values
+// keep their state value, so an unrelated change must not rewrite pricing.
+func privateEndpointChangesForUpdate(ctx context.Context, req resource.UpdateRequest) (privateEndpointChanges, diag.Diagnostics) {
+	var planned, current types.Object
+	diags := req.Plan.Get(ctx, &planned)
+	diags.Append(req.State.Get(ctx, &current)...)
+	var changes privateEndpointChanges
+	if diags.HasError() {
+		return changes, diags
+	}
+	plannedAttributes, currentAttributes := planned.Attributes(), current.Attributes()
+	for name, changed := range map[string]*bool{
+		"pricing": &changes.pricing, "settings": &changes.settings, "declared_parameters": &changes.declaredParameters,
+	} {
+		value := plannedAttributes[name]
+		*changed = !value.IsNull() && privateEndpointValueChanged(value, currentAttributes[name])
+	}
+	return changes, diags
+}
+
+func privateEndpointValueChanged(planned, current attr.Value) bool {
+	if planned.IsUnknown() || planned.Equal(current) {
+		return false
+	}
+	switch value := planned.(type) {
+	case types.Object:
+		prior, ok := current.(types.Object)
+		if !ok || value.IsNull() || prior.IsNull() || prior.IsUnknown() {
+			return true
+		}
+		priorAttributes := prior.Attributes()
+		for name, attribute := range value.Attributes() {
+			if privateEndpointValueChanged(attribute, priorAttributes[name]) {
+				return true
+			}
+		}
+		return false
+	case types.List:
+		prior, ok := current.(types.List)
+		if !ok || value.IsNull() || prior.IsNull() || prior.IsUnknown() || len(value.Elements()) != len(prior.Elements()) {
+			return true
+		}
+		priorElements := prior.Elements()
+		for i, element := range value.Elements() {
+			if privateEndpointValueChanged(element, priorElements[i]) {
+				return true
+			}
+		}
+		return false
+	default:
+		return true
+	}
+}
+
+// declaredParametersWithProven restores declared parameters that a validation run
+// has since proven. The detail response returns declared_parameters as stored minus
+// tested_parameters, so a proven name disappears from the read and Terraform would
+// propose adding it again on every plan.
+func declaredParametersWithProven(prior, declared, tested []types.String) []types.String {
+	proven := make(map[string]struct{}, len(tested))
+	for _, name := range tested {
+		if name.IsNull() || name.IsUnknown() {
+			continue
+		}
+		proven[name.ValueString()] = struct{}{}
+	}
+
+	out := make([]types.String, 0, len(declared)+len(prior))
+	seen := make(map[string]struct{}, len(declared)+len(prior))
+	for _, value := range declared {
+		if value.IsNull() || value.IsUnknown() {
+			continue
+		}
+		name := value.ValueString()
+		if _, ok := seen[name]; ok {
+			continue
+		}
+		out = append(out, types.StringValue(name))
+		seen[name] = struct{}{}
+	}
+	for _, value := range prior {
+		if value.IsNull() || value.IsUnknown() {
+			continue
+		}
+		name := value.ValueString()
+		if _, ok := proven[name]; !ok {
+			continue
+		}
+		if _, ok := seen[name]; ok {
+			continue
+		}
+		out = append(out, types.StringValue(name))
+		seen[name] = struct{}{}
+	}
+	return out
+}
+
+// refreshPrivateEndpointWithoutPricingWrite settles state with a full GET,
+// either when no mutable group changed or after a successful PATCH. A limited
+// PATCH response must not erase computed attributes missing from that response.
 func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx context.Context, plan types.Object, data *PrivateEndpointResourceModel, resp *resource.UpdateResponse) {
 	request, requestDiags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
@@ -134,17 +230,58 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
+	priorDeclaredParameters := data.DeclaredParameters
+	priorBaseURL := data.BaseURL
+	priorProviderSlug := data.ProviderSlug
+
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
+	data.BaseURL = privateEndpointBaseURL(priorBaseURL, res.PrivateEndpointResponse.Data.BaseURL)
+	// The provider catalogue can stop listing a provider we already recorded;
+	// keep the configured slug instead of dropping into a replacement.
+	if data.ProviderSlug.IsNull() && !priorProviderSlug.IsNull() && !priorProviderSlug.IsUnknown() {
+		data.ProviderSlug = priorProviderSlug
+	}
+	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
+
+	// refreshPlan copies the plan over data, which would put stale config values
+	// back on attributes only the API can answer. Keep the server truth.
+	server := *data
 	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	data.BaseURL = server.BaseURL
+	data.DeclaredParameters = server.DeclaredParameters
+	data.ID = server.ID
+	data.MaxCompletionTokens = server.MaxCompletionTokens
+	data.ModelName = server.ModelName
+	data.ModelPermaslug = server.ModelPermaslug
+	data.ModelSlug = server.ModelSlug
+	data.Pricing = server.Pricing
+	data.ProviderName = server.ProviderName
+	data.ProviderSlug = server.ProviderSlug
+	data.Settings = server.Settings
+	data.Status = server.Status
+	data.TestedParameters = server.TestedParameters
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+// privateEndpointPricingChanged is the pre-PATCH guard the generated update body
+// still calls. The custom dispatch returns before it runs, and it stays so the
+// generated code compiles on the regeneration that records the custom path.
+func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
+	var planned, current types.Object
+	diags := req.Plan.GetAttribute(ctx, path.Root("pricing"), &planned)
+	diags.Append(req.State.GetAttribute(ctx, path.Root("pricing"), &current)...)
+	if diags.HasError() || planned.IsNull() || planned.IsUnknown() {
+		return false, diags
+	}
+	return !planned.Equal(current), diags
 }
