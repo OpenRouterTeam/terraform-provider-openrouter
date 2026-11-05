@@ -29,7 +29,13 @@ func privateEndpointGroupUnchanged(ctx context.Context, plan tfsdk.Plan, state t
 	if diags := state.GetAttribute(ctx, path.Root(group), &current); diags.HasError() {
 		return false
 	}
-	if planned.IsUnknown() || planned.IsNull() {
+	// A group the config does not name plans as unknown. Keeping the prior
+	// value there is what stops the first plan after a provider upgrade from
+	// reporting `(known after apply)` for a group the user never configured.
+	if planned.IsUnknown() {
+		return !current.IsNull()
+	}
+	if planned.IsNull() {
 		return false
 	}
 	return !privateEndpointValueChanged(planned, current)
