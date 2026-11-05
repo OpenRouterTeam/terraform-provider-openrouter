@@ -43,12 +43,13 @@ func (l *ListOrganizationMembersRequest) GetLimit() *int64 {
 	return l.Limit
 }
 
-// Role of the member in the organization
+// Role of the member in the organization. `org:viewer` is coming soon and not yet available. Once launched, it has read-only organization access: it can view organization settings, billing and workspaces but not change them. Workspace roles can still grant write access in specific workspaces.
 type Role string
 
 const (
 	RoleOrgAdmin  Role = "org:admin"
 	RoleOrgMember Role = "org:member"
+	RoleOrgViewer Role = "org:viewer"
 )
 
 func (e Role) ToPointer() *Role {
@@ -63,6 +64,8 @@ func (e *Role) UnmarshalJSON(data []byte) error {
 	case "org:admin":
 		fallthrough
 	case "org:member":
+		fallthrough
+	case "org:viewer":
 		*e = Role(v)
 		return nil
 	default:
@@ -79,7 +82,7 @@ type ListOrganizationMembersData struct {
 	ID string `json:"id"`
 	// Last name of the member
 	LastName *string `json:"last_name"`
-	// Role of the member in the organization
+	// Role of the member in the organization. `org:viewer` is coming soon and not yet available. Once launched, it has read-only organization access: it can view organization settings, billing and workspaces but not change them. Workspace roles can still grant write access in specific workspaces.
 	Role Role `json:"role"`
 }
 
