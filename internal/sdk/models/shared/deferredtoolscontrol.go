@@ -8,11 +8,12 @@ import (
 	"fmt"
 )
 
-// Profile - Loading profile. Only `portable` is available in this release: OpenRouter serves deferral with router-built search and call wrappers on any model.
+// Profile - Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes, and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
 type Profile string
 
 const (
-	ProfilePortable Profile = "portable"
+	ProfilePortable  Profile = "portable"
+	ProfileUniversal Profile = "universal"
 )
 
 func (e Profile) ToPointer() *Profile {
@@ -25,6 +26,8 @@ func (e *Profile) UnmarshalJSON(data []byte) error {
 	}
 	switch v {
 	case "portable":
+		fallthrough
+	case "universal":
 		*e = Profile(v)
 		return nil
 	default:
@@ -81,7 +84,7 @@ func (e *Validation) UnmarshalJSON(data []byte) error {
 
 // DeferredToolsControl - Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged.
 type DeferredToolsControl struct {
-	// Loading profile. Only `portable` is available in this release: OpenRouter serves deferral with router-built search and call wrappers on any model.
+	// Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes, and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
 	Profile  Profile  `json:"profile"`
 	Protocol Protocol `json:"protocol"`
 	// Router-local regex/BM25 or caller-owned custom search.
