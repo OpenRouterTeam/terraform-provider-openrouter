@@ -762,6 +762,7 @@ const (
 	ResponsesRequestToolUnionTypeOpenrouterBash                     ResponsesRequestToolUnionType = "openrouter:bash"
 	ResponsesRequestToolUnionTypeOpenrouterShell                    ResponsesRequestToolUnionType = "openrouter:shell"
 	ResponsesRequestToolUnionTypeOpenrouterToolSearch               ResponsesRequestToolUnionType = "openrouter:tool_search"
+	ResponsesRequestToolUnionTypeOpenrouterMcp                      ResponsesRequestToolUnionType = "openrouter:mcp"
 )
 
 type ResponsesRequestToolUnion struct {
@@ -793,6 +794,7 @@ type ResponsesRequestToolUnion struct {
 	BashServerTool                      *BashServerTool                      `queryParam:"inline" union:"member"`
 	ShellServerToolOpenRouter           *ShellServerToolOpenRouter           `queryParam:"inline" union:"member"`
 	ToolSearchServerTool                *ToolSearchServerTool                `queryParam:"inline" union:"member"`
+	McpServerToolOpenRouter             *McpServerToolOpenRouter             `queryParam:"inline" union:"member"`
 
 	Type ResponsesRequestToolUnionType
 }
@@ -1130,6 +1132,18 @@ func CreateResponsesRequestToolUnionOpenrouterToolSearch(openrouterToolSearch To
 	}
 }
 
+func CreateResponsesRequestToolUnionOpenrouterMcp(openrouterMcp McpServerToolOpenRouter) ResponsesRequestToolUnion {
+	typ := ResponsesRequestToolUnionTypeOpenrouterMcp
+
+	typStr := McpServerToolOpenRouterType(typ)
+	openrouterMcp.Type = typStr
+
+	return ResponsesRequestToolUnion{
+		McpServerToolOpenRouter: &openrouterMcp,
+		Type:                    typ,
+	}
+}
+
 func (u *ResponsesRequestToolUnion) UnmarshalJSON(data []byte) (err error) {
 	previous := *u
 	*u = ResponsesRequestToolUnion{}
@@ -1401,6 +1415,15 @@ func (u *ResponsesRequestToolUnion) UnmarshalJSON(data []byte) (err error) {
 		u.ToolSearchServerTool = toolSearchServerTool
 		u.Type = ResponsesRequestToolUnionTypeOpenrouterToolSearch
 		return nil
+	case "openrouter:mcp":
+		mcpServerToolOpenRouter := new(McpServerToolOpenRouter)
+		if err := utils.UnmarshalJSON(data, &mcpServerToolOpenRouter, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == openrouter:mcp) type McpServerToolOpenRouter within ResponsesRequestToolUnion: %w", string(data), err)
+		}
+
+		u.McpServerToolOpenRouter = mcpServerToolOpenRouter
+		u.Type = ResponsesRequestToolUnionTypeOpenrouterMcp
+		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for ResponsesRequestToolUnion", string(data))
@@ -1517,6 +1540,10 @@ func (u ResponsesRequestToolUnion) MarshalJSON() ([]byte, error) {
 
 	if u.ToolSearchServerTool != nil {
 		return utils.MarshalJSON(u.ToolSearchServerTool, "", true)
+	}
+
+	if u.McpServerToolOpenRouter != nil {
+		return utils.MarshalJSON(u.McpServerToolOpenRouter, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type ResponsesRequestToolUnion: all fields are null")

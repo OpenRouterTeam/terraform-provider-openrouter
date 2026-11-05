@@ -130,6 +130,7 @@ type ProviderOptions struct {
 	Relace                   map[string]any `json:"relace,omitzero"`
 	Replicate                map[string]any `json:"replicate,omitzero"`
 	Respan                   map[string]any `json:"respan,omitzero"`
+	River                    map[string]any `json:"river,omitzero"`
 	Runway                   map[string]any `json:"runway,omitzero"`
 	SailResearch             map[string]any `json:"sail-research,omitzero"`
 	Sakana                   map[string]any `json:"sakana,omitzero"`
@@ -1021,6 +1022,13 @@ func (p *ProviderOptions) GetRespan() map[string]any {
 		return nil
 	}
 	return p.Respan
+}
+
+func (p *ProviderOptions) GetRiver() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.River
 }
 
 func (p *ProviderOptions) GetRunway() map[string]any {

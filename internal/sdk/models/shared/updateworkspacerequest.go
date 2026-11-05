@@ -18,6 +18,7 @@ const (
 	UpdateWorkspaceRequestDisabledServerToolOpenrouterDatetime                 UpdateWorkspaceRequestDisabledServerTool = "openrouter:datetime"
 	UpdateWorkspaceRequestDisabledServerToolOpenrouterFusion                   UpdateWorkspaceRequestDisabledServerTool = "openrouter:fusion"
 	UpdateWorkspaceRequestDisabledServerToolOpenrouterImageGeneration          UpdateWorkspaceRequestDisabledServerTool = "openrouter:image_generation"
+	UpdateWorkspaceRequestDisabledServerToolOpenrouterMcp                      UpdateWorkspaceRequestDisabledServerTool = "openrouter:mcp"
 	UpdateWorkspaceRequestDisabledServerToolOpenrouterExperimentalSearchModels UpdateWorkspaceRequestDisabledServerTool = "openrouter:experimental__search_models"
 	UpdateWorkspaceRequestDisabledServerToolOpenrouterShell                    UpdateWorkspaceRequestDisabledServerTool = "openrouter:shell"
 	UpdateWorkspaceRequestDisabledServerToolOpenrouterSubagent                 UpdateWorkspaceRequestDisabledServerTool = "openrouter:subagent"
@@ -46,6 +47,8 @@ func (e *UpdateWorkspaceRequestDisabledServerTool) UnmarshalJSON(data []byte) er
 	case "openrouter:fusion":
 		fallthrough
 	case "openrouter:image_generation":
+		fallthrough
+	case "openrouter:mcp":
 		fallthrough
 	case "openrouter:experimental__search_models":
 		fallthrough

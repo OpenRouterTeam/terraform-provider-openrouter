@@ -254,6 +254,7 @@ const (
 	AdditionalToolsItemToolUnionTypeShellServerToolOpenRouter           AdditionalToolsItemToolUnionType = "ShellServerTool_OpenRouter"
 	AdditionalToolsItemToolUnionTypeToolSearchServerTool                AdditionalToolsItemToolUnionType = "ToolSearchServerTool"
 	AdditionalToolsItemToolUnionTypeAdditionalToolsItemTool             AdditionalToolsItemToolUnionType = "AdditionalToolsItem_tool"
+	AdditionalToolsItemToolUnionTypeMcpServerToolOpenRouter             AdditionalToolsItemToolUnionType = "McpServerTool_OpenRouter"
 )
 
 type AdditionalToolsItemToolUnion struct {
@@ -286,6 +287,7 @@ type AdditionalToolsItemToolUnion struct {
 	ShellServerToolOpenRouter           *ShellServerToolOpenRouter           `queryParam:"inline" union:"member"`
 	ToolSearchServerTool                *ToolSearchServerTool                `queryParam:"inline" union:"member"`
 	AdditionalToolsItemTool             *AdditionalToolsItemTool             `queryParam:"inline" union:"member"`
+	McpServerToolOpenRouter             *McpServerToolOpenRouter             `queryParam:"inline" union:"member"`
 
 	Type AdditionalToolsItemToolUnionType
 }
@@ -551,6 +553,15 @@ func CreateAdditionalToolsItemToolUnionAdditionalToolsItemTool(additionalToolsIt
 	}
 }
 
+func CreateAdditionalToolsItemToolUnionMcpServerToolOpenRouter(mcpServerToolOpenRouter McpServerToolOpenRouter) AdditionalToolsItemToolUnion {
+	typ := AdditionalToolsItemToolUnionTypeMcpServerToolOpenRouter
+
+	return AdditionalToolsItemToolUnion{
+		McpServerToolOpenRouter: &mcpServerToolOpenRouter,
+		Type:                    typ,
+	}
+}
+
 func (u *AdditionalToolsItemToolUnion) UnmarshalJSON(data []byte) (err error) {
 	previous := *u
 	*u = AdditionalToolsItemToolUnion{}
@@ -795,6 +806,14 @@ func (u *AdditionalToolsItemToolUnion) UnmarshalJSON(data []byte) (err error) {
 		})
 	}
 
+	var mcpServerToolOpenRouter McpServerToolOpenRouter = McpServerToolOpenRouter{}
+	if err := utils.UnmarshalJSON(data, &mcpServerToolOpenRouter, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  AdditionalToolsItemToolUnionTypeMcpServerToolOpenRouter,
+			Value: &mcpServerToolOpenRouter,
+		})
+	}
+
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for AdditionalToolsItemToolUnion", string(data))
 	}
@@ -894,6 +913,9 @@ func (u *AdditionalToolsItemToolUnion) UnmarshalJSON(data []byte) (err error) {
 		return nil
 	case AdditionalToolsItemToolUnionTypeAdditionalToolsItemTool:
 		u.AdditionalToolsItemTool = best.Value.(*AdditionalToolsItemTool)
+		return nil
+	case AdditionalToolsItemToolUnionTypeMcpServerToolOpenRouter:
+		u.McpServerToolOpenRouter = best.Value.(*McpServerToolOpenRouter)
 		return nil
 	}
 
@@ -1015,6 +1037,10 @@ func (u AdditionalToolsItemToolUnion) MarshalJSON() ([]byte, error) {
 
 	if u.AdditionalToolsItemTool != nil {
 		return utils.MarshalJSON(u.AdditionalToolsItemTool, "", true)
+	}
+
+	if u.McpServerToolOpenRouter != nil {
+		return utils.MarshalJSON(u.McpServerToolOpenRouter, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type AdditionalToolsItemToolUnion: all fields are null")
