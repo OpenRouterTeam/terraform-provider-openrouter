@@ -78,19 +78,3 @@ func (m privateEndpointInt64KeepUnlessChanged) PlanModifyInt64(ctx context.Conte
 		resp.PlanValue = req.StateValue
 	}
 }
-
-type privateEndpointStringKeepUnlessChanged struct {
-	group string
-}
-
-func (m privateEndpointStringKeepUnlessChanged) Description(context.Context) string { return "" }
-
-func (m privateEndpointStringKeepUnlessChanged) MarkdownDescription(context.Context) string {
-	return ""
-}
-
-func (m privateEndpointStringKeepUnlessChanged) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
-	if privateEndpointGroupUnchanged(ctx, req.Plan, req.State, m.group) {
-		resp.PlanValue = req.StateValue
-	}
-}
