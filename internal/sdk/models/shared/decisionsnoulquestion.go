@@ -257,9 +257,9 @@ func (u True) MarshalJSON() ([]byte, error) {
 
 type DecisionsNoulQuestionCriteria struct {
 	// A plain string, or a JSON object or array of structured guidance.
-	False False `json:"false"`
+	False *False `json:"false,omitzero"`
 	// A plain string, or a JSON object or array of structured guidance.
-	True True `json:"true"`
+	True *True `json:"true,omitzero"`
 }
 
 func (d DecisionsNoulQuestionCriteria) MarshalJSON() ([]byte, error) {
@@ -273,16 +273,16 @@ func (d *DecisionsNoulQuestionCriteria) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (d *DecisionsNoulQuestionCriteria) GetFalse() False {
+func (d *DecisionsNoulQuestionCriteria) GetFalse() *False {
 	if d == nil {
-		return False{}
+		return nil
 	}
 	return d.False
 }
 
-func (d *DecisionsNoulQuestionCriteria) GetTrue() True {
+func (d *DecisionsNoulQuestionCriteria) GetTrue() *True {
 	if d == nil {
-		return True{}
+		return nil
 	}
 	return d.True
 }
@@ -413,7 +413,7 @@ func (u DecisionsNoulQuestionInstructions) MarshalJSON() ([]byte, error) {
 type DecisionsNoulQuestion struct {
 	Criteria *DecisionsNoulQuestionCriteria `json:"criteria,omitzero"`
 	// A plain string, or a JSON object or array of structured guidance.
-	Instructions DecisionsNoulQuestionInstructions `json:"instructions"`
+	Instructions *DecisionsNoulQuestionInstructions `json:"instructions,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"noul" json:"type"`
 }
@@ -436,9 +436,9 @@ func (d *DecisionsNoulQuestion) GetCriteria() *DecisionsNoulQuestionCriteria {
 	return d.Criteria
 }
 
-func (d *DecisionsNoulQuestion) GetInstructions() DecisionsNoulQuestionInstructions {
+func (d *DecisionsNoulQuestion) GetInstructions() *DecisionsNoulQuestionInstructions {
 	if d == nil {
-		return DecisionsNoulQuestionInstructions{}
+		return nil
 	}
 	return d.Instructions
 }
