@@ -7940,6 +7940,12 @@ components:
               type:
                 - 'string'
                 - 'null'
+            max_tokens:
+              description: 'Maximum number of tokens the model may spend on reasoning, for models that take a reasoning token budget instead of an effort level. Cannot be combined with `reasoning.effort` or the top-level `reasoning_effort`: a request that sets both is rejected with "Only one of "reasoning.effort" and "reasoning.max_tokens" can be specified".'
+              example: 2000
+              type:
+                - 'integer'
+                - 'null'
             summary:
               $ref: '#/components/schemas/ChatReasoningSummaryVerbosityEnum'
           type: 'object'
@@ -11155,12 +11161,18 @@ components:
         usage:
           properties:
             cost:
+              description: 'What OpenRouter charges for the request, in credits. On a BYOK request this is the OpenRouter fee only.'
               format: 'double'
               type: 'number'
+            cost_details:
+              $ref: '#/components/schemas/CostDetails'
             input_tokens:
               type: 'integer'
             input_tokens_details:
               $ref: '#/components/schemas/DecisionsUsageInputTokensDetails'
+            is_byok:
+              description: 'Whether a request was made using a Bring Your Own Key configuration'
+              type: 'boolean'
             output_tokens:
               type: 'integer'
           required:
@@ -45450,6 +45462,14 @@ paths:
       tags:
         - 'API Keys'
       x-speakeasy-name-override: 'list'
+      x-speakeasy-pagination:
+        inputs:
+          - in: 'parameters'
+            name: 'offset'
+            type: 'offset'
+        outputs:
+          results: '$.data'
+        type: 'offsetLimit'
       x-speakeasy-group: apiKeys
       x-speakeasy-entity-operation: ApiKeys#read
     post:

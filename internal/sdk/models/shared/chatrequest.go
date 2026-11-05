@@ -458,8 +458,10 @@ func (e *ChatRequestEffort) UnmarshalJSON(data []byte) error {
 // ChatRequestReasoning - Configuration options for reasoning models
 type ChatRequestReasoning struct {
 	// Constrains effort on reasoning for reasoning models
-	Effort  *ChatRequestEffort                 `json:"effort,omitzero"`
-	Summary *ChatReasoningSummaryVerbosityEnum `json:"summary,omitzero"`
+	Effort *ChatRequestEffort `json:"effort,omitzero"`
+	// Maximum number of tokens the model may spend on reasoning, for models that take a reasoning token budget instead of an effort level. Cannot be combined with `reasoning.effort` or the top-level `reasoning_effort`: a request that sets both is rejected with "Only one of "reasoning.effort" and "reasoning.max_tokens" can be specified".
+	MaxTokens *int64                             `json:"max_tokens,omitzero"`
+	Summary   *ChatReasoningSummaryVerbosityEnum `json:"summary,omitzero"`
 }
 
 func (c *ChatRequestReasoning) GetEffort() *ChatRequestEffort {
@@ -467,6 +469,13 @@ func (c *ChatRequestReasoning) GetEffort() *ChatRequestEffort {
 		return nil
 	}
 	return c.Effort
+}
+
+func (c *ChatRequestReasoning) GetMaxTokens() *int64 {
+	if c == nil {
+		return nil
+	}
+	return c.MaxTokens
 }
 
 func (c *ChatRequestReasoning) GetSummary() *ChatReasoningSummaryVerbosityEnum {
