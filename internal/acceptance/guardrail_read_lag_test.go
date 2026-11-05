@@ -2,7 +2,6 @@ package acceptance
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"sync"
@@ -79,11 +78,11 @@ func (s *stubGuardrailLag) serveHTTP(w http.ResponseWriter, r *http.Request) {
 func TestStubGuardrailReadAfterWriteLag(t *testing.T) {
 	srv, api := newStubGuardrailLag(t)
 	const name = "openrouter_guardrail.test"
-	config := stubBudgetProviderConfig(srv.URL) + fmt.Sprintf(`
+	config := stubBudgetProviderConfig(srv.URL) + `
 resource "openrouter_guardrail" "test" {
   name = "lag"
 }
-`)
+`
 
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
