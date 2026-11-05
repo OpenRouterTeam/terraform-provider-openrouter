@@ -9,6 +9,41 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+type McpCallItemStatus string
+
+const (
+	McpCallItemStatusInProgress McpCallItemStatus = "in_progress"
+	McpCallItemStatusCompleted  McpCallItemStatus = "completed"
+	McpCallItemStatusIncomplete McpCallItemStatus = "incomplete"
+	McpCallItemStatusCalling    McpCallItemStatus = "calling"
+	McpCallItemStatusFailed     McpCallItemStatus = "failed"
+)
+
+func (e McpCallItemStatus) ToPointer() *McpCallItemStatus {
+	return &e
+}
+func (e *McpCallItemStatus) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "in_progress":
+		fallthrough
+	case "completed":
+		fallthrough
+	case "incomplete":
+		fallthrough
+	case "calling":
+		fallthrough
+	case "failed":
+		*e = McpCallItemStatus(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for McpCallItemStatus: %v", v)
+	}
+}
+
 type McpCallItemType string
 
 const (
@@ -34,14 +69,16 @@ func (e *McpCallItemType) UnmarshalJSON(data []byte) error {
 
 // McpCallItem - An MCP tool call with its output or error
 type McpCallItem struct {
-	Arguments string `json:"arguments"`
+	ApprovalRequestID *string `json:"approval_request_id,omitzero"`
+	Arguments         string  `json:"arguments"`
 	// Error from an MCP tool call, either a plain message or a structured error
-	Error       *McpToolCallError `json:"error,omitzero"`
-	ID          string            `json:"id"`
-	Name        string            `json:"name"`
-	Output      *string           `json:"output,omitzero"`
-	ServerLabel string            `json:"server_label"`
-	Type        McpCallItemType   `json:"type"`
+	Error       *McpToolCallError  `json:"error,omitzero"`
+	ID          string             `json:"id"`
+	Name        string             `json:"name"`
+	Output      *string            `json:"output,omitzero"`
+	ServerLabel string             `json:"server_label"`
+	Status      *McpCallItemStatus `json:"status,omitzero"`
+	Type        McpCallItemType    `json:"type"`
 }
 
 func (m McpCallItem) MarshalJSON() ([]byte, error) {
@@ -53,6 +90,13 @@ func (m *McpCallItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (m *McpCallItem) GetApprovalRequestID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.ApprovalRequestID
 }
 
 func (m *McpCallItem) GetArguments() string {
@@ -95,6 +139,13 @@ func (m *McpCallItem) GetServerLabel() string {
 		return ""
 	}
 	return m.ServerLabel
+}
+
+func (m *McpCallItem) GetStatus() *McpCallItemStatus {
+	if m == nil {
+		return nil
+	}
+	return m.Status
 }
 
 func (m *McpCallItem) GetType() McpCallItemType {

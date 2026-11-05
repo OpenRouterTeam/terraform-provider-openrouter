@@ -373,6 +373,7 @@ type VideoGenerationRequestOptions struct {
 	Relace                   map[string]any `json:"relace,omitzero"`
 	Replicate                map[string]any `json:"replicate,omitzero"`
 	Respan                   map[string]any `json:"respan,omitzero"`
+	River                    map[string]any `json:"river,omitzero"`
 	Runway                   map[string]any `json:"runway,omitzero"`
 	SailResearch             map[string]any `json:"sail-research,omitzero"`
 	Sakana                   map[string]any `json:"sakana,omitzero"`
@@ -1264,6 +1265,13 @@ func (v *VideoGenerationRequestOptions) GetRespan() map[string]any {
 		return nil
 	}
 	return v.Respan
+}
+
+func (v *VideoGenerationRequestOptions) GetRiver() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.River
 }
 
 func (v *VideoGenerationRequestOptions) GetRunway() map[string]any {

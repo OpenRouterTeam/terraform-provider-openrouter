@@ -20,6 +20,9 @@ const (
 	AlignmentResponsesRejectedTypeFileSearchCall      AlignmentResponsesRejectedType = "file_search_call"
 	AlignmentResponsesRejectedTypeFunctionCall        AlignmentResponsesRejectedType = "function_call"
 	AlignmentResponsesRejectedTypeImageGenerationCall AlignmentResponsesRejectedType = "image_generation_call"
+	AlignmentResponsesRejectedTypeMcpApprovalRequest  AlignmentResponsesRejectedType = "mcp_approval_request"
+	AlignmentResponsesRejectedTypeMcpCall             AlignmentResponsesRejectedType = "mcp_call"
+	AlignmentResponsesRejectedTypeMcpListTools        AlignmentResponsesRejectedType = "mcp_list_tools"
 	AlignmentResponsesRejectedTypeMessage             AlignmentResponsesRejectedType = "message"
 	AlignmentResponsesRejectedTypeReasoning           AlignmentResponsesRejectedType = "reasoning"
 	AlignmentResponsesRejectedTypeWebSearchCall       AlignmentResponsesRejectedType = "web_search_call"
@@ -36,6 +39,9 @@ type AlignmentResponsesRejected struct {
 	OutputItemApplyPatchCall      *OutputItemApplyPatchCall      `queryParam:"inline" union:"member"`
 	OutputItemCodeInterpreterCall *OutputItemCodeInterpreterCall `queryParam:"inline" union:"member"`
 	OutputItemCompaction          *OutputItemCompaction          `queryParam:"inline" union:"member"`
+	OutputItemMcpListTools        *OutputItemMcpListTools        `queryParam:"inline" union:"member"`
+	OutputItemMcpCall             *OutputItemMcpCall             `queryParam:"inline" union:"member"`
+	OutputItemMcpApprovalRequest  *OutputItemMcpApprovalRequest  `queryParam:"inline" union:"member"`
 
 	Type AlignmentResponsesRejectedType
 }
@@ -100,6 +106,33 @@ func CreateAlignmentResponsesRejectedImageGenerationCall(imageGenerationCall Out
 	return AlignmentResponsesRejected{
 		OutputItemImageGenerationCall: &imageGenerationCall,
 		Type:                          typ,
+	}
+}
+
+func CreateAlignmentResponsesRejectedMcpApprovalRequest(mcpApprovalRequest OutputItemMcpApprovalRequest) AlignmentResponsesRejected {
+	typ := AlignmentResponsesRejectedTypeMcpApprovalRequest
+
+	return AlignmentResponsesRejected{
+		OutputItemMcpApprovalRequest: &mcpApprovalRequest,
+		Type:                         typ,
+	}
+}
+
+func CreateAlignmentResponsesRejectedMcpCall(mcpCall OutputItemMcpCall) AlignmentResponsesRejected {
+	typ := AlignmentResponsesRejectedTypeMcpCall
+
+	return AlignmentResponsesRejected{
+		OutputItemMcpCall: &mcpCall,
+		Type:              typ,
+	}
+}
+
+func CreateAlignmentResponsesRejectedMcpListTools(mcpListTools OutputItemMcpListTools) AlignmentResponsesRejected {
+	typ := AlignmentResponsesRejectedTypeMcpListTools
+
+	return AlignmentResponsesRejected{
+		OutputItemMcpListTools: &mcpListTools,
+		Type:                   typ,
 	}
 }
 
@@ -212,6 +245,33 @@ func (u *AlignmentResponsesRejected) UnmarshalJSON(data []byte) (err error) {
 		u.OutputItemImageGenerationCall = outputItemImageGenerationCall
 		u.Type = AlignmentResponsesRejectedTypeImageGenerationCall
 		return nil
+	case "mcp_approval_request":
+		outputItemMcpApprovalRequest := new(OutputItemMcpApprovalRequest)
+		if err := utils.UnmarshalJSON(data, &outputItemMcpApprovalRequest, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == mcp_approval_request) type OutputItemMcpApprovalRequest within AlignmentResponsesRejected: %w", string(data), err)
+		}
+
+		u.OutputItemMcpApprovalRequest = outputItemMcpApprovalRequest
+		u.Type = AlignmentResponsesRejectedTypeMcpApprovalRequest
+		return nil
+	case "mcp_call":
+		outputItemMcpCall := new(OutputItemMcpCall)
+		if err := utils.UnmarshalJSON(data, &outputItemMcpCall, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == mcp_call) type OutputItemMcpCall within AlignmentResponsesRejected: %w", string(data), err)
+		}
+
+		u.OutputItemMcpCall = outputItemMcpCall
+		u.Type = AlignmentResponsesRejectedTypeMcpCall
+		return nil
+	case "mcp_list_tools":
+		outputItemMcpListTools := new(OutputItemMcpListTools)
+		if err := utils.UnmarshalJSON(data, &outputItemMcpListTools, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == mcp_list_tools) type OutputItemMcpListTools within AlignmentResponsesRejected: %w", string(data), err)
+		}
+
+		u.OutputItemMcpListTools = outputItemMcpListTools
+		u.Type = AlignmentResponsesRejectedTypeMcpListTools
+		return nil
 	case "message":
 		outputMessage := new(OutputMessage)
 		if err := utils.UnmarshalJSON(data, &outputMessage, "", true, nil); err != nil {
@@ -283,6 +343,18 @@ func (u AlignmentResponsesRejected) MarshalJSON() ([]byte, error) {
 
 	if u.OutputItemCompaction != nil {
 		return utils.MarshalJSON(u.OutputItemCompaction, "", true)
+	}
+
+	if u.OutputItemMcpListTools != nil {
+		return utils.MarshalJSON(u.OutputItemMcpListTools, "", true)
+	}
+
+	if u.OutputItemMcpCall != nil {
+		return utils.MarshalJSON(u.OutputItemMcpCall, "", true)
+	}
+
+	if u.OutputItemMcpApprovalRequest != nil {
+		return utils.MarshalJSON(u.OutputItemMcpApprovalRequest, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type AlignmentResponsesRejected: all fields are null")
