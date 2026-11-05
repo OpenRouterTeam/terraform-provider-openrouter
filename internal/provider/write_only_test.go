@@ -266,9 +266,10 @@ func TestScrubObservabilityDataSource(t *testing.T) {
 		wantKept  bool
 		wantLabel string
 	}{
-		"unset keeps":  {types.BoolNull(), true, "existing behavior"},
-		"true keeps":   {types.BoolValue(true), true, "explicit true"},
-		"false scrubs": {types.BoolValue(false), false, "explicit false"},
+		"unset scrubs":   {types.BoolNull(), false, "safe default"},
+		"unknown scrubs": {types.BoolUnknown(), false, "unknown at read time"},
+		"true keeps":     {types.BoolValue(true), true, "explicit true"},
+		"false scrubs":   {types.BoolValue(false), false, "explicit false"},
 	} {
 		t.Run(name, func(t *testing.T) {
 			data := &ObservabilityDestinationDataSourceModel{}

@@ -56,6 +56,9 @@ data "openrouter_workspace" "by_id" {
 
 data "openrouter_observability_destination" "by_id" {
   id = openrouter_observability_destination.test.id
+  # This test asserts the raw API config reaches the data source, which now
+  # requires opting in.
+  include_sensitive_config = true
 }
 
 data "openrouter_model" "by_slug" {
@@ -230,6 +233,9 @@ resource "openrouter_observability_destination" "test" {
 	listConfig := fixtureConfig + `
 data "openrouter_observability_destinations" "by_workspace" {
   workspace_id = openrouter_workspace.test.id
+  # This test asserts the raw API config reaches the data source, which now
+  # requires opting in.
+  include_sensitive_config = true
 }
 `
 

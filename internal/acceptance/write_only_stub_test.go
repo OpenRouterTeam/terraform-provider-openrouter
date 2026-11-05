@@ -550,7 +550,10 @@ func TestStubWriteOnlyBroadcastLifecycle(t *testing.T) {
 						// drop credentials on request.
 						resource.TestCheckNoResourceAttr("data.openrouter_observability_destination.filtered", "webhook.config.headers.Authorization"),
 						resource.TestCheckNoResourceAttr("data.openrouter_observability_destination.filtered", "webhook.config.url"),
-						resource.TestCheckResourceAttrSet("data.openrouter_observability_destination.default", "webhook.config.url")),
+						// The default is now the safe one: an unset
+						// include_sensitive_config scrubs the computed copy too.
+						resource.TestCheckNoResourceAttr("data.openrouter_observability_destination.default", "webhook.config.url"),
+						resource.TestCheckNoResourceAttr("data.openrouter_observability_destination.default", "webhook.config.headers.Authorization")),
 				},
 				{
 					// Public-only update with an unchanged version: credentials

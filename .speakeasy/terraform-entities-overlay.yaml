@@ -244,6 +244,15 @@ actions:
   # ---------------------------------------------------------------------------
   # ObservabilityDestination (EXPERIMENTAL: 17-variant discriminated oneOf;
   # if generation fails on union reconciliation, remove this block only)
+  #
+  # The data sources carry an `include_sensitive_config` argument that defaults
+  # to false, so a read keeps credentials, headers and undeclared URLs out of
+  # state unless the practitioner opts in. That default and the scrub that
+  # enforces it are hand-written provider code rather than spec annotations: the
+  # API returns the credentials either way, so the difference is what the
+  # provider stores, which no overlay can express. Editing the generated data
+  # sources directly is what trips the pairing guard, hence this note and a
+  # hand-written change recorded as Speakeasy custom code.
   # ---------------------------------------------------------------------------
   - target: $["components"]["schemas"]["ObservabilityDestination"]
     update:

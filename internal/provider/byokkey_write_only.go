@@ -25,6 +25,9 @@ func addByokKeyWriteOnlyAttributes(s *schema.Schema) {
 	key.Optional = true
 	key.Description = "The raw provider API key or credential. This value is encrypted at rest and never returned in API responses. " +
 		"It is stored in Terraform state; set `key_wo` instead to keep it out of state and plans. One of `key` and `key_wo` is required to create a key."
+	// Nudge migration without breaking it: setting `key` still works, but plan
+	// output points at the write-only alternative on Terraform 1.11 and later.
+	key.Validators = append(key.Validators, stringvalidator.PreferWriteOnlyAttribute(path.MatchRoot("key_wo")))
 	s.Attributes["key"] = key
 
 	s.Attributes["key_wo"] = schema.StringAttribute{
