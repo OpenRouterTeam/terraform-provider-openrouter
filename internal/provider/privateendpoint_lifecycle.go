@@ -24,8 +24,14 @@ import (
 // no trailing "/" or "/chat/completions"). Storing the server value instead
 // would differ from config on every plan.
 func privateEndpointBaseURL(prior types.String, server *string) types.String {
-	if server != nil && !prior.IsNull() && !prior.IsUnknown() &&
-		custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(prior.ValueString()) == custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(*server) {
+	if server == nil {
+		return prior
+	}
+	normalized := custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(*server)
+	if prior.IsUnknown() || prior.IsNull() {
+		return types.StringValue(normalized)
+	}
+	if custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(prior.ValueString()) == normalized {
 		return prior
 	}
 	return types.StringPointerValue(server)
@@ -225,6 +231,8 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 		return
 	}
 	priorDeclaredParameters := data.DeclaredParameters
+	priorBaseURL := data.BaseURL
+	priorProviderSlug := data.ProviderSlug
 
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
 
@@ -232,13 +240,35 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 		return
 	}
 
+	data.BaseURL = privateEndpointBaseURL(priorBaseURL, res.PrivateEndpointResponse.Data.BaseURL)
+	// The provider catalogue can stop listing a provider we already recorded;
+	// keep the configured slug instead of dropping into a replacement.
+	if data.ProviderSlug.IsNull() && !priorProviderSlug.IsNull() && !priorProviderSlug.IsUnknown() {
+		data.ProviderSlug = priorProviderSlug
+	}
 	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
 
+	// refreshPlan copies the plan over data, which would put stale config values
+	// back on attributes only the API can answer. Keep the server truth.
+	server := *data
 	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	data.BaseURL = server.BaseURL
+	data.DeclaredParameters = server.DeclaredParameters
+	data.ID = server.ID
+	data.MaxCompletionTokens = server.MaxCompletionTokens
+	data.ModelName = server.ModelName
+	data.ModelPermaslug = server.ModelPermaslug
+	data.ModelSlug = server.ModelSlug
+	data.Pricing = server.Pricing
+	data.ProviderName = server.ProviderName
+	data.ProviderSlug = server.ProviderSlug
+	data.Settings = server.Settings
+	data.Status = server.Status
+	data.TestedParameters = server.TestedParameters
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
