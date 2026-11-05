@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 399150618cd3b7f9a0c96ebed5866811
+  docChecksum: f1b02e5b0e8b5e30ad8b48fc1cf7a6de
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.175
-  configChecksum: d1ed0938c68cba0c3e57b3bc02f6ba37
+  releaseVersion: 0.3.176
+  configChecksum: 1f2d4dd06e934ed21b0094121751616a
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 91c49704-99ba-432d-87e2-dd128bceb231
-  pristine_commit_hash: b307cccc69266d3b7ff67d44cd56868d1fa12173
-  pristine_tree_hash: c3f462bb11d27ccf76bb307f7c1d994443c9ba7c
+  generation_id: c629ca1c-694e-406a-beb8-e767266b823f
+  pristine_commit_hash: 73ffc10025d535c362483f25e33c9ead25236b3e
+  pristine_tree_hash: 96874696f623ee2dfde50838cefd64880e11bea5
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:967f83ceebf7107ae302f7eebc4195b6781ede4b
-    pristine_git_object: f3ab092c82a925f10267cddfdae0c2ba2fb0cde2
+    last_write_checksum: sha1:d34ca97c1c616b1de75c43f11928a5de48759845
+    pristine_git_object: 1e4f276f5439369ba69c1c7892dc2d043bf8d9ed
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -3090,8 +3090,8 @@ trackedFiles:
     pristine_git_object: 84c13d25cd75a9af22a32bfafe9538ac818e24a5
   internal/sdk/models/shared/decisionsresponse.go:
     id: 0cb95799651f
-    last_write_checksum: sha1:4bab3eab47e2b07af92f06a54d614a6cee5306a9
-    pristine_git_object: 2abd2c21ebc1732d98ce6322f7356ea53f7b6974
+    last_write_checksum: sha1:31e0da1fd0a03606fa5944fa5e64ffc42bbd7c9e
+    pristine_git_object: 8c993aaca0c917487053efc1fd4254dbffff8497
   internal/sdk/models/shared/decisionsscoreanswer.go:
     id: e72d42b8c1c8
     last_write_checksum: sha1:7d8ba2b4632fe64cb52b5de5295c615a74d5c930
@@ -5226,8 +5226,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:494645095c00d9fb87701bd0b74f4f8e9d7d1927
-    pristine_git_object: e980e3660318db2a569c50f3053949b847f3aad5
+    last_write_checksum: sha1:16685df7be3dc8ca31aa7df5e0cbcf30cf59b4ab
+    pristine_git_object: 6f70bceb3be9f00567a797b57b7a3171104f505c
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -8682,7 +8682,7 @@ examples:
         application/json: {"model": "Grand Cherokee", "provider": {"allow_fallbacks": true}, "questions": {}, "session_id": "session-1234", "state": "Maine", "trace": {"trace_id": "trace-abc123", "trace_name": "my-app-trace"}}
       responses:
         "200":
-          application/json: {"answers": {}, "model": "Element", "usage": {"input_tokens": 214632, "output_tokens": 408438}}
+          application/json: {"answers": {}, "model": "Element", "usage": {"cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "input_tokens": 214632, "output_tokens": 408438}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
@@ -8713,7 +8713,7 @@ examples:
         application/json: {"model": "Taurus", "provider": {"allow_fallbacks": true}, "questions": {}, "session_id": "session-1234", "state": {"key": "Utah", "key1": "Alaska", "key2": "Ohio"}, "trace": {"trace_id": "trace-abc123", "trace_name": "my-app-trace"}}
       responses:
         "200":
-          application/json: {"answers": {"key": {"score": 9690, "type": "score"}}, "model": "Model Y", "usage": {"input_tokens": 514823, "output_tokens": 883118}}
+          application/json: {"answers": {"key": {"score": 9690, "type": "score"}}, "model": "Model Y", "usage": {"cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "input_tokens": 514823, "output_tokens": 883118}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "401":
