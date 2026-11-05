@@ -455,7 +455,7 @@ func (r *GuardrailResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	res, err := r.client.Guardrails.GetGuardrail(ctx, *request)
+	res, err := getGuardrailTolerantOfReadLag(ctx, r.client, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
@@ -588,6 +588,8 @@ func (r *GuardrailResource) Delete(ctx context.Context, req resource.DeleteReque
 		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
 		return
 	}
+
+	awaitGuardrailDeleted(ctx, r.client, data)
 
 }
 

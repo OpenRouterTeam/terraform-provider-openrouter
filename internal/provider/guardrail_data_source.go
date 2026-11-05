@@ -273,7 +273,7 @@ func (r *GuardrailDataSource) Read(ctx context.Context, req datasource.ReadReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	res, err := r.client.Guardrails.GetGuardrail(ctx, *request)
+	res, err := getGuardrailTolerantOfReadLag(ctx, r.client, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
