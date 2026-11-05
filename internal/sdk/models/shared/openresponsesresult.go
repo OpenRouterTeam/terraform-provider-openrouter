@@ -694,6 +694,8 @@ type Usage struct {
 	// Cost of the completion
 	Cost        *float64          `json:"cost,omitzero"`
 	CostDetails *UsageCostDetails `json:"cost_details,omitzero"`
+	// Totals across every upstream model call of a deferred-tools run. The native usage fields report only the final call; cost covers every call.
+	DeferredToolsDetails *DeferredToolsDetails `json:"deferred_tools_details,omitzero"`
 	// Whether a request was made using a Bring Your Own Key configuration
 	IsByok *bool `json:"is_byok,omitzero"`
 	// Usage for server-side tool execution (e.g., web search)
@@ -758,6 +760,13 @@ func (u *Usage) GetCostDetails() *UsageCostDetails {
 		return nil
 	}
 	return u.CostDetails
+}
+
+func (u *Usage) GetDeferredToolsDetails() *DeferredToolsDetails {
+	if u == nil {
+		return nil
+	}
+	return u.DeferredToolsDetails
 }
 
 func (u *Usage) GetIsByok() *bool {
