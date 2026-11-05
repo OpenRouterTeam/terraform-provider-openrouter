@@ -15,6 +15,7 @@ type AlignmentResponsesRejectedType string
 const (
 	AlignmentResponsesRejectedTypeApplyPatchCall      AlignmentResponsesRejectedType = "apply_patch_call"
 	AlignmentResponsesRejectedTypeCodeInterpreterCall AlignmentResponsesRejectedType = "code_interpreter_call"
+	AlignmentResponsesRejectedTypeCompaction          AlignmentResponsesRejectedType = "compaction"
 	AlignmentResponsesRejectedTypeCustomToolCall      AlignmentResponsesRejectedType = "custom_tool_call"
 	AlignmentResponsesRejectedTypeFileSearchCall      AlignmentResponsesRejectedType = "file_search_call"
 	AlignmentResponsesRejectedTypeFunctionCall        AlignmentResponsesRejectedType = "function_call"
@@ -34,6 +35,7 @@ type AlignmentResponsesRejected struct {
 	OutputItemImageGenerationCall *OutputItemImageGenerationCall `queryParam:"inline" union:"member"`
 	OutputItemApplyPatchCall      *OutputItemApplyPatchCall      `queryParam:"inline" union:"member"`
 	OutputItemCodeInterpreterCall *OutputItemCodeInterpreterCall `queryParam:"inline" union:"member"`
+	OutputItemCompaction          *OutputItemCompaction          `queryParam:"inline" union:"member"`
 
 	Type AlignmentResponsesRejectedType
 }
@@ -53,6 +55,15 @@ func CreateAlignmentResponsesRejectedCodeInterpreterCall(codeInterpreterCall Out
 	return AlignmentResponsesRejected{
 		OutputItemCodeInterpreterCall: &codeInterpreterCall,
 		Type:                          typ,
+	}
+}
+
+func CreateAlignmentResponsesRejectedCompaction(compaction OutputItemCompaction) AlignmentResponsesRejected {
+	typ := AlignmentResponsesRejectedTypeCompaction
+
+	return AlignmentResponsesRejected{
+		OutputItemCompaction: &compaction,
+		Type:                 typ,
 	}
 }
 
@@ -155,6 +166,15 @@ func (u *AlignmentResponsesRejected) UnmarshalJSON(data []byte) (err error) {
 
 		u.OutputItemCodeInterpreterCall = outputItemCodeInterpreterCall
 		u.Type = AlignmentResponsesRejectedTypeCodeInterpreterCall
+		return nil
+	case "compaction":
+		outputItemCompaction := new(OutputItemCompaction)
+		if err := utils.UnmarshalJSON(data, &outputItemCompaction, "", true, nil); err != nil {
+			return fmt.Errorf("could not unmarshal `%s` into expected (Type == compaction) type OutputItemCompaction within AlignmentResponsesRejected: %w", string(data), err)
+		}
+
+		u.OutputItemCompaction = outputItemCompaction
+		u.Type = AlignmentResponsesRejectedTypeCompaction
 		return nil
 	case "custom_tool_call":
 		outputItemCustomToolCall := new(OutputItemCustomToolCall)
@@ -259,6 +279,10 @@ func (u AlignmentResponsesRejected) MarshalJSON() ([]byte, error) {
 
 	if u.OutputItemCodeInterpreterCall != nil {
 		return utils.MarshalJSON(u.OutputItemCodeInterpreterCall, "", true)
+	}
+
+	if u.OutputItemCompaction != nil {
+		return utils.MarshalJSON(u.OutputItemCompaction, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type AlignmentResponsesRejected: all fields are null")

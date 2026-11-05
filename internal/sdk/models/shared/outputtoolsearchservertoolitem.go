@@ -9,6 +9,30 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
+// OutputToolSearchServerToolItemFormat - How the model saw the matches. `compact` means each tool by name, description, and input shape, plus a call example. Replaying the item renders the same result.
+type OutputToolSearchServerToolItemFormat string
+
+const (
+	OutputToolSearchServerToolItemFormatCompact OutputToolSearchServerToolItemFormat = "compact"
+)
+
+func (e OutputToolSearchServerToolItemFormat) ToPointer() *OutputToolSearchServerToolItemFormat {
+	return &e
+}
+func (e *OutputToolSearchServerToolItemFormat) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "compact":
+		*e = OutputToolSearchServerToolItemFormat(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for OutputToolSearchServerToolItemFormat: %v", v)
+	}
+}
+
 type Match struct {
 	Definition   map[string]any `json:"definition"`
 	SchemaDigest string         `json:"schema_digest"`
@@ -72,13 +96,25 @@ func (e *OutputToolSearchServerToolItemType) UnmarshalJSON(data []byte) error {
 
 // OutputToolSearchServerToolItem - An openrouter:tool_search server tool output item
 type OutputToolSearchServerToolItem struct {
+	// The JSON arguments of the model call, verbatim. Replaying the item reuses them.
+	Arguments *string `json:"arguments,omitzero"`
+	// The ID of the model call that ran the search. Replaying the item reuses it.
+	CallID *string `json:"call_id,omitzero"`
+	// The deferred-tool index the router showed the model with a pre-search, listing tool sources and names. Replaying the item shows the same index.
+	CatalogIndex *string `json:"catalog_index,omitzero"`
 	// The error message when the tool call failed before producing a result. Set together with `status: 'failed'`; absent on a successful call.
-	Error   *string                            `json:"error,omitzero"`
-	ID      *string                            `json:"id,omitzero"`
-	Matches []Match                            `json:"matches,omitzero"`
-	Query   *string                            `json:"query,omitzero"`
-	Status  FailableToolCallStatus             `json:"status"`
-	Type    OutputToolSearchServerToolItemType `json:"type"`
+	Error *string `json:"error,omitzero"`
+	// How the model saw the matches. `compact` means each tool by name, description, and input shape, plus a call example. Replaying the item renders the same result.
+	Format *OutputToolSearchServerToolItemFormat `json:"format,omitzero"`
+	// The guidance the model got when the search matched no tools.
+	Hint    *string                `json:"hint,omitzero"`
+	ID      *string                `json:"id,omitzero"`
+	Matches []Match                `json:"matches,omitzero"`
+	Query   *string                `json:"query,omitzero"`
+	Status  FailableToolCallStatus `json:"status"`
+	// The IDs of every tool call in the model response that ran the search, in order. Replaying the item keeps those calls in one turn.
+	TurnCallIds []string                           `json:"turn_call_ids,omitzero"`
+	Type        OutputToolSearchServerToolItemType `json:"type"`
 }
 
 func (o OutputToolSearchServerToolItem) MarshalJSON() ([]byte, error) {
@@ -92,11 +128,46 @@ func (o *OutputToolSearchServerToolItem) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (o *OutputToolSearchServerToolItem) GetArguments() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Arguments
+}
+
+func (o *OutputToolSearchServerToolItem) GetCallID() *string {
+	if o == nil {
+		return nil
+	}
+	return o.CallID
+}
+
+func (o *OutputToolSearchServerToolItem) GetCatalogIndex() *string {
+	if o == nil {
+		return nil
+	}
+	return o.CatalogIndex
+}
+
 func (o *OutputToolSearchServerToolItem) GetError() *string {
 	if o == nil {
 		return nil
 	}
 	return o.Error
+}
+
+func (o *OutputToolSearchServerToolItem) GetFormat() *OutputToolSearchServerToolItemFormat {
+	if o == nil {
+		return nil
+	}
+	return o.Format
+}
+
+func (o *OutputToolSearchServerToolItem) GetHint() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Hint
 }
 
 func (o *OutputToolSearchServerToolItem) GetID() *string {
@@ -125,6 +196,13 @@ func (o *OutputToolSearchServerToolItem) GetStatus() FailableToolCallStatus {
 		return FailableToolCallStatus("")
 	}
 	return o.Status
+}
+
+func (o *OutputToolSearchServerToolItem) GetTurnCallIds() []string {
+	if o == nil {
+		return nil
+	}
+	return o.TurnCallIds
 }
 
 func (o *OutputToolSearchServerToolItem) GetType() OutputToolSearchServerToolItemType {

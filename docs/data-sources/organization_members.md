@@ -34,4 +34,4 @@ Read-Only:
 - `first_name` (String) First name of the member
 - `id` (String) User ID of the organization member
 - `last_name` (String) Last name of the member
-- `role` (String) Role of the member in the organization
+- `role` (String) Role of the member in the organization. `org:viewer` is coming soon and not yet available. Once launched, it has read-only organization access: it can view organization settings, billing and workspaces but not change them. Workspace roles can still grant write access in specific workspaces.

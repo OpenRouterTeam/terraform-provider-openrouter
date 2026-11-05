@@ -67,7 +67,7 @@ func (r *OrganizationMembersDataSource) Schema(ctx context.Context, req datasour
 						},
 						"role": schema.StringAttribute{
 							Computed:    true,
-							Description: `Role of the member in the organization`,
+							Description: `Role of the member in the organization. ` + "`" + `org:viewer` + "`" + ` is coming soon and not yet available. Once launched, it has read-only organization access: it can view organization settings, billing and workspaces but not change them. Workspace roles can still grant write access in specific workspaces.`,
 						},
 					},
 				},
