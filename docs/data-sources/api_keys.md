@@ -16,7 +16,6 @@ APIKeys DataSource
 data "openrouter_api_keys" "my_apikeys" {
   include_disabled = "false"
   include_expired  = "false"
-  offset           = 0
   workspace_id     = "0df9e665-d932-5740-b2c7-b52af166bc11"
 }
 ```
@@ -28,7 +27,6 @@ data "openrouter_api_keys" "my_apikeys" {
 
 - `include_disabled` (String) Whether to include disabled API keys in the response
 - `include_expired` (String) Whether to include expired API keys in the response. Expired keys are excluded by default and returned only when this is true.
-- `offset` (Number) Number of API keys to skip for pagination
 - `workspace_id` (String) Filter API keys by workspace ID. By default an organization-scoped management key gets the default workspace; a workspace-scoped management key always gets its own workspace and cannot list another.
 
 ### Read-Only
