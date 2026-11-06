@@ -9,18 +9,18 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-type ActionEnum string
+type OutputMemoryServerToolItemAction string
 
 const (
-	ActionEnumRead   ActionEnum = "read"
-	ActionEnumWrite  ActionEnum = "write"
-	ActionEnumDelete ActionEnum = "delete"
+	OutputMemoryServerToolItemActionRead   OutputMemoryServerToolItemAction = "read"
+	OutputMemoryServerToolItemActionWrite  OutputMemoryServerToolItemAction = "write"
+	OutputMemoryServerToolItemActionDelete OutputMemoryServerToolItemAction = "delete"
 )
 
-func (e ActionEnum) ToPointer() *ActionEnum {
+func (e OutputMemoryServerToolItemAction) ToPointer() *OutputMemoryServerToolItemAction {
 	return &e
 }
-func (e *ActionEnum) UnmarshalJSON(data []byte) error {
+func (e *OutputMemoryServerToolItemAction) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -31,10 +31,10 @@ func (e *ActionEnum) UnmarshalJSON(data []byte) error {
 	case "write":
 		fallthrough
 	case "delete":
-		*e = ActionEnum(v)
+		*e = OutputMemoryServerToolItemAction(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for ActionEnum: %v", v)
+		return fmt.Errorf("invalid value for OutputMemoryServerToolItemAction: %v", v)
 	}
 }
 
@@ -63,12 +63,12 @@ func (e *OutputMemoryServerToolItemType) UnmarshalJSON(data []byte) error {
 
 // OutputMemoryServerToolItem - An openrouter:memory server tool output item
 type OutputMemoryServerToolItem struct {
-	Action *ActionEnum                    `json:"action,omitzero"`
-	ID     *string                        `json:"id,omitzero"`
-	Key    *string                        `json:"key,omitzero"`
-	Status ToolCallStatus                 `json:"status"`
-	Type   OutputMemoryServerToolItemType `json:"type"`
-	Value  any                            `json:"value,omitzero"`
+	Action *OutputMemoryServerToolItemAction `json:"action,omitzero"`
+	ID     *string                           `json:"id,omitzero"`
+	Key    *string                           `json:"key,omitzero"`
+	Status ToolCallStatus                    `json:"status"`
+	Type   OutputMemoryServerToolItemType    `json:"type"`
+	Value  any                               `json:"value,omitzero"`
 }
 
 func (o OutputMemoryServerToolItem) MarshalJSON() ([]byte, error) {
@@ -82,7 +82,7 @@ func (o *OutputMemoryServerToolItem) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (o *OutputMemoryServerToolItem) GetAction() *ActionEnum {
+func (o *OutputMemoryServerToolItem) GetAction() *OutputMemoryServerToolItemAction {
 	if o == nil {
 		return nil
 	}
