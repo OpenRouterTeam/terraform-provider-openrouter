@@ -11,8 +11,10 @@ import (
 
 type CreatePresetsChatCompletionsRequest struct {
 	// URL-safe slug identifying the preset. Created if it does not exist.
-	Slug string             `pathParam:"style=simple,explode=false,name=slug"`
-	Body shared.ChatRequest `request:"mediaType=application/json"`
+	Slug string `pathParam:"style=simple,explode=false,name=slug"`
+	// Workspace to create the preset in. Defaults to the key's workspace for a key limited to one workspace, otherwise to the account's default workspace.
+	WorkspaceID *string            `queryParam:"style=form,explode=true,name=workspace_id"`
+	Body        shared.ChatRequest `request:"mediaType=application/json"`
 }
 
 func (c *CreatePresetsChatCompletionsRequest) GetSlug() string {
@@ -20,6 +22,13 @@ func (c *CreatePresetsChatCompletionsRequest) GetSlug() string {
 		return ""
 	}
 	return c.Slug
+}
+
+func (c *CreatePresetsChatCompletionsRequest) GetWorkspaceID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.WorkspaceID
 }
 
 func (c *CreatePresetsChatCompletionsRequest) GetBody() shared.ChatRequest {
