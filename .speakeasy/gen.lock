@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: a6ae34f1ac67e2001eb45d669b9125fc
+  docChecksum: dabbd583d9b87db38823990420c1a080
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.183
-  configChecksum: 800418083e54c81eaa4ed7784c07f406
+  releaseVersion: 0.3.184
+  configChecksum: 06e7a8ac1873e7d2eec2dbdcf7d9620c
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: ce71f078-e35c-40b6-a60e-b67cec8f5fbd
-  pristine_commit_hash: 0c6d864723f99125e0a4182671fec3a41562affe
-  pristine_tree_hash: 439afa0a457cae14651fdadf9f0e1728a3ea3442
+  generation_id: 3bb5f673-029e-4a15-9e4c-0ec4e8b022a3
+  pristine_commit_hash: 42eaff7caba662b93c14b80fe0d468b62565670b
+  pristine_tree_hash: 26733724426f1c30765d15c7464d330ea1e383e9
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:148ce24155e6920d6279142770fbf2843a6f3bd8
-    pristine_git_object: 8c32a98ec682f79f97325220d99a84b4a63352ad
+    last_write_checksum: sha1:cf04b02c473f7a261a7635ab6973bb0c8019144d
+    pristine_git_object: 943d48126d2d2e0d25f6c85ec6af739d2248e882
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1474,16 +1474,16 @@ trackedFiles:
     pristine_git_object: a1478d9556e28f8c5741c6e9806fb13ddaac9fff
   internal/sdk/models/operations/createpresetschatcompletions.go:
     id: aad3960af7c4
-    last_write_checksum: sha1:37339a45a7526a1115439a8dd5d58ac2ff432d65
-    pristine_git_object: 6c110c1e4927f36fa84d621b9f806ed22f59beca
+    last_write_checksum: sha1:eecc92871d555fe986f325bcc54917f8986fe063
+    pristine_git_object: 4b73eb795153f92cf7d28101a70aed9f9982244d
   internal/sdk/models/operations/createpresetsmessages.go:
     id: 548fb0851db4
-    last_write_checksum: sha1:d390b3f3b09ccfd90642b5e9efbf4580c2f6bbdf
-    pristine_git_object: 909d8108d3f4a2247b2af6619325564b4236635e
+    last_write_checksum: sha1:db7e43a578d28b04b70c44c41440ce01218dab0e
+    pristine_git_object: 173450a3b1a4e35acf88fe056007c1e0cf938724
   internal/sdk/models/operations/createpresetsresponses.go:
     id: 8149039b05f9
-    last_write_checksum: sha1:cadb920c3bc3159ea5ebf61c4ce580bc9cc4095c
-    pristine_git_object: 313edcef01ad826ee20c4aed910c9a897e722255
+    last_write_checksum: sha1:4b19c61d83385190d3fe78bd1f04bb340310fd55
+    pristine_git_object: 187c0a0cdbb23cd73eec7ff2144cc1fd5ff542ce
   internal/sdk/models/operations/createprivateendpoint.go:
     id: 74e31e3d39ce
     last_write_checksum: sha1:f27e7473a897136d2ddcc6d042e912c49fa03683
@@ -3230,8 +3230,8 @@ trackedFiles:
     pristine_git_object: f51c57da71091a2f95912358c6f16fd36cdf3367
   internal/sdk/models/shared/decisionsnoulanswer.go:
     id: aa3a6d2a9f6d
-    last_write_checksum: sha1:a3f8916c2d53ab4047bbee508303ec1c19a7ca45
-    pristine_git_object: b033787d48af7e64e1c4eb5827d7bfbd804f79b2
+    last_write_checksum: sha1:ba72b4f2364af448bbe6c905cb3fff47d805574e
+    pristine_git_object: 8714e1cc67a295a06e49e04e7aae809d379f604f
   internal/sdk/models/shared/decisionsnoulquestion.go:
     id: 230a8f128fc7
     last_write_checksum: sha1:513be665efcb874a5370ad9d3a9325b15572e7c9
@@ -5498,8 +5498,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:9e1efd2fc5fa4682d3489b9df9f3264494d1b017
-    pristine_git_object: c5738a4265d7fc3c1b55c5f016c9898920de0d2a
+    last_write_checksum: sha1:9735b14590afbd67a9f4ebcc483b28e2815b6068
+    pristine_git_object: 42fe891d0904cfb3c463886c05efa0a9fc8d275f
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -5514,8 +5514,8 @@ trackedFiles:
     pristine_git_object: 6e5416a2bcbfb72e70cf8a98e19f9a7bffceeba3
   internal/sdk/presets.go:
     id: dcb2411c5cf9
-    last_write_checksum: sha1:4585955ccb2caf75cb5e3dac0e8796a0ceed4e35
-    pristine_git_object: e1ba631ec2b6e228f86c3ac1f7a8db3a3c8e35ec
+    last_write_checksum: sha1:54792c1608bba0e01dc6579848377be56d02bf40
+    pristine_git_object: 89913dae830e8e6a60c9607bb30714d55ab99a3b
   internal/sdk/privateendpoints.go:
     id: c9211a390c27
     last_write_checksum: sha1:04aab136fec7fc48d19069a6d0015187765a60de
@@ -6970,6 +6970,8 @@ examples:
       parameters:
         path:
           slug: "my-preset"
+        query:
+          workspace_id: "750e8400-e29b-41d4-a716-446655440002"
       requestBody:
         application/json: {"max_tokens": 150, "messages": [{"content": "You are a helpful assistant.", "role": "system"}, {"content": "What is the capital of France?", "role": "user"}], "model": "openai/gpt-4", "stream": false, "temperature": 0.7}
       responses:
@@ -6992,6 +6994,8 @@ examples:
       parameters:
         path:
           slug: "my-preset"
+        query:
+          workspace_id: "750e8400-e29b-41d4-a716-446655440002"
       requestBody:
         application/json: {"max_tokens": 1024, "messages": [{"content": "Hello, how are you?", "role": "user"}], "model": "anthropic/claude-4.5-sonnet-20250929", "temperature": 0.7}
       responses:
@@ -7014,6 +7018,8 @@ examples:
       parameters:
         path:
           slug: "my-preset"
+        query:
+          workspace_id: "750e8400-e29b-41d4-a716-446655440002"
       requestBody:
         application/json: {"input": [{"content": "Hello, how are you?", "role": "user", "type": "message"}], "model": "anthropic/claude-4.5-sonnet-20250929", "service_tier": "auto", "store": false, "stream": false, "temperature": 0.7, "tools": [{"description": "Get the current weather in a given location", "name": "get_current_weather", "parameters": {"properties": {"location": {"type": "string"}}, "type": "object"}, "type": "function"}], "top_p": 0.9}
       responses:
