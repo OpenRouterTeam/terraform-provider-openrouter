@@ -312,6 +312,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 		},
 	}
 	addByokKeyWriteOnlyAttributes(&resp.Schema)
+	configureByokNullableRestrictions(&resp.Schema)
 }
 
 func (r *ByokKeyResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -475,6 +476,7 @@ func (r *ByokKeyResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 
 	ctx = withSensitiveValues(ctx, req.Config, req.Plan, req.State)
+	ctx = withByokNullableRestrictions(ctx, plan)
 
 	request, requestDiags := data.ToOperationsUpdateBYOKKeyRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)

@@ -3,6 +3,10 @@
 # federation_policy_id) and their Configure hook. They stay as persistent edits because the
 # spec does not model provider attributes. Editing this file is what makes regenerate.yaml
 # run on a PR that changes that generated code.
+# BYOK custom code: byokkey_resource.go calls handwritten schema and request-context
+# hooks so null allowed_models and allowed_api_key_hashes plan an update and send
+# explicit JSON nulls. The generated SDK omits nil lists; persistentEdits preserves
+# these two calls. This input change pairs them with PR regeneration.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:

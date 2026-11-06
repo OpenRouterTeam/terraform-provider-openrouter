@@ -6,7 +6,7 @@ description: |-
   Manages the default guardrail of a workspace. The default guardrail applies to all traffic in the workspace, including API keys and members that have their own guardrail: explicit member and API key guardrails combine with the default and can only narrow it, never bypass it. This resource is therefore the place to define workspace-wide protections. The guardrail is created by the platform together with the workspace and materialized on first write, so this resource never issues POST /guardrails; create and update both PATCH /guardrails/{default_guardrail_id}. Destroying the resource only removes it from state, the guardrail itself cannot be deleted. Import with the workspace id.
   Until the first write, GET /guardrails/{default_guardrail_id} returns 404 even though the guardrail is in force. Read and import treat that 404 as an existing, unconfigured guardrail and use the workspace as the existence oracle: GET /workspaces/{workspace_id} still returning default_guardrail_id means the guardrail exists, while a 404 from the workspace lookup means the workspace and its default guardrail are gone and the resource is removed from state.
   A default guardrail that was materialized and later deleted outside Terraform reads the same way (present, unconfigured), and the next apply re-issues the PATCH. If the platform rejects that PATCH with 404, remove the resource from state with terraform state rm and import it again once the workspace reports a usable default_guardrail_id.
-  The restriction lists (allowed_data_regions, allowed_models, allowed_providers, ignored_models, ignored_providers, content_filter_builtins, content_filters) are authoritative: omitting one, or setting it to null, sends an explicit null on every apply, which removes that restriction from the default guardrail.
+  The restriction lists (allowed_data_regions, allowed_models, allowed_providers, ignored_models, ignored_providers, content_filter_builtins, content_filters) are authoritative: omitting one, or setting it to null, sends an explicit null on every apply, which removes that restriction from the default guardrail. The budget pair (limit_usd, reset_interval) is also authoritative: omit both, or set both to null, to remove the budget.
 ---
 
 # openrouter_workspace_default_guardrail (Resource)
@@ -17,7 +17,7 @@ Until the first write, `GET /guardrails/{default_guardrail_id}` returns 404 even
 
 A default guardrail that was materialized and later deleted outside Terraform reads the same way (present, unconfigured), and the next apply re-issues the `PATCH`. If the platform rejects that `PATCH` with 404, remove the resource from state with `terraform state rm` and import it again once the workspace reports a usable `default_guardrail_id`.
 
-The restriction lists (`allowed_data_regions`, `allowed_models`, `allowed_providers`, `ignored_models`, `ignored_providers`, `content_filter_builtins`, `content_filters`) are authoritative: omitting one, or setting it to null, sends an explicit `null` on every apply, which removes that restriction from the default guardrail.
+The restriction lists (`allowed_data_regions`, `allowed_models`, `allowed_providers`, `ignored_models`, `ignored_providers`, `content_filter_builtins`, `content_filters`) are authoritative: omitting one, or setting it to null, sends an explicit `null` on every apply, which removes that restriction from the default guardrail. The budget pair (`limit_usd`, `reset_interval`) is also authoritative: omit both, or set both to null, to remove the budget.
 
 ## Example Usage
 
@@ -79,8 +79,8 @@ resource "openrouter_workspace_default_guardrail" "production" {
 - `ignored_models` (List of String) Array of model identifiers to exclude from routing (slug or canonical_slug accepted) Omit or set to null to remove the restriction.
 - `ignored_providers` (List of String) List of provider IDs to exclude from routing Omit or set to null to remove the restriction.
 - `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false.
-- `limit_usd` (Number) Spending limit in USD. Must be provided together with `reset_interval`: a request that sets only one of the two is rejected with a 400.
-- `reset_interval` (String) Interval at which the limit resets (daily, weekly, monthly). must be one of ["daily", "weekly", "monthly"]
+- `limit_usd` (Number) Spending limit in USD. Must be provided together with `reset_interval`: a request that sets only one of the two is rejected with a 400. Omit or set both limit_usd and reset_interval to null to remove the budget.
+- `reset_interval` (String) Interval at which the limit resets (daily, weekly, monthly). must be one of ["daily", "weekly", "monthly"] Omit or set both limit_usd and reset_interval to null to remove the budget.
 
 ### Read-Only
 

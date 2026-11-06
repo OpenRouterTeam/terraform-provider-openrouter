@@ -50,7 +50,7 @@ func (r *WorkspaceDefaultGuardrailResource) Metadata(ctx context.Context, req re
 	resp.TypeName = req.ProviderTypeName + "_workspace_default_guardrail"
 }
 
-// clearableAttributes are the nullable restriction lists of PATCH
+// clearableAttributes are the nullable restrictions and budget fields of PATCH
 // /guardrails/{id}. They are Optional without Computed so that removing one
 // from the configuration plans null, and patch sends that null explicitly
 // because the generated request model omits nil fields.
@@ -62,6 +62,8 @@ var clearableAttributes = []string{
 	"content_filters",
 	"ignored_models",
 	"ignored_providers",
+	"limit_usd",
+	"reset_interval",
 }
 
 // clearedAttributes returns the clearableAttributes that are null in data.
@@ -74,6 +76,8 @@ func clearedAttributes(data *WorkspaceDefaultGuardrailResourceModel) []string {
 		"content_filters":         data.ContentFilters == nil,
 		"ignored_models":          data.IgnoredModels == nil,
 		"ignored_providers":       data.IgnoredProviders == nil,
+		"limit_usd":               data.LimitUsd.IsNull(),
+		"reset_interval":          data.ResetInterval.IsNull(),
 	}
 	var cleared []string
 	for _, name := range clearableAttributes {
@@ -107,8 +111,16 @@ func (r *WorkspaceDefaultGuardrailResource) Schema(ctx context.Context, req reso
 			attr.Computed = false
 			attr.Description += " Omit or set to null to remove the restriction."
 			attrs[name] = attr
+		case schema.Float64Attribute:
+			attr.Computed = false
+			attr.Description += " Omit or set both limit_usd and reset_interval to null to remove the budget."
+			attrs[name] = attr
+		case schema.StringAttribute:
+			attr.Computed = false
+			attr.Description += " Omit or set both limit_usd and reset_interval to null to remove the budget."
+			attrs[name] = attr
 		default:
-			resp.Diagnostics.AddError("unexpected guardrail schema", fmt.Sprintf("attribute %q is %T, expected a list", name, attrs[name]))
+			resp.Diagnostics.AddError("unexpected guardrail schema", fmt.Sprintf("attribute %q is %T, expected a nullable restriction or budget field", name, attrs[name]))
 			return
 		}
 	}
@@ -143,7 +155,7 @@ func (r *WorkspaceDefaultGuardrailResource) Schema(ctx context.Context, req reso
 			"Destroying the resource only removes it from state, the guardrail itself cannot be deleted. Import with the workspace id.\n\n" +
 			"Until the first write, `GET /guardrails/{default_guardrail_id}` returns 404 even though the guardrail is in force. Read and import treat that 404 as an existing, unconfigured guardrail and use the workspace as the existence oracle: `GET /workspaces/{workspace_id}` still returning `default_guardrail_id` means the guardrail exists, while a 404 from the workspace lookup means the workspace and its default guardrail are gone and the resource is removed from state.\n\n" +
 			"A default guardrail that was materialized and later deleted outside Terraform reads the same way (present, unconfigured), and the next apply re-issues the `PATCH`. If the platform rejects that `PATCH` with 404, remove the resource from state with `terraform state rm` and import it again once the workspace reports a usable `default_guardrail_id`.\n\n" +
-			"The restriction lists (`allowed_data_regions`, `allowed_models`, `allowed_providers`, `ignored_models`, `ignored_providers`, `content_filter_builtins`, `content_filters`) are authoritative: omitting one, or setting it to null, sends an explicit `null` on every apply, which removes that restriction from the default guardrail.",
+			"The restriction lists (`allowed_data_regions`, `allowed_models`, `allowed_providers`, `ignored_models`, `ignored_providers`, `content_filter_builtins`, `content_filters`) are authoritative: omitting one, or setting it to null, sends an explicit `null` on every apply, which removes that restriction from the default guardrail. The budget pair (`limit_usd`, `reset_interval`) is also authoritative: omit both, or set both to null, to remove the budget.",
 		Attributes: attrs,
 	}
 }
