@@ -721,7 +721,7 @@ func (s *Presets) GetPreset(ctx context.Context, request operations.GetPresetReq
 }
 
 // CreateChatCompletion - Create a preset from a chat-completions request body
-// Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored.
+// Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored. Requires a read-write [management key](/docs/guides/overview/auth/management-api-keys); inference API keys are rejected.
 //
 // If set, this operation will use [Security.APIKey] from the global security.
 func (s *Presets) CreateChatCompletion(ctx context.Context, request operations.CreatePresetsChatCompletionsRequest, opts ...operations.Option) (*operations.CreatePresetsChatCompletionsResponse, error) {
@@ -781,6 +781,10 @@ func (s *Presets) CreateChatCompletion(ctx context.Context, request operations.C
 	req.Header.Set("User-Agent", s.sdkConfiguration.UserAgent)
 	if reqContentType != "" {
 		req.Header.Set("Content-Type", reqContentType)
+	}
+
+	if err := utils.PopulateQueryParams(ctx, req, request, nil, nil); err != nil {
+		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
 	if err := utils.PopulateSecurity(ctx, req, s.sdkConfiguration.Security, "APIKey"); err != nil {
@@ -1055,7 +1059,7 @@ func (s *Presets) CreateChatCompletion(ctx context.Context, request operations.C
 }
 
 // CreateMessage - Create a preset from a messages request body
-// Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored.
+// Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored. Requires a read-write [management key](/docs/guides/overview/auth/management-api-keys); inference API keys are rejected.
 //
 // If set, this operation will use [Security.APIKey] from the global security.
 func (s *Presets) CreateMessage(ctx context.Context, request operations.CreatePresetsMessagesRequest, opts ...operations.Option) (*operations.CreatePresetsMessagesResponse, error) {
@@ -1115,6 +1119,10 @@ func (s *Presets) CreateMessage(ctx context.Context, request operations.CreatePr
 	req.Header.Set("User-Agent", s.sdkConfiguration.UserAgent)
 	if reqContentType != "" {
 		req.Header.Set("Content-Type", reqContentType)
+	}
+
+	if err := utils.PopulateQueryParams(ctx, req, request, nil, nil); err != nil {
+		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
 	if err := utils.PopulateSecurity(ctx, req, s.sdkConfiguration.Security, "APIKey"); err != nil {
@@ -1389,7 +1397,7 @@ func (s *Presets) CreateMessage(ctx context.Context, request operations.CreatePr
 }
 
 // CreateResponse - Create a preset from a responses request body
-// Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored.
+// Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored. Requires a read-write [management key](/docs/guides/overview/auth/management-api-keys); inference API keys are rejected.
 //
 // If set, this operation will use [Security.APIKey] from the global security.
 func (s *Presets) CreateResponse(ctx context.Context, request operations.CreatePresetsResponsesRequest, opts ...operations.Option) (*operations.CreatePresetsResponsesResponse, error) {
@@ -1449,6 +1457,10 @@ func (s *Presets) CreateResponse(ctx context.Context, request operations.CreateP
 	req.Header.Set("User-Agent", s.sdkConfiguration.UserAgent)
 	if reqContentType != "" {
 		req.Header.Set("Content-Type", reqContentType)
+	}
+
+	if err := utils.PopulateQueryParams(ctx, req, request, nil, nil); err != nil {
+		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
 	if err := utils.PopulateSecurity(ctx, req, s.sdkConfiguration.Security, "APIKey"); err != nil {
