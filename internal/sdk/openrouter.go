@@ -90,6 +90,8 @@ type OpenRouter struct {
 	Generations *Generations
 	// Guardrails endpoints
 	Guardrails *Guardrails
+	// Guardrail Policies endpoints
+	GuardrailPolicies *GuardrailPolicies
 	// Images endpoints
 	Images  *Images
 	APIKeys *APIKeys
@@ -242,6 +244,7 @@ func New(opts ...SDKOption) *OpenRouter {
 	sdk.Files = newFiles(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Generations = newGenerations(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Guardrails = newGuardrails(sdk, sdk.sdkConfiguration, sdk.hooks)
+	sdk.GuardrailPolicies = newGuardrailPolicies(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Images = newImages(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.APIKeys = newAPIKeys(sdk, sdk.sdkConfiguration, sdk.hooks)
 	sdk.Models = newModels(sdk, sdk.sdkConfiguration, sdk.hooks)
