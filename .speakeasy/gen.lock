@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 10444330326ef38768f1ecd5ea4e2557
+  docChecksum: 05203e4f3b8077f3a1acb1027f0b284b
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.179
-  configChecksum: 1dbac6057e915659efd35e5e63f7be26
+  releaseVersion: 0.3.180
+  configChecksum: b078ff4b4f8fd411b0625467896f4da4
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: 8dda7ad8-aee4-48a9-8286-f64515d70772
-  pristine_commit_hash: 5b876cb6d66ef1ad4cfb2d4b96a37ae39a35b1e8
-  pristine_tree_hash: caba407561f3347bcbd5fe2211116b2e4595cf0c
+  generation_id: 011a6aa6-b80f-4da2-ae83-bf2f542426a5
+  pristine_commit_hash: 347c5530f001eab03b5d945c83f339e2d82d26b5
+  pristine_tree_hash: b5b7e70faee1b6702f4b2f14858bc9efefdf71f5
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:1e8c7ed16094f26a1c38350c7722b55149406866
-    pristine_git_object: 6b7c1420e72df80bda429805991701d0a7a6b12a
+    last_write_checksum: sha1:d78b74ccc9664b4c760d67aeee522f49c204ec17
+    pristine_git_object: ff99b8846f14f347b658db7155f9222149d0fdc2
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1276,6 +1276,10 @@ trackedFiles:
     id: 3af0bc3ca334
     last_write_checksum: sha1:9ad48ba33be9060d714ce519c7dea8f89d626206
     pristine_git_object: 03b88d30aaa73d5fa9b6e815e3d580a125c82d02
+  internal/sdk/guardrailpolicies.go:
+    id: d01342c09e87
+    last_write_checksum: sha1:64fc973f7b3008ecccd388a472fdbde92c1d3dbc
+    pristine_git_object: 72440ec6e6daae2fa438cdeede939597c3dd1219
   internal/sdk/guardrails.go:
     id: 7acba59507ef
     last_write_checksum: sha1:9a80b534eaee7c3215ee8b6117c6b33adde79fa1
@@ -1384,10 +1388,22 @@ trackedFiles:
     id: 251a5b79a86d
     last_write_checksum: sha1:1feff11460f374ae63cde49b40e8fc2a6b7f9c13
     pristine_git_object: bc5ea9f8d658c9744b5fd39a00de3640507cc32c
+  internal/sdk/models/operations/changeapikeypolicyassignment.go:
+    id: 73567aa6bda5
+    last_write_checksum: sha1:e1029e855c5ccb09ba6de9008cf70c0e00f815fc
+    pristine_git_object: 7ba65dceac3cd9a796adc4aa6132ffda4fe7274d
+  internal/sdk/models/operations/changememberpolicyassignment.go:
+    id: 2e9d60de87cb
+    last_write_checksum: sha1:9b8f895854979e9ce604bf648d040c71199ad1e1
+    pristine_git_object: 675c56ad5d0bc584949a61c4604df6da0b13b8a6
   internal/sdk/models/operations/copyvaultsecretstointern.go:
     id: "825687208688"
     last_write_checksum: sha1:5c0fe0c42b80aacc8e98d88289d484f5ab9f59b2
     pristine_git_object: bda2c5b3f32f623ad3f77cd77b46813cabb1faa3
+  internal/sdk/models/operations/createaccountpolicy.go:
+    id: 03c3ee8b8dcd
+    last_write_checksum: sha1:c4320c9f79dc1dcce985ec0d4a5c9ba26ae20a31
+    pristine_git_object: bf6bc8764731810352d328914b93713116c55f26
   internal/sdk/models/operations/createapialphadecisions.go:
     id: acf899e67e53
     last_write_checksum: sha1:9fdb41d8b96e679ee9ba83970faf48cf9e9c9969
@@ -1416,6 +1432,10 @@ trackedFiles:
     id: 15f2ec2e114e
     last_write_checksum: sha1:4de9927c4c3febe47b0bec85af6a77462fa924c9
     pristine_git_object: 924d05b27551534fd1119083b2ff3bcd3bcb7c76
+  internal/sdk/models/operations/createbudgetpolicy.go:
+    id: d39def64a4a0
+    last_write_checksum: sha1:1eaf65cb3401aeac802cda1b9143c04e56683ff1
+    pristine_git_object: c73f53317fbcb93e7235bbe506683d9c6f603ef5
   internal/sdk/models/operations/createbyokkey.go:
     id: 5fc62c624a09
     last_write_checksum: sha1:31c0694343b808184d2f30330f90763dd91b23f9
@@ -1436,6 +1456,14 @@ trackedFiles:
     id: a7eab078e836
     last_write_checksum: sha1:30e79c2282bbd52929e117ee848c229064e94567
     pristine_git_object: 99d7a0beb7a8040d87ebfb81d87f8e88cb26e8c3
+  internal/sdk/models/operations/createmodelavailabilitypolicy.go:
+    id: 9527a7e2c319
+    last_write_checksum: sha1:cbcc312888100628583282030af7c545754c254c
+    pristine_git_object: 1bb77a7dc11bcded518f9f8ba7d903900a8fda7c
+  internal/sdk/models/operations/createmoderationpolicy.go:
+    id: 8e32d6464591
+    last_write_checksum: sha1:5c69b3a79aff0f24aefd8f981839b606d4266865
+    pristine_git_object: 7939c23eb5465f41f8a41a2ba4bd3c4e475b4e46
   internal/sdk/models/operations/createoauthtoken.go:
     id: 563ec2136726
     last_write_checksum: sha1:defd699b7dad42513464ab1ace00a15bae2bc623
@@ -1488,10 +1516,18 @@ trackedFiles:
     id: 0dfb68c3ac15
     last_write_checksum: sha1:f9d25b69ada8bb7662b85416116c439b09ef09cb
     pristine_git_object: 2ad3bbf95058b84954b90e6c866178fc2ca084ab
+  internal/sdk/models/operations/deleteaccountpolicy.go:
+    id: e3af41666b40
+    last_write_checksum: sha1:2af2c544e61bf6e63ca12fa9ba6ba63815b2d119
+    pristine_git_object: ccdc70e58d02331a7d55823b7f3d2996d521fbd7
   internal/sdk/models/operations/deletebatch.go:
     id: be5ef4bf09ca
     last_write_checksum: sha1:133c5e4661033fdfe3f42a63abd4c91b6f28497e
     pristine_git_object: 2fc7d88e929fb1e8e80a22cfa320c5a7941e29e1
+  internal/sdk/models/operations/deletebudgetpolicy.go:
+    id: f5d85a5b2332
+    last_write_checksum: sha1:f8ba502eb1aea4d7ecb00036d2be854d55a38f1f
+    pristine_git_object: 66f5102ff1df9af3e97bd0a4fbaab2a1c94a8e0d
   internal/sdk/models/operations/deletebyokkey.go:
     id: dbae0bd0c0ac
     last_write_checksum: sha1:6b85e0803ec51c1694600c94f79fe78168bc5009
@@ -1516,6 +1552,14 @@ trackedFiles:
     id: 2140a482f41c
     last_write_checksum: sha1:7b8864743488043c4469b29745d658994b9b0199
     pristine_git_object: 5b2e7be8e0155ffe3e1e2d63a5a7004a2e135717
+  internal/sdk/models/operations/deletemodelavailabilitypolicy.go:
+    id: 1956b75bb519
+    last_write_checksum: sha1:c24810a22440f8a6d027d28b818473dfe70a0ba7
+    pristine_git_object: 4e04b9315551813ecc1d736fb502feff5ff1dacc
+  internal/sdk/models/operations/deletemoderationpolicy.go:
+    id: 8174bc08b6ac
+    last_write_checksum: sha1:1c2005e7e0e62b8f364ea8b6a1afad8c4806f868
+    pristine_git_object: 8fca03f4cc56e8e50fde8e9497ff7c3d20407d21
   internal/sdk/models/operations/deleteobservabilitydestination.go:
     id: 10e128d7c722
     last_write_checksum: sha1:3f665f7fc8cb5f867dea7b7b03653046289b0c3e
@@ -1568,6 +1612,10 @@ trackedFiles:
     id: a834f2bcc235
     last_write_checksum: sha1:f99c09ebc2aee2b6fb6024f55e82ddde2d1d2367
     pristine_git_object: 41b2aef24ae09cd8c603aae3995d79e39223c310
+  internal/sdk/models/operations/getapikeypolicyassignment.go:
+    id: f60e1f38d095
+    last_write_checksum: sha1:5a1a23909062d6ec70a0add01ed7dee48e826b65
+    pristine_git_object: f65a4a724c6bc7b26da68b6d1637445602f7eed0
   internal/sdk/models/operations/getapprankings.go:
     id: 77bb7716270c
     last_write_checksum: sha1:42712926400f991cdab1ad8b4d0437e8dd7e426c
@@ -1580,6 +1628,10 @@ trackedFiles:
     id: 8dff64cb94cf
     last_write_checksum: sha1:8e4099ca6e0f2505a8eb4db3c95532f70918793f
     pristine_git_object: 826ebe332aaf179747b7fd7f276b9c59e0175b41
+  internal/sdk/models/operations/getbudgetpolicy.go:
+    id: c491e4c16eb0
+    last_write_checksum: sha1:ba2d71e54ef6724dbcf3e206251ee1d83d107688
+    pristine_git_object: 54dd24fd0c584db3f59707e97431de5fe8f12677
   internal/sdk/models/operations/getbyokkey.go:
     id: 9c28bdd9d271
     last_write_checksum: sha1:778fc2f8afaead21d50c025b28be31de5b21d3e7
@@ -1616,14 +1668,26 @@ trackedFiles:
     id: 6cc585c52264
     last_write_checksum: sha1:adf6bbe03e5e66586bd40c9598e841163b4ba3ea
     pristine_git_object: 697abbecfc4b831a0d3a3dc7bf33a99c2a4a68d4
+  internal/sdk/models/operations/getmemberpolicyassignment.go:
+    id: 7a60d5dbfa1c
+    last_write_checksum: sha1:83477d1c0a2ccf360f4ec1a00ab4da15c4443712
+    pristine_git_object: 403141790a3d6d0970863089a557e2044670dd69
   internal/sdk/models/operations/getmodel.go:
     id: 128a66915793
     last_write_checksum: sha1:c5b45543b6f0d1492bf7d77d6724857ce72c4a82
     pristine_git_object: 943ef3d9d08107d0071e55e4a57bcd9d3798b9b6
+  internal/sdk/models/operations/getmodelavailabilitypolicy.go:
+    id: ca35edd2022e
+    last_write_checksum: sha1:df7784f231d50638f05bab5d4e0d94d21055257d
+    pristine_git_object: c853c6cc0bce4ab0abd161d828b7a765a77db312
   internal/sdk/models/operations/getmodels.go:
     id: 5d263af1d2ba
     last_write_checksum: sha1:c119c449d55915787753e0ad5ef2c0873fa51e44
     pristine_git_object: c06a6a205ee88ffb7264d001be2a2a95655c2f44
+  internal/sdk/models/operations/getmoderationpolicy.go:
+    id: daf9fe1ed5d6
+    last_write_checksum: sha1:9a16d5c73d57b16a20ec0c5691faa0aa4a9f2c6c
+    pristine_git_object: 7529f6b2de03b3201eb125b2c6d6dcc0a3d9b0e8
   internal/sdk/models/operations/getobservabilitydestination.go:
     id: ce1fb86a3e17
     last_write_checksum: sha1:ae75aba54a3c325de548b1b3c314e32b1eaf2310
@@ -1692,10 +1756,18 @@ trackedFiles:
     id: ee2c967ce632
     last_write_checksum: sha1:45ef5ed1d22ea8f6e8f166e9829d5200c3c41b61
     pristine_git_object: 2bd649691b0abdfa0cab1eb5613817198f63f7a8
+  internal/sdk/models/operations/listaccountpolicies.go:
+    id: 15c7bf442c01
+    last_write_checksum: sha1:afe57a752dcf3209e3ed2ad6d3afd0a82712323a
+    pristine_git_object: 09df9b0152730c38e77bd3756884d1d8f68b2d8e
   internal/sdk/models/operations/listbatches.go:
     id: c88f17f4908c
     last_write_checksum: sha1:52700339114413866dc3133322abacc96351424d
     pristine_git_object: ce4e63f6f2b7441822973b3f311bbd2410a7bf79
+  internal/sdk/models/operations/listbudgetpolicies.go:
+    id: 2d85d73e37aa
+    last_write_checksum: sha1:021d545ec8746faf1ca442b9021a6cef94dbb590
+    pristine_git_object: c6d7065647e5c0f88069a9fd07c776c68db07977
   internal/sdk/models/operations/listbyokkeys.go:
     id: c0c010232a74
     last_write_checksum: sha1:3d95f66d81b6e054c836050cb76ef524316e0306
@@ -1768,6 +1840,10 @@ trackedFiles:
     id: 0eca54507d66
     last_write_checksum: sha1:2bcf0615bf935cb939b3faf7b1b8211813233f53
     pristine_git_object: 92dbbdd9bf58720aaf1e698b88d0e4a9b89eca41
+  internal/sdk/models/operations/listmodelavailabilitypolicies.go:
+    id: e2828bf0b384
+    last_write_checksum: sha1:1837caa6820537386f8fa96ef1da486bf43f90a1
+    pristine_git_object: ab6f97c1db4db5a52d53a197736f11c721e24ca7
   internal/sdk/models/operations/listmodelscount.go:
     id: 8a0a5fe06a16
     last_write_checksum: sha1:705ee47f83e23245b33a6deae060bc07e40a324b
@@ -1776,6 +1852,10 @@ trackedFiles:
     id: bcfd5bae44d6
     last_write_checksum: sha1:b121de9f6ee1fa2cb423f68c06d0d80ceac89ebe
     pristine_git_object: bf9f5181ab2df2cf6e191a1fc5e90bcd95f8215f
+  internal/sdk/models/operations/listmoderationpolicies.go:
+    id: eb68e07e6f47
+    last_write_checksum: sha1:1ba339ed084ee9f1d2d716904511e3c6c10fe0a3
+    pristine_git_object: 983c54ed2588bae4ace6d29119f0792a7d2450ec
   internal/sdk/models/operations/listoauthjwks.go:
     id: c0159b2826ec
     last_write_checksum: sha1:13e566fb25dd021138ec0d34f049023c8c151f32
@@ -1868,6 +1948,14 @@ trackedFiles:
     id: c967413fefe5
     last_write_checksum: sha1:450fe30e3b6342a6e86275b46ee6c31f0faf83b0
     pristine_git_object: 9304223020d125731d5eb5bbc414ae6945d81400
+  internal/sdk/models/operations/updateaccountpolicy.go:
+    id: 0ec4c8f68295
+    last_write_checksum: sha1:f154a6abb7b50c9eff66eb8eb169ccc2983adbfd
+    pristine_git_object: 33e3fd3fbbef7a910b160ece974a8a7c0344b0e4
+  internal/sdk/models/operations/updatebudgetpolicy.go:
+    id: 75260681e52f
+    last_write_checksum: sha1:c1e487157abee7138f08c027beb7158baebf6582
+    pristine_git_object: b2bcab7b43a16aace1ec7b8ae78d4deee5edde53
   internal/sdk/models/operations/updatebyokkey.go:
     id: a46887ef7981
     last_write_checksum: sha1:a37710a7a44ef3f7d99409e9fdcf8fc4f34f9d62
@@ -1884,6 +1972,14 @@ trackedFiles:
     id: 84d161c59f3b
     last_write_checksum: sha1:2f713b7987b998428379bedb636dbb49281fa7f1
     pristine_git_object: cfd3174a3d08c6921cfb078e915654e48be9eca3
+  internal/sdk/models/operations/updatemodelavailabilitypolicy.go:
+    id: b6cbe8fdd1f6
+    last_write_checksum: sha1:07cdc56c256130c1463345433e7bc0cbb8a4e041
+    pristine_git_object: 7c8abcf8dd4475cf79b423b9434d1c09a52a58aa
+  internal/sdk/models/operations/updatemoderationpolicy.go:
+    id: d8651a945c1b
+    last_write_checksum: sha1:798e7e6f2818afd4ec72b8eb90e9f1fb2ed1f0d7
+    pristine_git_object: d4321e766a1aa553b3f073aa086cc3e582c3107b
   internal/sdk/models/operations/updateobservabilitydestination.go:
     id: 74adc13cf0c2
     last_write_checksum: sha1:692027696c38b8a325f03aa7c95d88446f602a15
@@ -1928,6 +2024,18 @@ trackedFiles:
     id: 219e22db6e08
     last_write_checksum: sha1:7bbde49aa25b72fc96a36ea56672053c88bb63df
     pristine_git_object: f50e4fd98ae3eeb2bf227ba195cd25d0e052d9f1
+  internal/sdk/models/shared/accountguardrailpolicy.go:
+    id: ff284c48fc69
+    last_write_checksum: sha1:2deffaf9e01dabef656f0684710fceefcac6bbd0
+    pristine_git_object: 502e1062d56f931aca89e3b4f0c868955abcd92d
+  internal/sdk/models/shared/accountguardrailpolicyrequest.go:
+    id: fd9423fe129c
+    last_write_checksum: sha1:7a8ced77afae4a9275626e83220be33adedf0cc2
+    pristine_git_object: eb4a241557356bc7fda74b946c21fde61883410c
+  internal/sdk/models/shared/accountguardrailpolicyresponse.go:
+    id: fcbe93709290
+    last_write_checksum: sha1:70f5caccdfe4c0cf84003676907be91520bd6dc7
+    pristine_git_object: d2a3dfa6a5c514fc953620e9126d9bfce2b27615
   internal/sdk/models/shared/activityitem.go:
     id: 354a3d6c137e
     last_write_checksum: sha1:37a7362f39ebf81456f5fb9cdcb89d4cce5f9ab2
@@ -2490,8 +2598,8 @@ trackedFiles:
     pristine_git_object: ed4ab63b4da87b0a043fa03e58da901c0de2b0bb
   internal/sdk/models/shared/armorplugin.go:
     id: 54fc4d462277
-    last_write_checksum: sha1:185ceaa04668a04f6f8e1348bd6b310b1c4d4719
-    pristine_git_object: 5189fb8014f08c7687da12019f435ac204ebe7d3
+    last_write_checksum: sha1:bcd0c703d735bf7fc98880d65e03b9a66f4bdfa3
+    pristine_git_object: 28cc102ed617a9bec83982fdfcf2154e4a78de80
   internal/sdk/models/shared/armorrule.go:
     id: d36cfd5b2401
     last_write_checksum: sha1:a72d0a39ee13bc41708e1db2ab17787772823b2e
@@ -2596,6 +2704,34 @@ trackedFiles:
     id: b3db1ef5ac0b
     last_write_checksum: sha1:324e5232e3e5ec0cfb7c3c88b02bbe9d24ea1fd2
     pristine_git_object: e6d3ed4969f3f44a16dbb268a18d78e6a22a8d36
+  internal/sdk/models/shared/budgetaccountguardrailpolicy.go:
+    id: 38ceea154140
+    last_write_checksum: sha1:aeda4667dc3ad09b27c1bd93b6861c32e627b8ff
+    pristine_git_object: c3fc56d71d48de7635f4e933394db25e293b6e3d
+  internal/sdk/models/shared/budgetaccountguardrailpolicyrequest.go:
+    id: d4e426def762
+    last_write_checksum: sha1:9c1aa5f78aca779bdb1745afc9516a59d44a7f9f
+    pristine_git_object: ed8e5fd4a96dfa623c52807656dc7bb554d65fa9
+  internal/sdk/models/shared/budgetguardrailpolicy.go:
+    id: fe7a78050979
+    last_write_checksum: sha1:081d073c149b581007038e0597ba84b2c72d24a3
+    pristine_git_object: 720d4df153c3511a1e82e80f92ba53fac69139aa
+  internal/sdk/models/shared/budgetguardrailpolicydetail.go:
+    id: 4a07c3055225
+    last_write_checksum: sha1:1f1c68689baf16ff5ea06715162fbdc7b14bee4e
+    pristine_git_object: 50e2dca553a2ec030d16c2326c2233faad04f90a
+  internal/sdk/models/shared/budgetguardrailpolicydetailresponse.go:
+    id: 954a3040ead2
+    last_write_checksum: sha1:78e20dfd9acc87dc4af6d019adcebe4ae9ebcfe8
+    pristine_git_object: 9ad1975349f212237eae0ada7aa48b3eba2bbfa2
+  internal/sdk/models/shared/budgetguardrailpolicyresponse.go:
+    id: 1b745efc2653
+    last_write_checksum: sha1:19bdf9f8737de90b4cb915ada7c309183d4ad6d8
+    pristine_git_object: c86699006a42107ea519d4d7ab2c103a6484f327
+  internal/sdk/models/shared/budgetguardrailpolicysummary.go:
+    id: bdd63695f06e
+    last_write_checksum: sha1:eb387c9cef53425bb8a9389b0947acff6096c5a8
+    pristine_git_object: c07ec9d7830d1e9a72cb2903a603c30c2ab78a54
   internal/sdk/models/shared/bulkaddworkspacemembersrequest.go:
     id: cadf682b32b8
     last_write_checksum: sha1:7564843046bac6a053858636445d47a507ab547a
@@ -2656,6 +2792,14 @@ trackedFiles:
     id: 2d8ccd64b122
     last_write_checksum: sha1:5840c1d078c3e202e674755a877a1a0fdbdda806
     pristine_git_object: 94e974b6f027890e1f5bc2c2b1c4ca847d85ed70
+  internal/sdk/models/shared/changeguardrailpolicyassignmentrequest.go:
+    id: cadd44aec1ec
+    last_write_checksum: sha1:eff34b2c37faa19987170829a4a8edc3cb44ba79
+    pristine_git_object: 720c6c245a78da11cd0deb3bd5927ccd29f16392
+  internal/sdk/models/shared/changeguardrailpolicyassignmentresponse.go:
+    id: c71e1ba7c654
+    last_write_checksum: sha1:8b9d2587a8164061c9f7b5e1b79b7d24a136bed6
+    pristine_git_object: e03bea1b4832683526f5e984d65d9784d8d92b45
   internal/sdk/models/shared/chatassistantimages.go:
     id: 8d71c8b2a029
     last_write_checksum: sha1:1e9b7e501746ffd73f94eddfea9e9a87bade6ecc
@@ -2960,6 +3104,10 @@ trackedFiles:
     id: ff38d7982be5
     last_write_checksum: sha1:a5f1d7826dbb06ebcbfaaa2e4c82ddb91bb9b3c2
     pristine_git_object: 109e1611081fafee3341c5a2851ffebb2511a361
+  internal/sdk/models/shared/createbudgetguardrailpolicyrequest.go:
+    id: 076362dbae20
+    last_write_checksum: sha1:8b3e49e9785a27416a688db699f6293d16d2249d
+    pristine_git_object: 727e51946107964ae8c091f72d5707f7f544b3f5
   internal/sdk/models/shared/createbyokkeyrequest.go:
     id: b383a6491a6e
     last_write_checksum: sha1:c5882405530a69230ca00a97d2955eee49e7263d
@@ -2980,6 +3128,14 @@ trackedFiles:
     id: 3497a5870804
     last_write_checksum: sha1:bdfb9166f690ffda4b074394e15770f52c8850b5
     pristine_git_object: d6be78ce82411c42b64112dab8958da6a30ba5e7
+  internal/sdk/models/shared/createmodelavailabilityguardrailpolicyrequest.go:
+    id: ae1cbebc841b
+    last_write_checksum: sha1:62ea450a53768eb39bc3eeeedc7f19d74ff15a1f
+    pristine_git_object: d654404accfbc03339916b05847f11caf7a19653
+  internal/sdk/models/shared/createmoderationguardrailpolicyrequest.go:
+    id: c0699da31bd6
+    last_write_checksum: sha1:1c0c33c1fcbf0ce1367e74fa2788380c7f88a784
+    pristine_git_object: 130e00ab235a569dd980b84c21e4812af3f1f2ee
   internal/sdk/models/shared/createobservabilitydestinationrequest.go:
     id: c08ea56c3f84
     last_write_checksum: sha1:205e4d7bee43cac405678f8a8a44ef09a018d312
@@ -3140,6 +3296,10 @@ trackedFiles:
     id: c2db9c4cfa2b
     last_write_checksum: sha1:e423a8f6cd5e920974af97878a784e69c4377661
     pristine_git_object: e450c3f8b144032fa5791dc2f256230351023eb0
+  internal/sdk/models/shared/deleteguardrailpolicyresponse.go:
+    id: 83e68c5395be
+    last_write_checksum: sha1:f31a6437a6cdb06aed70202c56ee028e8ed50e63
+    pristine_git_object: 7c80c624057d8a96724097263270dbc50ec6ad7c
   internal/sdk/models/shared/deleteguardrailresponse.go:
     id: 415f6538b8f1
     last_write_checksum: sha1:b5ede94c4f48adfce4b15d1e3a76706e3533ccce
@@ -3492,6 +3652,14 @@ trackedFiles:
     id: c670d7f3d067
     last_write_checksum: sha1:6d23e39cdea9ebf25e1d256f707bf55733bd725a
     pristine_git_object: feecf547dbdfa22ade5b4eed81d8e0649c3caab1
+  internal/sdk/models/shared/guardrailbudgetpolicyauthoringconfig.go:
+    id: 2d483f030fe9
+    last_write_checksum: sha1:1194dba6588cacfaf4dacc78ed0ef3894ea333d9
+    pristine_git_object: 17dba96402e34b093eafa0c8728d5b16a94ab11a
+  internal/sdk/models/shared/guardrailbudgetpolicyconfig.go:
+    id: fb3d9f6c8912
+    last_write_checksum: sha1:1c0025e1793f6a4274ece0a5167a0d682bd74990
+    pristine_git_object: 37d714c55e4db2f70a35df2b204620374248bb6d
   internal/sdk/models/shared/guardraildataregion.go:
     id: b8484b4cfd88
     last_write_checksum: sha1:37b3d80e61ddf61aaaf8a33ee2c68572842903a2
@@ -3500,6 +3668,26 @@ trackedFiles:
     id: ba35f0c18dbd
     last_write_checksum: sha1:d6b2a6f5618e4c80f0b538eff2900d91b4ada5cb
     pristine_git_object: ed7108b1622e2f88c1ecb4269c1da666e92d96e1
+  internal/sdk/models/shared/guardrailmodelavailabilitypolicyauthoringconfig.go:
+    id: e35914fcb188
+    last_write_checksum: sha1:63b47ee4bdb2acf7d4301bb3d1e732f5454dbab4
+    pristine_git_object: d0e676b043002c73186d700685509234bc818a67
+  internal/sdk/models/shared/guardrailmodelavailabilitypolicyconfig.go:
+    id: 8c4ff1d0aeda
+    last_write_checksum: sha1:930357e9b442b40026f25a76c3b69070e7097ee9
+    pristine_git_object: 78bb8fc22668b95766bdf94c2c00056c71d2ccfa
+  internal/sdk/models/shared/guardrailmoderationpolicyconfig.go:
+    id: 4990c0b5c1c6
+    last_write_checksum: sha1:dfd852c55e72b2084a2ae607a32692b20f1ab166
+    pristine_git_object: 66a3c4c2a93aed8fccdd4f719e55a12329dd598f
+  internal/sdk/models/shared/guardrailpolicyassignmentresponse.go:
+    id: 417c85365bf7
+    last_write_checksum: sha1:3aa1edfc468eef68e7d7c0d717e407e652a5d5bc
+    pristine_git_object: cbb86016f5d38e5eea8633ffb5e407d3fc14cbb1
+  internal/sdk/models/shared/guardrailpolicyassignmentstate.go:
+    id: 1a1e9dd5617e
+    last_write_checksum: sha1:63276bbb0b41086ec58798ecba9395d9e2f277a0
+    pristine_git_object: 9a5702186fd64fa6b955c32c0b1c2b8d5e61eb3c
   internal/sdk/models/shared/imageconfig.go:
     id: 461d4833e679
     last_write_checksum: sha1:9d0dff2fb1fef992caa88120205ff967f9cf33ef
@@ -3640,6 +3828,14 @@ trackedFiles:
     id: e2de2dc68457
     last_write_checksum: sha1:1cf91fda1f1a186563dfc2ec4857de6e4f2132ec
     pristine_git_object: 402bc89efde80dcc5d2b2f56c06af0082ed84b75
+  internal/sdk/models/shared/listaccountguardrailpoliciesresponse.go:
+    id: 08b0a0ac67e7
+    last_write_checksum: sha1:bb1ecd700689bf848b8011dcc897b7d041b18e49
+    pristine_git_object: d9fabe473d2233dfd4ee6c409afe1bd340e8ded9
+  internal/sdk/models/shared/listbudgetguardrailpoliciesresponse.go:
+    id: 5938b917968e
+    last_write_checksum: sha1:24263e1e7bba6f7790c912727ba0e2bca1c4d097
+    pristine_git_object: cf3e1f2a44a6f6d74428098ae321440c4b74935c
   internal/sdk/models/shared/listbyokkeysresponse.go:
     id: f41f5be03ac4
     last_write_checksum: sha1:7fe594dda6751d965a08c12b1ed6a7d7f044ff4c
@@ -3664,6 +3860,14 @@ trackedFiles:
     id: 4cb50d081db1
     last_write_checksum: sha1:3747a0b2fc635cd47684b5b96c52ed7d4760e78a
     pristine_git_object: 886174ceee1b6a0950561b7f3f5f23fbf81a994d
+  internal/sdk/models/shared/listmodelavailabilityguardrailpoliciesresponse.go:
+    id: 3c5a34fe892b
+    last_write_checksum: sha1:6a64d200527ca49bb294fc58c66d6d6b701c92d5
+    pristine_git_object: 2a299be30bdf94f20bb1237690a8f14bf26d213d
+  internal/sdk/models/shared/listmoderationguardrailpoliciesresponse.go:
+    id: d5bc9a67c595
+    last_write_checksum: sha1:4954fb56c76968f9301467477a9b49068fb4ca81
+    pristine_git_object: 61bad19839941ccdfc1eb6cb354987bc86e927c9
   internal/sdk/models/shared/listobservabilitydestinationsresponse.go:
     id: 6c1e3065e10f
     last_write_checksum: sha1:badbc502ce5badc04190884f6c3a7f8ba3c28ecb
@@ -3820,6 +4024,34 @@ trackedFiles:
     id: d4d5651b2d5e
     last_write_checksum: sha1:31e023f47ebaed70e3738e6e76225d7162b7c7b7
     pristine_git_object: d87cb843aa7df080a4e2cde39345738c2a9e6896
+  internal/sdk/models/shared/modelavailabilityaccountguardrailpolicy.go:
+    id: edd095e5fe43
+    last_write_checksum: sha1:8aff15a0c39c845b5a36c7db86b9bde2f98c34a1
+    pristine_git_object: 3643a0dd546a809a389e9d130b973efa25337ebb
+  internal/sdk/models/shared/modelavailabilityaccountguardrailpolicyrequest.go:
+    id: 20730ec622c9
+    last_write_checksum: sha1:9f064d86f1a1fe81201f87a4f57bacb7828a0008
+    pristine_git_object: 3a89280aa54e11b66e8f7ab6cc1dfdad146d3112
+  internal/sdk/models/shared/modelavailabilityguardrailpolicy.go:
+    id: 9fac28fa5c99
+    last_write_checksum: sha1:a636570dc38cb971add97b993cc193c3d51ca1af
+    pristine_git_object: 2bd6104aa154dd3eedaa7a9355543881b4f8a6fd
+  internal/sdk/models/shared/modelavailabilityguardrailpolicydetail.go:
+    id: f07f083a6876
+    last_write_checksum: sha1:76d8e01d57cbbb1ffe76dca6cdad71722f57cfdb
+    pristine_git_object: 4f6bbbd90817500a881670c77fa6d19885b98f11
+  internal/sdk/models/shared/modelavailabilityguardrailpolicydetailresponse.go:
+    id: 3126a8904d19
+    last_write_checksum: sha1:97aa0947e480ee09430c562753aa148bfa5c6e1b
+    pristine_git_object: 77c3d23c2303fbe023b45e06cc31792fa24e4c89
+  internal/sdk/models/shared/modelavailabilityguardrailpolicyresponse.go:
+    id: a9e838818a21
+    last_write_checksum: sha1:77541601bf2fff03968f81346c79741e2f33c6c8
+    pristine_git_object: 78278308e227d0f6a980560ef484be235dcbe603
+  internal/sdk/models/shared/modelavailabilityguardrailpolicysummary.go:
+    id: 0009e317d130
+    last_write_checksum: sha1:d91549a24c0255f6e7aea4fe118d9eba17202989
+    pristine_git_object: e142de416a64a23f9b7d25236f5dc003ce1c9353
   internal/sdk/models/shared/modelbenchmarks.go:
     id: c59e53ec7897
     last_write_checksum: sha1:2a42755c04b4574927fba0e2545d22617fd2cdf3
@@ -3848,6 +4080,34 @@ trackedFiles:
     id: eea5b49d0f28
     last_write_checksum: sha1:b637696e09e0c416a39ca29b5d7f54fc385f5210
     pristine_git_object: 98201058226b8f3d5910f886b498983418b262c6
+  internal/sdk/models/shared/moderationaccountguardrailpolicy.go:
+    id: 0f9939109d09
+    last_write_checksum: sha1:69601f5279d4e9cf93e1093314f3e14c0d17ea58
+    pristine_git_object: d49b98f3b361e287b180510d46aeed503bf198cd
+  internal/sdk/models/shared/moderationaccountguardrailpolicyrequest.go:
+    id: c15e4faa4eee
+    last_write_checksum: sha1:b26b38b10de75a1179f0ca04594674f099881143
+    pristine_git_object: 6cbd98ace55b21e8d4e3546f3606cd253c0f7afe
+  internal/sdk/models/shared/moderationguardrailpolicy.go:
+    id: 18db8dfdb78b
+    last_write_checksum: sha1:7024b10fe6ed94d241b8ce52fb456995692399b9
+    pristine_git_object: 749a586cd4a074f01cfaf273cf33adf0f732dd30
+  internal/sdk/models/shared/moderationguardrailpolicydetail.go:
+    id: 117152a0ce72
+    last_write_checksum: sha1:5a824eab9ddd5b4e1f4439df7dd50684330862e9
+    pristine_git_object: da8170e7cc7e6e107c2b6f313643ced3e019dbb6
+  internal/sdk/models/shared/moderationguardrailpolicydetailresponse.go:
+    id: 7492ba74cd46
+    last_write_checksum: sha1:b0c28398b489fb724cd46d945b196b1132ee1159
+    pristine_git_object: 56e7ef088e37bf6db95d0be6768e5fc2e57168e3
+  internal/sdk/models/shared/moderationguardrailpolicyresponse.go:
+    id: e9f880df9d19
+    last_write_checksum: sha1:67615a2cb25268cb5548241089f3863a42ab909b
+    pristine_git_object: 1b2283edbcc3efa964a2fca7ac3c707ea47a9f92
+  internal/sdk/models/shared/moderationguardrailpolicysummary.go:
+    id: f23e27f2d0d4
+    last_write_checksum: sha1:8ab1c3c0b6c9615d7f905547fce810705b019a96
+    pristine_git_object: 666c32068abbdb5f916ade9f013f0dc6d84a7c21
   internal/sdk/models/shared/moderationplugin.go:
     id: d87260459841
     last_write_checksum: sha1:ea14d4eef19b5074f0f51d9e0feec8dae67a0746
@@ -4166,8 +4426,8 @@ trackedFiles:
     pristine_git_object: 66e67f1188d08d1cd071358c619073aa1874d5dd
   internal/sdk/models/shared/outputmemoryservertoolitem.go:
     id: fe6b81040657
-    last_write_checksum: sha1:c46f615727b2362cbf63c86299513e36a338e504
-    pristine_git_object: 1fca55123568c2c020ed75b7d251b90edbc4cd57
+    last_write_checksum: sha1:5b6a255514df9ba16bd16974992ba0d76163aec3
+    pristine_git_object: 6e6c9a90cc051e5abf00978207c51f2aeef26779
   internal/sdk/models/shared/outputmessage.go:
     id: d18ee1c775de
     last_write_checksum: sha1:88a5bac5fc73e30528385fc27e025ff971247775
@@ -4988,6 +5248,10 @@ trackedFiles:
     id: bbcfffc62590
     last_write_checksum: sha1:72e253daca4557c64da780508c12463f9360b3a2
     pristine_git_object: d1de9be73bdc85ca4468cc89118f04925e964222
+  internal/sdk/models/shared/updatebudgetguardrailpolicyrequest.go:
+    id: f6cd4a24e12e
+    last_write_checksum: sha1:9efc41b71f70ffca9d2a14d7f809644442665bf2
+    pristine_git_object: ecc1e4ccf119975ef156d880f74a396d4f24ef3f
   internal/sdk/models/shared/updatebyokkeyrequest.go:
     id: 29b6739eb989
     last_write_checksum: sha1:b29699ef4b423c461d37e99a92de530cb00993e4
@@ -5008,6 +5272,14 @@ trackedFiles:
     id: e5b91fcdf775
     last_write_checksum: sha1:5a1f58ed5c6e329fe611f50446c71775729638fc
     pristine_git_object: 06e4b0227f50b05964012435df8f8c232853746e
+  internal/sdk/models/shared/updatemodelavailabilityguardrailpolicyrequest.go:
+    id: 0deb8891be33
+    last_write_checksum: sha1:b9cd4540494e83bcf85beaeb79edabf6265ea3e6
+    pristine_git_object: e4abea714ddb6b06fdd2455d2e3fbf13e613757f
+  internal/sdk/models/shared/updatemoderationguardrailpolicyrequest.go:
+    id: 94b0049b24c2
+    last_write_checksum: sha1:fc966eb1f5eaf164dfba6fa91d9c3530b5638fcf
+    pristine_git_object: e9b83bd0ac194b6d8eb743a712260ca8c8b9a51d
   internal/sdk/models/shared/updateobservabilitydestinationrequest.go:
     id: 19459c07c9be
     last_write_checksum: sha1:4aeb0c3b62d75b0694be5d02546b6c29af5f893d
@@ -5226,8 +5498,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:30a4a8c66240ccba16355a016452a015ba41477d
-    pristine_git_object: a8b8fee824dca448dd9541a448720ed5ef81b4b7
+    last_write_checksum: sha1:ec4a7673e8ea75e2a6afbe02c7f089a7935fbe7d
+    pristine_git_object: f3436ceba7a8bc6930624bc3325a0c1f9c069d1f
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -9903,6 +10175,481 @@ examples:
           application/json: {"error": {"code": 404, "message": "Resource not found"}}
         "429":
           application/json: {"error": {"code": 429, "message": "Rate limit exceeded"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  listAccountPolicies:
+    speakeasy-default-list-account-policies:
+      parameters:
+        query:
+          offset: 0
+          limit: 50
+      responses:
+        "200":
+          application/json: {"data": [], "total_count": 1}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  createAccountPolicy:
+    speakeasy-default-create-account-policy:
+      requestBody:
+        application/json: {"config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "name": "Engineering monthly budget", "policy_type": "budget", "workspace_ids": ["0df9e665-d932-5740-b2c7-b52af166bc11"]}
+      responses:
+        "201":
+          application/json: {"data": {"config": {"content_filter_builtins": [{"action": "block", "slug": "secrets"}]}, "created_at": "2025-08-24T10:30:00Z", "id": "550e8400-e29b-41d4-a716-446655440000", "is_default": true, "is_synced": false, "is_workspace_default_synced": false, "name": "Engineering monthly budget", "opted_out_workspace_ids": ["0df9e665-d932-5740-b2c7-b52af166bc11"], "policy_type": "moderation", "updated_at": "1735618738537", "workspace_count": 199228, "workspace_ids": ["0df9e665-d932-5740-b2c7-b52af166bc11"]}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  deleteAccountPolicy:
+    speakeasy-default-delete-account-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        "200":
+          application/json: {"data": true}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  updateAccountPolicy:
+    speakeasy-default-update-account-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        application/json: {"config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "name": "Engineering monthly budget", "policy_type": "budget", "workspace_ids": ["0df9e665-d932-5740-b2c7-b52af166bc11"]}
+      responses:
+        "200":
+          application/json: {"data": {"config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "created_at": "2025-08-24T10:30:00Z", "id": "550e8400-e29b-41d4-a716-446655440000", "is_default": false, "is_synced": true, "is_workspace_default_synced": false, "name": "Engineering monthly budget", "opted_out_workspace_ids": ["0df9e665-d932-5740-b2c7-b52af166bc11"], "policy_type": "budget", "updated_at": null, "workspace_count": 60587, "workspace_ids": ["0df9e665-d932-5740-b2c7-b52af166bc11"]}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getApiKeyPolicyAssignment:
+    speakeasy-default-get-api-key-policy-assignment:
+      parameters:
+        path:
+          hash: "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"
+        query:
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+          policy_type: "budget"
+      responses:
+        "200":
+          application/json: {"data": {"opted_out": false, "policy_ids": [], "workspace_default_policy_ids": ["2c6f1a4e-0b7d-4e59-9a61-3f8d2e7c1b90"]}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  changeApiKeyPolicyAssignment:
+    speakeasy-default-change-api-key-policy-assignment:
+      parameters:
+        path:
+          hash: "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"
+      requestBody:
+        application/json: {"assigned": true, "expected_assignment": {"opted_out": false, "policy_ids": [], "workspace_default_policy_ids": ["2c6f1a4e-0b7d-4e59-9a61-3f8d2e7c1b90"]}, "policy_id": "550e8400-e29b-41d4-a716-446655440000", "policy_type": "budget", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}
+      responses:
+        "200":
+          application/json: {"data": true}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getMemberPolicyAssignment:
+    speakeasy-default-get-member-policy-assignment:
+      parameters:
+        path:
+          member_id: "user_2abcDEFghiJKLmnoPQRstu"
+        query:
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+          policy_type: "budget"
+      responses:
+        "200":
+          application/json: {"data": {"opted_out": false, "policy_ids": [], "workspace_default_policy_ids": ["2c6f1a4e-0b7d-4e59-9a61-3f8d2e7c1b90"]}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  changeMemberPolicyAssignment:
+    speakeasy-default-change-member-policy-assignment:
+      parameters:
+        path:
+          member_id: "user_2abcDEFghiJKLmnoPQRstu"
+      requestBody:
+        application/json: {"assigned": true, "expected_assignment": {"opted_out": false, "policy_ids": [], "workspace_default_policy_ids": ["2c6f1a4e-0b7d-4e59-9a61-3f8d2e7c1b90"]}, "policy_id": "550e8400-e29b-41d4-a716-446655440000", "policy_type": "budget", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}
+      responses:
+        "200":
+          application/json: {"data": true}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  listBudgetPolicies:
+    speakeasy-default-list-budget-policies:
+      parameters:
+        query:
+          offset: 0
+          limit: 50
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": [{"api_key_count": 960905, "config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "id": "550e8400-e29b-41d4-a716-446655440000", "member_count": 899638, "name": "Engineering monthly budget", "policy_type": "budget", "updated_at": null}], "total_count": 1}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  createBudgetPolicy:
+    speakeasy-default-create-budget-policy:
+      requestBody:
+        application/json: {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "policy_type": "budget", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}
+      responses:
+        "201":
+          application/json: {"data": {"config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "id": "550e8400-e29b-41d4-a716-446655440000", "name": "Engineering monthly budget", "policy_type": "budget"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  deleteBudgetPolicy:
+    speakeasy-default-delete-budget-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+        query:
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": true}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getBudgetPolicy:
+    speakeasy-default-get-budget-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+        query:
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "id": "550e8400-e29b-41d4-a716-446655440000", "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "overridden_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "overridden_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "policy_type": "budget", "reference": null, "updated_at": "1735672866117"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  updateBudgetPolicy:
+    speakeasy-default-update-budget-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        application/json: {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}
+      responses:
+        "200":
+          application/json: {"data": {"config": {"include_byok_in_budgets": false, "limit_usd": 200, "reset_interval": "monthly"}, "id": "550e8400-e29b-41d4-a716-446655440000", "name": "Engineering monthly budget", "policy_type": "budget"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  listModelAvailabilityPolicies:
+    speakeasy-default-list-model-availability-policies:
+      parameters:
+        query:
+          offset: 0
+          limit: 50
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": [], "total_count": 1}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  createModelAvailabilityPolicy:
+    speakeasy-default-create-model-availability-policy:
+      requestBody:
+        application/json: {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"allowed_models": ["openai/gpt-4o", "anthropic/claude-sonnet-4"], "allowed_providers": ["openai", "anthropic"], "enforce_zdr_anthropic": true, "enforce_zdr_openai": true}, "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "policy_type": "model_availability", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}
+      responses:
+        "201":
+          application/json: {"data": {"config": {"allowed_models": ["openai/gpt-4o", "anthropic/claude-sonnet-4"], "allowed_providers": ["openai", "anthropic"], "enforce_zdr_anthropic": true, "enforce_zdr_openai": true}, "id": "550e8400-e29b-41d4-a716-446655440000", "name": "Engineering monthly budget", "policy_type": "model_availability"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  deleteModelAvailabilityPolicy:
+    speakeasy-default-delete-model-availability-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+        query:
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": true}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getModelAvailabilityPolicy:
+    speakeasy-default-get-model-availability-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+        query:
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"allowed_models": ["openai/gpt-4o", "anthropic/claude-sonnet-4"], "allowed_providers": ["openai", "anthropic"], "enforce_zdr_anthropic": true, "enforce_zdr_openai": true}, "id": "550e8400-e29b-41d4-a716-446655440000", "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "overridden_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "overridden_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "policy_type": "model_availability", "reference": null, "updated_at": "1735624389333"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  updateModelAvailabilityPolicy:
+    speakeasy-default-update-model-availability-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        application/json: {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"allowed_models": ["openai/gpt-4o", "anthropic/claude-sonnet-4"], "allowed_providers": ["openai", "anthropic"], "enforce_zdr_anthropic": true, "enforce_zdr_openai": true}, "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}
+      responses:
+        "200":
+          application/json: {"data": {"config": {"allowed_models": ["openai/gpt-4o", "anthropic/claude-sonnet-4"], "allowed_providers": ["openai", "anthropic"], "enforce_zdr_anthropic": true, "enforce_zdr_openai": true}, "id": "550e8400-e29b-41d4-a716-446655440000", "name": "Engineering monthly budget", "policy_type": "model_availability"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  listModerationPolicies:
+    speakeasy-default-list-moderation-policies:
+      parameters:
+        query:
+          offset: 0
+          limit: 50
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": [{"api_key_count": 462350, "config": {"content_filter_builtins": [{"action": "block", "slug": "secrets"}]}, "id": "550e8400-e29b-41d4-a716-446655440000", "member_count": 804269, "name": "Engineering monthly budget", "policy_type": "moderation", "updated_at": "1735656084969"}], "total_count": 1}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  createModerationPolicy:
+    speakeasy-default-create-moderation-policy:
+      requestBody:
+        application/json: {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"content_filter_builtins": [{"action": "block", "slug": "secrets"}]}, "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "policy_type": "moderation", "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}
+      responses:
+        "201":
+          application/json: {"data": {"config": {"content_filter_builtins": [{"action": "block", "slug": "secrets"}]}, "id": "550e8400-e29b-41d4-a716-446655440000", "name": "Engineering monthly budget", "policy_type": "moderation"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  deleteModerationPolicy:
+    speakeasy-default-delete-moderation-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+        query:
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": true}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  getModerationPolicy:
+    speakeasy-default-get-moderation-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+        query:
+          workspace_id: "0df9e665-d932-5740-b2c7-b52af166bc11"
+      responses:
+        "200":
+          application/json: {"data": {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"content_filter_builtins": [{"action": "block", "slug": "secrets"}]}, "id": "550e8400-e29b-41d4-a716-446655440000", "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "overridden_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "overridden_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "policy_type": "moderation", "reference": null, "updated_at": "1735631392724"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "500":
+          application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+  updateModerationPolicy:
+    speakeasy-default-update-moderation-policy:
+      parameters:
+        path:
+          id: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        application/json: {"api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "config": {"content_filter_builtins": [{"action": "block", "slug": "secrets"}]}, "member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "name": "Engineering monthly budget", "opted_out_api_key_hashes": ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"], "opted_out_member_ids": ["user_2abcDEFghiJKLmnoPQRstu"], "workspace_id": "0df9e665-d932-5740-b2c7-b52af166bc11"}
+      responses:
+        "200":
+          application/json: {"data": {"config": {"content_filter_builtins": [{"action": "block", "slug": "secrets"}]}, "id": "550e8400-e29b-41d4-a716-446655440000", "name": "Engineering monthly budget", "policy_type": "moderation"}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "401":
+          application/json: {"error": {"code": 401, "message": "Missing Authentication header"}}
+        "403":
+          application/json: {"error": {"code": 403, "message": "Only management keys can perform this operation"}}
+        "404":
+          application/json: {"error": {"code": 404, "message": "Resource not found"}}
+        "409":
+          application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
 examplesVersion: 1.0.2
