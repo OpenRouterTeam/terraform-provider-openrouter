@@ -8,6 +8,33 @@ import (
 	"fmt"
 )
 
+// Interface - How the universal profile exposes the hidden catalog to the provider. Absent or `wrappers`: the `tool_search` and `tool_exec` tools. `code_mode`: one `tool_code` tool that runs a short JavaScript program in which `search()` and `call()` reach the catalog, so several searches and calls complete in one tool result. Experimental.
+type Interface string
+
+const (
+	InterfaceWrappers Interface = "wrappers"
+	InterfaceCodeMode Interface = "code_mode"
+)
+
+func (e Interface) ToPointer() *Interface {
+	return &e
+}
+func (e *Interface) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "wrappers":
+		fallthrough
+	case "code_mode":
+		*e = Interface(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for Interface: %v", v)
+	}
+}
+
 // Profile - Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes, and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
 type Profile string
 
@@ -58,6 +85,33 @@ func (e *Protocol) UnmarshalJSON(data []byte) error {
 	}
 }
 
+// DeferredToolsControlScope - Which tools the universal profile defers. Absent or `all`: every wrappable tool outside the coding-harness core set. `mcp`: only MCP server tools (`mcp__*` names and Responses namespaces outside `functions`); the harness keeps its own built-in tools direct. Experimental.
+type DeferredToolsControlScope string
+
+const (
+	DeferredToolsControlScopeAll DeferredToolsControlScope = "all"
+	DeferredToolsControlScopeMcp DeferredToolsControlScope = "mcp"
+)
+
+func (e DeferredToolsControlScope) ToPointer() *DeferredToolsControlScope {
+	return &e
+}
+func (e *DeferredToolsControlScope) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "all":
+		fallthrough
+	case "mcp":
+		*e = DeferredToolsControlScope(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for DeferredToolsControlScope: %v", v)
+	}
+}
+
 // Validation - Where tool-call arguments are checked against the original schema. Only `runtime` (in OpenRouter) is available in this release.
 type Validation string
 
@@ -84,13 +138,24 @@ func (e *Validation) UnmarshalJSON(data []byte) error {
 
 // DeferredToolsControl - Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged.
 type DeferredToolsControl struct {
+	// How the universal profile exposes the hidden catalog to the provider. Absent or `wrappers`: the `tool_search` and `tool_exec` tools. `code_mode`: one `tool_code` tool that runs a short JavaScript program in which `search()` and `call()` reach the catalog, so several searches and calls complete in one tool result. Experimental.
+	Interface *Interface `json:"interface,omitzero"`
 	// Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes, and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
 	Profile  Profile  `json:"profile"`
 	Protocol Protocol `json:"protocol"`
+	// Which tools the universal profile defers. Absent or `all`: every wrappable tool outside the coding-harness core set. `mcp`: only MCP server tools (`mcp__*` names and Responses namespaces outside `functions`); the harness keeps its own built-in tools direct. Experimental.
+	Scope *DeferredToolsControlScope `json:"scope,omitzero"`
 	// Router-local regex/BM25 or caller-owned custom search.
 	Search DeferredToolsSearchStrategy `json:"search"`
 	// Where tool-call arguments are checked against the original schema. Only `runtime` (in OpenRouter) is available in this release.
 	Validation Validation `json:"validation"`
+}
+
+func (d *DeferredToolsControl) GetInterface() *Interface {
+	if d == nil {
+		return nil
+	}
+	return d.Interface
 }
 
 func (d *DeferredToolsControl) GetProfile() Profile {
@@ -105,6 +170,13 @@ func (d *DeferredToolsControl) GetProtocol() Protocol {
 		return Protocol("")
 	}
 	return d.Protocol
+}
+
+func (d *DeferredToolsControl) GetScope() *DeferredToolsControlScope {
+	if d == nil {
+		return nil
+	}
+	return d.Scope
 }
 
 func (d *DeferredToolsControl) GetSearch() DeferredToolsSearchStrategy {
