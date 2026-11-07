@@ -4,7 +4,7 @@ page_title: "openrouter_private_endpoint Resource - terraform-provider-openroute
 subcategory: ""
 description: |-
   A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set activate to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
-  Only pricing changes in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr or declared_region destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
+  Only pricing and declared_parameters change in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr or declared_region destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
   base_url is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing / or /chat/completions); a config that differs from the stored value only in those ways is not a change.
   activate is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after terraform import you can keep it in config without replacing the endpoint.
   If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
@@ -14,7 +14,7 @@ description: |-
 
 A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
 
-Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+Only `pricing` and `declared_parameters` change in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
 
 `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
 
@@ -29,7 +29,11 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
   activate = {
     workspace_id = "550e8400-e29b-41d4-a716-446655440000"
   }
-  base_url        = "https://api.openai.com/v1"
+  base_url = "https://api.openai.com/v1"
+  declared_parameters = [
+    "temperature",
+    "seed",
+  ]
   declared_region = "us"
   declared_zdr    = true
   model_permaslug = "openai/gpt-4o-2024-08-06"
@@ -55,6 +59,7 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 
 - `activate` (Attributes) Validate and activate the endpoint as part of create. Only sent when the endpoint is created; if validation fails, the provider deletes the draft the API kept and reports the failed checks. Later changes are recorded in state without calling the API. (see [below for nested schema](#nestedatt--activate))
 - `base_url` (String) HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
+- `declared_parameters` (List of String) Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. `tool_choice` requires `tools` to be tested or declared.
 - `declared_region` (String) Attest where this deployment processes data. must be one of ["global", "europe", "us"]; Requires replacement if changed.
 - `declared_zdr` (Boolean) Attest that this deployment retains no prompt or completion data. Requires replacement if changed.
 - `pricing` (Attributes) Negotiated per-token rates reported for requests routed to this endpoint. (see [below for nested schema](#nestedatt--pricing))
@@ -66,6 +71,7 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 - `model_slug` (String) Public model slug, or `null` when the model is no longer listed.
 - `provider_name` (String) Display name of the upstream provider.
 - `status` (String) Lifecycle state. `draft` endpoints are not routable until validated and activated; `disabled` endpoints are activated but temporarily not routable.
+- `tested_parameters` (List of String) Parameters a validation run proved the upstream honors (`tools`, `tool_choice`, `response_format`, `structured_outputs`, `stop`). Read-only; cleared when the upstream configuration changes.
 
 <a id="nestedatt--activate"></a>
 ### Nested Schema for `activate`

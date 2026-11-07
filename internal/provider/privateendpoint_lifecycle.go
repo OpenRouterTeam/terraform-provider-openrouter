@@ -105,8 +105,31 @@ func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateReque
 	return !planned.Equal(current), diags
 }
 
-// refreshPrivateEndpointWithoutPricingWrite finishes an update that changes no
-// pricing by reading the endpoint instead of writing a pricing version.
+// privateEndpointDeclaredParametersChanged reports whether an update asks for a
+// different declared parameter list than state holds. PUT .../parameters
+// replaces the declaration, so it is only sent when the plan changes it.
+func privateEndpointDeclaredParametersChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
+	var planned, current types.List
+	diags := req.Plan.GetAttribute(ctx, path.Root("declared_parameters"), &planned)
+	diags.Append(req.State.GetAttribute(ctx, path.Root("declared_parameters"), &current)...)
+	if diags.HasError() {
+		return false, diags
+	}
+	return declaredParameterListChanged(planned, current), diags
+}
+
+// declaredParameterListChanged treats an unset or unknown plan as "keep what
+// the API has", the same way pricing does.
+func declaredParameterListChanged(planned, current types.List) bool {
+	if planned.IsNull() || planned.IsUnknown() {
+		return false
+	}
+	return !planned.Equal(current)
+}
+
+// refreshPrivateEndpointWithoutPricingWrite finishes an update that changes
+// neither pricing nor declared parameters by reading the endpoint instead of
+// writing anything.
 func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx context.Context, plan types.Object, data *PrivateEndpointResourceModel, resp *resource.UpdateResponse) {
 	request, requestDiags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)

@@ -40,7 +40,11 @@ type stubPrivateEndpoint struct {
 	DeclaredZDR     *bool       `json:"declared_zdr"`
 	DeclaredRegion  *string     `json:"declared_region"`
 	Pricing         stubPricing `json:"pricing"`
-	CreatedAt       string      `json:"created_at"`
+	// Both lists are required in the API's endpoint shape, so they are
+	// encoded as [] rather than null when empty.
+	DeclaredParameters []string `json:"declared_parameters"`
+	TestedParameters   []string `json:"tested_parameters"`
+	CreatedAt          string   `json:"created_at"`
 }
 
 // Mirrors the /private-endpoints contract: create returns the summary shape
@@ -55,7 +59,10 @@ type stubPrivateEndpoints struct {
 	byKey       map[string]string
 	deletes     []string
 	pricingPuts int
-	failGets    int
+	// parameterPuts holds the declared_parameters list of every PUT
+	// .../parameters, in order.
+	parameterPuts [][]string
+	failGets      int
 	// timeoutCreates answers that many creates with 408 after committing
 	// them, the way the API's timeout middleware leaves the handler running.
 	timeoutCreates int
@@ -111,6 +118,20 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		}
 		s.pricingPuts++
 		endpoint.Pricing = body.Pricing
+	case len(parts) == 3 && parts[2] == "parameters" && r.Method == http.MethodPut:
+		var body struct {
+			DeclaredParameters []string `json:"declared_parameters"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil || body.DeclaredParameters == nil {
+			writeError(http.StatusBadRequest, "Invalid parameters")
+			return
+		}
+		if stubDeclaresToolChoiceWithoutTools(body.DeclaredParameters, endpoint.TestedParameters) {
+			writeError(http.StatusBadRequest, "parameters_invalid")
+			return
+		}
+		s.parameterPuts = append(s.parameterPuts, body.DeclaredParameters)
+		endpoint.DeclaredParameters = body.DeclaredParameters
 	case len(parts) == 2 && r.Method == http.MethodGet:
 		if s.failGets > 0 {
 			s.failGets--
@@ -158,6 +179,7 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 		DeclaredZDR     *bool        `json:"declared_zdr"`
 		DeclaredRegion  *string      `json:"declared_region"`
 		Pricing         *stubPricing `json:"pricing"`
+		DeclaredParams  []string     `json:"declared_parameters"`
 		Activate        *struct {
 			WorkspaceID string `json:"workspace_id"`
 		} `json:"activate"`
@@ -165,19 +187,24 @@ func (s *stubPrivateEndpoints) create(w http.ResponseWriter, r *http.Request, wr
 	_ = json.Unmarshal(encoded, &body)
 	s.nextID++
 	endpoint := &stubPrivateEndpoint{
-		ID:              fmt.Sprintf("00000000-0000-4000-8000-%012d", s.nextID),
-		Status:          "draft",
-		ModelPermaslug:  body.ModelPermaslug,
-		ModelSlug:       body.ModelPermaslug,
-		ModelName:       "GPT-4o",
-		ProviderName:    "OpenAI",
-		ProviderSlug:    &body.ProviderSlug,
-		BaseURL:         body.BaseURL,
-		UpstreamModelID: body.UpstreamModelID,
-		DeclaredZDR:     body.DeclaredZDR,
-		DeclaredRegion:  body.DeclaredRegion,
-		Pricing:         stubPricing{Prompt: "0.0000025", Completion: "0.00001"},
-		CreatedAt:       "2026-09-26T12:00:00Z",
+		ID:                 fmt.Sprintf("00000000-0000-4000-8000-%012d", s.nextID),
+		Status:             "draft",
+		ModelPermaslug:     body.ModelPermaslug,
+		ModelSlug:          body.ModelPermaslug,
+		ModelName:          "GPT-4o",
+		ProviderName:       "OpenAI",
+		ProviderSlug:       &body.ProviderSlug,
+		BaseURL:            body.BaseURL,
+		UpstreamModelID:    body.UpstreamModelID,
+		DeclaredZDR:        body.DeclaredZDR,
+		DeclaredRegion:     body.DeclaredRegion,
+		Pricing:            stubPricing{Prompt: "0.0000025", Completion: "0.00001"},
+		DeclaredParameters: []string{},
+		TestedParameters:   []string{},
+		CreatedAt:          "2026-09-26T12:00:00Z",
+	}
+	if body.DeclaredParams != nil {
+		endpoint.DeclaredParameters = body.DeclaredParams
 	}
 	if body.Pricing != nil {
 		endpoint.Pricing = *body.Pricing
@@ -249,7 +276,22 @@ func stubSummary(endpoint *stubPrivateEndpoint) map[string]any {
 		"model_slug": endpoint.ModelSlug, "model_name": endpoint.ModelName,
 		"provider_name": endpoint.ProviderName, "created_at": endpoint.CreatedAt,
 		"declared_zdr": endpoint.DeclaredZDR, "declared_region": endpoint.DeclaredRegion,
+		"declared_parameters": endpoint.DeclaredParameters,
 	}
+}
+
+// stubDeclaresToolChoiceWithoutTools mirrors the API's one cross-parameter
+// rule: tool_choice needs tools, tested or declared.
+func stubDeclaresToolChoiceWithoutTools(declared, tested []string) bool {
+	has := func(list []string, want string) bool {
+		for _, item := range list {
+			if item == want {
+				return true
+			}
+		}
+		return false
+	}
+	return has(declared, "tool_choice") && !has(declared, "tools") && !has(tested, "tools")
 }
 
 func (s *stubPrivateEndpoints) checkCreateCount(want int) resource.TestCheckFunc {
@@ -258,6 +300,22 @@ func (s *stubPrivateEndpoints) checkCreateCount(want int) resource.TestCheckFunc
 		defer s.mu.Unlock()
 		if len(s.creates) != want {
 			return fmt.Errorf("server saw %d creates, want %d", len(s.creates), want)
+		}
+		return nil
+	}
+}
+
+func (s *stubPrivateEndpoints) checkLastCreateDeclared(want ...string) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		raw, _ := s.creates[len(s.creates)-1]["declared_parameters"].([]any)
+		got := make([]string, 0, len(raw))
+		for _, item := range raw {
+			got = append(got, fmt.Sprint(item))
+		}
+		if strings.Join(got, ",") != strings.Join(want, ",") {
+			return fmt.Errorf("create body declared_parameters = %v, want %v", got, want)
 		}
 		return nil
 	}
@@ -292,6 +350,34 @@ func (s *stubPrivateEndpoints) checkPricingPuts(want int) resource.TestCheckFunc
 		defer s.mu.Unlock()
 		if s.pricingPuts != want {
 			return fmt.Errorf("server saw %d PUT /pricing calls, want %d", s.pricingPuts, want)
+		}
+		return nil
+	}
+}
+
+func (s *stubPrivateEndpoints) checkParameterPuts(want int) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		if len(s.parameterPuts) != want {
+			return fmt.Errorf("server saw %d PUT /parameters calls, want %d", len(s.parameterPuts), want)
+		}
+		return nil
+	}
+}
+
+// checkLastParameterPut verifies the declaration the server last received,
+// which is what the endpoint now advertises regardless of what state says.
+func (s *stubPrivateEndpoints) checkLastParameterPut(want ...string) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		if len(s.parameterPuts) == 0 {
+			return fmt.Errorf("server saw no PUT /parameters calls, want one with %v", want)
+		}
+		got := s.parameterPuts[len(s.parameterPuts)-1]
+		if strings.Join(got, ",") != strings.Join(want, ",") {
+			return fmt.Errorf("last PUT /parameters declared %v, want %v", got, want)
 		}
 		return nil
 	}
@@ -774,4 +860,82 @@ func TestStubPrivateEndpointRejectsNonHTTPSBaseURL(t *testing.T) {
 	if len(api.creates) != 0 {
 		t.Fatalf("server saw %d creates for an http base_url, want 0", len(api.creates))
 	}
+}
+
+func privateEndpointParametersConfig(serverURL, prompt string, declared ...string) string {
+	quoted := make([]string, 0, len(declared))
+	for _, parameter := range declared {
+		quoted = append(quoted, fmt.Sprintf("%q", parameter))
+	}
+	return stubBudgetProviderConfig(serverURL) + fmt.Sprintf(`
+resource "openrouter_private_endpoint" "test" {
+  model_permaslug     = "openai/gpt-4o"
+  provider_slug       = "openai"
+  upstream_model_id   = "gpt-4o-2024-08-06"
+  declared_parameters = [%s]
+  pricing = {
+    prompt     = %q
+    completion = "0.000008"
+  }
+  activate = {
+    workspace_id = %q
+  }
+}
+`, strings.Join(quoted, ", "), prompt, privateEndpointWorkspaceID)
+}
+
+// declared_parameters is sent on create and replaced in place through PUT
+// .../parameters. A pricing change in the same apply must not feed the old
+// declaration back to the API.
+func TestStubPrivateEndpointDeclaredParameters(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	inPlace := resource.ConfigPlanChecks{
+		PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(name, plancheck.ResourceActionUpdate)},
+	}
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: privateEndpointParametersConfig(srv.URL, "0.000002", "seed"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "1"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.0", "seed"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.#", "0"),
+					api.checkCreateCount(1),
+					api.checkLastCreateDeclared("seed"),
+					api.checkParameterPuts(0),
+				),
+			},
+			{Config: privateEndpointParametersConfig(srv.URL, "0.000002", "seed"), PlanOnly: true},
+			{
+				Config:           privateEndpointParametersConfig(srv.URL, "0.000002", "seed", "temperature"),
+				ConfigPlanChecks: inPlace,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "2"),
+					api.checkCreateCount(1),
+					api.checkPricingPuts(0),
+					api.checkParameterPuts(1),
+					api.checkLastParameterPut("seed", "temperature"),
+				),
+			},
+			{
+				Config:           privateEndpointParametersConfig(srv.URL, "0.0000015", "temperature"),
+				ConfigPlanChecks: inPlace,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "pricing.prompt", "0.0000015"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "1"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.0", "temperature"),
+					api.checkPricingPuts(1),
+					api.checkParameterPuts(2),
+					api.checkLastParameterPut("temperature"),
+				),
+			},
+			{Config: privateEndpointParametersConfig(srv.URL, "0.0000015", "temperature"), PlanOnly: true},
+			{
+				Config:      privateEndpointParametersConfig(srv.URL, "0.0000015", "tool_choice"),
+				ExpectError: regexp.MustCompile(`parameters_invalid`),
+			},
+		},
+	})
 }
