@@ -170,6 +170,8 @@ func (e *Validation) UnmarshalJSON(data []byte) error {
 type DeferredToolsControl struct {
 	// How a universal `tool_search` query reaches the client's own tool search. Absent or `keywords`: a `select:` query becomes the words of the selected names and the limit is always filled. `native`: a `select:` query passes through verbatim when the client search documents `select:`, and the limit field is sent only when the model gave one, unless the client search requires it, in which case its documented default is sent. Experimental.
 	CascadeMode *CascadeMode `json:"cascade_mode,omitzero"`
+	// Universal profile only. Caller text announced to the model with the deferred catalog before its first turn, for example which sources the task needs. Repeated only when it changes. Trimmed before the length bounds apply. Recorded in the `catalog_index` discovery record of the response, so it is replayed with the conversation.
+	Hint *string `json:"hint,omitzero"`
 	// How the universal profile exposes the hidden catalog to the provider. Absent or `wrappers`: the `tool_search` and `tool_exec` tools. `code_mode`: one `tool_code` tool that runs a short JavaScript program in which `search()` and `call()` reach the catalog, so several searches and calls complete in one tool result. Experimental.
 	Interface *Interface `json:"interface,omitzero"`
 	// Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes, and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
@@ -188,6 +190,13 @@ func (d *DeferredToolsControl) GetCascadeMode() *CascadeMode {
 		return nil
 	}
 	return d.CascadeMode
+}
+
+func (d *DeferredToolsControl) GetHint() *string {
+	if d == nil {
+		return nil
+	}
+	return d.Hint
 }
 
 func (d *DeferredToolsControl) GetInterface() *Interface {

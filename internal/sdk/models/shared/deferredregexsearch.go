@@ -10,6 +10,8 @@ import (
 // DeferredRegexSearch - Versioned safe-regex retrieval over supplied tool definitions.
 type DeferredRegexSearch struct {
 	MaxResults *int64 `json:"max_results,omitzero"`
+	// Universal profile only, for searches the router answers through the `tool_search` wrapper; code-mode `search()` and a client-owned tool search list the matched tools alone. When true, each result also names up to 16 other deferred tools of every source a match came from, so a model that found one tool of an MCP server learns its neighbours without another search. Absent or false: results list the matched tools alone.
+	Siblings *bool `json:"siblings,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"regex" json:"type"`
 }
@@ -30,6 +32,13 @@ func (d *DeferredRegexSearch) GetMaxResults() *int64 {
 		return nil
 	}
 	return d.MaxResults
+}
+
+func (d *DeferredRegexSearch) GetSiblings() *bool {
+	if d == nil {
+		return nil
+	}
+	return d.Siblings
 }
 
 func (d *DeferredRegexSearch) GetType() string {
