@@ -107,10 +107,12 @@ type OutputToolSearchServerToolItem struct {
 	// How the model saw the matches. `compact` means each tool by name, description, and input shape, plus a call example. Replaying the item renders the same result.
 	Format *OutputToolSearchServerToolItemFormat `json:"format,omitzero"`
 	// The guidance the model got when the search matched no tools.
-	Hint    *string                `json:"hint,omitzero"`
-	ID      *string                `json:"id,omitzero"`
-	Matches []Match                `json:"matches,omitzero"`
-	Query   *string                `json:"query,omitzero"`
+	Hint    *string `json:"hint,omitzero"`
+	ID      *string `json:"id,omitzero"`
+	Matches []Match `json:"matches,omitzero"`
+	Query   *string `json:"query,omitzero"`
+	// The other deferred tools of each source a match came from, by name, when the search listed siblings. Replaying the item shows the same names.
+	Sources map[string][]string    `json:"sources,omitzero"`
 	Status  FailableToolCallStatus `json:"status"`
 	// The IDs of every tool call in the model response that ran the search, in order. Replaying the item keeps those calls in one turn.
 	TurnCallIds []string                           `json:"turn_call_ids,omitzero"`
@@ -189,6 +191,13 @@ func (o *OutputToolSearchServerToolItem) GetQuery() *string {
 		return nil
 	}
 	return o.Query
+}
+
+func (o *OutputToolSearchServerToolItem) GetSources() map[string][]string {
+	if o == nil {
+		return nil
+	}
+	return o.Sources
 }
 
 func (o *OutputToolSearchServerToolItem) GetStatus() FailableToolCallStatus {
