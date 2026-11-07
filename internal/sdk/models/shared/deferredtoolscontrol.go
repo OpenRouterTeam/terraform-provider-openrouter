@@ -8,6 +8,33 @@ import (
 	"fmt"
 )
 
+// CascadeMode - How a universal `tool_search` query reaches the client's own tool search. Absent or `keywords`: a `select:` query becomes the words of the selected names and the limit is always filled. `native`: a `select:` query passes through verbatim when the client search documents `select:`, and the limit field is sent only when the model gave one, unless the client search requires it, in which case its documented default is sent. Experimental.
+type CascadeMode string
+
+const (
+	CascadeModeKeywords CascadeMode = "keywords"
+	CascadeModeNative   CascadeMode = "native"
+)
+
+func (e CascadeMode) ToPointer() *CascadeMode {
+	return &e
+}
+func (e *CascadeMode) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "keywords":
+		fallthrough
+	case "native":
+		*e = CascadeMode(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for CascadeMode: %v", v)
+	}
+}
+
 // Interface - How the universal profile exposes the hidden catalog to the provider. Absent or `wrappers`: the `tool_search` and `tool_exec` tools. `code_mode`: one `tool_code` tool that runs a short JavaScript program in which `search()` and `call()` reach the catalog, so several searches and calls complete in one tool result. Experimental.
 type Interface string
 
@@ -85,12 +112,13 @@ func (e *Protocol) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// DeferredToolsControlScope - Which tools the universal profile defers. Absent or `all`: every wrappable tool outside the coding-harness core set. `mcp`: only MCP server tools (`mcp__*` names and Responses namespaces outside `functions`); the harness keeps its own built-in tools direct. Experimental.
+// DeferredToolsControlScope - Which tools the universal profile defers. Absent or `all`: every wrappable tool outside the coding-harness core set. `mcp`: only MCP server tools (`mcp__*` names and Responses namespaces outside `functions`); the harness keeps its own built-in tools direct. `client`: only the tools the client itself marked `defer_loading`, so a harness with its own tool search keeps its other direct tools direct; an adopted client tool search is still replaced by the router wrappers, and a client-deferred tool the router cannot wrap stays direct. Experimental.
 type DeferredToolsControlScope string
 
 const (
-	DeferredToolsControlScopeAll DeferredToolsControlScope = "all"
-	DeferredToolsControlScopeMcp DeferredToolsControlScope = "mcp"
+	DeferredToolsControlScopeAll    DeferredToolsControlScope = "all"
+	DeferredToolsControlScopeMcp    DeferredToolsControlScope = "mcp"
+	DeferredToolsControlScopeClient DeferredToolsControlScope = "client"
 )
 
 func (e DeferredToolsControlScope) ToPointer() *DeferredToolsControlScope {
@@ -105,6 +133,8 @@ func (e *DeferredToolsControlScope) UnmarshalJSON(data []byte) error {
 	case "all":
 		fallthrough
 	case "mcp":
+		fallthrough
+	case "client":
 		*e = DeferredToolsControlScope(v)
 		return nil
 	default:
@@ -138,17 +168,26 @@ func (e *Validation) UnmarshalJSON(data []byte) error {
 
 // DeferredToolsControl - Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged.
 type DeferredToolsControl struct {
+	// How a universal `tool_search` query reaches the client's own tool search. Absent or `keywords`: a `select:` query becomes the words of the selected names and the limit is always filled. `native`: a `select:` query passes through verbatim when the client search documents `select:`, and the limit field is sent only when the model gave one, unless the client search requires it, in which case its documented default is sent. Experimental.
+	CascadeMode *CascadeMode `json:"cascade_mode,omitzero"`
 	// How the universal profile exposes the hidden catalog to the provider. Absent or `wrappers`: the `tool_search` and `tool_exec` tools. `code_mode`: one `tool_code` tool that runs a short JavaScript program in which `search()` and `call()` reach the catalog, so several searches and calls complete in one tool result. Experimental.
 	Interface *Interface `json:"interface,omitzero"`
 	// Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes, and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
 	Profile  Profile  `json:"profile"`
 	Protocol Protocol `json:"protocol"`
-	// Which tools the universal profile defers. Absent or `all`: every wrappable tool outside the coding-harness core set. `mcp`: only MCP server tools (`mcp__*` names and Responses namespaces outside `functions`); the harness keeps its own built-in tools direct. Experimental.
+	// Which tools the universal profile defers. Absent or `all`: every wrappable tool outside the coding-harness core set. `mcp`: only MCP server tools (`mcp__*` names and Responses namespaces outside `functions`); the harness keeps its own built-in tools direct. `client`: only the tools the client itself marked `defer_loading`, so a harness with its own tool search keeps its other direct tools direct; an adopted client tool search is still replaced by the router wrappers, and a client-deferred tool the router cannot wrap stays direct. Experimental.
 	Scope *DeferredToolsControlScope `json:"scope,omitzero"`
 	// Router-local regex/BM25 or caller-owned custom search.
 	Search DeferredToolsSearchStrategy `json:"search"`
 	// Where tool-call arguments are checked against the original schema. Only `runtime` (in OpenRouter) is available in this release.
 	Validation Validation `json:"validation"`
+}
+
+func (d *DeferredToolsControl) GetCascadeMode() *CascadeMode {
+	if d == nil {
+		return nil
+	}
+	return d.CascadeMode
 }
 
 func (d *DeferredToolsControl) GetInterface() *Interface {
