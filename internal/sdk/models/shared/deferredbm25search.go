@@ -12,6 +12,8 @@ type DeferredBm25Search struct {
 	MaxResults *int64 `json:"max_results,omitzero"`
 	// Universal profile only, for searches the router answers through the `tool_search` wrapper; code-mode `search()` and a client-owned tool search list the matched tools alone. When true, each result also names up to 16 other deferred tools of every source a match came from, so a model that found one tool of an MCP server learns its neighbours without another search. Absent or false: results list the matched tools alone.
 	Siblings *bool `json:"siblings,omitzero"`
+	// Universal profile only, for keyword searches the router answers through the `tool_search` wrapper. When true, a result spreads across sources: of the 3 x limit best-scoring candidates, those scoring at least 60% of the best match take at most 2 slots per source (MCP server, namespace or shared `<server>_` prefix; a tool with no source is never capped), and the remaining slots fill in score order, so a catalog with several systems for one job (web search, page extraction) shows one of each instead of the top system's siblings. Absent or false: results are the best matches in score order.
+	Spread *bool `json:"spread,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"bm25" json:"type"`
 }
@@ -39,6 +41,13 @@ func (d *DeferredBm25Search) GetSiblings() *bool {
 		return nil
 	}
 	return d.Siblings
+}
+
+func (d *DeferredBm25Search) GetSpread() *bool {
+	if d == nil {
+		return nil
+	}
+	return d.Spread
 }
 
 func (d *DeferredBm25Search) GetType() string {
