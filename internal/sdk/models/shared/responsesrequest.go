@@ -1558,7 +1558,7 @@ type ResponsesRequest struct {
 	CacheControl *AnthropicCacheControlDirective `json:"cache_control,omitzero"`
 	// Debug options for inspecting request transformations (streaming only)
 	Debug *ChatDebugOptions `json:"debug,omitzero"`
-	// Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged.
+	// Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation. The portable profile needs the catalog unchanged across a continuation; the universal profile accepts a changed catalog and, with `announce_catalog_changes`, tells the model about it.
 	DeferredTools    *DeferredToolsControl `json:"deferred_tools,omitzero"`
 	FrequencyPenalty *float64              `json:"frequency_penalty,omitzero"`
 	// Provider-specific image configuration options. Keys and values vary by model/provider. See https://openrouter.ai/docs/guides/overview/multimodal/image-generation for more details.
