@@ -62,7 +62,7 @@ func (e *Interface) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// Profile - Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes, and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
+// Profile - Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes (unless `min_deferred_tools` inlines a small catalog), and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
 type Profile string
 
 const (
@@ -176,7 +176,9 @@ type DeferredToolsControl struct {
 	Hint *string `json:"hint,omitzero"`
 	// How the universal profile exposes the hidden catalog to the provider. Absent or `wrappers`: the `tool_search` and `tool_exec` tools. `code_mode`: one `tool_code` tool that runs a short JavaScript program in which `search()` and `call()` reach the catalog, so several searches and calls complete in one tool result. Experimental.
 	Interface *Interface `json:"interface,omitzero"`
-	// Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes, and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
+	// Universal profile only. When fewer tools than this would be deferred, the universal profile defers none of them and sends the client tools unchanged, so a harness with a handful of non-core tools and no MCP servers pays no search turn for them. Counted after the interface exclusions; ignored with a custom search, whose client decides what it loads. Absent: every wrappable tool in scope is deferred.
+	MinDeferredTools *int64 `json:"min_deferred_tools,omitzero"`
+	// Loading profile. `portable` serves the `defer_loading` tools with router-built search and call wrappers on any model and keeps the catalog fixed. `universal` defers every wrappable tool behind the same wrappers so the provider-facing tool list never changes (unless `min_deferred_tools` inlines a small catalog), and rebuilds the catalog from each request so tools can be added or removed mid-conversation.
 	Profile  Profile  `json:"profile"`
 	Protocol Protocol `json:"protocol"`
 	// Which tools the universal profile defers. Absent or `all`: every wrappable tool outside the coding-harness core set. `mcp`: only MCP server tools (`mcp__*` names and Responses namespaces outside `functions`); the harness keeps its own built-in tools direct. `client`: only the tools the client itself marked `defer_loading`, so a harness with its own tool search keeps its other direct tools direct; an adopted client tool search is still replaced by the router wrappers, and a client-deferred tool the router cannot wrap stays direct. Experimental.
@@ -213,6 +215,13 @@ func (d *DeferredToolsControl) GetInterface() *Interface {
 		return nil
 	}
 	return d.Interface
+}
+
+func (d *DeferredToolsControl) GetMinDeferredTools() *int64 {
+	if d == nil {
+		return nil
+	}
+	return d.MinDeferredTools
 }
 
 func (d *DeferredToolsControl) GetProfile() Profile {
