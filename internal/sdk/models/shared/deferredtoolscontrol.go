@@ -166,8 +166,10 @@ func (e *Validation) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// DeferredToolsControl - Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged.
+// DeferredToolsControl - Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation. The portable profile needs the catalog unchanged across a continuation; the universal profile accepts a changed catalog and, with `announce_catalog_changes`, tells the model about it.
 type DeferredToolsControl struct {
+	// Universal profile only. When true, a catalog whose deferred tools changed between two of the model's own turns (a client that connects MCP servers while the model works) is re-announced before the next model turn, with the sources added, changed and removed since the previous index, or that no deferred tools remain. Applies when the router lists the catalog itself; a client whose own tool search was adopted lists its deferred tools itself and is not re-announced. The announcement shares the result budget of the turn and is skipped when it does not fit. Absent or false: the catalog index is announced on a user turn only.
+	AnnounceCatalogChanges *bool `json:"announce_catalog_changes,omitzero"`
 	// How a universal `tool_search` query reaches the client's own tool search. Absent or `keywords`: a `select:` query becomes the words of the selected names and the limit is always filled. `native`: a `select:` query passes through verbatim when the client search documents `select:`, and the limit field is sent only when the model gave one, unless the client search requires it, in which case its documented default is sent. Experimental.
 	CascadeMode *CascadeMode `json:"cascade_mode,omitzero"`
 	// Universal profile only. Caller text announced to the model with the deferred catalog before its first turn, for example which sources the task needs. Repeated only when it changes. Trimmed before the length bounds apply. Recorded in the `catalog_index` discovery record of the response, so it is replayed with the conversation.
@@ -183,6 +185,13 @@ type DeferredToolsControl struct {
 	Search DeferredToolsSearchStrategy `json:"search"`
 	// Where tool-call arguments are checked against the original schema. Only `runtime` (in OpenRouter) is available in this release.
 	Validation Validation `json:"validation"`
+}
+
+func (d *DeferredToolsControl) GetAnnounceCatalogChanges() *bool {
+	if d == nil {
+		return nil
+	}
+	return d.AnnounceCatalogChanges
 }
 
 func (d *DeferredToolsControl) GetCascadeMode() *CascadeMode {

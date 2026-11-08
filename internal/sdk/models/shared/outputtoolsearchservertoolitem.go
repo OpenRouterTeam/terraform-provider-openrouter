@@ -100,6 +100,8 @@ type OutputToolSearchServerToolItem struct {
 	Arguments *string `json:"arguments,omitzero"`
 	// The ID of the model call that ran the search. Replaying the item reuses it.
 	CallID *string `json:"call_id,omitzero"`
+	// What the announced index added and removed since the previous one, when the request opted into `announce_catalog_changes` and the catalog changed between model turns. Replaying the item shows the same lines.
+	CatalogChanges *string `json:"catalog_changes,omitzero"`
 	// The deferred-tool index the router showed the model with a pre-search, listing tool sources and names. Replaying the item shows the same index.
 	CatalogIndex *string `json:"catalog_index,omitzero"`
 	// The error message when the tool call failed before producing a result. Set together with `status: 'failed'`; absent on a successful call.
@@ -142,6 +144,13 @@ func (o *OutputToolSearchServerToolItem) GetCallID() *string {
 		return nil
 	}
 	return o.CallID
+}
+
+func (o *OutputToolSearchServerToolItem) GetCatalogChanges() *string {
+	if o == nil {
+		return nil
+	}
+	return o.CatalogChanges
 }
 
 func (o *OutputToolSearchServerToolItem) GetCatalogIndex() *string {
