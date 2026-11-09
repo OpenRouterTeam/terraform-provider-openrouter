@@ -633,7 +633,7 @@ func (e *TypeFileSearch) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// FileSearchServerTool - File search tool configuration
+// FileSearchServerTool - File search tool configuration. `vector_store_ids` names OpenAI vector stores, so it requires BYOK (your own OpenAI key); requests on OpenRouter credits get a 400.
 type FileSearchServerTool struct {
 	Filters        *FiltersUnion   `json:"filters,omitzero"`
 	MaxNumResults  *int64          `json:"max_num_results,omitzero"`

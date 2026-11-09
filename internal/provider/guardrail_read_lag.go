@@ -1,3 +1,4 @@
+//lint:file-ignore U1000 Called only from persistent edits to guardrail_resource.go and guardrail_data_source.go, which the generator lints before applying them.
 package provider
 
 import (

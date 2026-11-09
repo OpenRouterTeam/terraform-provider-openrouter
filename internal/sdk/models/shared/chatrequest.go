@@ -831,7 +831,7 @@ type ChatRequest struct {
 	CacheControl *AnthropicCacheControlDirective `json:"cache_control,omitzero"`
 	// Debug options for inspecting request transformations (streaming only)
 	Debug *ChatDebugOptions `json:"debug,omitzero"`
-	// Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged.
+	// Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation. The portable profile needs the catalog unchanged across a continuation; the universal profile accepts a changed catalog and, with `announce_catalog_changes`, tells the model about it.
 	DeferredTools *DeferredToolsControl `json:"deferred_tools,omitzero"`
 	// Frequency penalty (-2.0 to 2.0)
 	FrequencyPenalty *float64 `json:"frequency_penalty,omitzero"`

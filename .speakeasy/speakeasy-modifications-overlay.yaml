@@ -3,6 +3,13 @@
 # federation_policy_id) and their Configure hook. They stay as persistent edits because the
 # spec does not model provider attributes. Editing this file is what makes regenerate.yaml
 # run on a PR that changes that generated code.
+#
+# internal/provider/guardrail_resource.go and internal/provider/guardrail_data_source.go read a
+# guardrail through a retrying helper in guardrail_read_lag.go, and the resource's Delete polls
+# until the row reads as gone, because the API can answer 404 for a read issued moments after the
+# write that created the row, and 200 for a read moments after the delete. The spec cannot express
+# that tolerance, so both call sites stay as persistent edits, and this comment is the declaration
+# that makes regenerate.yaml run on the PR that changes them.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:
