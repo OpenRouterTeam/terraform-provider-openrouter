@@ -4,7 +4,6 @@
 package shared
 
 type PrivateEndpoint struct {
-	Settings *PrivateEndpointSettings `json:"settings"`
 	// HTTPS base URL of your deployment, or `null` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 	BaseURL *string `json:"base_url"`
 	// Where you attest this deployment processes data. `global` means not regional; `null` means undeclared.
@@ -25,6 +24,8 @@ type PrivateEndpoint struct {
 	ProviderName string `json:"provider_name"`
 	// Slug of the upstream provider, or `null` when the provider is no longer listed.
 	ProviderSlug *string `json:"provider_slug"`
+	// Endpoint-specific context settings returned by the API.
+	Settings *PrivateEndpointSettings `json:"settings"`
 	// Lifecycle state. `draft` endpoints are not routable until validated and activated; `disabled` endpoints are activated but temporarily not routable.
 	Status PrivateEndpointStatus `json:"status"`
 	// Model or deployment identifier sent to the upstream provider.

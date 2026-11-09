@@ -326,3 +326,18 @@ func TestPrivateEndpointContextImportAndRefresh(t *testing.T) {
 		t.Fatalf("import/refresh wrote to API: %v", methods)
 	}
 }
+
+func TestPrivateEndpointRequestPreservesExplicitUpstream(t *testing.T) {
+	request := shared.UpdatePrivateEndpointRequest{UpstreamModelID: "model-v2"}
+	raw, err := json.Marshal(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var body map[string]any
+	if err := json.Unmarshal(raw, &body); err != nil {
+		t.Fatal(err)
+	}
+	if len(body) != 1 || body["upstream_model_id"] != "model-v2" {
+		t.Fatalf("explicit upstream update was changed: %s", raw)
+	}
+}

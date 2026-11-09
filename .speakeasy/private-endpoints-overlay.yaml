@@ -1613,6 +1613,7 @@ actions:
   update:
     settings:
       $ref: '#/components/schemas/PrivateEndpointSettings'
+      description: Endpoint-specific context settings returned by the API.
 - target: $["components"]["schemas"]["UpdatePrivateEndpointRequest"]["required"]
   remove: true
 - target: $["components"]["schemas"]["UpdatePrivateEndpointRequest"]["properties"]
