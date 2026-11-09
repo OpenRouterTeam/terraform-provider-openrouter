@@ -14,6 +14,8 @@ type ListPresetsRequest struct {
 	Offset *int64 `default:"0" queryParam:"style=form,explode=true,name=offset"`
 	// Maximum number of records to return (max 100)
 	Limit *int64 `default:"50" queryParam:"style=form,explode=true,name=limit"`
+	// Workspace to act in. Also accepted as a `workspace_id` field in a JSON request body. Defaults to the key's workspace for a key limited to one workspace, otherwise to the account's default workspace.
+	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
 }
 
 func (l ListPresetsRequest) MarshalJSON() ([]byte, error) {
@@ -41,6 +43,13 @@ func (l *ListPresetsRequest) GetLimit() *int64 {
 	return l.Limit
 }
 
+func (l *ListPresetsRequest) GetWorkspaceID() *string {
+	if l == nil {
+		return nil
+	}
+	return l.WorkspaceID
+}
+
 type ListPresetsResponse struct {
 	// HTTP response content type for this operation
 	ContentType string
@@ -56,6 +65,8 @@ type ListPresetsResponse struct {
 	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Forbidden - Authentication successful but insufficient permissions
 	ForbiddenResponse *shared.ForbiddenResponse
+	// Not Found - Resource does not exist
+	NotFoundResponse *shared.NotFoundResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
 	// Service Unavailable - Service temporarily unavailable
@@ -122,6 +133,13 @@ func (l *ListPresetsResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
 		return nil
 	}
 	return l.ForbiddenResponse
+}
+
+func (l *ListPresetsResponse) GetNotFoundResponse() *shared.NotFoundResponse {
+	if l == nil {
+		return nil
+	}
+	return l.NotFoundResponse
 }
 
 func (l *ListPresetsResponse) GetInternalServerResponse() *shared.InternalServerResponse {

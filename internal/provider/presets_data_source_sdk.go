@@ -46,7 +46,15 @@ func (r *PresetsDataSourceModel) RefreshFromSharedListPresetsResponse(ctx contex
 func (r *PresetsDataSourceModel) ToOperationsListPresetsRequest(ctx context.Context) (*operations.ListPresetsRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	out := operations.ListPresetsRequest{}
+	workspaceID := new(string)
+	if !r.WorkspaceID.IsUnknown() && !r.WorkspaceID.IsNull() {
+		*workspaceID = r.WorkspaceID.ValueString()
+	} else {
+		workspaceID = nil
+	}
+	out := operations.ListPresetsRequest{
+		WorkspaceID: workspaceID,
+	}
 
 	return &out, diags
 }
