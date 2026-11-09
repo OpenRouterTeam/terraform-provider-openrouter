@@ -4,7 +4,7 @@ page_title: "openrouter_private_endpoint Resource - terraform-provider-openroute
 subcategory: ""
 description: |-
   A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set activate to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
-  Only pricing changes in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr or declared_region destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
+  Only pricing and settings change in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr or declared_region destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
   base_url is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing / or /chat/completions); a config that differs from the stored value only in those ways is not a change.
   activate is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after terraform import you can keep it in config without replacing the endpoint.
   If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
@@ -14,7 +14,7 @@ description: |-
 
 A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
 
-Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+Only `pricing` and `settings` change in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
 
 `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
 
@@ -37,6 +37,9 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
     completion = "0.00001"
     prompt     = "0.0000025"
   }
+  settings = {
+    context_length = 128000
+  }
   provider_slug     = "openai"
   upstream_model_id = "gpt-4o-2024-08-06"
 }
@@ -58,6 +61,7 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 - `declared_region` (String) Attest where this deployment processes data. must be one of ["global", "europe", "us"]; Requires replacement if changed.
 - `declared_zdr` (Boolean) Attest that this deployment retains no prompt or completion data. Requires replacement if changed.
 - `pricing` (Attributes) Negotiated per-token rates reported for requests routed to this endpoint. (see [below for nested schema](#nestedatt--pricing))
+- `settings` (Attributes) Limits updated in place with PATCH. Omitted settings and fields preserve remote values; removing an override does not reset it. `context_length` is the combined input and reserved output limit; `max_prompt_tokens` is a separate input cap. Both accept positive integers. After create, settings are patched only after the endpoint ID is saved, allowing recovery if PATCH fails.
 
 ### Read-Only
 

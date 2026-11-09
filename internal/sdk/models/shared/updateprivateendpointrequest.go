@@ -39,6 +39,7 @@ func (e *UpdatePrivateEndpointRequestDeclaredRegion) UnmarshalJSON(data []byte) 
 }
 
 type UpdatePrivateEndpointRequest struct {
+	Settings *PrivateEndpointSettings `json:"settings,omitzero"`
 	// HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 	BaseURL *string `json:"base_url,omitzero"`
 	// Attest where this deployment processes data.
@@ -46,7 +47,7 @@ type UpdatePrivateEndpointRequest struct {
 	// Attest that this deployment retains no prompt or completion data.
 	DeclaredZdr *bool `json:"declared_zdr,omitzero"`
 	// Model or deployment identifier sent to the upstream provider.
-	UpstreamModelID string `json:"upstream_model_id"`
+	UpstreamModelID string `json:"upstream_model_id,omitzero"`
 }
 
 func (u *UpdatePrivateEndpointRequest) GetBaseURL() *string {

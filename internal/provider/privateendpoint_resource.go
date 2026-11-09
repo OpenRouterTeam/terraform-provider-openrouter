@@ -12,6 +12,7 @@ import (
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	speakeasy_stringvalidators "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators/stringvalidators"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -41,6 +42,7 @@ type PrivateEndpointResource struct {
 
 // PrivateEndpointResourceModel describes the resource data model.
 type PrivateEndpointResourceModel struct {
+	Settings        *tfTypes.PrivateEndpointSettings   `tfsdk:"settings"`
 	Activate        *tfTypes.PrivateEndpointActivation `tfsdk:"activate"`
 	BaseURL         types.String                       `tfsdk:"base_url"`
 	DeclaredRegion  types.String                       `tfsdk:"declared_region"`
@@ -62,7 +64,7 @@ func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.Met
 
 func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\nOnly `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
+		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\nOnly `pricing` and `settings` change in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
 		Attributes: map[string]schema.Attribute{
 			"activate": schema.SingleNestedAttribute{
 				Optional: true,
@@ -142,6 +144,23 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
 				Description: `Public model slug, or ` + "`" + `null` + "`" + ` when the model is no longer listed.`,
+			},
+			"settings": schema.SingleNestedAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "Endpoint limits patched in place. Omitted settings and fields preserve remote values; removing an override does not reset it.",
+				Attributes: map[string]schema.Attribute{
+					"context_length": schema.Int64Attribute{
+						Optional: true, Computed: true,
+						Description: "Combined input and reserved output token limit.",
+						Validators:  []validator.Int64{int64validator.AtLeast(1)},
+					},
+					"max_prompt_tokens": schema.Int64Attribute{
+						Optional: true, Computed: true,
+						Description: "Separate input token cap. Omit to preserve the existing cap.",
+						Validators:  []validator.Int64{int64validator.AtLeast(1)},
+					},
+				},
 			},
 			"pricing": schema.SingleNestedAttribute{
 				Computed: true,
@@ -312,6 +331,10 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	resp.Diagnostics.Append(r.patchPrivateEndpointSettings(ctx, data.ID.ValueString(), privateEndpointSettingsDelta(data.Settings, nil))...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	request1, request1Diags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(request1Diags...)
 
@@ -422,6 +445,15 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	}
 
 	merge(ctx, req, resp, &data)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var prior *PrivateEndpointResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &prior)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(r.patchPrivateEndpointSettings(ctx, data.ID.ValueString(), privateEndpointSettingsDelta(data.Settings, prior.Settings))...)
 	if resp.Diagnostics.HasError() {
 		return
 	}

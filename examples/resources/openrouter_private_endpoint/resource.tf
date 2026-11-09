@@ -10,6 +10,9 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
     completion = "0.00001"
     prompt     = "0.0000025"
   }
+  settings = {
+    context_length = 128000
+  }
   provider_slug     = "openai"
   upstream_model_id = "gpt-4o-2024-08-06"
 }

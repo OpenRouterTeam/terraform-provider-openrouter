@@ -49,6 +49,7 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedManagedPrivateEndpointRe
 func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx context.Context, resp *shared.PrivateEndpoint) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	r.Settings = privateEndpointSettingsFromAPI(resp.Settings)
 	r.BaseURL = privateEndpointBaseURL(r.BaseURL, resp.BaseURL)
 	if resp.DeclaredRegion != nil {
 		r.DeclaredRegion = types.StringValue(string(*resp.DeclaredRegion))

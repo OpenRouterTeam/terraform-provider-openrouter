@@ -4,6 +4,7 @@
 package shared
 
 type PrivateEndpoint struct {
+	Settings *PrivateEndpointSettings `json:"settings"`
 	// HTTPS base URL of your deployment, or `null` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
 	BaseURL *string `json:"base_url"`
 	// Where you attest this deployment processes data. `global` means not regional; `null` means undeclared.

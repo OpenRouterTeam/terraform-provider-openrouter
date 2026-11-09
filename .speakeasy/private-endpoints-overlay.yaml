@@ -1599,3 +1599,27 @@ actions:
   update:
   - description: Private Endpoints endpoints
     name: Private Endpoints
+
+- target: $["components"]["schemas"]
+  update:
+    PrivateEndpointSettings:
+      type: object
+      properties:
+        context_length:
+          type: integer
+          format: int64
+          minimum: 1
+        max_prompt_tokens:
+          type: integer
+          format: int64
+          minimum: 1
+- target: $["components"]["schemas"]["PrivateEndpoint"]["properties"]
+  update:
+    settings:
+      $ref: '#/components/schemas/PrivateEndpointSettings'
+- target: $["components"]["schemas"]["UpdatePrivateEndpointRequest"]["required"]
+  remove: true
+- target: $["components"]["schemas"]["UpdatePrivateEndpointRequest"]["properties"]
+  update:
+    settings:
+      $ref: '#/components/schemas/PrivateEndpointSettings'
