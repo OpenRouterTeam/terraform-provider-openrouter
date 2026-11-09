@@ -61,7 +61,7 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 - `declared_region` (String) Attest where this deployment processes data. must be one of ["global", "europe", "us"]; Requires replacement if changed.
 - `declared_zdr` (Boolean) Attest that this deployment retains no prompt or completion data. Requires replacement if changed.
 - `pricing` (Attributes) Negotiated per-token rates reported for requests routed to this endpoint. (see [below for nested schema](#nestedatt--pricing))
-- `settings` (Attributes) Limits updated in place with PATCH. Omitted settings and fields preserve remote values; removing an override does not reset it. `context_length` is the combined input and reserved output limit; `max_prompt_tokens` is a separate input cap. Both accept positive integers. After create, settings are patched only after the endpoint ID is saved, allowing recovery if PATCH fails.
+- `settings` (Attributes) Limits updated in place with PATCH. Omitted settings and fields preserve remote values; removing an override does not reset it. `context_length` is the combined input and reserved output limit and accepts a positive integer. Other endpoint limits are not managed by this attribute. After create, settings are patched only after the endpoint ID is saved. A failed PATCH reports an error while retaining that ID in state.
 
 ### Read-Only
 

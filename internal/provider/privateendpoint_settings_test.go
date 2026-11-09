@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
@@ -25,8 +26,7 @@ func TestPrivateEndpointSettingsPatch(t *testing.T) {
 		{name: "removed", prior: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000)}},
 		{name: "unchanged", next: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000)}, prior: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000)}},
 		{name: "unknown", next: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Unknown()}},
-		{name: "context-only", next: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000)}, prior: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(128000), MaxPromptTokens: types.Int64Value(120000)}, want: `{"settings":{"context_length":256000}}`},
-		{name: "context-and-prompt", next: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000), MaxPromptTokens: types.Int64Value(240000)}, want: `{"settings":{"context_length":256000,"max_prompt_tokens":240000}}`},
+		{name: "context-only", next: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000)}, prior: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(128000)}, want: `{"settings":{"context_length":256000}}`},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			calls := 0
@@ -74,7 +74,7 @@ func TestPrivateEndpointSettingsReadback(t *testing.T) {
 	if diags := resource.RefreshFromSharedPrivateEndpoint(context.Background(), &endpoint); diags.HasError() {
 		t.Fatal(diags)
 	}
-	if resource.Settings.ContextLength.ValueInt64() != 256000 || resource.Settings.MaxPromptTokens.ValueInt64() != 120000 {
+	if resource.Settings.ContextLength.ValueInt64() != 256000 {
 		t.Fatalf("limits not read back: %+v", resource.Settings)
 	}
 	resource.RefreshFromSharedPrivateEndpoint(context.Background(), &shared.PrivateEndpoint{})
@@ -114,10 +114,19 @@ func TestPrivateEndpointSettingsRejectUnacknowledgedLimits(t *testing.T) {
 	}
 }
 
-func TestPrivateEndpointSettingsUpdatePreservesObservedPromptCap(t *testing.T) {
+func TestPrivateEndpointSettingsUpdatePreservesOtherLimits(t *testing.T) {
 	methods := []string{}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		methods = append(methods, r.Method+" "+r.URL.Path)
+		if r.Method == http.MethodPatch {
+			var body map[string]map[string]int64
+			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+				t.Error(err)
+			}
+			if len(body) != 1 || len(body["settings"]) != 1 || body["settings"]["context_length"] != 256000 {
+				t.Errorf("context update changed unrelated fields: %v", body)
+			}
+		}
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"data":{"id":"ep_existing","status":"active","model_permaslug":"example/model-v1","model_slug":null,"model_name":null,"provider_name":"Example","provider_slug":"example","base_url":"https://example.com/v1","upstream_model_id":"model-v1","declared_zdr":null,"declared_region":null,"pricing":{"prompt":"0","completion":"0"},"settings":{"context_length":256000,"max_prompt_tokens":120000}}}`))
 	}))
@@ -135,14 +144,14 @@ func TestPrivateEndpointSettingsUpdatePreservesObservedPromptCap(t *testing.T) {
 		BaseURL:         types.StringValue("https://example.com/v1"),
 		Status:          types.StringValue("active"),
 		Pricing:         &tfTypes.PrivateEndpointPricing{Prompt: types.StringValue("0"), Completion: types.StringValue("0")},
-		Settings:        &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(128000), MaxPromptTokens: types.Int64Value(120000)},
+		Settings:        &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(128000)},
 	}
 	prior := tfsdk.State{Schema: schemaResponse.Schema}
 	if diags := prior.Set(ctx, previous); diags.HasError() {
 		t.Fatal(diags)
 	}
 	planned := *previous
-	planned.Settings = &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000), MaxPromptTokens: types.Int64Unknown()}
+	planned.Settings = &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000)}
 	next := tfsdk.State{Schema: schemaResponse.Schema}
 	if diags := next.Set(ctx, &planned); diags.HasError() {
 		t.Fatal(diags)
@@ -156,10 +165,164 @@ func TestPrivateEndpointSettingsUpdatePreservesObservedPromptCap(t *testing.T) {
 	if diags := response.State.Get(ctx, &observed); diags.HasError() {
 		t.Fatal(diags)
 	}
-	if observed.Settings.ContextLength.ValueInt64() != 256000 || observed.Settings.MaxPromptTokens.IsUnknown() || observed.Settings.MaxPromptTokens.ValueInt64() != 120000 {
+	if observed.Settings.ContextLength.ValueInt64() != 256000 {
 		t.Fatalf("lost API readback: %+v", observed.Settings)
 	}
 	if len(methods) != 2 || methods[0] != "PATCH /private-endpoints/ep_existing" || methods[1] != "GET /private-endpoints/ep_existing" {
 		t.Fatalf("unexpected requests: %v", methods)
+	}
+}
+
+func TestPrivateEndpointContextCreate(t *testing.T) {
+	for _, test := range []struct {
+		name, status string
+		patchStatus  int
+	}{
+		{"draft", "draft", http.StatusOK},
+		{"active", "active", http.StatusOK},
+		{"patch-rejected", "draft", http.StatusBadRequest},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			methods := []string{}
+			limit := int64(128000)
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				methods = append(methods, req.Method)
+				w.Header().Set("Content-Type", "application/json")
+				switch req.Method {
+				case http.MethodPost:
+					w.WriteHeader(http.StatusCreated)
+				case http.MethodPatch:
+					if req.URL.Path != "/private-endpoints/ep_created" {
+						t.Errorf("PATCH target = %s", req.URL.Path)
+					}
+					var body map[string]map[string]int64
+					if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+						t.Error(err)
+					}
+					if len(body) != 1 || len(body["settings"]) != 1 || body["settings"]["context_length"] != 256000 {
+						t.Errorf("unexpected PATCH: %v", body)
+					}
+					if test.patchStatus != http.StatusOK {
+						w.WriteHeader(test.patchStatus)
+						_, _ = w.Write([]byte(`{"error":{"code":400,"message":"invalid settings"}}`))
+						return
+					}
+					limit = body["settings"]["context_length"]
+				case http.MethodGet:
+				default:
+					t.Errorf("unexpected method: %s", req.Method)
+				}
+				_ = json.NewEncoder(w).Encode(map[string]any{"data": map[string]any{
+					"id": "ep_created", "status": test.status, "model_permaslug": "example/model-v1", "provider_slug": "example", "provider_name": "Example",
+					"upstream_model_id": "model-v1", "base_url": "https://example.com/v1", "pricing": map[string]string{"prompt": "0", "completion": "0"},
+					"settings": map[string]int64{"context_length": limit, "max_prompt_tokens": 120000},
+				}})
+			}))
+			defer server.Close()
+			key := "test"
+			r := PrivateEndpointResource{client: sdk.New(sdk.WithServerURL(server.URL), sdk.WithSecurity(shared.Security{APIKey: &key}))}
+			ctx := context.Background()
+			var schemaResponse resource.SchemaResponse
+			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+			model := &PrivateEndpointResourceModel{
+				ID: types.StringUnknown(), ModelPermaslug: types.StringValue("example/model-v1"), ProviderSlug: types.StringValue("example"),
+				UpstreamModelID: types.StringValue("model-v1"), BaseURL: types.StringValue("https://example.com/v1"),
+				ModelName: types.StringUnknown(), ModelSlug: types.StringUnknown(), ProviderName: types.StringUnknown(), Status: types.StringUnknown(),
+				Settings: &tfTypes.PrivateEndpointSettings{ContextLength: types.Int64Value(256000)},
+			}
+			plan := tfsdk.State{Schema: schemaResponse.Schema}
+			if diags := plan.Set(ctx, model); diags.HasError() {
+				t.Fatal(diags)
+			}
+			response := resource.CreateResponse{State: tfsdk.State{Schema: schemaResponse.Schema}}
+			r.Create(ctx, resource.CreateRequest{Plan: tfsdk.Plan{Schema: schemaResponse.Schema, Raw: plan.Raw}}, &response)
+			if response.Diagnostics.HasError() != (test.patchStatus != http.StatusOK) {
+				t.Fatalf("unexpected diagnostics: %v", response.Diagnostics)
+			}
+			var observed *PrivateEndpointResourceModel
+			if diags := response.State.Get(ctx, &observed); diags.HasError() {
+				t.Fatal(diags)
+			}
+			if observed == nil || observed.ID.ValueString() != "ep_created" {
+				t.Fatalf("created ID was not retained: %+v", observed)
+			}
+			expected := []string{"POST", "PATCH"}
+			if test.patchStatus == http.StatusOK {
+				expected = append(expected, "GET")
+				if observed.Settings.ContextLength.ValueInt64() != 256000 {
+					t.Fatalf("context readback = %+v", observed.Settings)
+				}
+			}
+			if strings.Join(methods, ",") != strings.Join(expected, ",") {
+				t.Fatalf("methods = %v, want %v", methods, expected)
+			}
+		})
+	}
+}
+
+func TestPrivateEndpointContextImportAndRefresh(t *testing.T) {
+	limit := int64(128000)
+	deleted := false
+	methods := []string{}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		methods = append(methods, req.Method)
+		if req.Method != http.MethodGet || req.URL.Path != "/private-endpoints/ep_imported" {
+			t.Errorf("unexpected request: %s %s", req.Method, req.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if deleted {
+			w.WriteHeader(http.StatusNotFound)
+			_, _ = w.Write([]byte(`{"error":{"code":404,"message":"not found"}}`))
+			return
+		}
+		_ = json.NewEncoder(w).Encode(map[string]any{"data": map[string]any{
+			"id": "ep_imported", "status": "active", "model_permaslug": "example/model-v1", "provider_slug": "example", "provider_name": "Example",
+			"upstream_model_id": "model-v1", "base_url": "https://example.com/v1", "pricing": map[string]string{"prompt": "0", "completion": "0"},
+			"settings": map[string]int64{"context_length": limit, "max_prompt_tokens": 120000},
+		}})
+	}))
+	defer server.Close()
+	key := "test"
+	r := PrivateEndpointResource{client: sdk.New(sdk.WithServerURL(server.URL), sdk.WithSecurity(shared.Security{APIKey: &key}))}
+	ctx := context.Background()
+	var schemaResponse resource.SchemaResponse
+	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+	blank := tfsdk.State{Schema: schemaResponse.Schema}
+	if diags := blank.Set(ctx, &PrivateEndpointResourceModel{}); diags.HasError() {
+		t.Fatal(diags)
+	}
+	imported := resource.ImportStateResponse{State: blank}
+	r.ImportState(ctx, resource.ImportStateRequest{ID: "ep_imported"}, &imported)
+	if imported.Diagnostics.HasError() {
+		t.Fatal(imported.Diagnostics)
+	}
+	state := imported.State
+	for _, next := range []int64{128000, 256000} {
+		limit = next
+		response := resource.ReadResponse{State: state}
+		r.Read(ctx, resource.ReadRequest{State: state}, &response)
+		if response.Diagnostics.HasError() {
+			t.Fatal(response.Diagnostics)
+		}
+		var observed *PrivateEndpointResourceModel
+		if diags := response.State.Get(ctx, &observed); diags.HasError() {
+			t.Fatal(diags)
+		}
+		if observed.ID.ValueString() != "ep_imported" || observed.Settings.ContextLength.ValueInt64() != next {
+			t.Fatalf("incorrect imported or drifted state: %+v", observed)
+		}
+		state = response.State
+	}
+	deleted = true
+	response := resource.ReadResponse{State: state}
+	r.Read(ctx, resource.ReadRequest{State: state}, &response)
+	if response.Diagnostics.HasError() {
+		t.Fatal(response.Diagnostics)
+	}
+	if !response.State.Raw.IsNull() {
+		t.Fatal("404 must remove the endpoint from state")
+	}
+	if strings.Join(methods, ",") != "GET,GET,GET" {
+		t.Fatalf("import/refresh wrote to API: %v", methods)
 	}
 }

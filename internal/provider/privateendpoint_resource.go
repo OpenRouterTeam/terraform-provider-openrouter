@@ -148,16 +148,11 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 			"settings": schema.SingleNestedAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "Endpoint limits patched in place. Omitted settings and fields preserve remote values; removing an override does not reset it.",
+				Description: "Context length patched in place. Omitting settings preserves the remote value; removing an override does not reset it.",
 				Attributes: map[string]schema.Attribute{
 					"context_length": schema.Int64Attribute{
 						Optional: true, Computed: true,
 						Description: "Combined input and reserved output token limit.",
-						Validators:  []validator.Int64{int64validator.AtLeast(1)},
-					},
-					"max_prompt_tokens": schema.Int64Attribute{
-						Optional: true, Computed: true,
-						Description: "Separate input token cap. Omit to preserve the existing cap.",
 						Validators:  []validator.Int64{int64validator.AtLeast(1)},
 					},
 				},

@@ -16,33 +16,19 @@ func privateEndpointSettingsFromAPI(settings *shared.PrivateEndpointSettings) *t
 		return nil
 	}
 	return &tfTypes.PrivateEndpointSettings{
-		ContextLength:   types.Int64PointerValue(settings.ContextLength),
-		MaxPromptTokens: types.Int64PointerValue(settings.MaxPromptTokens),
+		ContextLength: types.Int64PointerValue(settings.ContextLength),
 	}
 }
 
 func privateEndpointSettingsDelta(planned, prior *tfTypes.PrivateEndpointSettings) *shared.PrivateEndpointSettings {
-	if planned == nil {
+	if planned == nil || planned.ContextLength.IsNull() || planned.ContextLength.IsUnknown() {
 		return nil
 	}
-	if prior == nil {
-		prior = &tfTypes.PrivateEndpointSettings{}
-	}
-	changed := func(next, old types.Int64) *int64 {
-		if next.IsNull() || next.IsUnknown() || next.Equal(old) {
-			return nil
-		}
-		value := next.ValueInt64()
-		return &value
-	}
-	delta := &shared.PrivateEndpointSettings{
-		ContextLength:   changed(planned.ContextLength, prior.ContextLength),
-		MaxPromptTokens: changed(planned.MaxPromptTokens, prior.MaxPromptTokens),
-	}
-	if delta.ContextLength == nil && delta.MaxPromptTokens == nil {
+	if prior != nil && planned.ContextLength.Equal(prior.ContextLength) {
 		return nil
 	}
-	return delta
+	value := planned.ContextLength.ValueInt64()
+	return &shared.PrivateEndpointSettings{ContextLength: &value}
 }
 
 func (r *PrivateEndpointResource) patchPrivateEndpointSettings(ctx context.Context, id string, settings *shared.PrivateEndpointSettings) diag.Diagnostics {
@@ -62,7 +48,7 @@ func (r *PrivateEndpointResource) patchPrivateEndpointSettings(ctx context.Conte
 		return diags
 	}
 	actual := res.PrivateEndpointResponse.Data.Settings
-	if actual == nil || (settings.ContextLength != nil && (actual.ContextLength == nil || *actual.ContextLength != *settings.ContextLength)) || (settings.MaxPromptTokens != nil && (actual.MaxPromptTokens == nil || *actual.MaxPromptTokens != *settings.MaxPromptTokens)) {
+	if actual == nil || (settings.ContextLength != nil && (actual.ContextLength == nil || *actual.ContextLength != *settings.ContextLength)) {
 		diags.AddError("private endpoint settings were not acknowledged", "The PATCH response does not contain the requested limits.")
 	}
 	return diags
