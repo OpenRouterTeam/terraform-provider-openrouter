@@ -416,6 +416,8 @@ actions:
   # create -> validate -> activate. The API edits pricing and limits in place.
   # Other create fields force replacement; pricing uses the generated update
   # operation and limits use the settings PATCH lifecycle helper.
+  # Persistent resource edits make the read-model context_length optional and
+  # computed, and PATCH it independently of the generated pricing update.
   # ---------------------------------------------------------------------------
   - target: $["components"]["schemas"]["PrivateEndpoint"]
     update:

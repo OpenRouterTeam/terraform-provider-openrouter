@@ -1,7 +1,8 @@
 package shared
 
-// PrivateEndpointSettings contains only limits explicitly managed by the caller.
-// Nil fields are omitted from PATCH and preserve their current values.
+// PrivateEndpointSettings models the endpoint context-length setting.
+// Other API settings are left unmanaged.
 type PrivateEndpointSettings struct {
+	// Maximum combined input and reserved output token count.
 	ContextLength *int64 `json:"context_length,omitempty"`
 }

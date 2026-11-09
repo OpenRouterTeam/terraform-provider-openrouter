@@ -1603,9 +1603,11 @@ actions:
 - target: $["components"]["schemas"]
   update:
     PrivateEndpointSettings:
+      description: Endpoint settings modeled by this provider; only context_length is managed.
       type: object
       properties:
         context_length:
+          description: Maximum combined input and reserved output token count.
           type: integer
           format: int64
           minimum: 1
@@ -1613,7 +1615,7 @@ actions:
   update:
     settings:
       $ref: '#/components/schemas/PrivateEndpointSettings'
-      description: Endpoint-specific context settings returned by the API.
+      description: Endpoint-specific settings returned by the API.
 - target: $["components"]["schemas"]["UpdatePrivateEndpointRequest"]["required"]
   remove: true
 - target: $["components"]["schemas"]["UpdatePrivateEndpointRequest"]["properties"]

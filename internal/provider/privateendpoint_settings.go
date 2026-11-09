@@ -1,3 +1,5 @@
+//lint:file-ignore U1000 Called from persistent edits to privateendpoint_resource.go and privateendpoint_resource_sdk.go, applied after generation lint.
+
 package provider
 
 import (
