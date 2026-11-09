@@ -14,7 +14,8 @@ Preset DataSource
 
 ```terraform
 data "openrouter_preset" "my_preset" {
-  slug = "my-preset"
+  slug         = "my-preset"
+  workspace_id = "750e8400-e29b-41d4-a716-446655440002"
 }
 ```
 
@@ -24,6 +25,10 @@ data "openrouter_preset" "my_preset" {
 ### Required
 
 - `slug` (String) URL-safe slug identifying the preset.
+
+### Optional
+
+- `workspace_id` (String) Workspace to act in. Also accepted as a `workspace_id` field in a JSON request body. Defaults to the key's workspace for a key limited to one workspace, otherwise to the account's default workspace.
 
 ### Read-Only
 
