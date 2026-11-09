@@ -19,6 +19,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -94,8 +97,11 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 			},
 			"declared_parameters": schema.ListAttribute{
-				Computed:    true,
-				Optional:    true,
+				Computed: true,
+				Optional: true,
+				PlanModifiers: []planmodifier.List{
+					privateEndpointListKeepUnlessChanged{group: "declared_parameters"},
+				},
 				ElementType: types.StringType,
 				Description: `Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. ` + "`" + `tool_choice` + "`" + ` requires ` + "`" + `tools` + "`" + ` to be tested or declared.`,
 				Validators: []validator.List{
@@ -145,7 +151,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				},
 			},
 			"max_completion_tokens": schema.Int64Attribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.Int64{
+					privateEndpointInt64KeepUnlessChanged{group: privateEndpointSettingsGroup},
+				},
 				Description: `Most completion tokens a request routed to this endpoint can produce, or ` + "`" + `null` + "`" + ` when the endpoint sets no cap beyond the model context length.`,
 			},
 			"model_name": schema.StringAttribute{
@@ -176,18 +185,27 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 			"pricing": schema.SingleNestedAttribute{
 				Computed: true,
 				Optional: true,
+				PlanModifiers: []planmodifier.Object{
+					privateEndpointObjectKeepUnlessChanged{group: "pricing"},
+				},
 				Attributes: map[string]schema.Attribute{
 					"cache_read": schema.StringAttribute{
-						Computed:    true,
-						Optional:    true,
+						Computed: true,
+						Optional: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.UseStateForUnknown(),
+						},
 						Description: `USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads.`,
 						Validators: []validator.String{
 							stringvalidator.RegexMatches(regexp.MustCompile(`^\d+(\.\d+)?$`), "must match pattern "+regexp.MustCompile(`^\d+(\.\d+)?$`).String()),
 						},
 					},
 					"cache_write": schema.StringAttribute{
-						Computed:    true,
-						Optional:    true,
+						Computed: true,
+						Optional: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.UseStateForUnknown(),
+						},
 						Description: `USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes.`,
 						Validators: []validator.String{
 							stringvalidator.RegexMatches(regexp.MustCompile(`^\d+(\.\d+)?$`), "must match pattern "+regexp.MustCompile(`^\d+(\.\d+)?$`).String()),
@@ -235,25 +253,40 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 			"settings": schema.SingleNestedAttribute{
 				Computed: true,
 				Optional: true,
+				PlanModifiers: []planmodifier.Object{
+					privateEndpointObjectKeepUnlessChanged{group: privateEndpointSettingsGroup},
+				},
 				Attributes: map[string]schema.Attribute{
 					"completions": schema.SingleNestedAttribute{
 						Computed: true,
+						PlanModifiers: []planmodifier.Object{
+							objectplanmodifier.UseStateForUnknown(),
+						},
 						Optional: true,
 						Attributes: map[string]schema.Attribute{
 							"chat": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Serves ` + "`" + `/chat/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default.`,
 							},
 							"text": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Serves ` + "`" + `/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default.`,
 							},
 						},
 					},
 					"context_length": schema.Int64Attribute{
-						Computed:    true,
+						Computed: true,
+						PlanModifiers: []planmodifier.Int64{
+							int64planmodifier.UseStateForUnknown(),
+						},
 						Optional:    true,
 						Description: `Longest prompt plus completion, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default.`,
 						Validators: []validator.Int64{
@@ -261,44 +294,68 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 						},
 					},
 					"excluded_parameters": schema.ListAttribute{
-						Computed:    true,
+						Computed: true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifier.UseStateForUnknown(),
+						},
 						Optional:    true,
 						ElementType: types.StringType,
 						Description: `Request parameters the upstream rejects even though the model supports them; requests using one do not route here. Cannot name a tested parameter.`,
 					},
 					"inputs": schema.SingleNestedAttribute{
 						Computed: true,
+						PlanModifiers: []planmodifier.Object{
+							objectplanmodifier.UseStateForUnknown(),
+						},
 						Optional: true,
 						Attributes: map[string]schema.Attribute{
 							"audio": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts audio input. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 							"base64_files": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts base64 file data. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 							"base64_images": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts base64 image data. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 							"file_urls": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts file URLs. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 							"image_urls": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts image URLs. ` + "`" + `null` + "`" + ` keeps the provider default.`,
 							},
 						},
 					},
 					"max_completion_tokens": schema.Int64Attribute{
-						Computed:    true,
+						Computed: true,
+						PlanModifiers: []planmodifier.Int64{
+							int64planmodifier.UseStateForUnknown(),
+						},
 						Optional:    true,
 						Description: `Longest completion the upstream returns, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default.`,
 						Validators: []validator.Int64{
@@ -306,7 +363,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 						},
 					},
 					"max_prompt_tokens": schema.Int64Attribute{
-						Computed:    true,
+						Computed: true,
+						PlanModifiers: []planmodifier.Int64{
+							int64planmodifier.UseStateForUnknown(),
+						},
 						Optional:    true,
 						Description: `Longest prompt, in tokens, or ` + "`" + `null` + "`" + ` for no cap below the context length. Cannot exceed ` + "`" + `context_length` + "`" + `, or the model context length while ` + "`" + `context_length` + "`" + ` is ` + "`" + `null` + "`" + `.`,
 						Validators: []validator.Int64{
@@ -314,7 +374,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 						},
 					},
 					"quantization": schema.StringAttribute{
-						Computed:    true,
+						Computed: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.UseStateForUnknown(),
+						},
 						Optional:    true,
 						Description: `Weight precision the deployment runs at; ` + "`" + `unknown` + "`" + ` when not stated. must be one of ["int4", "int8", "fp4", "mxfp4", "nvfp4", "fp6", "fp8", "mxfp8", "fp16", "bf16", "fp32", "unknown"]`,
 						Validators: []validator.String{
@@ -336,10 +399,16 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 					},
 					"reasoning": schema.SingleNestedAttribute{
 						Computed: true,
+						PlanModifiers: []planmodifier.Object{
+							objectplanmodifier.UseStateForUnknown(),
+						},
 						Optional: true,
 						Attributes: map[string]schema.Attribute{
 							"return_mechanism": schema.StringAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.String{
+									stringplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Where the upstream puts reasoning tokens in its response: ` + "`" + `reasoning` + "`" + ` and ` + "`" + `reasoning-content` + "`" + ` are response fields, ` + "`" + `content-string` + "`" + ` is inline in the message, ` + "`" + `none` + "`" + ` returns no reasoning. ` + "`" + `null` + "`" + ` uses the provider default. must be one of ["content-string", "reasoning-content", "reasoning", "none"]`,
 								Validators: []validator.String{
@@ -352,7 +421,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 								},
 							},
 							"supported": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Whether requests with ` + "`" + `reasoning` + "`" + ` route to this endpoint.`,
 							},
@@ -360,25 +432,40 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 					},
 					"tool_choice": schema.SingleNestedAttribute{
 						Computed: true,
+						PlanModifiers: []planmodifier.Object{
+							objectplanmodifier.UseStateForUnknown(),
+						},
 						Optional: true,
 						Attributes: map[string]schema.Attribute{
 							"auto": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts ` + "`" + `tool_choice: "auto"` + "`" + `.`,
 							},
 							"function": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts a named function in ` + "`" + `tool_choice` + "`" + `.`,
 							},
 							"none": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts ` + "`" + `tool_choice: "none"` + "`" + `.`,
 							},
 							"required": schema.BoolAttribute{
-								Computed:    true,
+								Computed: true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
 								Optional:    true,
 								Description: `Accepts ` + "`" + `tool_choice: "required"` + "`" + `.`,
 							},
@@ -395,7 +482,10 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Description: `Lifecycle state. ` + "`" + `draft` + "`" + ` endpoints are not routable until validated and activated; ` + "`" + `disabled` + "`" + ` endpoints are activated but temporarily not routable.`,
 			},
 			"tested_parameters": schema.ListAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.List{
+					privateEndpointListKeepUnlessChanged{group: privateEndpointSettingsGroup},
+				},
 				ElementType: types.StringType,
 				Description: `Parameters a validation run proved the upstream honors (` + "`" + `tools` + "`" + `, ` + "`" + `tool_choice` + "`" + `, ` + "`" + `response_format` + "`" + `, ` + "`" + `structured_outputs` + "`" + `, ` + "`" + `stop` + "`" + `). Read-only; cleared when the upstream configuration changes.`,
 			},
@@ -451,6 +541,8 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	plannedDeclaredParameters := data.DeclaredParameters
 
 	request, requestDiags := data.ToOperationsCreatePrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
@@ -550,11 +642,16 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 
+	// The read model drops declared parameters a validation run already proved,
+	// so re-add them from tested_parameters before the plan copy runs.
+	provenDeclaredParameters := declaredParametersWithProven(plannedDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
+
 	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	data.DeclaredParameters = provenDeclaredParameters
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -608,11 +705,21 @@ func (r *PrivateEndpointResource) Read(ctx context.Context, req resource.ReadReq
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
+	priorBaseURL := data.BaseURL
+	priorProviderSlug := data.ProviderSlug
+	priorDeclaredParameters := data.DeclaredParameters
+
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	data.BaseURL = privateEndpointBaseURL(priorBaseURL, res.PrivateEndpointResponse.Data.BaseURL)
+	if data.ProviderSlug.IsNull() && !priorProviderSlug.IsNull() && !priorProviderSlug.IsUnknown() {
+		data.ProviderSlug = priorProviderSlug
+	}
+	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -631,13 +738,27 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	pricingChanged, pricingDiags := privateEndpointPricingChanged(ctx, req)
-	resp.Diagnostics.Append(pricingDiags...)
+
+	// The PATCH replaces `pricing` and `declared_parameters` wholesale, so a group
+	// the plan did not change must be omitted rather than resent from state.
+	changes, changeDiags := privateEndpointChangesForUpdate(ctx, req)
+	resp.Diagnostics.Append(changeDiags...)
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if !pricingChanged {
-		r.refreshPrivateEndpointWithoutPricingWrite(ctx, plan, data, resp)
+
+	// Spelling-only changes to create-only fields (a normalized base_url, for
+	// example) are not API changes. Writing an empty PATCH is a 400, so apply
+	// them to state and skip the call.
+	if !changes.pricing && !changes.settings && !changes.declaredParameters {
+		resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
+
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 		return
 	}
 
@@ -647,6 +768,24 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	if !changes.pricing {
+		request.Body.Pricing = nil
+	}
+	if !changes.settings {
+		request.Body.Settings = nil
+	}
+	if !changes.declaredParameters {
+		request.Body.DeclaredParameters = nil
+	}
+	// `base_url`, `upstream_model_id`, `declared_zdr` and `declared_region` are
+	// draft-only. Resending them from state on an active endpoint answers 409.
+	if data.Status.ValueString() != "draft" {
+		request.Body.BaseURL = nil
+		request.Body.UpstreamModelID = nil
+		request.Body.DeclaredZdr = nil
+		request.Body.DeclaredRegion = nil
+	}
+
 	res, err := r.client.PrivateEndpoints.Update(ctx, *request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
@@ -667,20 +806,9 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
-	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Save updated data into Terraform state
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	// The PATCH answers with the summary shape. Read the full endpoint back so
+	// pricing, settings and tested parameters land in state.
+	r.refreshPrivateEndpointWithoutPricingWrite(ctx, plan, data, resp)
 }
 
 func (r *PrivateEndpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

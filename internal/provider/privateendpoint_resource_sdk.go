@@ -50,7 +50,7 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedManagedPrivateEndpointRe
 func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx context.Context, resp *shared.PrivateEndpoint) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	r.BaseURL = privateEndpointBaseURL(r.BaseURL, resp.BaseURL)
+	r.BaseURL = types.StringPointerValue(resp.BaseURL)
 	r.DeclaredParameters = make([]types.String, 0, len(resp.DeclaredParameters))
 	for _, v := range resp.DeclaredParameters {
 		r.DeclaredParameters = append(r.DeclaredParameters, types.StringValue(v))
@@ -74,9 +74,7 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	r.Pricing.Completion = types.StringValue(resp.Pricing.Completion)
 	r.Pricing.Prompt = types.StringValue(resp.Pricing.Prompt)
 	r.ProviderName = types.StringValue(resp.ProviderName)
-	if resp.ProviderSlug != nil {
-		r.ProviderSlug = types.StringValue(*resp.ProviderSlug)
-	}
+	r.ProviderSlug = types.StringPointerValue(resp.ProviderSlug)
 	if r.Settings == nil {
 		r.Settings = &tfTypes.UpdatePrivateEndpointSettingsRequest{}
 	}
