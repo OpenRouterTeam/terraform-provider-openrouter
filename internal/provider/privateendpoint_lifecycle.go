@@ -234,6 +234,17 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 	priorBaseURL := data.BaseURL
 	priorProviderSlug := data.ProviderSlug
 
+	// Copy the plan's own attributes in first, then let the API's answer win. The
+	// reverse order needed a snapshot of the server truth, but `PrivateEndpointPricing`
+	// and `PrivateEndpointSettings` are pointers and the framework's reflect reuses a
+	// non-nil pointer and mutates the struct in place, so a value copy of the model
+	// aliased them and restored nothing.
+	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
 
 	if resp.Diagnostics.HasError() {
@@ -247,28 +258,6 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 		data.ProviderSlug = priorProviderSlug
 	}
 	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
-
-	// refreshPlan copies the plan over data, which would put stale config values
-	// back on attributes only the API can answer. Keep the server truth.
-	server := *data
-	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	data.BaseURL = server.BaseURL
-	data.DeclaredParameters = server.DeclaredParameters
-	data.ID = server.ID
-	data.MaxCompletionTokens = server.MaxCompletionTokens
-	data.ModelName = server.ModelName
-	data.ModelPermaslug = server.ModelPermaslug
-	data.ModelSlug = server.ModelSlug
-	data.Pricing = server.Pricing
-	data.ProviderName = server.ProviderName
-	data.ProviderSlug = server.ProviderSlug
-	data.Settings = server.Settings
-	data.Status = server.Status
-	data.TestedParameters = server.TestedParameters
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

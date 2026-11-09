@@ -41,10 +41,10 @@ func TestDeclaredParametersWithProven(t *testing.T) {
 		},
 		{
 			name:     "returned names come first and duplicates collapse",
-			prior:    str("stop", "seed"),
+			prior:    str("seed", "stop", "seed"),
 			declared: str("stop"),
-			tested:   str("stop"),
-			want:     []string{"stop"},
+			tested:   str("seed", "stop"),
+			want:     []string{"stop", "seed"},
 		},
 		{
 			name:     "null and unknown entries are ignored",

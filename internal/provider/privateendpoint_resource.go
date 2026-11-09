@@ -550,11 +550,16 @@ func (r *PrivateEndpointResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	request.IdempotencyKey, requestDiags = newPrivateEndpointIdempotencyKey()
-	resp.Diagnostics.Append(requestDiags...)
+	// A configured key is honoured, so a retry replays the endpoint the first
+	// request created instead of creating another one. Generate a key only when
+	// the configuration leaves it unset.
+	if request.IdempotencyKey == nil || *request.IdempotencyKey == "" {
+		request.IdempotencyKey, requestDiags = newPrivateEndpointIdempotencyKey()
+		resp.Diagnostics.Append(requestDiags...)
 
-	if resp.Diagnostics.HasError() {
-		return
+		if resp.Diagnostics.HasError() {
+			return
+		}
 	}
 	res, err := r.client.PrivateEndpoints.Create(ctx, *request)
 	if err != nil {
