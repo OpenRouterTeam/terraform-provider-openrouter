@@ -23,7 +23,9 @@ const (
 )
 
 // getGuardrailTolerantOfReadLag retries a 404 for a bounded window. Any other
-// status, and any transport error, returns immediately.
+// status, and any transport error, returns immediately. Cancellation during the
+// window returns the context error and never a 404, so an interrupted retry is
+// never read as a confirmed absence.
 func getGuardrailTolerantOfReadLag(ctx context.Context, client *sdk.OpenRouter, request *operations.GetGuardrailRequest) (*operations.GetGuardrailResponse, error) {
 	var res *operations.GetGuardrailResponse
 	var err error
@@ -40,7 +42,12 @@ func getGuardrailTolerantOfReadLag(ctx context.Context, client *sdk.OpenRouter, 
 		}
 		select {
 		case <-ctx.Done():
-			return res, nil
+			// Terraform canceled the operation. Report the cancellation instead
+			// of handing back the last 404: a caller reads a 404 carrying no
+			// error as a confirmed absence and acts on it, removing the
+			// guardrail from state in the resource Read and failing with an
+			// unexpected 404 in the data source.
+			return nil, ctx.Err()
 		case <-time.After(guardrailLagInterval):
 		}
 	}
