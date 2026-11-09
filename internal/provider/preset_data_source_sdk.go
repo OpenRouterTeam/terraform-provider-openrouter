@@ -60,8 +60,15 @@ func (r *PresetDataSourceModel) ToOperationsGetPresetRequest(ctx context.Context
 	var slug string
 	slug = r.Slug.ValueString()
 
+	workspaceID := new(string)
+	if !r.WorkspaceID.IsUnknown() && !r.WorkspaceID.IsNull() {
+		*workspaceID = r.WorkspaceID.ValueString()
+	} else {
+		workspaceID = nil
+	}
 	out := operations.GetPresetRequest{
-		Slug: slug,
+		Slug:        slug,
+		WorkspaceID: workspaceID,
 	}
 
 	return &out, diags

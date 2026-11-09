@@ -33,8 +33,9 @@ type PresetDataSource struct {
 
 // PresetDataSourceModel describes the data model.
 type PresetDataSourceModel struct {
-	Data *tfTypes.PresetWithDesignatedVersion `tfsdk:"data"`
-	Slug types.String                         `tfsdk:"slug"`
+	Data        *tfTypes.PresetWithDesignatedVersion `tfsdk:"data"`
+	Slug        types.String                         `tfsdk:"slug"`
+	WorkspaceID types.String                         `queryParam:"style=form,explode=true,name=workspace_id" tfsdk:"workspace_id"`
 }
 
 // Metadata returns the data source type name.
@@ -125,6 +126,10 @@ func (r *PresetDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				Validators: []validator.String{
 					stringvalidator.UTF8LengthAtLeast(1),
 				},
+			},
+			"workspace_id": schema.StringAttribute{
+				Optional:    true,
+				Description: `Workspace to act in. Also accepted as a ` + "`" + `workspace_id` + "`" + ` field in a JSON request body. Defaults to the key's workspace for a key limited to one workspace, otherwise to the account's default workspace.`,
 			},
 		},
 	}

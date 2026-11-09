@@ -30,8 +30,9 @@ type PresetsDataSource struct {
 
 // PresetsDataSourceModel describes the data model.
 type PresetsDataSourceModel struct {
-	Data       []tfTypes.Preset `tfsdk:"data"`
-	TotalCount types.Int64      `tfsdk:"total_count"`
+	Data        []tfTypes.Preset `tfsdk:"data"`
+	TotalCount  types.Int64      `tfsdk:"total_count"`
+	WorkspaceID types.String     `queryParam:"style=form,explode=true,name=workspace_id" tfsdk:"workspace_id"`
 }
 
 // Metadata returns the data source type name.
@@ -88,6 +89,10 @@ func (r *PresetsDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			},
 			"total_count": schema.Int64Attribute{
 				Computed: true,
+			},
+			"workspace_id": schema.StringAttribute{
+				Optional:    true,
+				Description: `Workspace to act in. Also accepted as a ` + "`" + `workspace_id` + "`" + ` field in a JSON request body. Defaults to the key's workspace for a key limited to one workspace, otherwise to the account's default workspace.`,
 			},
 		},
 	}
