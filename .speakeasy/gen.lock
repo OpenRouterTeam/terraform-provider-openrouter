@@ -10,9 +10,9 @@ management:
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: a434d1b3-aebf-47d2-8804-747f239e8874
-  pristine_commit_hash: f7b287c550cb0d91ba14e0d5c67524b1bb8e656f
-  pristine_tree_hash: f71cef50e658567dc63e4cba4b2e826e305da76c
+  generation_id: 10d074ba-0a48-41e5-9587-3b61d62eb925
+  pristine_commit_hash: 675b35f3a2827128c247109148036992f5391b9e
+  pristine_tree_hash: a79c6f0ae7215878aaedb6fcbda30966a49e29eb
 features:
   terraform:
     additionalDependencies: 0.1.0
