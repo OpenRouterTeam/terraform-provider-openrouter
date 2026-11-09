@@ -11,8 +11,10 @@ import (
 
 type CreatePresetsResponsesRequest struct {
 	// URL-safe slug identifying the preset. Created if it does not exist.
-	Slug string                  `pathParam:"style=simple,explode=false,name=slug"`
-	Body shared.ResponsesRequest `request:"mediaType=application/json"`
+	Slug string `pathParam:"style=simple,explode=false,name=slug"`
+	// Workspace to create the preset in. Defaults to the key's workspace for a key limited to one workspace, otherwise to the account's default workspace.
+	WorkspaceID *string                 `queryParam:"style=form,explode=true,name=workspace_id"`
+	Body        shared.ResponsesRequest `request:"mediaType=application/json"`
 }
 
 func (c *CreatePresetsResponsesRequest) GetSlug() string {
@@ -20,6 +22,13 @@ func (c *CreatePresetsResponsesRequest) GetSlug() string {
 		return ""
 	}
 	return c.Slug
+}
+
+func (c *CreatePresetsResponsesRequest) GetWorkspaceID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.WorkspaceID
 }
 
 func (c *CreatePresetsResponsesRequest) GetBody() shared.ResponsesRequest {

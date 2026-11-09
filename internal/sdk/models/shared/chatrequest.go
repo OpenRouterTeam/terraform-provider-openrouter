@@ -458,8 +458,10 @@ func (e *ChatRequestEffort) UnmarshalJSON(data []byte) error {
 // ChatRequestReasoning - Configuration options for reasoning models
 type ChatRequestReasoning struct {
 	// Constrains effort on reasoning for reasoning models
-	Effort  *ChatRequestEffort                 `json:"effort,omitzero"`
-	Summary *ChatReasoningSummaryVerbosityEnum `json:"summary,omitzero"`
+	Effort *ChatRequestEffort `json:"effort,omitzero"`
+	// Maximum number of tokens the model may spend on reasoning, for models that take a reasoning token budget instead of an effort level. Cannot be combined with `reasoning.effort` or the top-level `reasoning_effort`: a request that sets both is rejected with "Only one of "reasoning.effort" and "reasoning.max_tokens" can be specified".
+	MaxTokens *int64                             `json:"max_tokens,omitzero"`
+	Summary   *ChatReasoningSummaryVerbosityEnum `json:"summary,omitzero"`
 }
 
 func (c *ChatRequestReasoning) GetEffort() *ChatRequestEffort {
@@ -467,6 +469,13 @@ func (c *ChatRequestReasoning) GetEffort() *ChatRequestEffort {
 		return nil
 	}
 	return c.Effort
+}
+
+func (c *ChatRequestReasoning) GetMaxTokens() *int64 {
+	if c == nil {
+		return nil
+	}
+	return c.MaxTokens
 }
 
 func (c *ChatRequestReasoning) GetSummary() *ChatReasoningSummaryVerbosityEnum {
@@ -822,7 +831,7 @@ type ChatRequest struct {
 	CacheControl *AnthropicCacheControlDirective `json:"cache_control,omitzero"`
 	// Debug options for inspecting request transformations (streaming only)
 	Debug *ChatDebugOptions `json:"debug,omitzero"`
-	// Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged.
+	// Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation. The portable profile needs the catalog unchanged across a continuation; the universal profile accepts a changed catalog and, with `announce_catalog_changes`, tells the model about it.
 	DeferredTools *DeferredToolsControl `json:"deferred_tools,omitzero"`
 	// Frequency penalty (-2.0 to 2.0)
 	FrequencyPenalty *float64 `json:"frequency_penalty,omitzero"`

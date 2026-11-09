@@ -2919,3 +2919,143 @@ Based on:
 - [terraform v0.3.175] .
 ### Releases
 - [Terraform v0.3.175] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.175 - .
+
+## 2026-11-05 20:47:10
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.177] .
+### Releases
+- [Terraform v0.3.177] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.177 - .
+
+## 2026-11-05 21:47:09
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.179] .
+### Releases
+- [Terraform v0.3.179] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.179 - .
+
+## 2026-11-06 00:56:56
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.181] .
+### Releases
+- [Terraform v0.3.181] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.181 - .
+
+## 2026-11-06 18:43:11
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.183] .
+### Releases
+- [Terraform v0.3.183] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.183 - .
+
+## 2026-11-06 21:53:10
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.185] .
+### Releases
+- [Terraform v0.3.185] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.185 - .
+
+## 2026-11-07 03:15:38
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.187] .
+### Releases
+- [Terraform v0.3.187] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.187 - .
+
+## 2026-11-07 18:18:52
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.189] .
+### Releases
+- [Terraform v0.3.189] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.189 - .
+
+## 2026-11-07 21:11:25
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.191] .
+### Releases
+- [Terraform v0.3.191] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.191 - .
+
+## 2026-11-08 02:33:14
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.193] .
+### Releases
+- [Terraform v0.3.193] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.193 - .
+
+## 2026-11-08 14:31:23
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.195] .
+### Releases
+- [Terraform v0.3.195] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.195 - .
+
+## 2026-11-08 22:09:06
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.197] .
+### Releases
+- [Terraform v0.3.197] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.197 - .
+
+## 2026-11-09 00:42:25
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.199] .
+### Releases
+- [Terraform v0.3.199] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.199 - .
+
+## 2026-11-09 13:11:49
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.201] .
+### Releases
+- [Terraform v0.3.201] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.201 - .
+
+## 2026-11-09 19:51:01
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.803.1 (2.950.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [terraform v0.3.203] .
+### Releases
+- [Terraform v0.3.203] https://registry.terraform.io/providers/OpenRouterTeam/openrouter/0.3.203 - .

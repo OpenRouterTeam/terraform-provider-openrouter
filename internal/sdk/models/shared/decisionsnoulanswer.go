@@ -8,7 +8,8 @@ import (
 )
 
 type DecisionsNoulAnswer struct {
-	Noul float64 `json:"noul"`
+	Confidence *float64 `json:"confidence,omitzero"`
+	Noul       float64  `json:"noul"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"noul" json:"type"`
 }
@@ -22,6 +23,13 @@ func (d *DecisionsNoulAnswer) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (d *DecisionsNoulAnswer) GetConfidence() *float64 {
+	if d == nil {
+		return nil
+	}
+	return d.Confidence
 }
 
 func (d *DecisionsNoulAnswer) GetNoul() float64 {
