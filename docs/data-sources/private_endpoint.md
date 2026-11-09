@@ -28,15 +28,19 @@ data "openrouter_private_endpoint" "my_privateendpoint" {
 ### Read-Only
 
 - `base_url` (String) HTTPS base URL of your deployment, or `null` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
+- `declared_parameters` (List of String) Parameters you declared the upstream supports. Requests that use a parameter only route to this endpoint when it is tested or declared.
 - `declared_region` (String) Where you attest this deployment processes data. `global` means not regional; `null` means undeclared.
 - `declared_zdr` (Boolean) Whether you attest this deployment retains no prompt or completion data. `null` means undeclared.
+- `max_completion_tokens` (Number) Most completion tokens a request routed to this endpoint can produce, or `null` when the endpoint sets no cap beyond the model context length.
 - `model_name` (String) Display name of the model, or `null` when the model is no longer listed.
 - `model_permaslug` (String) Permanent slug of the model this endpoint serves.
 - `model_slug` (String) Public model slug, or `null` when the model is no longer listed.
 - `pricing` (Attributes) Negotiated per-token rates reported for requests routed to this endpoint. (see [below for nested schema](#nestedatt--pricing))
 - `provider_name` (String) Display name of the upstream provider.
 - `provider_slug` (String) Slug of the upstream provider, or `null` when the provider is no longer listed.
+- `settings` (Attributes) Capabilities and limits routing uses for this endpoint. A new endpoint copies them from the public endpoint for the same model and provider, or from the model, and the owner can change them. Rate limits are not part of this object: a private endpoint is billed to its own upstream key, so request limits stay with the provider. (see [below for nested schema](#nestedatt--settings))
 - `status` (String) Lifecycle state. `draft` endpoints are not routable until validated and activated; `disabled` endpoints are activated but temporarily not routable.
+- `tested_parameters` (List of String) Parameters a validation run proved the upstream honors (`tools`, `tool_choice`, `response_format`, `structured_outputs`, `stop`). Read-only; cleared when the upstream configuration changes.
 - `upstream_model_id` (String) Model or deployment identifier sent to the upstream provider.
 
 <a id="nestedatt--pricing"></a>
@@ -44,5 +48,63 @@ data "openrouter_private_endpoint" "my_privateendpoint" {
 
 Read-Only:
 
+- `cache_read` (String) USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads.
+- `cache_write` (String) USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes.
 - `completion` (String) USD per completion token, as a decimal string.
 - `prompt` (String) USD per prompt token, as a decimal string.
+
+
+<a id="nestedatt--settings"></a>
+### Nested Schema for `settings`
+
+Read-Only:
+
+- `completions` (Attributes) (see [below for nested schema](#nestedatt--settings--completions))
+- `context_length` (Number) Longest prompt plus completion, in tokens, or `null` to keep the model default.
+- `excluded_parameters` (List of String) Request parameters the upstream rejects even though the model supports them; requests using one do not route here. Cannot name a tested parameter.
+- `inputs` (Attributes) (see [below for nested schema](#nestedatt--settings--inputs))
+- `max_completion_tokens` (Number) Longest completion the upstream returns, in tokens, or `null` to keep the model default.
+- `max_prompt_tokens` (Number) Longest prompt, in tokens, or `null` for no cap below the context length. Cannot exceed `context_length`, or the model context length while `context_length` is `null`.
+- `quantization` (String) Weight precision the deployment runs at; `unknown` when not stated.
+- `reasoning` (Attributes) (see [below for nested schema](#nestedatt--settings--reasoning))
+- `tool_choice` (Attributes) (see [below for nested schema](#nestedatt--settings--tool_choice))
+
+<a id="nestedatt--settings--completions"></a>
+### Nested Schema for `settings.completions`
+
+Read-Only:
+
+- `chat` (Boolean) Serves `/chat/completions`; `null` uses the provider default.
+- `text` (Boolean) Serves `/completions`; `null` uses the provider default.
+
+
+<a id="nestedatt--settings--inputs"></a>
+### Nested Schema for `settings.inputs`
+
+Read-Only:
+
+- `audio` (Boolean) Accepts audio input. `null` keeps the provider default.
+- `base64_files` (Boolean) Accepts base64 file data. `null` keeps the provider default.
+- `base64_images` (Boolean) Accepts base64 image data. `null` keeps the provider default.
+- `file_urls` (Boolean) Accepts file URLs. `null` keeps the provider default.
+- `image_urls` (Boolean) Accepts image URLs. `null` keeps the provider default.
+
+
+<a id="nestedatt--settings--reasoning"></a>
+### Nested Schema for `settings.reasoning`
+
+Read-Only:
+
+- `return_mechanism` (String) Where the upstream puts reasoning tokens in its response: `reasoning` and `reasoning-content` are response fields, `content-string` is inline in the message, `none` returns no reasoning. `null` uses the provider default.
+- `supported` (Boolean) Whether requests with `reasoning` route to this endpoint.
+
+
+<a id="nestedatt--settings--tool_choice"></a>
+### Nested Schema for `settings.tool_choice`
+
+Read-Only:
+
+- `auto` (Boolean) Accepts `tool_choice: "auto"`.
+- `function` (Boolean) Accepts a named function in `tool_choice`.
+- `none` (Boolean) Accepts `tool_choice: "none"`.
+- `required` (Boolean) Accepts `tool_choice: "required"`.
