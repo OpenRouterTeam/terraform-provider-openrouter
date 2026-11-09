@@ -16,7 +16,9 @@ func (r *APIKeysDataSourceModel) RefreshFromOperationsListResponseBody(ctx conte
 	var diags diag.Diagnostics
 
 	if resp != nil {
-		r.Data = []tfTypes.ListData{}
+		if r.Data == nil {
+			r.Data = []tfTypes.ListData{}
+		}
 
 		for _, dataItem := range resp.Data {
 			var data tfTypes.ListData
@@ -67,12 +69,6 @@ func (r *APIKeysDataSourceModel) ToOperationsListRequest(ctx context.Context) (*
 	} else {
 		includeExpired = nil
 	}
-	offset := new(int64)
-	if !r.Offset.IsUnknown() && !r.Offset.IsNull() {
-		*offset = r.Offset.ValueInt64()
-	} else {
-		offset = nil
-	}
 	workspaceID := new(string)
 	if !r.WorkspaceID.IsUnknown() && !r.WorkspaceID.IsNull() {
 		*workspaceID = r.WorkspaceID.ValueString()
@@ -82,7 +78,6 @@ func (r *APIKeysDataSourceModel) ToOperationsListRequest(ctx context.Context) (*
 	out := operations.ListRequest{
 		IncludeDisabled: includeDisabled,
 		IncludeExpired:  includeExpired,
-		Offset:          offset,
 		WorkspaceID:     workspaceID,
 	}
 

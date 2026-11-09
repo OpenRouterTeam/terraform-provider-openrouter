@@ -100,6 +100,8 @@ type OutputToolSearchServerToolItem struct {
 	Arguments *string `json:"arguments,omitzero"`
 	// The ID of the model call that ran the search. Replaying the item reuses it.
 	CallID *string `json:"call_id,omitzero"`
+	// What the announced index added and removed since the previous one, when the request opted into `announce_catalog_changes` and the catalog changed between model turns. Replaying the item shows the same lines.
+	CatalogChanges *string `json:"catalog_changes,omitzero"`
 	// The deferred-tool index the router showed the model with a pre-search, listing tool sources and names. Replaying the item shows the same index.
 	CatalogIndex *string `json:"catalog_index,omitzero"`
 	// The error message when the tool call failed before producing a result. Set together with `status: 'failed'`; absent on a successful call.
@@ -107,10 +109,12 @@ type OutputToolSearchServerToolItem struct {
 	// How the model saw the matches. `compact` means each tool by name, description, and input shape, plus a call example. Replaying the item renders the same result.
 	Format *OutputToolSearchServerToolItemFormat `json:"format,omitzero"`
 	// The guidance the model got when the search matched no tools.
-	Hint    *string                `json:"hint,omitzero"`
-	ID      *string                `json:"id,omitzero"`
-	Matches []Match                `json:"matches,omitzero"`
-	Query   *string                `json:"query,omitzero"`
+	Hint    *string `json:"hint,omitzero"`
+	ID      *string `json:"id,omitzero"`
+	Matches []Match `json:"matches,omitzero"`
+	Query   *string `json:"query,omitzero"`
+	// The other deferred tools of each source a match came from, by name, when the search listed siblings. Replaying the item shows the same names.
+	Sources map[string][]string    `json:"sources,omitzero"`
 	Status  FailableToolCallStatus `json:"status"`
 	// The IDs of every tool call in the model response that ran the search, in order. Replaying the item keeps those calls in one turn.
 	TurnCallIds []string                           `json:"turn_call_ids,omitzero"`
@@ -140,6 +144,13 @@ func (o *OutputToolSearchServerToolItem) GetCallID() *string {
 		return nil
 	}
 	return o.CallID
+}
+
+func (o *OutputToolSearchServerToolItem) GetCatalogChanges() *string {
+	if o == nil {
+		return nil
+	}
+	return o.CatalogChanges
 }
 
 func (o *OutputToolSearchServerToolItem) GetCatalogIndex() *string {
@@ -189,6 +200,13 @@ func (o *OutputToolSearchServerToolItem) GetQuery() *string {
 		return nil
 	}
 	return o.Query
+}
+
+func (o *OutputToolSearchServerToolItem) GetSources() map[string][]string {
+	if o == nil {
+		return nil
+	}
+	return o.Sources
 }
 
 func (o *OutputToolSearchServerToolItem) GetStatus() FailableToolCallStatus {

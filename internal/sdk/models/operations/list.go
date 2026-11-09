@@ -304,6 +304,8 @@ type ListResponse struct {
 	TooManyRequestsResponse *shared.TooManyRequestsResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+
+	Next func() (*ListResponse, error)
 }
 
 func (l ListResponse) MarshalJSON() ([]byte, error) {
