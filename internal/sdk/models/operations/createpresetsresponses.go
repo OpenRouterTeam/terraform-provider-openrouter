@@ -12,7 +12,7 @@ import (
 type CreatePresetsResponsesRequest struct {
 	// URL-safe slug identifying the preset. Created if it does not exist.
 	Slug string `pathParam:"style=simple,explode=false,name=slug"`
-	// Workspace to create the preset in. Defaults to the key's workspace for a key limited to one workspace, otherwise to the account's default workspace.
+	// Workspace to act in. Also accepted as a `workspace_id` field in a JSON request body. Defaults to the key's workspace for a key limited to one workspace, otherwise to the account's default workspace.
 	WorkspaceID *string                 `queryParam:"style=form,explode=true,name=workspace_id"`
 	Body        shared.ResponsesRequest `request:"mediaType=application/json"`
 }
