@@ -1,15 +1,14 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 58bf37b445adb836e6a364b9b509db93
+  docChecksum: 7d20e526639576065d2b11040a60f32c
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.210
-  configChecksum: 574ddc855ceedbb67ac3a30f7163cba9
+  releaseVersion: 0.3.211
+  configChecksum: af1acfa614aee383b568d2b9ef19d50e
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
-persistentEdits:
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
