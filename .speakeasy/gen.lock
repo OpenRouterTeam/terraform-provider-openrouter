@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: ee62df693018b8113c7352c0b9d62ef6
+  docChecksum: 043e37176bfa88cb0906acae093410ff
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.206
-  configChecksum: fe6c368e7ec5da820d36f1dcadf18b5a
+  releaseVersion: 0.3.209
+  configChecksum: 7ce7d0b149bf98b35675bc13b167c523
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
@@ -1466,8 +1466,8 @@ trackedFiles:
     pristine_git_object: f90098c52d4b6f3871c5b59b718d555580eb36e7
   internal/sdk/models/operations/createauthkeyscode.go:
     id: 63e25db3089b
-    last_write_checksum: sha1:955a21d2f60af52f7d65e03b8b2935ed75969ec4
-    pristine_git_object: 1634ae1b06c65c208a8316b3b96e56d21ff57584
+    last_write_checksum: sha1:badd5cea7b0daa6c85b29be273b3c77197e76aa3
+    pristine_git_object: 899ab301a6cbffa878130e8257e7d66995257ca4
   internal/sdk/models/operations/createbatches.go:
     id: 15f2ec2e114e
     last_write_checksum: sha1:4de9927c4c3febe47b0bec85af6a77462fa924c9
@@ -5554,8 +5554,8 @@ trackedFiles:
     pristine_git_object: 8c8860bef8c635d77ae7d62edb6461065d6bc46c
   internal/sdk/oauth2.go:
     id: 880bc29e3f1f
-    last_write_checksum: sha1:62961c39d2bbd9fa1b1ea399874250c11750bcc2
-    pristine_git_object: 8dee4a0f2f9ad17dde9e43196807de87accc02ef
+    last_write_checksum: sha1:245a8dce3ee50626ca495a9a0dccc840732dbd74
+    pristine_git_object: a617afabad8fac06be6c4d1c23bbfebdfeb7d1e5
   internal/sdk/observability.go:
     id: b1b019ac6ffe
     last_write_checksum: sha1:123827229f59788b9c82e4192802e9683e2d5626
@@ -5905,6 +5905,8 @@ examples:
           application/json: {"error": {"code": 409, "message": "Resource conflict. Please try again later."}}
         "500":
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
   getBenchmarks:
     speakeasy-default-get-benchmarks:
       parameters:
