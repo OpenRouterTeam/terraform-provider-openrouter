@@ -66,6 +66,9 @@ type stubPrivateEndpoints struct {
 	getsAfterPatch int
 	awaitingGet    bool
 	failGets       int
+	// failGetsAfterPatch answers the refresh that follows a PATCH with 403, the
+	// way a read that lags a write fails after the write already succeeded.
+	failGetsAfterPatch int
 	// timeoutCreates answers that many creates with 408 after committing
 	// them, the way the API's timeout middleware leaves the handler running.
 	timeoutCreates int
@@ -128,6 +131,11 @@ func (s *stubPrivateEndpoints) serveHTTP(w http.ResponseWriter, r *http.Request)
 		if s.awaitingGet {
 			s.getsAfterPatch++
 			s.awaitingGet = false
+			if s.failGetsAfterPatch > 0 {
+				s.failGetsAfterPatch--
+				writeError(http.StatusForbidden, "Forbidden")
+				return
+			}
 		}
 	case len(parts) == 2 && r.Method == http.MethodDelete:
 		if r.URL.Query().Get("draft_only") == "true" && endpoint.Status != "draft" {
@@ -1278,4 +1286,134 @@ func TestStubPrivateEndpointDeclaredParameterSurvivesPromotion(t *testing.T) {
 			},
 		},
 	})
+}
+
+// draftPrivateEndpointConfig is privateEndpointConfig without the activate
+// block, so the fixture answers with a draft endpoint that is never activated.
+func draftPrivateEndpointConfig(serverURL, prompt string) string {
+	config := privateEndpointConfig(serverURL, "gpt-4o-prod", prompt)
+	return regexp.MustCompile(`(?s)\n  activate = \{.*?\n  \}\n`).ReplaceAllString(config, "\n")
+}
+
+// A draft update sends the same small body an active update sends: the four
+// create-only fields are omitted when the plan did not change them, even though
+// the API accepts them on a draft.
+func TestStubPrivateEndpointDraftUpdateOmitsUnchangedCreateOnlyFields(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: draftPrivateEndpointConfig(srv.URL, "0.000002"),
+				Check:  resource.TestCheckResourceAttr(name, "status", "draft"),
+			},
+			{
+				Config: draftPrivateEndpointConfig(srv.URL, "0.0000015"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					api.checkPatches(1, ""),
+					func(_ *terraform.State) error {
+						api.mu.Lock()
+						defer api.mu.Unlock()
+						body := api.patches[0]
+						for _, field := range []string{"base_url", "upstream_model_id", "declared_zdr", "declared_region"} {
+							if _, ok := body[field]; ok {
+								return fmt.Errorf("PATCH body carried %s although the plan did not change it: %#v", field, body)
+							}
+						}
+						if len(body) != 1 {
+							return fmt.Errorf("PATCH body = %#v, want only the changed pricing group", body)
+						}
+						return nil
+					},
+				),
+			},
+			{Config: draftPrivateEndpointConfig(srv.URL, "0.0000015"), PlanOnly: true},
+		},
+	})
+}
+
+// A repeated declared parameter is rejected at plan time. Terraform compares
+// the list element-wise, so a state helper that collapsed repeats would answer
+// a configuration it cannot match and fail the apply as an inconsistent result.
+func TestStubPrivateEndpointDeclaredParametersRejectRepeats(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	config := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["temperature", "temperature"]`)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config, ExpectError: regexp.MustCompile(`Duplicate List Value`)},
+		},
+	})
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if len(api.creates) != 0 {
+		t.Fatalf("server saw %d creates for a repeated declared parameter, want 0", len(api.creates))
+	}
+}
+
+// A PATCH that succeeded followed by a failed GET must fail the apply: the
+// summary response is not enough to settle pricing, settings and tested
+// parameters, so the run stops instead of writing a partial state.
+func TestStubPrivateEndpointUpdateFailsWhenReadAfterPatchFails(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	initial := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["temperature"]`)
+	updated := privateEndpointMutableConfig(srv.URL, "0.0000015", 4096, false, true, `["temperature"]`)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: initial},
+			{
+				PreConfig:   func() { api.failGetsAfterPatch = 1 },
+				Config:      updated,
+				ExpectError: regexp.MustCompile(`Got an unexpected response code 403`),
+			},
+		},
+	})
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if len(api.patches) != 1 {
+		t.Fatalf("server saw %d PATCH calls, want 1 before the failed read", len(api.patches))
+	}
+}
+
+// minimalPrivateEndpointConfig omits every attribute the overlay retirement
+// adds, which is the shape a resource recorded before those attributes existed
+// carries in state.
+func minimalPrivateEndpointConfig(serverURL string) string {
+	return stubBudgetProviderConfig(serverURL) + fmt.Sprintf(`
+resource "openrouter_private_endpoint" "test" {
+  model_permaslug   = "openai/gpt-4o"
+  provider_slug     = "openai"
+  upstream_model_id = "gpt-4o-prod"
+  base_url          = "https://deployment.example.com/v1"
+  pricing = {
+    prompt     = "0.000002"
+    completion = "0.000008"
+  }
+  activate = {
+    workspace_id = %q
+  }
+}
+`, privateEndpointWorkspaceID)
+}
+
+// A configuration written before this branch's attributes existed must not plan
+// a change on the upgraded provider, and must not need a write to settle.
+func TestStubPrivateEndpointOlderConfigShapeConverges(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	config := minimalPrivateEndpointConfig(srv.URL)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config, Check: resource.TestCheckResourceAttr(name, "status", "active")},
+			{Config: config, PlanOnly: true},
+		},
+	})
+	api.mu.Lock()
+	defer api.mu.Unlock()
+	if len(api.patches) != 0 {
+		t.Fatalf("server saw %d PATCH calls for an unchanged older-shaped config, want 0", len(api.patches))
+	}
 }

@@ -72,7 +72,7 @@ func (r *PrivateEndpointResource) Metadata(ctx context.Context, req resource.Met
 
 func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\n`pricing`, `settings` and `declared_parameters` can change in place on drafts and active endpoints through PATCH. `pricing` replaces the whole object: omitting `cache_read` or `cache_write` reverts that rate to the pricing strategy default. `settings` changes only the fields it names, and an omitted field keeps its stored value. Clearing a limit is not expressible through the provider today: the generated request omits null fields, so an explicit `null` is never sent. `declared_parameters` replaces the whole declaration list; tested parameters stay.\n\nThe API accepts `base_url` and `upstream_model_id` only to re-point a draft; naming either on an active endpoint returns 409 `already_active` and writes nothing. `declared_zdr` and `declared_region` change on drafts and active endpoints alike. Terraform keeps these fields create-only: changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
+		MarkdownDescription: "A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.\n\n`pricing`, `settings` and `declared_parameters` can change in place on drafts and active endpoints through PATCH. `pricing` replaces the whole object: omitting `cache_read` or `cache_write` reverts that rate to the pricing strategy default. `settings` changes only the fields it names, and an omitted field keeps its stored value. Clearing a limit is not expressible through the provider today: the generated request omits null fields, so an explicit `null` is never sent and cannot put a stored value back to the provider default. `declared_parameters` replaces the whole declaration list; tested parameters stay.\n\nThe API accepts `base_url` and `upstream_model_id` only to re-point a draft; naming either on an active endpoint returns 409 `already_active` and writes nothing. `declared_zdr` and `declared_region` change on drafts and active endpoints alike. Terraform keeps these fields create-only: changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.\n\n`base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.\n\n`activate` is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after `terraform import` you can keep it in config without replacing the endpoint.\n\nIf validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.",
 		Attributes: map[string]schema.Attribute{
 			"activate": schema.SingleNestedAttribute{
 				Optional: true,
@@ -103,8 +103,9 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 					privateEndpointListKeepUnlessChanged{group: "declared_parameters"},
 				},
 				ElementType: types.StringType,
-				Description: `Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. ` + "`" + `tool_choice` + "`" + ` requires ` + "`" + `tools` + "`" + ` to be tested or declared.`,
+				Description: `Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. The order configured here is the order state keeps, and a repeated name is rejected before a request is sent, so the list holds at most as many entries as there are declarable parameters. ` + "`" + `tool_choice` + "`" + ` requires ` + "`" + `tools` + "`" + ` to be tested or declared.`,
 				Validators: []validator.List{
+					listvalidator.UniqueValues(),
 					listvalidator.SizeAtMost(25),
 				},
 			},
@@ -270,7 +271,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 									boolplanmodifier.UseStateForUnknown(),
 								},
 								Optional:    true,
-								Description: `Serves ` + "`" + `/chat/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default.`,
+								Description: `Serves ` + "`" + `/chat/completions` + "`" + `. ` + "`" + `null` + "`" + ` means the endpoint uses the provider default.`,
 							},
 							"text": schema.BoolAttribute{
 								Computed: true,
@@ -278,7 +279,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 									boolplanmodifier.UseStateForUnknown(),
 								},
 								Optional:    true,
-								Description: `Serves ` + "`" + `/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default.`,
+								Description: `Serves ` + "`" + `/completions` + "`" + `. ` + "`" + `null` + "`" + ` means the endpoint uses the provider default.`,
 							},
 						},
 					},
@@ -288,7 +289,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 							int64planmodifier.UseStateForUnknown(),
 						},
 						Optional:    true,
-						Description: `Longest prompt plus completion, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default.`,
+						Description: `Longest prompt plus completion, in tokens. ` + "`" + `null` + "`" + ` means the model default applies.`,
 						Validators: []validator.Int64{
 							int64validator.AtLeast(1),
 						},
@@ -315,7 +316,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 									boolplanmodifier.UseStateForUnknown(),
 								},
 								Optional:    true,
-								Description: `Accepts audio input. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+								Description: `Accepts audio input. ` + "`" + `null` + "`" + ` means the endpoint uses the provider default.`,
 							},
 							"base64_files": schema.BoolAttribute{
 								Computed: true,
@@ -323,7 +324,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 									boolplanmodifier.UseStateForUnknown(),
 								},
 								Optional:    true,
-								Description: `Accepts base64 file data. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+								Description: `Accepts base64 file data. ` + "`" + `null` + "`" + ` means the endpoint uses the provider default.`,
 							},
 							"base64_images": schema.BoolAttribute{
 								Computed: true,
@@ -331,7 +332,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 									boolplanmodifier.UseStateForUnknown(),
 								},
 								Optional:    true,
-								Description: `Accepts base64 image data. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+								Description: `Accepts base64 image data. ` + "`" + `null` + "`" + ` means the endpoint uses the provider default.`,
 							},
 							"file_urls": schema.BoolAttribute{
 								Computed: true,
@@ -339,7 +340,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 									boolplanmodifier.UseStateForUnknown(),
 								},
 								Optional:    true,
-								Description: `Accepts file URLs. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+								Description: `Accepts file URLs. ` + "`" + `null` + "`" + ` means the endpoint uses the provider default.`,
 							},
 							"image_urls": schema.BoolAttribute{
 								Computed: true,
@@ -347,7 +348,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 									boolplanmodifier.UseStateForUnknown(),
 								},
 								Optional:    true,
-								Description: `Accepts image URLs. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+								Description: `Accepts image URLs. ` + "`" + `null` + "`" + ` means the endpoint uses the provider default.`,
 							},
 						},
 					},
@@ -357,7 +358,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 							int64planmodifier.UseStateForUnknown(),
 						},
 						Optional:    true,
-						Description: `Longest completion the upstream returns, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default.`,
+						Description: `Longest completion the upstream returns, in tokens. ` + "`" + `null` + "`" + ` means the model default applies.`,
 						Validators: []validator.Int64{
 							int64validator.AtLeast(1),
 						},
@@ -368,7 +369,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 							int64planmodifier.UseStateForUnknown(),
 						},
 						Optional:    true,
-						Description: `Longest prompt, in tokens, or ` + "`" + `null` + "`" + ` for no cap below the context length. Cannot exceed ` + "`" + `context_length` + "`" + `, or the model context length while ` + "`" + `context_length` + "`" + ` is ` + "`" + `null` + "`" + `.`,
+						Description: `Longest prompt, in tokens. ` + "`" + `null` + "`" + ` means no cap below the context length. Cannot exceed ` + "`" + `context_length` + "`" + `, or the model context length while ` + "`" + `context_length` + "`" + ` is ` + "`" + `null` + "`" + `.`,
 						Validators: []validator.Int64{
 							int64validator.AtLeast(1),
 						},
@@ -410,7 +411,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 									stringplanmodifier.UseStateForUnknown(),
 								},
 								Optional:    true,
-								Description: `Where the upstream puts reasoning tokens in its response: ` + "`" + `reasoning` + "`" + ` and ` + "`" + `reasoning-content` + "`" + ` are response fields, ` + "`" + `content-string` + "`" + ` is inline in the message, ` + "`" + `none` + "`" + ` returns no reasoning. ` + "`" + `null` + "`" + ` uses the provider default. must be one of ["content-string", "reasoning-content", "reasoning", "none"]`,
+								Description: `Where the upstream puts reasoning tokens in its response: ` + "`" + `reasoning` + "`" + ` and ` + "`" + `reasoning-content` + "`" + ` are response fields, ` + "`" + `content-string` + "`" + ` is inline in the message, ` + "`" + `none` + "`" + ` returns no reasoning. ` + "`" + `null` + "`" + ` means the endpoint uses the provider default. must be one of ["content-string", "reasoning-content", "reasoning", "none"]`,
 								Validators: []validator.String{
 									stringvalidator.OneOf(
 										"content-string",
@@ -782,14 +783,23 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	if !changes.declaredParameters {
 		request.Body.DeclaredParameters = nil
 	}
-	// `base_url` and `upstream_model_id` are draft-only: naming either on an
-	// active endpoint answers 409 `already_active`. `declared_zdr` and
-	// `declared_region` are accepted on an active endpoint, but all four are
-	// create-only in Terraform, so none can differ from state on this path.
-	if data.Status.ValueString() != "draft" {
+	// The four create-only fields go out only when the plan changed them, on
+	// drafts as well as active endpoints. `base_url` and `upstream_model_id`
+	// re-point a draft and answer 409 `already_active` on an active endpoint;
+	// `declared_zdr` and `declared_region` are accepted by both. Terraform makes
+	// all four create-only, so in an update they normally cannot differ at all;
+	// the comparison keeps the body to the groups the plan changed, which is the
+	// same rule the mutable groups follow.
+	if !changes.baseURL {
 		request.Body.BaseURL = nil
+	}
+	if !changes.upstreamModelID {
 		request.Body.UpstreamModelID = nil
+	}
+	if !changes.declaredZdr {
 		request.Body.DeclaredZdr = nil
+	}
+	if !changes.declaredRegion {
 		request.Body.DeclaredRegion = nil
 	}
 

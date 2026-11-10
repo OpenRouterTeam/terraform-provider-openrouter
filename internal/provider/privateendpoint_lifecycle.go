@@ -100,6 +100,11 @@ func privateEndpointErrorMessage(res *operations.CreatePrivateEndpointResponse) 
 
 type privateEndpointChanges struct {
 	pricing, settings, declaredParameters bool
+
+	// Create-only fields are not part of the group dispatch. They are sent only
+	// when the plan changed them, on drafts as well as active endpoints, so a
+	// draft update carries the same small body an active update does.
+	baseURL, upstreamModelID, declaredZdr, declaredRegion bool
 }
 
 // privateEndpointChangesForUpdate compares the mutable groups with prior state.
@@ -120,10 +125,35 @@ func privateEndpointChangesForUpdate(ctx context.Context, req resource.UpdateReq
 		value := plannedAttributes[name]
 		*changed = !value.IsNull() && privateEndpointValueChanged(value, currentAttributes[name])
 	}
+	// base_url is compared in the form the API stores it in, because a
+	// difference in case or a trailing path segment is not a change worth
+	// sending. The other three are compared as configured.
+	changes.baseURL = privateEndpointBaseURLChanged(plannedAttributes["base_url"], currentAttributes["base_url"])
+	changes.upstreamModelID = privateEndpointValueChanged(plannedAttributes["upstream_model_id"], currentAttributes["upstream_model_id"])
+	changes.declaredZdr = privateEndpointValueChanged(plannedAttributes["declared_zdr"], currentAttributes["declared_zdr"])
+	changes.declaredRegion = privateEndpointValueChanged(plannedAttributes["declared_region"], currentAttributes["declared_region"])
 	return changes, diags
 }
 
+// privateEndpointBaseURLChanged compares two base_url values the way the API
+// stores them, so a spelling-only difference does not put base_url back in the
+// update body. Anything that is not a pair of known strings falls back to the
+// plain comparison.
+func privateEndpointBaseURLChanged(planned, current attr.Value) bool {
+	plannedString, plannedOK := planned.(types.String)
+	currentString, currentOK := current.(types.String)
+	if !plannedOK || !currentOK || plannedString.IsUnknown() || plannedString.IsNull() ||
+		currentString.IsUnknown() || currentString.IsNull() {
+		return privateEndpointValueChanged(planned, current)
+	}
+	return custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(plannedString.ValueString()) !=
+		custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(currentString.ValueString())
+}
+
 func privateEndpointValueChanged(planned, current attr.Value) bool {
+	if planned == nil || current == nil {
+		return false
+	}
 	if planned.IsUnknown() || planned.Equal(current) {
 		return false
 	}
