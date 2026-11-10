@@ -165,27 +165,39 @@ func (r *WorkspaceDefaultGuardrailResource) Configure(ctx context.Context, req r
 	r.client = client
 }
 
-// resolveDefaultGuardrailID looks up the workspace and returns its
-// default_guardrail_id. found is false when the workspace does not exist.
-func (r *WorkspaceDefaultGuardrailResource) resolveDefaultGuardrailID(ctx context.Context, workspaceID string) (id string, found bool, diags diag.Diagnostics) {
-	res, err := r.client.Workspaces.Get(ctx, operations.GetWorkspaceRequest{ID: workspaceID})
+// getWorkspace looks up a workspace by id (UUID) or slug. found is false when
+// no workspace matches the reference, which is the only case either caller
+// treats as absence; the shape of the response is each caller's business.
+func (r *WorkspaceDefaultGuardrailResource) getWorkspace(ctx context.Context, reference string) (*operations.GetWorkspaceResponse, bool, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	res, err := r.client.Workspaces.Get(ctx, operations.GetWorkspaceRequest{ID: reference})
 	if err != nil {
 		diags.AddError("failure to invoke API", err.Error())
 		if res != nil && res.RawResponse != nil {
 			diags.AddError("unexpected http request/response", debugResponse(res.RawResponse))
 		}
-		return "", false, diags
+		return res, false, diags
 	}
 	if res == nil {
 		diags.AddError("unexpected response from API", fmt.Sprintf("%v", res))
-		return "", false, diags
+		return nil, false, diags
 	}
 	if res.StatusCode == 404 {
-		return "", false, diags
+		return res, false, diags
 	}
 	if res.StatusCode != 200 {
 		diags.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
-		return "", false, diags
+		return res, false, diags
+	}
+	return res, true, diags
+}
+
+// resolveDefaultGuardrailID looks up the workspace and returns its
+// default_guardrail_id. found is false when the workspace does not exist.
+func (r *WorkspaceDefaultGuardrailResource) resolveDefaultGuardrailID(ctx context.Context, workspaceID string) (id string, found bool, diags diag.Diagnostics) {
+	res, found, diags := r.getWorkspace(ctx, workspaceID)
+	if !found || diags.HasError() {
+		return "", found, diags
 	}
 	if res.GetWorkspaceResponse == nil || res.GetWorkspaceResponse.Data.DefaultGuardrailID == "" {
 		diags.AddError("unexpected response from API. Workspace has no default_guardrail_id", debugResponse(res.RawResponse))
@@ -402,8 +414,38 @@ func (r *WorkspaceDefaultGuardrailResource) Update(ctx context.Context, req reso
 func (r *WorkspaceDefaultGuardrailResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 }
 
-// ImportState accepts the workspace id (UUID or slug). Read resolves the
-// guardrail id from the workspace and tolerates an unmaterialized default.
+// resolveWorkspaceID resolves an import identifier to the canonical workspace
+// UUID. The workspace route accepts a UUID or a slug and answers with the
+// UUID, so importing by slug must store what the API returns rather than the
+// slug it was given: workspace_id is an identifier, and a slug in state plans
+// a replacement for any configuration that names the UUID.
+func (r *WorkspaceDefaultGuardrailResource) resolveWorkspaceID(ctx context.Context, reference string) (string, diag.Diagnostics) {
+	res, found, diags := r.getWorkspace(ctx, reference)
+	if diags.HasError() {
+		return "", diags
+	}
+	if !found {
+		diags.AddError(
+			"No workspace matches the import identifier",
+			fmt.Sprintf("Import accepts a workspace UUID or slug, and %q resolved to no workspace. Check the identifier and that the management key can read the workspace.", reference),
+		)
+		return "", diags
+	}
+	if res.GetWorkspaceResponse == nil || res.GetWorkspaceResponse.Data.ID == "" {
+		diags.AddError("unexpected response from API. Workspace has no id", debugResponse(res.RawResponse))
+		return "", diags
+	}
+	return res.GetWorkspaceResponse.Data.ID, diags
+}
+
+// ImportState accepts the workspace id as a UUID or a slug and stores the
+// canonical UUID. Read resolves the guardrail id from the workspace and
+// tolerates an unmaterialized default, so import does not need the guardrail.
 func (r *WorkspaceDefaultGuardrailResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("workspace_id"), req.ID)...)
+	workspaceID, diags := r.resolveWorkspaceID(ctx, req.ID)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("workspace_id"), workspaceID)...)
 }
