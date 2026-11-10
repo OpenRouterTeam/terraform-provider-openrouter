@@ -1,18 +1,18 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 043e37176bfa88cb0906acae093410ff
+  docChecksum: 58bf37b445adb836e6a364b9b509db93
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.209
-  configChecksum: 7ce7d0b149bf98b35675bc13b167c523
+  releaseVersion: 0.3.210
+  configChecksum: 574ddc855ceedbb67ac3a30f7163cba9
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
 persistentEdits:
-  generation_id: cf8530df-3508-477b-aa40-83c02b8de5db
-  pristine_commit_hash: 6ea7cc1aeb75428ea6c42fba2d43e4f591433c29
-  pristine_tree_hash: d89656097ba92ffed2b8fb43246b24ba1b5f9c5e
+  generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
+  pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
+  pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -150,8 +150,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:062495838e01b9f4353ca8e0322ba67d87fa5548
-    pristine_git_object: 2d4d8ec9a1cb02d23e187961aca2299cf519a1cf
+    last_write_checksum: sha1:1e5e4152fc8632696015489e06c27cca7626037b
+    pristine_git_object: 825494c944d68e57252fcbf443e699d86d45e39e
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -5562,8 +5562,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:35557db7b6fd12a74041ab1c1759a751b3b9c590
-    pristine_git_object: cdfff6961f4ab9c0c8d0c22c7b4ef05440301103
+    last_write_checksum: sha1:93a342fdb4c50a5e337570716dd828f7e0f63e65
+    pristine_git_object: 52a7a675a1b4bbe0ed218369614ed9217eac4048
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
