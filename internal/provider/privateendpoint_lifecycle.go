@@ -262,9 +262,12 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-// privateEndpointPricingChanged is the pre-PATCH guard the generated update body
-// still calls. The custom dispatch returns before it runs, and it stays so the
-// generated code compiles on the regeneration that records the custom path.
+// privateEndpointPricingChanged is the pricing-only write gate the generated
+// update body used before this branch's custom dispatch replaced it. Nothing
+// calls it today: the dispatch in privateendpoint_resource.go decides which
+// groups to send from the plan, and the stub suite fails if a pricing-only gate
+// comes back. It stays so a regeneration that restores the generated call still
+// compiles instead of failing the run on an undefined symbol.
 func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
 	var planned, current types.Object
 	diags := req.Plan.GetAttribute(ctx, path.Root("pricing"), &planned)

@@ -782,8 +782,10 @@ func (r *PrivateEndpointResource) Update(ctx context.Context, req resource.Updat
 	if !changes.declaredParameters {
 		request.Body.DeclaredParameters = nil
 	}
-	// `base_url`, `upstream_model_id`, `declared_zdr` and `declared_region` are
-	// draft-only. Resending them from state on an active endpoint answers 409.
+	// `base_url` and `upstream_model_id` are draft-only: naming either on an
+	// active endpoint answers 409 `already_active`. `declared_zdr` and
+	// `declared_region` are accepted on an active endpoint, but all four are
+	// create-only in Terraform, so none can differ from state on this path.
 	if data.Status.ValueString() != "draft" {
 		request.Body.BaseURL = nil
 		request.Body.UpstreamModelID = nil
