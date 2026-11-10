@@ -149,8 +149,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:1e5e4152fc8632696015489e06c27cca7626037b
-    pristine_git_object: 825494c944d68e57252fcbf443e699d86d45e39e
+    last_write_checksum: sha1:6b5711fd77dfdecb466bd226d5a9125851d0a03b
+    pristine_git_object: a8ffb85b684d549c015a9fccdc895112642d70f6
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -5561,8 +5561,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:93a342fdb4c50a5e337570716dd828f7e0f63e65
-    pristine_git_object: 52a7a675a1b4bbe0ed218369614ed9217eac4048
+    last_write_checksum: sha1:da1ce13e7f44c6123abfe19b5c1c0c75385520ca
+    pristine_git_object: ebb2b36b0e14b1d5fc14a2a4687a9edff16bb5ab
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
