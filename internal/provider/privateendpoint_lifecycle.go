@@ -12,6 +12,7 @@ import (
 	custom_stringplanmodifier "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/planmodifiers/stringplanmodifier"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/hashicorp/go-uuid"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -23,8 +24,14 @@ import (
 // no trailing "/" or "/chat/completions"). Storing the server value instead
 // would differ from config on every plan.
 func privateEndpointBaseURL(prior types.String, server *string) types.String {
-	if server != nil && !prior.IsNull() && !prior.IsUnknown() &&
-		custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(prior.ValueString()) == custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(*server) {
+	if server == nil {
+		return prior
+	}
+	normalized := custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(*server)
+	if prior.IsUnknown() || prior.IsNull() {
+		return types.StringValue(normalized)
+	}
+	if custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(prior.ValueString()) == normalized {
 		return prior
 	}
 	return types.StringPointerValue(server)
@@ -91,22 +98,161 @@ func privateEndpointErrorMessage(res *operations.CreatePrivateEndpointResponse) 
 	return body.Error.Message
 }
 
-// privateEndpointPricingChanged reports whether an update asks for different
-// rates than state holds. Every PUT .../pricing inserts a new pricing version,
-// so updates that only touch other attributes (such as activate) must not send
-// one. Omitted pricing keeps the current rates.
-func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
-	var planned, current types.Object
-	diags := req.Plan.GetAttribute(ctx, path.Root("pricing"), &planned)
-	diags.Append(req.State.GetAttribute(ctx, path.Root("pricing"), &current)...)
-	if diags.HasError() || planned.IsNull() || planned.IsUnknown() {
-		return false, diags
-	}
-	return !planned.Equal(current), diags
+type privateEndpointChanges struct {
+	pricing, settings, declaredParameters bool
+
+	// Create-only fields are not part of the group dispatch. They are sent only
+	// when the plan changed them, on drafts as well as active endpoints, so a
+	// draft update carries the same small body an active update does.
+	baseURL, upstreamModelID, declaredZdr, declaredRegion bool
 }
 
-// refreshPrivateEndpointWithoutPricingWrite finishes an update that changes no
-// pricing by reading the endpoint instead of writing a pricing version.
+// privateEndpointChangesForUpdate compares the mutable groups with prior state.
+// Null or unknown groups do not request a write. Unknown nested computed values
+// keep their state value, so an unrelated change must not rewrite pricing.
+func privateEndpointChangesForUpdate(ctx context.Context, req resource.UpdateRequest) (privateEndpointChanges, diag.Diagnostics) {
+	var planned, current types.Object
+	diags := req.Plan.Get(ctx, &planned)
+	diags.Append(req.State.Get(ctx, &current)...)
+	var changes privateEndpointChanges
+	if diags.HasError() {
+		return changes, diags
+	}
+	plannedAttributes, currentAttributes := planned.Attributes(), current.Attributes()
+	for name, changed := range map[string]*bool{
+		"pricing": &changes.pricing, "settings": &changes.settings, "declared_parameters": &changes.declaredParameters,
+	} {
+		value := plannedAttributes[name]
+		*changed = !value.IsNull() && privateEndpointValueChanged(value, currentAttributes[name])
+	}
+	// base_url is compared in the form the API stores it in, because a
+	// difference in case or a trailing path segment is not a change worth
+	// sending. The other three are compared as configured.
+	changes.baseURL = privateEndpointBaseURLChanged(plannedAttributes["base_url"], currentAttributes["base_url"])
+	changes.upstreamModelID = privateEndpointValueChanged(plannedAttributes["upstream_model_id"], currentAttributes["upstream_model_id"])
+	changes.declaredZdr = privateEndpointValueChanged(plannedAttributes["declared_zdr"], currentAttributes["declared_zdr"])
+	changes.declaredRegion = privateEndpointValueChanged(plannedAttributes["declared_region"], currentAttributes["declared_region"])
+	return changes, diags
+}
+
+// privateEndpointBaseURLChanged compares two base_url values the way the API
+// stores them, so a spelling-only difference does not put base_url back in the
+// update body. Anything that is not a pair of known strings falls back to the
+// plain comparison.
+func privateEndpointBaseURLChanged(planned, current attr.Value) bool {
+	plannedString, plannedOK := planned.(types.String)
+	currentString, currentOK := current.(types.String)
+	if !plannedOK || !currentOK || plannedString.IsUnknown() || plannedString.IsNull() ||
+		currentString.IsUnknown() || currentString.IsNull() {
+		return privateEndpointValueChanged(planned, current)
+	}
+	return custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(plannedString.ValueString()) !=
+		custom_stringplanmodifier.NormalizePrivateEndpointBaseURL(currentString.ValueString())
+}
+
+func privateEndpointValueChanged(planned, current attr.Value) bool {
+	if planned == nil || current == nil {
+		return false
+	}
+	if planned.IsUnknown() || planned.Equal(current) {
+		return false
+	}
+	switch value := planned.(type) {
+	case types.Object:
+		prior, ok := current.(types.Object)
+		if !ok || value.IsNull() || prior.IsNull() || prior.IsUnknown() {
+			return true
+		}
+		priorAttributes := prior.Attributes()
+		for name, attribute := range value.Attributes() {
+			if privateEndpointValueChanged(attribute, priorAttributes[name]) {
+				return true
+			}
+		}
+		return false
+	case types.List:
+		prior, ok := current.(types.List)
+		if !ok || value.IsNull() || prior.IsNull() || prior.IsUnknown() || len(value.Elements()) != len(prior.Elements()) {
+			return true
+		}
+		priorElements := prior.Elements()
+		for i, element := range value.Elements() {
+			if privateEndpointValueChanged(element, priorElements[i]) {
+				return true
+			}
+		}
+		return false
+	default:
+		return true
+	}
+}
+
+// declaredParametersWithProven settles the declared list for state. The detail
+// response returns declared_parameters as stored minus tested_parameters, so a
+// proven name disappears from the read and Terraform would propose adding it
+// again on every plan. Rebuild the list in the order of the intended value: the
+// read model filters by membership, not by order, and Terraform compares the
+// list element-wise, so appending the proven names at the end turns a reordered
+// list into a diff and can fail an apply as an inconsistent result.
+func declaredParametersWithProven(prior, declared, tested []types.String) []types.String {
+	returned := make(map[string]struct{}, len(declared))
+	for _, value := range declared {
+		if value.IsNull() || value.IsUnknown() {
+			continue
+		}
+		returned[value.ValueString()] = struct{}{}
+	}
+
+	proven := make(map[string]struct{}, len(tested))
+	for _, name := range tested {
+		if name.IsNull() || name.IsUnknown() {
+			continue
+		}
+		proven[name.ValueString()] = struct{}{}
+	}
+
+	out := make([]types.String, 0, len(prior)+len(declared))
+	seen := make(map[string]struct{}, len(prior)+len(declared))
+	// The intended value first, in its own order: it is the configuration on a
+	// create or refresh and the plan on an update, which is what Terraform
+	// compares the result against. A name stays only if the API still returns it
+	// or if the API has proven it, which is what makes an explicit removal in a
+	// later configuration still take effect.
+	for _, value := range prior {
+		if value.IsNull() || value.IsUnknown() {
+			continue
+		}
+		name := value.ValueString()
+		if _, ok := seen[name]; ok {
+			continue
+		}
+		if _, ok := returned[name]; !ok {
+			if _, ok := proven[name]; !ok {
+				continue
+			}
+		}
+		out = append(out, types.StringValue(name))
+		seen[name] = struct{}{}
+	}
+	// A name the API returns that the intended value does not carry, such as a
+	// stored parameter the owner cannot declare, follows in the API's order.
+	for _, value := range declared {
+		if value.IsNull() || value.IsUnknown() {
+			continue
+		}
+		name := value.ValueString()
+		if _, ok := seen[name]; ok {
+			continue
+		}
+		out = append(out, types.StringValue(name))
+		seen[name] = struct{}{}
+	}
+	return out
+}
+
+// refreshPrivateEndpointWithoutPricingWrite settles state with a full GET,
+// either when no mutable group changed or after a successful PATCH. A limited
+// PATCH response must not erase computed attributes missing from that response.
 func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx context.Context, plan types.Object, data *PrivateEndpointResourceModel, resp *resource.UpdateResponse) {
 	request, requestDiags := data.ToOperationsGetPrivateEndpointRequest(ctx)
 	resp.Diagnostics.Append(requestDiags...)
@@ -134,17 +280,50 @@ func (r *PrivateEndpointResource) refreshPrivateEndpointWithoutPricingWrite(ctx 
 		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
 		return
 	}
-	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
+	priorDeclaredParameters := data.DeclaredParameters
+	priorBaseURL := data.BaseURL
+	priorProviderSlug := data.ProviderSlug
 
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
+	// Copy the plan's own attributes in first, then let the API's answer win. The
+	// reverse order needed a snapshot of the server truth, but `PrivateEndpointPricing`
+	// and `PrivateEndpointSettings` are pointers and the framework's reflect reuses a
+	// non-nil pointer and mutates the struct in place, so a value copy of the model
+	// aliased them and restored nothing.
 	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
+	resp.Diagnostics.Append(data.RefreshFromSharedPrivateEndpointResponse(ctx, res.PrivateEndpointResponse)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	data.BaseURL = privateEndpointBaseURL(priorBaseURL, res.PrivateEndpointResponse.Data.BaseURL)
+	// The provider catalogue can stop listing a provider we already recorded;
+	// keep the configured slug instead of dropping into a replacement.
+	if data.ProviderSlug.IsNull() && !priorProviderSlug.IsNull() && !priorProviderSlug.IsUnknown() {
+		data.ProviderSlug = priorProviderSlug
+	}
+	data.DeclaredParameters = declaredParametersWithProven(priorDeclaredParameters, data.DeclaredParameters, data.TestedParameters)
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+// privateEndpointPricingChanged is the pricing-only write gate the generated
+// update body used before this branch's custom dispatch replaced it. Nothing
+// calls it today: the dispatch in privateendpoint_resource.go decides which
+// groups to send from the plan, and the stub suite fails if a pricing-only gate
+// comes back. It stays so a regeneration that restores the generated call still
+// compiles instead of failing the run on an undefined symbol.
+func privateEndpointPricingChanged(ctx context.Context, req resource.UpdateRequest) (bool, diag.Diagnostics) {
+	var planned, current types.Object
+	diags := req.Plan.GetAttribute(ctx, path.Root("pricing"), &planned)
+	diags.Append(req.State.GetAttribute(ctx, path.Root("pricing"), &current)...)
+	if diags.HasError() || planned.IsNull() || planned.IsUnknown() {
+		return false, diags
+	}
+	return !planned.Equal(current), diags
 }

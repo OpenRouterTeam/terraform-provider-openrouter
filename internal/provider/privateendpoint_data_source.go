@@ -30,18 +30,22 @@ type PrivateEndpointDataSource struct {
 
 // PrivateEndpointDataSourceModel describes the data model.
 type PrivateEndpointDataSourceModel struct {
-	BaseURL         types.String                    `tfsdk:"base_url"`
-	DeclaredRegion  types.String                    `tfsdk:"declared_region"`
-	DeclaredZdr     types.Bool                      `tfsdk:"declared_zdr"`
-	ID              types.String                    `tfsdk:"id"`
-	ModelName       types.String                    `tfsdk:"model_name"`
-	ModelPermaslug  types.String                    `tfsdk:"model_permaslug"`
-	ModelSlug       types.String                    `tfsdk:"model_slug"`
-	Pricing         *tfTypes.PrivateEndpointPricing `tfsdk:"pricing"`
-	ProviderName    types.String                    `tfsdk:"provider_name"`
-	ProviderSlug    types.String                    `tfsdk:"provider_slug"`
-	Status          types.String                    `tfsdk:"status"`
-	UpstreamModelID types.String                    `tfsdk:"upstream_model_id"`
+	BaseURL             types.String                     `tfsdk:"base_url"`
+	DeclaredParameters  []types.String                   `tfsdk:"declared_parameters"`
+	DeclaredRegion      types.String                     `tfsdk:"declared_region"`
+	DeclaredZdr         types.Bool                       `tfsdk:"declared_zdr"`
+	ID                  types.String                     `tfsdk:"id"`
+	MaxCompletionTokens types.Int64                      `tfsdk:"max_completion_tokens"`
+	ModelName           types.String                     `tfsdk:"model_name"`
+	ModelPermaslug      types.String                     `tfsdk:"model_permaslug"`
+	ModelSlug           types.String                     `tfsdk:"model_slug"`
+	Pricing             *tfTypes.PrivateEndpointPricing  `tfsdk:"pricing"`
+	ProviderName        types.String                     `tfsdk:"provider_name"`
+	ProviderSlug        types.String                     `tfsdk:"provider_slug"`
+	Settings            *tfTypes.PrivateEndpointSettings `tfsdk:"settings"`
+	Status              types.String                     `tfsdk:"status"`
+	TestedParameters    []types.String                   `tfsdk:"tested_parameters"`
+	UpstreamModelID     types.String                     `tfsdk:"upstream_model_id"`
 }
 
 // Metadata returns the data source type name.
@@ -59,6 +63,11 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 				Computed:    true,
 				Description: `HTTPS base URL of your deployment, or ` + "`" + `null` + "`" + ` for providers whose URL is derived from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).`,
 			},
+			"declared_parameters": schema.ListAttribute{
+				Computed:    true,
+				ElementType: types.StringType,
+				Description: `Parameters you declared the upstream supports. Requests that use a parameter only route to this endpoint when it is tested or declared.`,
+			},
 			"declared_region": schema.StringAttribute{
 				Computed:    true,
 				Description: `Where you attest this deployment processes data. ` + "`" + `global` + "`" + ` means not regional; ` + "`" + `null` + "`" + ` means undeclared.`,
@@ -70,6 +79,10 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 			"id": schema.StringAttribute{
 				Required:    true,
 				Description: `Stable identifier of the private endpoint.`,
+			},
+			"max_completion_tokens": schema.Int64Attribute{
+				Computed:    true,
+				Description: `Most completion tokens a request routed to this endpoint can produce, or ` + "`" + `null` + "`" + ` when the endpoint sets no cap beyond the model context length.`,
 			},
 			"model_name": schema.StringAttribute{
 				Computed:    true,
@@ -86,6 +99,14 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 			"pricing": schema.SingleNestedAttribute{
 				Computed: true,
 				Attributes: map[string]schema.Attribute{
+					"cache_read": schema.StringAttribute{
+						Computed:    true,
+						Description: `USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads.`,
+					},
+					"cache_write": schema.StringAttribute{
+						Computed:    true,
+						Description: `USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes.`,
+					},
 					"completion": schema.StringAttribute{
 						Computed:    true,
 						Description: `USD per completion token, as a decimal string.`,
@@ -105,9 +126,113 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 				Computed:    true,
 				Description: `Slug of the upstream provider, or ` + "`" + `null` + "`" + ` when the provider is no longer listed.`,
 			},
+			"settings": schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"completions": schema.SingleNestedAttribute{
+						Computed: true,
+						Attributes: map[string]schema.Attribute{
+							"chat": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Serves ` + "`" + `/chat/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default.`,
+							},
+							"text": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Serves ` + "`" + `/completions` + "`" + `; ` + "`" + `null` + "`" + ` uses the provider default.`,
+							},
+						},
+					},
+					"context_length": schema.Int64Attribute{
+						Computed:    true,
+						Description: `Longest prompt plus completion, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default.`,
+					},
+					"excluded_parameters": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: `Request parameters the upstream rejects even though the model supports them; requests using one do not route here. Cannot name a tested parameter.`,
+					},
+					"inputs": schema.SingleNestedAttribute{
+						Computed: true,
+						Attributes: map[string]schema.Attribute{
+							"audio": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts audio input. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+							},
+							"base64_files": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts base64 file data. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+							},
+							"base64_images": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts base64 image data. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+							},
+							"file_urls": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts file URLs. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+							},
+							"image_urls": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts image URLs. ` + "`" + `null` + "`" + ` keeps the provider default.`,
+							},
+						},
+					},
+					"max_completion_tokens": schema.Int64Attribute{
+						Computed:    true,
+						Description: `Longest completion the upstream returns, in tokens, or ` + "`" + `null` + "`" + ` to keep the model default.`,
+					},
+					"max_prompt_tokens": schema.Int64Attribute{
+						Computed:    true,
+						Description: `Longest prompt, in tokens, or ` + "`" + `null` + "`" + ` for no cap below the context length. Cannot exceed ` + "`" + `context_length` + "`" + `, or the model context length while ` + "`" + `context_length` + "`" + ` is ` + "`" + `null` + "`" + `.`,
+					},
+					"quantization": schema.StringAttribute{
+						Computed:    true,
+						Description: `Weight precision the deployment runs at; ` + "`" + `unknown` + "`" + ` when not stated.`,
+					},
+					"reasoning": schema.SingleNestedAttribute{
+						Computed: true,
+						Attributes: map[string]schema.Attribute{
+							"return_mechanism": schema.StringAttribute{
+								Computed:    true,
+								Description: `Where the upstream puts reasoning tokens in its response: ` + "`" + `reasoning` + "`" + ` and ` + "`" + `reasoning-content` + "`" + ` are response fields, ` + "`" + `content-string` + "`" + ` is inline in the message, ` + "`" + `none` + "`" + ` returns no reasoning. ` + "`" + `null` + "`" + ` uses the provider default.`,
+							},
+							"supported": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Whether requests with ` + "`" + `reasoning` + "`" + ` route to this endpoint.`,
+							},
+						},
+					},
+					"tool_choice": schema.SingleNestedAttribute{
+						Computed: true,
+						Attributes: map[string]schema.Attribute{
+							"auto": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts ` + "`" + `tool_choice: "auto"` + "`" + `.`,
+							},
+							"function": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts a named function in ` + "`" + `tool_choice` + "`" + `.`,
+							},
+							"none": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts ` + "`" + `tool_choice: "none"` + "`" + `.`,
+							},
+							"required": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Accepts ` + "`" + `tool_choice: "required"` + "`" + `.`,
+							},
+						},
+					},
+				},
+				Description: `Capabilities and limits routing uses for this endpoint. A new endpoint copies them from the public endpoint for the same model and provider, or from the model, and the owner can change them. Rate limits are not part of this object: a private endpoint is billed to its own upstream key, so request limits stay with the provider.`,
+			},
 			"status": schema.StringAttribute{
 				Computed:    true,
 				Description: `Lifecycle state. ` + "`" + `draft` + "`" + ` endpoints are not routable until validated and activated; ` + "`" + `disabled` + "`" + ` endpoints are activated but temporarily not routable.`,
+			},
+			"tested_parameters": schema.ListAttribute{
+				Computed:    true,
+				ElementType: types.StringType,
+				Description: `Parameters a validation run proved the upstream honors (` + "`" + `tools` + "`" + `, ` + "`" + `tool_choice` + "`" + `, ` + "`" + `response_format` + "`" + `, ` + "`" + `structured_outputs` + "`" + `, ` + "`" + `stop` + "`" + `). Read-only; cleared when the upstream configuration changes.`,
 			},
 			"upstream_model_id": schema.StringAttribute{
 				Computed:    true,

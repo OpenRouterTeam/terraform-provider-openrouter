@@ -214,6 +214,16 @@ jobs:
             exit 1
           fi
 
+      - name: Report live private-endpoint coverage
+        if: steps.head.outputs.stale != 'true'
+        env:
+          OPENROUTER_PRIVATE_ENDPOINT_WORKSPACE_ID: ${{ secrets.OPENROUTER_PRIVATE_ENDPOINT_WORKSPACE_ID }}
+          OPENROUTER_PRIVATE_ENDPOINT_NO_BYOK_WORKSPACE_ID: ${{ secrets.OPENROUTER_PRIVATE_ENDPOINT_NO_BYOK_WORKSPACE_ID }}
+        run: |
+          if [ -z "$OPENROUTER_PRIVATE_ENDPOINT_WORKSPACE_ID" ] || [ -z "$OPENROUTER_PRIVATE_ENDPOINT_NO_BYOK_WORKSPACE_ID" ]; then
+            echo "::warning::OPENROUTER_PRIVATE_ENDPOINT_WORKSPACE_ID / OPENROUTER_PRIVATE_ENDPOINT_NO_BYOK_WORKSPACE_ID are not both set, so the live private-endpoint acceptance suite skips. Only the stub suite covers private endpoints in this run."
+          fi
+
       - name: Run acceptance tests
         if: steps.head.outputs.stale != 'true'
         # Do NOT set TF_LOG / TF_LOG_PROVIDER here: internal/provider/utils.go
@@ -223,6 +233,12 @@ jobs:
         env:
           TF_ACC: "1"
           OPENROUTER_MANAGEMENT_KEY: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
+          # Live private-endpoint coverage needs a workspace holding a BYOK key.
+          # Unset values keep that suite skipped rather than failing the run.
+          OPENROUTER_PRIVATE_ENDPOINT_WORKSPACE_ID: ${{ secrets.OPENROUTER_PRIVATE_ENDPOINT_WORKSPACE_ID }}
+          OPENROUTER_PRIVATE_ENDPOINT_NO_BYOK_WORKSPACE_ID: ${{ secrets.OPENROUTER_PRIVATE_ENDPOINT_NO_BYOK_WORKSPACE_ID }}
+          OPENROUTER_PRIVATE_ENDPOINT_UPSTREAM_A: ${{ secrets.OPENROUTER_PRIVATE_ENDPOINT_UPSTREAM_A }}
+          OPENROUTER_PRIVATE_ENDPOINT_UPSTREAM_B: ${{ secrets.OPENROUTER_PRIVATE_ENDPOINT_UPSTREAM_B }}
         # -parallel 4 keeps resource-cap collisions (e.g. 5 observability
         # destinations per type) and API rate limits out of the picture while
         # still finishing well inside the timeout.

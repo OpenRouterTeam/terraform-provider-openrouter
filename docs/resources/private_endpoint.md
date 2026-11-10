@@ -4,7 +4,8 @@ page_title: "openrouter_private_endpoint Resource - terraform-provider-openroute
 subcategory: ""
 description: |-
   A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set activate to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
-  Only pricing changes in place. Changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr or declared_region destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
+  pricing, settings and declared_parameters can change in place on drafts and active endpoints through PATCH. pricing replaces the whole object: omitting cache_read or cache_write reverts that rate to the pricing strategy default. settings changes only the fields it names, and an omitted field keeps its stored value. Clearing a limit is not expressible through the provider today: the generated request omits null fields, so an explicit null is never sent and cannot put a stored value back to the provider default. declared_parameters replaces the whole declaration list; tested parameters stay.
+  The API accepts base_url and upstream_model_id only to re-point a draft; naming either on an active endpoint returns 409 already_active and writes nothing. declared_zdr and declared_region change on drafts and active endpoints alike. Terraform keeps these fields create-only: changing model_permaslug, provider_slug, upstream_model_id, base_url, declared_zdr or declared_region destroys the endpoint and creates a new one, so routing stops until the new one is active and its id changes. lifecycle { create_before_destroy = true } avoids the gap if your account has room for one more endpoint.
   base_url is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing / or /chat/completions); a config that differs from the stored value only in those ways is not a change.
   activate is only sent when the endpoint is created and is never read back. Adding, changing or removing it later updates state without calling the API, so after terraform import you can keep it in config without replacing the endpoint.
   If validation fails during create, the provider deletes the draft the API kept and reports the failed checks. Fix the cause, such as the workspace's BYOK key, and apply again.
@@ -14,7 +15,9 @@ description: |-
 
 A private endpoint: your own upstream deployment of a public model, which OpenRouter routes your organization's traffic to. Set `activate` to create, validate and activate it in one apply; without it the endpoint stays a draft that is not routable.
 
-Only `pricing` changes in place. Changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
+`pricing`, `settings` and `declared_parameters` can change in place on drafts and active endpoints through PATCH. `pricing` replaces the whole object: omitting `cache_read` or `cache_write` reverts that rate to the pricing strategy default. `settings` changes only the fields it names, and an omitted field keeps its stored value. Clearing a limit is not expressible through the provider today: the generated request omits null fields, so an explicit `null` is never sent and cannot put a stored value back to the provider default. `declared_parameters` replaces the whole declaration list; tested parameters stay.
+
+The API accepts `base_url` and `upstream_model_id` only to re-point a draft; naming either on an active endpoint returns 409 `already_active` and writes nothing. `declared_zdr` and `declared_region` change on drafts and active endpoints alike. Terraform keeps these fields create-only: changing `model_permaslug`, `provider_slug`, `upstream_model_id`, `base_url`, `declared_zdr` or `declared_region` destroys the endpoint and creates a new one, so routing stops until the new one is active and its `id` changes. `lifecycle { create_before_destroy = true }` avoids the gap if your account has room for one more endpoint.
 
 `base_url` is required for providers served from your own URL and rejected for Azure, Amazon Bedrock and Google Vertex, which take it from the workspace's BYOK credential. The API stores it normalized (lowercase scheme and host, no trailing `/` or `/chat/completions`); a config that differs from the stored value only in those ways is not a change.
 
@@ -29,15 +32,52 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
   activate = {
     workspace_id = "550e8400-e29b-41d4-a716-446655440000"
   }
-  base_url        = "https://api.openai.com/v1"
+  base_url = "https://api.openai.com/v1"
+  declared_parameters = [
+    "temperature",
+    "seed",
+  ]
   declared_region = "us"
   declared_zdr    = true
+  idempotency_key = "create-private-endpoint-2026-09"
   model_permaslug = "openai/gpt-4o-2024-08-06"
   pricing = {
-    completion = "0.00001"
-    prompt     = "0.0000025"
+    cache_read  = "0.00000025"
+    cache_write = "0.000003125"
+    completion  = "0.00001"
+    prompt      = "0.0000025"
   }
-  provider_slug     = "openai"
+  provider_slug = "openai"
+  settings = {
+    completions = {
+      chat = true
+      text = false
+    }
+    context_length = 128000
+    excluded_parameters = [
+      "logit_bias",
+    ]
+    inputs = {
+      audio         = true
+      base64_files  = true
+      base64_images = true
+      file_urls     = true
+      image_urls    = true
+    }
+    max_completion_tokens = 16384
+    max_prompt_tokens     = 9
+    quantization          = "bf16"
+    reasoning = {
+      return_mechanism = "reasoning"
+      supported        = true
+    }
+    tool_choice = {
+      auto     = true
+      function = true
+      none     = true
+      required = false
+    }
+  }
   upstream_model_id = "gpt-4o-2024-08-06"
 }
 ```
@@ -55,17 +95,22 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
 
 - `activate` (Attributes) Validate and activate the endpoint as part of create. Only sent when the endpoint is created; if validation fails, the provider deletes the draft the API kept and reports the failed checks. Later changes are recorded in state without calling the API. (see [below for nested schema](#nestedatt--activate))
 - `base_url` (String) HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex).
+- `declared_parameters` (List of String) Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. The order configured here is the order state keeps, and a repeated name is rejected before a request is sent, so the list holds at most as many entries as there are declarable parameters. `tool_choice` requires `tools` to be tested or declared.
 - `declared_region` (String) Attest where this deployment processes data. must be one of ["global", "europe", "us"]; Requires replacement if changed.
 - `declared_zdr` (Boolean) Attest that this deployment retains no prompt or completion data. Requires replacement if changed.
+- `idempotency_key` (String) Retry-safe create: a repeated create with the same key from the same organization returns the endpoint the first request created instead of creating another. The endpoint is returned as it is now. Reusing a key with a different request body (model, provider, base URL, upstream model ID, declared ZDR or region, pricing, or declared parameters) is rejected with 422 `idempotency_key_reused`. Declared parameters are compared as a set, so a retry that reorders or repeats a name replays the endpoint. `activate` and `settings` are not compared, and later edits to the endpoint do not affect the comparison. `settings` is still validated before the replay, so a retry with invalid settings returns 400 `settings_invalid` instead of the endpoint. Requires replacement if changed.
 - `pricing` (Attributes) Negotiated per-token rates reported for requests routed to this endpoint. (see [below for nested schema](#nestedatt--pricing))
+- `settings` (Attributes) Capabilities and limits to set over the ones copied from the public endpoint for this model and provider (or from the model). Omitted fields keep the copied values. (see [below for nested schema](#nestedatt--settings))
 
 ### Read-Only
 
 - `id` (String) Stable identifier of the private endpoint.
+- `max_completion_tokens` (Number) Most completion tokens a request routed to this endpoint can produce, or `null` when the endpoint sets no cap beyond the model context length.
 - `model_name` (String) Display name of the model, or `null` when the model is no longer listed.
 - `model_slug` (String) Public model slug, or `null` when the model is no longer listed.
 - `provider_name` (String) Display name of the upstream provider.
 - `status` (String) Lifecycle state. `draft` endpoints are not routable until validated and activated; `disabled` endpoints are activated but temporarily not routable.
+- `tested_parameters` (List of String) Parameters a validation run proved the upstream honors (`tools`, `tool_choice`, `response_format`, `structured_outputs`, `stop`). Read-only; cleared when the upstream configuration changes.
 
 <a id="nestedatt--activate"></a>
 ### Nested Schema for `activate`
@@ -80,8 +125,66 @@ Required:
 
 Optional:
 
+- `cache_read` (String) USD per cache-read prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-read to prompt ratio, or left at the pricing strategy default when it publishes no cache-read rate. Required when there is no such endpoint and the provider bills cache reads.
+- `cache_write` (String) USD per cache-write prompt token, as a decimal string. When omitted, inherited from the public endpoint of the same model and provider: scaled by its cache-write to prompt ratio, or left at the pricing strategy default when it publishes no cache-write rate. Required when there is no such endpoint and the provider bills cache writes.
 - `completion` (String) USD per completion token, as a decimal string. Not Null
 - `prompt` (String) USD per prompt token, as a decimal string. Not Null
+
+
+<a id="nestedatt--settings"></a>
+### Nested Schema for `settings`
+
+Optional:
+
+- `completions` (Attributes) (see [below for nested schema](#nestedatt--settings--completions))
+- `context_length` (Number) Longest prompt plus completion, in tokens. `null` means the model default applies.
+- `excluded_parameters` (List of String) Request parameters the upstream rejects even though the model supports them; requests using one do not route here. Cannot name a tested parameter.
+- `inputs` (Attributes) (see [below for nested schema](#nestedatt--settings--inputs))
+- `max_completion_tokens` (Number) Longest completion the upstream returns, in tokens. `null` means the model default applies.
+- `max_prompt_tokens` (Number) Longest prompt, in tokens. `null` means no cap below the context length. Cannot exceed `context_length`, or the model context length while `context_length` is `null`.
+- `quantization` (String) Weight precision the deployment runs at; `unknown` when not stated. must be one of ["int4", "int8", "fp4", "mxfp4", "nvfp4", "fp6", "fp8", "mxfp8", "fp16", "bf16", "fp32", "unknown"]
+- `reasoning` (Attributes) (see [below for nested schema](#nestedatt--settings--reasoning))
+- `tool_choice` (Attributes) (see [below for nested schema](#nestedatt--settings--tool_choice))
+
+<a id="nestedatt--settings--completions"></a>
+### Nested Schema for `settings.completions`
+
+Optional:
+
+- `chat` (Boolean) Serves `/chat/completions`. `null` means the endpoint uses the provider default.
+- `text` (Boolean) Serves `/completions`. `null` means the endpoint uses the provider default.
+
+
+<a id="nestedatt--settings--inputs"></a>
+### Nested Schema for `settings.inputs`
+
+Optional:
+
+- `audio` (Boolean) Accepts audio input. `null` means the endpoint uses the provider default.
+- `base64_files` (Boolean) Accepts base64 file data. `null` means the endpoint uses the provider default.
+- `base64_images` (Boolean) Accepts base64 image data. `null` means the endpoint uses the provider default.
+- `file_urls` (Boolean) Accepts file URLs. `null` means the endpoint uses the provider default.
+- `image_urls` (Boolean) Accepts image URLs. `null` means the endpoint uses the provider default.
+
+
+<a id="nestedatt--settings--reasoning"></a>
+### Nested Schema for `settings.reasoning`
+
+Optional:
+
+- `return_mechanism` (String) Where the upstream puts reasoning tokens in its response: `reasoning` and `reasoning-content` are response fields, `content-string` is inline in the message, `none` returns no reasoning. `null` means the endpoint uses the provider default. must be one of ["content-string", "reasoning-content", "reasoning", "none"]
+- `supported` (Boolean) Whether requests with `reasoning` route to this endpoint.
+
+
+<a id="nestedatt--settings--tool_choice"></a>
+### Nested Schema for `settings.tool_choice`
+
+Optional:
+
+- `auto` (Boolean) Accepts `tool_choice: "auto"`.
+- `function` (Boolean) Accepts a named function in `tool_choice`.
+- `none` (Boolean) Accepts `tool_choice: "none"`.
+- `required` (Boolean) Accepts `tool_choice: "required"`.
 
 ## Import
 
