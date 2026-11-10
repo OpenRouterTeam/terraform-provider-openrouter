@@ -1,17 +1,21 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 7d20e526639576065d2b11040a60f32c
+  docChecksum: b8acecb3103928fe88d9e2250a0e5d44
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.211
-  configChecksum: af1acfa614aee383b568d2b9ef19d50e
+  releaseVersion: 0.3.212
+  configChecksum: 36fe3991afa56ba37aee2b661b1c2b5a
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
+persistentEdits:
+  generation_id: b56562f6-c880-42e9-b3ec-1e958abb0d76
+  pristine_commit_hash: 25c4750d716a4bc376139c595eb760f9841f5af6
+  pristine_tree_hash: a0b1d335e7edc4d5990d159dd24040d6599ac9ab
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -149,8 +153,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:6b5711fd77dfdecb466bd226d5a9125851d0a03b
-    pristine_git_object: a8ffb85b684d549c015a9fccdc895112642d70f6
+    last_write_checksum: sha1:166f255a004d63005cc64cc24bbe45fcd0e4adb7
+    pristine_git_object: 887df10ad185db507a8495ef58c78b0d1a2dc33a
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -581,7 +585,7 @@ trackedFiles:
     pristine_git_object: 54345ebd574acdae8522ca7163c6de90d8f580eb
   internal/provider/privateendpoint_resource.go:
     id: a64a2acbf118
-    last_write_checksum: sha1:2562d4748bdc3bc8823871fe5a1778465e08e802
+    last_write_checksum: sha1:b9d7522456b6b5bd9e199e7fb5bf85b896c19543
     pristine_git_object: 1ac0d481bf814aaee7cd5e50f59bd9e16b344470
   internal/provider/privateendpoint_resource_sdk.go:
     id: f78a28b90402
@@ -5561,8 +5565,8 @@ trackedFiles:
     pristine_git_object: b51734fba0b3bf6033714cfec09804f72d3c29c5
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:da1ce13e7f44c6123abfe19b5c1c0c75385520ca
-    pristine_git_object: ebb2b36b0e14b1d5fc14a2a4687a9edff16bb5ab
+    last_write_checksum: sha1:c96974ae93c893d91589d58a194555c482d9fcd1
+    pristine_git_object: b06789381618ad455bcc9ca9cd1011239434439d
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
