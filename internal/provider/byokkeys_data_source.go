@@ -56,7 +56,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 						"allowed_api_key_hashes": schema.ListAttribute{
 							Computed:    true,
 							ElementType: types.StringType,
-							Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) that may use this credential. ` + "`" + `null` + "`" + ` means no restriction.`,
+							Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) that may use this credential. ` + "`" + `null` + "`" + ` means no restriction. A workspace-scoped management key can only name API keys in its own workspace.`,
 						},
 						"allowed_models": schema.ListAttribute{
 							Computed:    true,
@@ -262,7 +262,7 @@ func (r *ByokKeysDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			},
 			"workspace_id": schema.StringAttribute{
 				Optional:    true,
-				Description: `Optional workspace ID to filter by. When omitted, resolves to the account’s default workspace; if that default has been deleted, the request returns a 400 and you must pass ` + "`" + `workspace_id` + "`" + ` explicitly.`,
+				Description: `Optional workspace ID to filter by. When omitted, a workspace-scoped management key uses its own workspace. An organization management key uses the account’s default workspace; if that default has been deleted, the request returns a 400 and you must pass ` + "`" + `workspace_id` + "`" + ` explicitly.`,
 			},
 		},
 	}

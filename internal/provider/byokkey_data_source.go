@@ -61,7 +61,7 @@ func (r *ByokKeyDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			"allowed_api_key_hashes": schema.ListAttribute{
 				Computed:    true,
 				ElementType: types.StringType,
-				Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) that may use this credential. ` + "`" + `null` + "`" + ` means no restriction.`,
+				Description: `Optional allowlist of OpenRouter API key hashes (` + "`" + `api_keys.hash` + "`" + `) that may use this credential. ` + "`" + `null` + "`" + ` means no restriction. A workspace-scoped management key can only name API keys in its own workspace.`,
 			},
 			"allowed_models": schema.ListAttribute{
 				Computed:    true,

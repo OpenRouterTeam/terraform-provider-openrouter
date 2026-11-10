@@ -25,7 +25,7 @@ data "openrouter_byok_keys" "my_byokkeys" {
 ### Optional
 
 - `provider_slug` (String) Optional provider slug to filter by (e.g. `openai`, `anthropic`, `amazon-bedrock`). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "antdigital", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "elevenlabs", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "kt", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parallel", "parasail", "pareto-alpha", "particle-ai", "pearl-research", "perceptron", "perplexity", "phala", "poolside", "primalabs", "primeintellect", "quiver", "recraft", "recursive", "reka", "relace", "respan", "river", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "scaledown", "seed", "siliconflow", "sourceful", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]
-- `workspace_id` (String) Optional workspace ID to filter by. When omitted, resolves to the account’s default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly.
+- `workspace_id` (String) Optional workspace ID to filter by. When omitted, a workspace-scoped management key uses its own workspace. An organization management key uses the account’s default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly.
 
 ### Read-Only
 
@@ -37,7 +37,7 @@ data "openrouter_byok_keys" "my_byokkeys" {
 
 Read-Only:
 
-- `allowed_api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction.
+- `allowed_api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. A workspace-scoped management key can only name API keys in its own workspace.
 - `allowed_models` (List of String) Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
 - `allowed_user_ids` (List of String) Optional allowlist of user IDs that may use this credential. `null` means no restriction.
 - `created_at` (String) ISO timestamp of when the credential was created.

@@ -40,7 +40,7 @@ func (e *UpdateBYOKKeyRequestDeclaredRegion) UnmarshalJSON(data []byte) error {
 }
 
 type UpdateBYOKKeyRequest struct {
-	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` clears the restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400.
+	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` clears the restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400; for a workspace-scoped management key, so do hashes of API keys outside its own workspace.
 	AllowedAPIKeyHashes []string `json:"allowed_api_key_hashes,omitzero"`
 	// Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
 	AllowedModels []string `json:"allowed_models,omitzero"`

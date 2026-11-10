@@ -15,7 +15,7 @@ terraform {
   required_providers {
     openrouter = {
       source  = "OpenRouterTeam/openrouter"
-      version = "0.3.214"
+      version = "0.3.215"
     }
   }
 }
