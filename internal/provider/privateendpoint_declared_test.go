@@ -40,11 +40,25 @@ func TestDeclaredParametersWithProven(t *testing.T) {
 			want:     nil,
 		},
 		{
-			name:     "returned names come first and duplicates collapse",
+			name:     "configured order is kept while duplicates collapse",
 			prior:    str("seed", "stop", "seed"),
 			declared: str("stop"),
 			tested:   str("seed", "stop"),
-			want:     []string{"stop", "seed"},
+			want:     []string{"seed", "stop"},
+		},
+		{
+			name:     "a proven name keeps its configured position",
+			prior:    str("tools", "temperature"),
+			declared: str("temperature"),
+			tested:   str("tools"),
+			want:     []string{"tools", "temperature"},
+		},
+		{
+			name:     "a name the API returned but the intended value omits follows it",
+			prior:    str("temperature"),
+			declared: str("temperature", "include_reasoning"),
+			tested:   nil,
+			want:     []string{"temperature", "include_reasoning"},
 		},
 		{
 			name:     "null and unknown entries are ignored",

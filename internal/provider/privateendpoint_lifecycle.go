@@ -157,11 +157,22 @@ func privateEndpointValueChanged(planned, current attr.Value) bool {
 	}
 }
 
-// declaredParametersWithProven restores declared parameters that a validation run
-// has since proven. The detail response returns declared_parameters as stored minus
-// tested_parameters, so a proven name disappears from the read and Terraform would
-// propose adding it again on every plan.
+// declaredParametersWithProven settles the declared list for state. The detail
+// response returns declared_parameters as stored minus tested_parameters, so a
+// proven name disappears from the read and Terraform would propose adding it
+// again on every plan. Rebuild the list in the order of the intended value: the
+// read model filters by membership, not by order, and Terraform compares the
+// list element-wise, so appending the proven names at the end turns a reordered
+// list into a diff and can fail an apply as an inconsistent result.
 func declaredParametersWithProven(prior, declared, tested []types.String) []types.String {
+	returned := make(map[string]struct{}, len(declared))
+	for _, value := range declared {
+		if value.IsNull() || value.IsUnknown() {
+			continue
+		}
+		returned[value.ValueString()] = struct{}{}
+	}
+
 	proven := make(map[string]struct{}, len(tested))
 	for _, name := range tested {
 		if name.IsNull() || name.IsUnknown() {
@@ -170,9 +181,14 @@ func declaredParametersWithProven(prior, declared, tested []types.String) []type
 		proven[name.ValueString()] = struct{}{}
 	}
 
-	out := make([]types.String, 0, len(declared)+len(prior))
-	seen := make(map[string]struct{}, len(declared)+len(prior))
-	for _, value := range declared {
+	out := make([]types.String, 0, len(prior)+len(declared))
+	seen := make(map[string]struct{}, len(prior)+len(declared))
+	// The intended value first, in its own order: it is the configuration on a
+	// create or refresh and the plan on an update, which is what Terraform
+	// compares the result against. A name stays only if the API still returns it
+	// or if the API has proven it, which is what makes an explicit removal in a
+	// later configuration still take effect.
+	for _, value := range prior {
 		if value.IsNull() || value.IsUnknown() {
 			continue
 		}
@@ -180,17 +196,21 @@ func declaredParametersWithProven(prior, declared, tested []types.String) []type
 		if _, ok := seen[name]; ok {
 			continue
 		}
+		if _, ok := returned[name]; !ok {
+			if _, ok := proven[name]; !ok {
+				continue
+			}
+		}
 		out = append(out, types.StringValue(name))
 		seen[name] = struct{}{}
 	}
-	for _, value := range prior {
+	// A name the API returns that the intended value does not carry, such as a
+	// stored parameter the owner cannot declare, follows in the API's order.
+	for _, value := range declared {
 		if value.IsNull() || value.IsUnknown() {
 			continue
 		}
 		name := value.ValueString()
-		if _, ok := proven[name]; !ok {
-			continue
-		}
 		if _, ok := seen[name]; ok {
 			continue
 		}

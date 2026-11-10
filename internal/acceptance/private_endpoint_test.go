@@ -1194,6 +1194,47 @@ func TestStubPrivateEndpointRejectsNonHTTPSBaseURL(t *testing.T) {
 	}
 }
 
+// The reconciliation must also put a proven name back where the configuration had
+// it. The read model filters by membership, not by order, and Terraform compares
+// the list element-wise, so appending the proven names at the end of the list is
+// itself a change.
+func TestStubPrivateEndpointDeclaredParametersKeepConfiguredOrder(t *testing.T) {
+	srv, api := newStubPrivateEndpoints(t)
+	const name = "openrouter_private_endpoint.test"
+	// The activate step proves `tools`, so the API stops returning it inside
+	// declared_parameters. The reconciliation has to put it back where the
+	// configuration had it: declared_parameters is a list, so a different order
+	// is a different value to Terraform and the apply fails as an inconsistent
+	// result.
+	config := privateEndpointMutableConfig(srv.URL, "0.000002", 4096, false, true, `["tools", "temperature"]`)
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		CheckDestroy:             api.checkDeletesWithoutDraftOnly,
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "declared_parameters.#", "2"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.0", "tools"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.1", "temperature"),
+					resource.TestCheckResourceAttr(name, "tested_parameters.#", "2"),
+					api.checkCreateCount(1),
+				),
+			},
+			{
+				// Same config again: the order must stay settled, so the step
+				// fails on any PATCH the refresh would have provoked.
+				Config: config,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(name, "declared_parameters.0", "tools"),
+					resource.TestCheckResourceAttr(name, "declared_parameters.1", "temperature"),
+					api.checkPatches(0, ""),
+				),
+			},
+		},
+	})
+}
+
 // A validation run moves a proven name out of the declared list, and the detail
 // response only returns the names that are still undeclared. Declaring a name that
 // the endpoint has already proven must not produce a plan on every refresh.
