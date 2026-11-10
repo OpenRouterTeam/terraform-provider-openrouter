@@ -242,7 +242,8 @@ type ExtractionListAnswer struct {
 	PNull *float64 `json:"p_null,omitzero"`
 	// Set to `image` or `document` when the answer was read from an image or a PDF rather than the state text.
 	Source *ExtractionListAnswerSource `json:"source,omitzero"`
-	Spans  [][]int64                   `json:"spans,omitzero"`
+	// One span per item of `value`, in the same order; null for an item that has no offsets in the state text (read from an image or a document).
+	Spans [][]int64 `json:"spans,omitzero"`
 	// Confidence in the spelling of text read from an image.
 	SpellConfidence *float64 `json:"spell_confidence,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
