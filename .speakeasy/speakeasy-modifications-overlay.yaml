@@ -10,6 +10,13 @@
 # write that created the row, and 200 for a read moments after the delete. The spec cannot express
 # that tolerance, so both call sites stay as persistent edits, and this comment is the declaration
 # that makes regenerate.yaml run on the PR that changes them.
+#
+# internal/provider/workspacedefaultguardrail_resource.go is hand-written and registered through
+# terraform.additionalResources in gen.yaml, so generation never writes it. Its ImportState resolves
+# the import identifier through GET /workspaces/{id}, which accepts a UUID or a slug, and stores the
+# canonical UUID; a generated resource would keep whatever the import string contained, which leaves
+# a slug in an identifier attribute. This comment is the declaration that makes regenerate.yaml run
+# on the PR that changes that file, and a regenerated commit should show no diff for it.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:

@@ -17,8 +17,11 @@ import (
 )
 
 const (
-	fakeWorkspaceID = "11111111-1111-1111-1111-111111111111"
-	fakeGuardrailID = "22222222-2222-2222-2222-222222222222"
+	fakeWorkspaceID   = "11111111-1111-1111-1111-111111111111"
+	fakeWorkspaceSlug = "acme"
+	fakeBareSlug      = "bare-workspace"
+	fakeForbiddenSlug = "forbidden-workspace"
+	fakeGuardrailID   = "22222222-2222-2222-2222-222222222222"
 )
 
 // fakeAPI models the platform's lazy materialization of the workspace
@@ -36,7 +39,9 @@ type fakeAPI struct {
 
 func (f *fakeAPI) handler(t *testing.T) http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /workspaces/"+fakeWorkspaceID, func(w http.ResponseWriter, r *http.Request) {
+	// The workspace route accepts a UUID or a slug and always answers with the
+	// canonical UUID, which is what import has to store.
+	writeWorkspace := func(w http.ResponseWriter) {
 		f.mu.Lock()
 		deleted := f.workspaceDeleted
 		f.mu.Unlock()
@@ -46,8 +51,8 @@ func (f *fakeAPI) handler(t *testing.T) http.Handler {
 		}
 		writeJSON(w, 200, map[string]any{"data": map[string]any{
 			"id":                                  fakeWorkspaceID,
-			"name":                                "acme",
-			"slug":                                "acme",
+			"name":                                fakeWorkspaceSlug,
+			"slug":                                fakeWorkspaceSlug,
 			"created_at":                          "2026-01-01T00:00:00Z",
 			"default_guardrail_id":                fakeGuardrailID,
 			"io_logging_api_key_ids":              []int64{},
@@ -56,6 +61,15 @@ func (f *fakeAPI) handler(t *testing.T) http.Handler {
 			"is_observability_broadcast_enabled":  false,
 			"is_observability_io_logging_enabled": false,
 		}})
+	}
+	mux.HandleFunc("GET /workspaces/"+fakeWorkspaceID, func(w http.ResponseWriter, r *http.Request) { writeWorkspace(w) })
+	mux.HandleFunc("GET /workspaces/"+fakeWorkspaceSlug, func(w http.ResponseWriter, r *http.Request) { writeWorkspace(w) })
+	// A 200 whose body carries no id, and a reference the key may not read.
+	mux.HandleFunc("GET /workspaces/"+fakeBareSlug, func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, 200, map[string]any{"data": map[string]any{"slug": fakeBareSlug}})
+	})
+	mux.HandleFunc("GET /workspaces/"+fakeForbiddenSlug, func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, 403, map[string]any{"error": map[string]any{"code": 403, "message": "forbidden"}})
 	})
 	mux.HandleFunc("GET /workspaces/{id}", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, 404, map[string]any{"error": map[string]any{"code": 404, "message": "not found"}})
@@ -202,6 +216,11 @@ func TestWorkspaceDefaultGuardrail_ImportUnmaterializedDefault(t *testing.T) {
 					}
 					if got := states[0].Attributes["id"]; got != fakeGuardrailID {
 						return fmt.Errorf("imported id = %q, want %q", got, fakeGuardrailID)
+					}
+					// The resolver runs on this path too, so a UUID import must
+					// still land as the UUID rather than as anything the API said.
+					if got := states[0].Attributes["workspace_id"]; got != fakeWorkspaceID {
+						return fmt.Errorf("imported workspace_id = %q, want the UUID %q", got, fakeWorkspaceID)
 					}
 					if got := states[0].Attributes["limit_usd"]; got != "" {
 						return fmt.Errorf("imported limit_usd = %q, want unset", got)
@@ -381,6 +400,118 @@ func TestWorkspaceDefaultGuardrail_ClearsRestrictions(t *testing.T) {
 					api.checkClearedRegions(t),
 					resource.TestCheckNoResourceAttr(addr, "allowed_data_regions.#"),
 				),
+			},
+		},
+	})
+}
+
+// The workspace route answers a slug with the canonical UUID, so import by
+// slug has to store that UUID. Storing the slug where the schema expects an
+// identifier plans a replacement for any config that names the UUID.
+func TestWorkspaceDefaultGuardrail_ImportBySlugStoresCanonicalID(t *testing.T) {
+	api := &fakeAPI{}
+	srv := httptest.NewServer(api.handler(t))
+	defer srv.Close()
+
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: testProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:             defaultGuardrailConfig(srv.URL, 100),
+				ResourceName:       "openrouter_workspace_default_guardrail.this",
+				ImportState:        true,
+				ImportStateId:      fakeWorkspaceSlug,
+				ImportStatePersist: true,
+				ImportStateCheck: func(states []*terraform.InstanceState) error {
+					if len(states) != 1 {
+						return fmt.Errorf("expected 1 imported instance, got %d", len(states))
+					}
+					if got := states[0].Attributes["workspace_id"]; got != fakeWorkspaceID {
+						return fmt.Errorf("imported workspace_id = %q, want the canonical UUID %q", got, fakeWorkspaceID)
+					}
+					return nil
+				},
+			},
+			{
+				Config: defaultGuardrailConfig(srv.URL, 100),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("openrouter_workspace_default_guardrail.this", plancheck.ResourceActionUpdate),
+					},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_workspace_default_guardrail.this", "workspace_id", fakeWorkspaceID),
+					resource.TestCheckResourceAttr("openrouter_workspace_default_guardrail.this", "limit_usd", "100"),
+				),
+			},
+		},
+	})
+
+	if api.posts != 0 {
+		t.Fatalf("POST /guardrails called %d times", api.posts)
+	}
+}
+
+// An import identifier that resolves to no workspace must fail at import with
+// the resolution error rather than entering state and surfacing later.
+func TestWorkspaceDefaultGuardrail_ImportUnknownWorkspaceErrors(t *testing.T) {
+	api := &fakeAPI{}
+	srv := httptest.NewServer(api.handler(t))
+	defer srv.Close()
+
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: testProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:        defaultGuardrailConfig(srv.URL, 100),
+				ResourceName:  "openrouter_workspace_default_guardrail.this",
+				ImportState:   true,
+				ImportStateId: "ghost-workspace",
+				ExpectError:   regexp.MustCompile(`(?i)no workspace matches`),
+			},
+		},
+	})
+}
+
+// A 200 that carries no id cannot become state: storing an empty identifier
+// would leave a resource the next plan cannot match to its configuration.
+func TestWorkspaceDefaultGuardrail_ImportMissingWorkspaceIDErrors(t *testing.T) {
+	api := &fakeAPI{}
+	srv := httptest.NewServer(api.handler(t))
+	defer srv.Close()
+
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: testProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:        defaultGuardrailConfig(srv.URL, 100),
+				ResourceName:  "openrouter_workspace_default_guardrail.this",
+				ImportState:   true,
+				ImportStateId: fakeBareSlug,
+				ExpectError:   regexp.MustCompile(`(?i)workspace has no id`),
+			},
+		},
+	})
+}
+
+// A reference the key cannot read is a transport-level failure, not a missing
+// workspace, so it must not be reported as one. This case also passes on the
+// pre-change code, where Read produced the same diagnostic: it covers the
+// resolver's non-404 branch rather than evidencing the fix.
+func TestWorkspaceDefaultGuardrail_ImportForbiddenReferenceErrors(t *testing.T) {
+	api := &fakeAPI{}
+	srv := httptest.NewServer(api.handler(t))
+	defer srv.Close()
+
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: testProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:        defaultGuardrailConfig(srv.URL, 100),
+				ResourceName:  "openrouter_workspace_default_guardrail.this",
+				ImportState:   true,
+				ImportStateId: fakeForbiddenSlug,
+				ExpectError:   regexp.MustCompile(`unexpected response code 403`),
 			},
 		},
 	})
