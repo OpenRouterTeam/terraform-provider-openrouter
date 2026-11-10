@@ -218,6 +218,8 @@ type CreateAuthKeysCodeResponse struct {
 	ConflictResponse *shared.ConflictResponse
 	// Internal Server Error - Unexpected server error
 	InternalServerResponse *shared.InternalServerResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 }
 
 func (c CreateAuthKeysCodeResponse) MarshalJSON() ([]byte, error) {
@@ -292,4 +294,11 @@ func (c *CreateAuthKeysCodeResponse) GetInternalServerResponse() *shared.Interna
 		return nil
 	}
 	return c.InternalServerResponse
+}
+
+func (c *CreateAuthKeysCodeResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if c == nil {
+		return nil
+	}
+	return c.ServiceUnavailableResponse
 }
