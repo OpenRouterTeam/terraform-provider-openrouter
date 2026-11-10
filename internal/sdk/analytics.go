@@ -350,7 +350,7 @@ func (s *Analytics) GetUserActivity(ctx context.Context, date *string, apiKeyHas
 }
 
 // GetMeta - Get available analytics metrics and dimensions
-// Returns the available metrics, dimensions, filter operators, and granularities for the analytics query endpoint. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Returns the available metrics, dimensions, filter operators, and granularities for the analytics query endpoint. Workspace-scoped management keys are accepted. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Analytics) GetMeta(ctx context.Context, opts ...operations.Option) (*operations.GetAnalyticsMetaResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -612,7 +612,7 @@ func (s *Analytics) GetMeta(ctx context.Context, opts ...operations.Option) (*op
 }
 
 // Query analytics data
-// Execute an analytics query with specified metrics, dimensions, filters, and time range. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Execute an analytics query with specified metrics, dimensions, filters, and time range. A workspace-scoped management key needs `activity:view_all` on its own workspace and reads only that workspace: it is refused a `workspace` filter naming another workspace, it excludes legacy rows with no workspace (including for the default workspace), and possible-cache metrics such as `possible_cached_tokens` return 400. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Analytics) Query(ctx context.Context, request operations.QueryAnalyticsRequest, opts ...operations.Option) (*operations.QueryAnalyticsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
