@@ -47,8 +47,8 @@ type CreateModelAvailabilityGuardrailPolicyRequest struct {
 	// Members that should not inherit the policy when it is the workspace default
 	OptedOutMemberIds []string                                                `json:"opted_out_member_ids,omitzero"`
 	PolicyType        CreateModelAvailabilityGuardrailPolicyRequestPolicyType `json:"policy_type"`
-	// Workspace the policy belongs to
-	WorkspaceID string `json:"workspace_id"`
+	// Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.
+	WorkspaceID *string `json:"workspace_id,omitzero"`
 }
 
 func (c CreateModelAvailabilityGuardrailPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -118,9 +118,9 @@ func (c *CreateModelAvailabilityGuardrailPolicyRequest) GetPolicyType() CreateMo
 	return c.PolicyType
 }
 
-func (c *CreateModelAvailabilityGuardrailPolicyRequest) GetWorkspaceID() string {
+func (c *CreateModelAvailabilityGuardrailPolicyRequest) GetWorkspaceID() *string {
 	if c == nil {
-		return ""
+		return nil
 	}
 	return c.WorkspaceID
 }

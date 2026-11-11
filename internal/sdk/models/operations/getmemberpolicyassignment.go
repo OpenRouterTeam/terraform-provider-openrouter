@@ -47,8 +47,8 @@ func (e *GetMemberPolicyAssignmentPolicyType) UnmarshalJSON(data []byte) error {
 type GetMemberPolicyAssignmentRequest struct {
 	// Organization member user ID
 	MemberID string `pathParam:"style=simple,explode=false,name=member_id"`
-	// Workspace the policy belongs to
-	WorkspaceID string `queryParam:"style=form,explode=true,name=workspace_id"`
+	// Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.
+	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
 	// Policy type the assignment is read or changed for
 	PolicyType GetMemberPolicyAssignmentPolicyType `queryParam:"style=form,explode=true,name=policy_type"`
 }
@@ -60,9 +60,9 @@ func (g *GetMemberPolicyAssignmentRequest) GetMemberID() string {
 	return g.MemberID
 }
 
-func (g *GetMemberPolicyAssignmentRequest) GetWorkspaceID() string {
+func (g *GetMemberPolicyAssignmentRequest) GetWorkspaceID() *string {
 	if g == nil {
-		return ""
+		return nil
 	}
 	return g.WorkspaceID
 }

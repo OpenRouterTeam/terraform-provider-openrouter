@@ -49,8 +49,8 @@ type ChangeGuardrailPolicyAssignmentRequest struct {
 	PolicyID string `json:"policy_id"`
 	// Policy type the assignment is read or changed for
 	PolicyType ChangeGuardrailPolicyAssignmentRequestPolicyType `json:"policy_type"`
-	// Workspace the policy belongs to
-	WorkspaceID string `json:"workspace_id"`
+	// Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.
+	WorkspaceID *string `json:"workspace_id,omitzero"`
 }
 
 func (c *ChangeGuardrailPolicyAssignmentRequest) GetAssigned() bool {
@@ -81,9 +81,9 @@ func (c *ChangeGuardrailPolicyAssignmentRequest) GetPolicyType() ChangeGuardrail
 	return c.PolicyType
 }
 
-func (c *ChangeGuardrailPolicyAssignmentRequest) GetWorkspaceID() string {
+func (c *ChangeGuardrailPolicyAssignmentRequest) GetWorkspaceID() *string {
 	if c == nil {
-		return ""
+		return nil
 	}
 	return c.WorkspaceID
 }

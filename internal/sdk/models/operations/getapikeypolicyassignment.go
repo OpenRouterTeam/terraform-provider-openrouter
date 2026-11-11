@@ -47,8 +47,8 @@ func (e *GetAPIKeyPolicyAssignmentPolicyType) UnmarshalJSON(data []byte) error {
 type GetAPIKeyPolicyAssignmentRequest struct {
 	// API key hash
 	Hash string `pathParam:"style=simple,explode=false,name=hash"`
-	// Workspace the policy belongs to
-	WorkspaceID string `queryParam:"style=form,explode=true,name=workspace_id"`
+	// Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.
+	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
 	// Policy type the assignment is read or changed for
 	PolicyType GetAPIKeyPolicyAssignmentPolicyType `queryParam:"style=form,explode=true,name=policy_type"`
 }
@@ -60,9 +60,9 @@ func (g *GetAPIKeyPolicyAssignmentRequest) GetHash() string {
 	return g.Hash
 }
 
-func (g *GetAPIKeyPolicyAssignmentRequest) GetWorkspaceID() string {
+func (g *GetAPIKeyPolicyAssignmentRequest) GetWorkspaceID() *string {
 	if g == nil {
-		return ""
+		return nil
 	}
 	return g.WorkspaceID
 }

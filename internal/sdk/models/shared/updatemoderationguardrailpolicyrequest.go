@@ -21,8 +21,8 @@ type UpdateModerationGuardrailPolicyRequest struct {
 	OptedOutAPIKeyHashes []string `json:"opted_out_api_key_hashes,omitzero"`
 	// Organization member user IDs
 	OptedOutMemberIds []string `json:"opted_out_member_ids,omitzero"`
-	// Workspace the policy belongs to
-	WorkspaceID string `json:"workspace_id"`
+	// Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.
+	WorkspaceID *string `json:"workspace_id,omitzero"`
 }
 
 func (u UpdateModerationGuardrailPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -85,9 +85,9 @@ func (u *UpdateModerationGuardrailPolicyRequest) GetOptedOutMemberIds() []string
 	return u.OptedOutMemberIds
 }
 
-func (u *UpdateModerationGuardrailPolicyRequest) GetWorkspaceID() string {
+func (u *UpdateModerationGuardrailPolicyRequest) GetWorkspaceID() *string {
 	if u == nil {
-		return ""
+		return nil
 	}
 	return u.WorkspaceID
 }
