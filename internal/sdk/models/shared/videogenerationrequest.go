@@ -10,7 +10,7 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
-// VideoGenerationRequestAspectRatio - Aspect ratio of the generated video
+// VideoGenerationRequestAspectRatio - Aspect ratio of the generated video. Omit it to use the model default, which on models with adaptive aspect ratio (e.g. BytePlus Seedance) follows the input image or video.
 type VideoGenerationRequestAspectRatio string
 
 const (
@@ -1705,13 +1705,13 @@ func (e *VideoGenerationRequestResolution) UnmarshalJSON(data []byte) error {
 }
 
 type VideoGenerationRequest struct {
-	// Aspect ratio of the generated video
+	// Aspect ratio of the generated video. Omit it to use the model default, which on models with adaptive aspect ratio (e.g. BytePlus Seedance) follows the input image or video.
 	AspectRatio *VideoGenerationRequestAspectRatio `json:"aspect_ratio,omitzero"`
 	// URL to receive a webhook notification when the video generation job completes. Overrides the workspace-level default callback URL if set. Must be HTTPS.
 	CallbackURL *string `json:"callback_url,omitzero"`
 	// Creativity level for video upscaling models only. This parameter is not supported by video generation models.
 	Creativity *int64 `json:"creativity,omitzero"`
-	// Duration of the generated video in seconds
+	// Duration of the generated video in seconds, or -1 to let the provider choose the length (e.g. following an input video). -1 is only accepted by models that list it in supported_durations.
 	Duration *int64 `json:"duration,omitzero"`
 	// Images to use as the first and/or last frame of the generated video. Each image must specify a frame_type of first_frame or last_frame.
 	FrameImages []FrameImage `json:"frame_images,omitzero"`

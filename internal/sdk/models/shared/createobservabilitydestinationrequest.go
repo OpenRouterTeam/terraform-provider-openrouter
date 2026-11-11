@@ -82,7 +82,7 @@ func (e *CreateObservabilityDestinationRequestType) UnmarshalJSON(data []byte) e
 }
 
 type CreateObservabilityDestinationRequest struct {
-	// Optional allowlist of OpenRouter API key hashes whose traffic is forwarded. `null` or omitted means all keys. Must contain at least one hash if provided. A workspace-scoped management key can only name API keys in its own workspace; any other hash returns 400.
+	// Optional allowlist of OpenRouter API key hashes whose traffic is forwarded. `null` or omitted means all keys. Must contain at least one hash if provided. Every hash must belong to an API key in the destination's workspace; any other hash returns 400.
 	APIKeyHashes []string `json:"api_key_hashes,omitzero"`
 	// When true, include cost and billing generation metadata.
 	BroadcastGenerationCost *bool `default:"false" json:"broadcast_generation_cost"`
