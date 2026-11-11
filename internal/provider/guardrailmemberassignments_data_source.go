@@ -30,8 +30,9 @@ type GuardrailMemberAssignmentsDataSource struct {
 
 // GuardrailMemberAssignmentsDataSourceModel describes the data model.
 type GuardrailMemberAssignmentsDataSourceModel struct {
-	Data       []tfTypes.MemberAssignment `tfsdk:"data"`
-	TotalCount types.Int64                `tfsdk:"total_count"`
+	Data        []tfTypes.MemberAssignment `tfsdk:"data"`
+	TotalCount  types.Int64                `tfsdk:"total_count"`
+	WorkspaceID types.String               `queryParam:"style=form,explode=true,name=workspace_id" tfsdk:"workspace_id"`
 }
 
 // Metadata returns the data source type name.
@@ -80,6 +81,10 @@ func (r *GuardrailMemberAssignmentsDataSource) Schema(ctx context.Context, req d
 			"total_count": schema.Int64Attribute{
 				Computed:    true,
 				Description: `Total number of member assignments`,
+			},
+			"workspace_id": schema.StringAttribute{
+				Optional:    true,
+				Description: `Only list assignments of guardrails in this workspace. When omitted, an organization management key lists every workspace and a workspace-scoped key lists its own workspace. A workspace-scoped key gets 403 for any other workspace.`,
 			},
 		},
 	}

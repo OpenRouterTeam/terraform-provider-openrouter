@@ -42,7 +42,15 @@ func (r *GuardrailKeyAssignmentsDataSourceModel) RefreshFromSharedListKeyAssignm
 func (r *GuardrailKeyAssignmentsDataSourceModel) ToOperationsListKeyAssignmentsRequest(ctx context.Context) (*operations.ListKeyAssignmentsRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	out := operations.ListKeyAssignmentsRequest{}
+	workspaceID := new(string)
+	if !r.WorkspaceID.IsUnknown() && !r.WorkspaceID.IsNull() {
+		*workspaceID = r.WorkspaceID.ValueString()
+	} else {
+		workspaceID = nil
+	}
+	out := operations.ListKeyAssignmentsRequest{
+		WorkspaceID: workspaceID,
+	}
 
 	return &out, diags
 }

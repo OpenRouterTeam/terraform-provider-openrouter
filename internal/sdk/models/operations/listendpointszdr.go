@@ -30,6 +30,8 @@ type ListEndpointsZdrResponse struct {
 	RawResponse *http.Response
 	// Returns a list of endpoints
 	Object *ListEndpointsZdrResponseBody
+	// Unauthorized - Authentication required or invalid credentials
+	UnauthorizedResponse *shared.UnauthorizedResponse
 	// Forbidden - Authentication successful but insufficient permissions
 	ForbiddenResponse *shared.ForbiddenResponse
 	// Internal Server Error - Unexpected server error
@@ -75,6 +77,13 @@ func (l *ListEndpointsZdrResponse) GetObject() *ListEndpointsZdrResponseBody {
 		return nil
 	}
 	return l.Object
+}
+
+func (l *ListEndpointsZdrResponse) GetUnauthorizedResponse() *shared.UnauthorizedResponse {
+	if l == nil {
+		return nil
+	}
+	return l.UnauthorizedResponse
 }
 
 func (l *ListEndpointsZdrResponse) GetForbiddenResponse() *shared.ForbiddenResponse {
