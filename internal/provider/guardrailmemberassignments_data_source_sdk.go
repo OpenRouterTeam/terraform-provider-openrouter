@@ -41,7 +41,15 @@ func (r *GuardrailMemberAssignmentsDataSourceModel) RefreshFromSharedListMemberA
 func (r *GuardrailMemberAssignmentsDataSourceModel) ToOperationsListMemberAssignmentsRequest(ctx context.Context) (*operations.ListMemberAssignmentsRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	out := operations.ListMemberAssignmentsRequest{}
+	workspaceID := new(string)
+	if !r.WorkspaceID.IsUnknown() && !r.WorkspaceID.IsNull() {
+		*workspaceID = r.WorkspaceID.ValueString()
+	} else {
+		workspaceID = nil
+	}
+	out := operations.ListMemberAssignmentsRequest{
+		WorkspaceID: workspaceID,
+	}
 
 	return &out, diags
 }

@@ -12,8 +12,8 @@ import (
 type DeleteModelAvailabilityPolicyRequest struct {
 	// Policy ID
 	ID string `pathParam:"style=simple,explode=false,name=id"`
-	// Workspace the policy belongs to
-	WorkspaceID string `queryParam:"style=form,explode=true,name=workspace_id"`
+	// Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.
+	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
 }
 
 func (d *DeleteModelAvailabilityPolicyRequest) GetID() string {
@@ -23,9 +23,9 @@ func (d *DeleteModelAvailabilityPolicyRequest) GetID() string {
 	return d.ID
 }
 
-func (d *DeleteModelAvailabilityPolicyRequest) GetWorkspaceID() string {
+func (d *DeleteModelAvailabilityPolicyRequest) GetWorkspaceID() *string {
 	if d == nil {
-		return ""
+		return nil
 	}
 	return d.WorkspaceID
 }

@@ -14,8 +14,8 @@ type ListBudgetPoliciesRequest struct {
 	Offset *int64 `queryParam:"style=form,explode=true,name=offset"`
 	// Maximum number of records to return (max 100). When both offset and limit are omitted, the full list is returned
 	Limit *int64 `queryParam:"style=form,explode=true,name=limit"`
-	// Workspace the policy belongs to
-	WorkspaceID string `queryParam:"style=form,explode=true,name=workspace_id"`
+	// Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.
+	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
 }
 
 func (l *ListBudgetPoliciesRequest) GetOffset() *int64 {
@@ -32,9 +32,9 @@ func (l *ListBudgetPoliciesRequest) GetLimit() *int64 {
 	return l.Limit
 }
 
-func (l *ListBudgetPoliciesRequest) GetWorkspaceID() string {
+func (l *ListBudgetPoliciesRequest) GetWorkspaceID() *string {
 	if l == nil {
-		return ""
+		return nil
 	}
 	return l.WorkspaceID
 }
