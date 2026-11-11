@@ -60,7 +60,7 @@ func (r *GuardrailPolicyBudgetResource) Metadata(ctx context.Context, req resour
 
 func (r *GuardrailPolicyBudgetResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "GuardrailPolicyBudget Resource",
+		MarkdownDescription: "A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. `policy_type` must be `budget` and is fixed at create, where changing it replaces the policy.\n\n`config` is required, and the provider sends it whole on every update: a step that changes only `name` still sends `include_byok_in_budgets`, `limit_usd` and `reset_interval`. `include_byok_in_budgets` decides whether bring-your-own-key spend counts toward the limit alongside OpenRouter credit spend. `limit_usd` and `reset_interval` are optional and travel as explicit nulls when unset.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes the policy id alone. The API never returns the workspace, so set `workspace_id` in configuration after import instead of expecting it in state.",
 		Attributes: map[string]schema.Attribute{
 			"api_key_hashes": schema.ListAttribute{
 				Computed:    true,
