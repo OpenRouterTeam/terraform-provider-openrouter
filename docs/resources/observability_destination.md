@@ -88,7 +88,7 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
 
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
-- `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes whose traffic is forwarded. `null` or omitted means all keys. Must contain at least one hash if provided.
+- `api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes whose traffic is forwarded. `null` or omitted means all keys. Must contain at least one hash if provided. A workspace-scoped management key can only name API keys in its own workspace; any other hash returns 400.
 - `broadcast_generation_cost` (Boolean) When true, include cost and billing generation metadata.
 - `broadcast_generation_cost_allocation` (Boolean) Beta. When true, include openrouter_cost_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost.
 - `broadcast_generation_identity` (Boolean) When true, include identity generation metadata.
@@ -101,7 +101,7 @@ resource "openrouter_observability_destination" "my_observabilitydestination" {
 - `privacy_mode` (Boolean) When true, request/response bodies are not forwarded — only metadata.
 - `regions` (List of String) Data regions this destination applies to. `eu` is accepted as an alias for `europe` and normalizes to `europe`. Omitting this field defaults to ['global']; the array must be non-empty. Default: ["global"]
 - `sampling_rate` (Number) Sampling rate between 0.0001 and 1 (1 = 100%).
-- `workspace_id` (String) Optional workspace ID. Defaults to the authenticated entity's default workspace. Requires replacement if changed.
+- `workspace_id` (String) Optional workspace ID. Defaults to the authenticated entity's default workspace, or a workspace-scoped management key's own workspace. Requires replacement if changed.
 
 ### Read-Only
 

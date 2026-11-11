@@ -33,7 +33,7 @@ generation:
     generateNewTests: true
     skipResponseBodyAssertions: false
 terraform:
-  version: 0.3.220
+  version: 0.3.221
   additionalActions: []
   additionalDataSources: []
   additionalDependencies:

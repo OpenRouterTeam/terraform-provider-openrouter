@@ -14,6 +14,8 @@ type ExtractionDatetimeField struct {
 	NullThreshold *float64 `json:"null_threshold,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"datetime" json:"type"`
+	// Unit label for the value.
+	Unit *string `json:"unit,omitzero"`
 }
 
 func (e ExtractionDatetimeField) MarshalJSON() ([]byte, error) {
@@ -43,4 +45,11 @@ func (e *ExtractionDatetimeField) GetNullThreshold() *float64 {
 
 func (e *ExtractionDatetimeField) GetType() string {
 	return "datetime"
+}
+
+func (e *ExtractionDatetimeField) GetUnit() *string {
+	if e == nil {
+		return nil
+	}
+	return e.Unit
 }
