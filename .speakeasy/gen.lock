@@ -1,21 +1,21 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 5297a640376d46de48ca116b4ad15785
+  docChecksum: 3e9cb0d85000bbd3f94a7ebee2690210
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.231
-  configChecksum: 89f58041ec56061391f3ba88dcfcfc08
+  releaseVersion: 0.3.232
+  configChecksum: 0bd4990243341e63a2149b760727feef
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: 70e4f1af-0e8f-4578-8851-3bcbf6f6a890
-  pristine_commit_hash: 638e02bf76958f1fbef60adfe58623689851ea6a
-  pristine_tree_hash: ee026fb856af42c2422897508c10f141d079bcf3
+  generation_id: 0ecb7ccc-fc31-463a-8749-4e61089e7d4c
+  pristine_commit_hash: 8fa5a7cbd2339f58ad07ac07d5985c7f3b7ee1f8
+  pristine_tree_hash: 6933faecc8f10d8b3fc5a2b53f7f6512693ba49e
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -153,8 +153,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:3f854dcccf5ce7a9ca226a1cf94a3a404cd1d8b3
-    pristine_git_object: 027cbe7bde523f86ad9041b2bd8626626db0cef2
+    last_write_checksum: sha1:e9549176cf6919df06341bd8d979db78fdb9ebfd
+    pristine_git_object: 2f24553a085b01857ba2f84db209aebed361d7de
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -257,7 +257,7 @@ trackedFiles:
     pristine_git_object: b97ff2ffeff454ededad08f3e0f08373e7b7d156
   go.mod:
     id: c47645c391ad
-    last_write_checksum: sha1:f933695982af24c7bb8295be26cf3d373cb51582
+    last_write_checksum: sha1:a398b4c5ed0af92a99b0a8cacf842176bf3ade25
     pristine_git_object: 04243fcc579824ecfa34afe38036ed090f1d12d4
   internal/planmodifiers/boolplanmodifier/suppress_diff.go:
     id: 3cf85b98963e
@@ -2945,8 +2945,8 @@ trackedFiles:
     pristine_git_object: 25bdb2bafd35fb7e5fff9b063486db3e6eb60547
   internal/sdk/models/shared/chatrequest.go:
     id: 7c57049ee12f
-    last_write_checksum: sha1:60cbc48d7927fd8a9d4e2062aaeb87a89c6e1203
-    pristine_git_object: 6bc4ef9144881c14f00a3d4c5aef0a657c6d2ba4
+    last_write_checksum: sha1:b17250a70dfe36c4e005ca3d3f3bf4a9bdc43e48
+    pristine_git_object: 30c1b8e1ece6a3a36d3473ab778f01ce123d3fcc
   internal/sdk/models/shared/chatsearchmodelsservertool.go:
     id: 42240e0e927b
     last_write_checksum: sha1:4903abd463aeacb0ffabcc9a74939ad05347c98f
@@ -5565,8 +5565,8 @@ trackedFiles:
     pristine_git_object: 038f2e1d6b86fb9ef40e4a5b3ab683cb73119ca9
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:3ebe2ff3a7e7bb72fbd5cc818c28c3ebc8b72f9f
-    pristine_git_object: b555e45a5af41863dde16c39b77cfcf543331f9d
+    last_write_checksum: sha1:3980aba72a08824ec295d6d3a8a95c6a6839f1ab
+    pristine_git_object: c1375cddbef8cbecc37e1115e3916f384a9be087
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e

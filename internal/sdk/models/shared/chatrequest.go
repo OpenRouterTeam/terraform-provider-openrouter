@@ -457,11 +457,26 @@ func (e *ChatRequestEffort) UnmarshalJSON(data []byte) error {
 
 // ChatRequestReasoning - Configuration options for reasoning models
 type ChatRequestReasoning struct {
+	// Controls which reasoning is available to the model. `auto` uses the model default (same as omitting); `all_turns` includes reasoning from earlier turns passed in input; `current_turn` limits to the current turn only. Only supported by OpenAI GPT-5.6 and newer.
+	Context *ReasoningContext `json:"context,omitzero"`
 	// Constrains effort on reasoning for reasoning models
 	Effort *ChatRequestEffort `json:"effort,omitzero"`
+	// Enables reasoning with default settings. Defaults to being inferred from `effort` or `max_tokens`.
+	Enabled *bool `json:"enabled,omitzero"`
+	// When true, the model still reasons but the reasoning is omitted from the response. Defaults to false.
+	Exclude *bool `json:"exclude,omitzero"`
 	// Maximum number of tokens the model may spend on reasoning, for models that take a reasoning token budget instead of an effort level. Cannot be combined with `reasoning.effort` or the top-level `reasoning_effort`: a request that sets both is rejected with "Only one of "reasoning.effort" and "reasoning.max_tokens" can be specified".
-	MaxTokens *int64                             `json:"max_tokens,omitzero"`
-	Summary   *ChatReasoningSummaryVerbosityEnum `json:"summary,omitzero"`
+	MaxTokens *int64 `json:"max_tokens,omitzero"`
+	// Selects the reasoning mode. `standard` is the default; `pro` engages deeper reasoning on models that support it, billed at standard token rates. Only supported by OpenAI GPT-5.6 and newer.
+	Mode    *ReasoningMode                     `json:"mode,omitzero"`
+	Summary *ChatReasoningSummaryVerbosityEnum `json:"summary,omitzero"`
+}
+
+func (c *ChatRequestReasoning) GetContext() *ReasoningContext {
+	if c == nil {
+		return nil
+	}
+	return c.Context
 }
 
 func (c *ChatRequestReasoning) GetEffort() *ChatRequestEffort {
@@ -471,11 +486,32 @@ func (c *ChatRequestReasoning) GetEffort() *ChatRequestEffort {
 	return c.Effort
 }
 
+func (c *ChatRequestReasoning) GetEnabled() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.Enabled
+}
+
+func (c *ChatRequestReasoning) GetExclude() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.Exclude
+}
+
 func (c *ChatRequestReasoning) GetMaxTokens() *int64 {
 	if c == nil {
 		return nil
 	}
 	return c.MaxTokens
+}
+
+func (c *ChatRequestReasoning) GetMode() *ReasoningMode {
+	if c == nil {
+		return nil
+	}
+	return c.Mode
 }
 
 func (c *ChatRequestReasoning) GetSummary() *ChatReasoningSummaryVerbosityEnum {
