@@ -7231,7 +7231,7 @@ components:
         workspace_id: '550e8400-e29b-41d4-a716-446655440000'
       properties:
         allowed_api_key_hashes:
-          description: 'Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. A workspace-scoped management key can only name API keys in its own workspace.'
+          description: 'Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. Keys newly added to a credential pinned to a workspace must be in that workspace; a listed key that has since moved to another workspace stays listed.'
           example:
             - 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
           items:
@@ -10308,7 +10308,7 @@ components:
         provider: 'openai'
       properties:
         allowed_api_key_hashes:
-          description: 'Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400; for a workspace-scoped management key, so do hashes of API keys outside its own workspace.'
+          description: 'Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400; for a credential pinned to a workspace, so do hashes of API keys outside that workspace.'
           example:
             - 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
           items:
@@ -10865,7 +10865,7 @@ components:
         type: 'langfuse'
       properties:
         api_key_hashes:
-          description: 'Optional allowlist of OpenRouter API key hashes whose traffic is forwarded. `null` or omitted means all keys. Must contain at least one hash if provided. A workspace-scoped management key can only name API keys in its own workspace; any other hash returns 400.'
+          description: 'Optional allowlist of OpenRouter API key hashes whose traffic is forwarded. `null` or omitted means all keys. Must contain at least one hash if provided. Every hash must belong to an API key in the destination''s workspace; any other hash returns 400.'
           example: null
           items:
             type: 'string'
@@ -36159,7 +36159,7 @@ components:
         name: 'Updated OpenAI Key'
       properties:
         allowed_api_key_hashes:
-          description: 'Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` clears the restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400; for a workspace-scoped management key, so do hashes of API keys outside its own workspace.'
+          description: 'Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` clears the restriction. Must contain at least one hash if provided. Hashes that do not belong to your account return a 400; for a credential pinned to a workspace, so do hashes of API keys outside that workspace, unless the credential already lists them (a listed key that has since moved to another workspace stays listed and can be written back).'
           example:
             - 'f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943'
           items:
@@ -36611,7 +36611,7 @@ components:
         name: 'Updated Langfuse'
       properties:
         api_key_hashes:
-          description: 'Optional allowlist of OpenRouter API key hashes. `null` clears the filter (all keys). Omitting leaves the current value, including any API key from another workspace that an organization-scoped key attached. Must contain at least one hash if provided. A workspace-scoped management key can only name API keys in its own workspace; any other hash returns 400.'
+          description: 'Optional allowlist of OpenRouter API key hashes. `null` clears the filter (all keys). Omitting leaves the current value. Must contain at least one hash if provided. Every hash must belong to an API key in the destination''s workspace; any other hash returns 400. A hash the destination already lists is kept even if that key has since moved to another workspace, so an already-listed hash can always be written back.'
           example: null
           items:
             type: 'string'
@@ -37792,7 +37792,7 @@ components:
         resolution: '720p'
       properties:
         aspect_ratio:
-          description: 'Aspect ratio of the generated video'
+          description: 'Aspect ratio of the generated video. Omit it to use the model default, which on models with adaptive aspect ratio (e.g. BytePlus Seedance) follows the input image or video.'
           enum:
             - '16:9'
             - '9:16'
@@ -37815,9 +37815,9 @@ components:
           example: 1
           type: 'integer'
         duration:
-          description: 'Duration of the generated video in seconds'
+          description: 'Duration of the generated video in seconds, or -1 to let the provider choose the length (e.g. following an input video). -1 is only accepted by models that list it in supported_durations.'
           example: 8
-          minimum: 1
+          minimum: -1
           type: 'integer'
         frame_images:
           description: 'Images to use as the first and/or last frame of the generated video. Each image must specify a frame_type of first_frame or last_frame.'
@@ -38092,7 +38092,7 @@ components:
             - 'array'
             - 'null'
         supported_durations:
-          description: 'Supported video durations in seconds'
+          description: 'Supported video durations in seconds. -1 means the model accepts duration -1 and chooses the length itself.'
           items:
             type: 'integer'
           type:
@@ -54704,7 +54704,7 @@ paths:
         - 'Private Endpoints'
       x-speakeasy-name-override: 'get'
     patch:
-      description: 'Change any of the endpoint fields you own in one call; only the fields present change, and the response is the whole endpoint. `pricing` and `declared_parameters` replace their stored value, `settings` changes only the fields it names (`null` clears a limit or restores the provider default); routing picks these up for subsequent requests on drafts and active endpoints alike. `declared_zdr` and `declared_region` change on drafts and active endpoints alike; on an active endpoint the change keeps its validation and tested parameters, and routing applies it to subsequent requests. `upstream_model_id` and `base_url` re-point a draft: an omitted `upstream_model_id` or `base_url` keeps the stored one, omitted data-policy declarations are kept while the upstream is unchanged and cleared when it changes, and any change to the upstream or declarations of a draft clears earlier validation. Naming `upstream_model_id` or `base_url` on an active endpoint returns 409 `already_active` and writes nothing, even alongside other fields; delete and re-create instead. Every group is checked before anything is written: 400 `parameters_invalid` when `tool_choice` is declared without `tools` tested or declared, 400 `settings_invalid` when `max_prompt_tokens` exceeds the context length, both completion APIs are off, or `excluded_parameters` names a tested parameter, 422 `pricing_invalid` for rates the provider strategy cannot represent. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      description: 'Change any of the endpoint fields you own in one call; only the fields present change, and the response is the whole endpoint. `pricing` and `declared_parameters` replace their stored value, `settings` changes only the fields it names (`null` clears a limit or restores the provider default); routing picks these up for subsequent requests on drafts and active endpoints alike. `declared_zdr` and `declared_region` change on drafts and active endpoints alike; on an active endpoint the change keeps its validation and tested parameters, and routing applies it to subsequent requests. `upstream_model_id` and `base_url` re-point a draft: an omitted `upstream_model_id` or `base_url` keeps the stored one, omitted data-policy declarations are kept while the upstream is unchanged and cleared when it changes, and any change to the upstream or declarations of a draft clears earlier validation. Naming `upstream_model_id` or `base_url` on an active endpoint returns 409 `already_active` and writes nothing, even alongside other fields; delete and re-create instead. Every group is checked before anything is written: 400 `parameters_invalid` when `tool_choice` is declared without `tools` tested or declared, 400 `settings_invalid` when `max_prompt_tokens` exceeds the context length, both completion APIs are off, or `excluded_parameters` names a tested parameter, 422 `pricing_invalid` for rates the provider strategy cannot represent, or `pricing_cache_read_unsupported` or `pricing_cache_write_unsupported` when that rate is a cache rate the strategy has no SKU for. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'updatePrivateEndpoint'
       parameters:
         - description: 'Stable identifier of the private endpoint.'
