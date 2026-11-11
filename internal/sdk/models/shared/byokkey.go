@@ -39,7 +39,7 @@ func (e *BYOKKeyDeclaredRegion) UnmarshalJSON(data []byte) error {
 }
 
 type BYOKKey struct {
-	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. A workspace-scoped management key can only name API keys in its own workspace.
+	// Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. Keys newly added to a credential pinned to a workspace must be in that workspace; a listed key that has since moved to another workspace stays listed.
 	AllowedAPIKeyHashes []string `json:"allowed_api_key_hashes"`
 	// Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
 	AllowedModels []string `json:"allowed_models"`
