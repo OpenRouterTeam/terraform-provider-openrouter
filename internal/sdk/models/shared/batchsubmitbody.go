@@ -39,6 +39,7 @@ const (
 	EndpointRootV1Responses       Endpoint = "/v1/responses"
 	EndpointRootV1Messages        Endpoint = "/v1/messages"
 	EndpointRootV1Embeddings      Endpoint = "/v1/embeddings"
+	EndpointRootV1AudioSpeech     Endpoint = "/v1/audio/speech"
 )
 
 func (e Endpoint) ToPointer() *Endpoint {
@@ -57,6 +58,8 @@ func (e *Endpoint) UnmarshalJSON(data []byte) error {
 	case "/v1/messages":
 		fallthrough
 	case "/v1/embeddings":
+		fallthrough
+	case "/v1/audio/speech":
 		*e = Endpoint(v)
 		return nil
 	default:
