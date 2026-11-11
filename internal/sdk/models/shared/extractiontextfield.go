@@ -14,6 +14,8 @@ type ExtractionTextField struct {
 	NullThreshold *float64 `json:"null_threshold,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"text" json:"type"`
+	// Unit label for the value.
+	Unit *string `json:"unit,omitzero"`
 }
 
 func (e ExtractionTextField) MarshalJSON() ([]byte, error) {
@@ -43,4 +45,11 @@ func (e *ExtractionTextField) GetNullThreshold() *float64 {
 
 func (e *ExtractionTextField) GetType() string {
 	return "text"
+}
+
+func (e *ExtractionTextField) GetUnit() *string {
+	if e == nil {
+		return nil
+	}
+	return e.Unit
 }

@@ -43,11 +43,15 @@ type ExtractionListField struct {
 	Decimals *int64 `json:"decimals,omitzero"`
 	// What the field should contain.
 	Instructions *string `json:"instructions,omitzero"`
-	Items        Items   `json:"items"`
+	// Whole numbers only. Lists of numbers only.
+	Integer *bool `json:"integer,omitzero"`
+	Items   Items `json:"items"`
 	// Probability of null above which `value` is null. Default 0.5.
 	NullThreshold *float64 `json:"null_threshold,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"list" json:"type"`
+	// Unit label for the value.
+	Unit *string `json:"unit,omitzero"`
 }
 
 func (e ExtractionListField) MarshalJSON() ([]byte, error) {
@@ -75,6 +79,13 @@ func (e *ExtractionListField) GetInstructions() *string {
 	return e.Instructions
 }
 
+func (e *ExtractionListField) GetInteger() *bool {
+	if e == nil {
+		return nil
+	}
+	return e.Integer
+}
+
 func (e *ExtractionListField) GetItems() Items {
 	if e == nil {
 		return Items("")
@@ -91,4 +102,11 @@ func (e *ExtractionListField) GetNullThreshold() *float64 {
 
 func (e *ExtractionListField) GetType() string {
 	return "list"
+}
+
+func (e *ExtractionListField) GetUnit() *string {
+	if e == nil {
+		return nil
+	}
+	return e.Unit
 }

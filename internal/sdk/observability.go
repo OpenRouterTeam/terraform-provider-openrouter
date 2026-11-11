@@ -35,7 +35,7 @@ func newObservability(rootSDK *OpenRouter, sdkConfig config.SDKConfiguration, ho
 }
 
 // ListDestinations - List observability destinations
-// List the observability destinations configured for the authenticated entity's default workspace. Use the `workspace_id` query parameter to scope the result to a different workspace. Only destinations with stable release status are surfaced — destinations of other types are excluded. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// List the observability destinations configured for the authenticated entity's default workspace, or a workspace-scoped management key's own workspace. Use the `workspace_id` query parameter to scope the result to a different workspace. A workspace-scoped management key can only list its own workspace; any other `workspace_id` returns 403. Only destinations with stable release status are surfaced — destinations of other types are excluded. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Observability) ListDestinations(ctx context.Context, request operations.ListObservabilityDestinationsRequest, opts ...operations.Option) (*operations.ListObservabilityDestinationsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -372,7 +372,7 @@ func (s *Observability) ListDestinations(ctx context.Context, request operations
 }
 
 // CreateDestination - Create an observability destination
-// Create a new observability destination. A maximum of 5 destinations per type is allowed. Defaults to the authenticated entity's default workspace; use the `workspace_id` body field to scope to a different workspace. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Create a new observability destination. A maximum of 5 destinations per type is allowed. Defaults to the authenticated entity's default workspace, or a workspace-scoped management key's own workspace; use the `workspace_id` body field to scope to a different workspace. A workspace-scoped management key can only create in its own workspace; any other `workspace_id` returns 403. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Observability) CreateDestination(ctx context.Context, request shared.CreateObservabilityDestinationRequest, opts ...operations.Option) (*operations.CreateObservabilityDestinationResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -684,7 +684,7 @@ func (s *Observability) CreateDestination(ctx context.Context, request shared.Cr
 }
 
 // DeleteDestination - Delete an observability destination
-// Delete an existing observability destination. This performs a soft delete. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Delete an existing observability destination. This performs a soft delete. A workspace-scoped management key only reaches destinations in its own workspace; any other `id` returns 404. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Observability) DeleteDestination(ctx context.Context, request operations.DeleteObservabilityDestinationRequest, opts ...operations.Option) (*operations.DeleteObservabilityDestinationResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -967,7 +967,7 @@ func (s *Observability) DeleteDestination(ctx context.Context, request operation
 }
 
 // GetDestination - Get an observability destination
-// Fetch a single observability destination by its UUID. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Fetch a single observability destination by its UUID. A workspace-scoped management key only reaches destinations in its own workspace; any other `id` returns 404. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Observability) GetDestination(ctx context.Context, request operations.GetObservabilityDestinationRequest, opts ...operations.Option) (*operations.GetObservabilityDestinationResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -1251,7 +1251,7 @@ func (s *Observability) GetDestination(ctx context.Context, request operations.G
 }
 
 // UpdateDestination - Update an observability destination
-// Update an existing observability destination. Only the fields provided in the request body are updated. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Update an existing observability destination. Only the fields provided in the request body are updated. A workspace-scoped management key only reaches destinations in its own workspace; any other `id` returns 404. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Observability) UpdateDestination(ctx context.Context, request operations.UpdateObservabilityDestinationRequest, opts ...operations.Option) (*operations.UpdateObservabilityDestinationResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
