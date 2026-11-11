@@ -12,12 +12,14 @@ type ExtractionNumberField struct {
 	Decimals *int64 `json:"decimals,omitzero"`
 	// What the field should contain.
 	Instructions *string `json:"instructions,omitzero"`
-	Integer      *bool   `json:"integer,omitzero"`
+	// Whole numbers only.
+	Integer *bool `json:"integer,omitzero"`
 	// Probability of null above which `value` is null. Default 0.5.
 	NullThreshold *float64 `json:"null_threshold,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string  `const:"number" json:"type"`
-	Unit  *string `json:"unit,omitzero"`
+	type_ string `const:"number" json:"type"`
+	// Unit label for the value.
+	Unit *string `json:"unit,omitzero"`
 }
 
 func (e ExtractionNumberField) MarshalJSON() ([]byte, error) {

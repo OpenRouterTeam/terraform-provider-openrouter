@@ -401,13 +401,14 @@ type ExtractionEstimateField struct {
 	Instructions *string                    `json:"instructions,omitzero"`
 	Max          ExtractionEstimateFieldMax `json:"max"`
 	Min          ExtractionEstimateFieldMin `json:"min"`
-	// Probability of null above which `value` is null. Default 0.5.
+	// Not read on this field type: no model takes a null threshold here, and a request that sets it fails with a 400.
 	NullThreshold *float64                          `json:"null_threshold,omitzero"`
 	Scale         *ExtractionEstimateFieldScale     `json:"scale,omitzero"`
 	Step          *ExtractionEstimateFieldStepUnion `json:"step,omitzero"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string  `const:"estimate" json:"type"`
-	Unit  *string `json:"unit,omitzero"`
+	type_ string `const:"estimate" json:"type"`
+	// Unit label for the value.
+	Unit *string `json:"unit,omitzero"`
 }
 
 func (e ExtractionEstimateField) MarshalJSON() ([]byte, error) {

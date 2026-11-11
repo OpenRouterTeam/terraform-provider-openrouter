@@ -2257,7 +2257,7 @@ func (r *ObservabilityDestinationsDataSource) Schema(ctx context.Context, req da
 			},
 			"workspace_id": schema.StringAttribute{
 				Optional:    true,
-				Description: `Optional workspace ID to filter by. Defaults to the authenticated entity's default workspace.`,
+				Description: `Optional workspace ID to filter by. Defaults to the authenticated entity's default workspace, or a workspace-scoped management key's own workspace.`,
 			},
 		},
 	}
