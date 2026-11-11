@@ -118,6 +118,7 @@ const (
 	BYOKProviderSlugSeed                     BYOKProviderSlug = "seed"
 	BYOKProviderSlugSiliconflow              BYOKProviderSlug = "siliconflow"
 	BYOKProviderSlugSourceful                BYOKProviderSlug = "sourceful"
+	BYOKProviderSlugSpeechify                BYOKProviderSlug = "speechify"
 	BYOKProviderSlugStepfun                  BYOKProviderSlug = "stepfun"
 	BYOKProviderSlugStreamlake               BYOKProviderSlug = "streamlake"
 	BYOKProviderSlugSwitchpoint              BYOKProviderSlug = "switchpoint"
@@ -358,6 +359,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "siliconflow":
 		fallthrough
 	case "sourceful":
+		fallthrough
+	case "speechify":
 		fallthrough
 	case "stepfun":
 		fallthrough
