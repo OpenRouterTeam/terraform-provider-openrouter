@@ -23,7 +23,7 @@ data "openrouter_guardrails" "my_guardrails" {
 
 ### Optional
 
-- `workspace_id` (String) Filter guardrails by workspace ID. By default, guardrails in the default workspace are returned.
+- `workspace_id` (String) Filter guardrails by workspace ID. When omitted, an organization management key gets guardrails in the default workspace and a workspace-scoped key gets guardrails in its own workspace. A workspace-scoped key gets 403 for any other workspace.
 
 ### Read-Only
 
