@@ -6849,6 +6849,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyBudget
     BudgetGuardrailPolicyDetail:
       properties:
         api_key_hashes:
@@ -6952,6 +6953,7 @@ components:
         - 'opted_out_api_key_hashes'
         - 'overridden_api_key_hashes'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyBudget
     BudgetGuardrailPolicyDetailResponse:
       properties:
         data:
@@ -10302,6 +10304,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyBudget
     CreateBYOKKeyRequest:
       example:
         key: 'sk-proj-abc123...'
@@ -10798,6 +10801,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
     CreateModerationGuardrailPolicyRequest:
       properties:
         api_key_hashes:
@@ -10861,6 +10865,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModeration
     CreateObservabilityDestinationRequest:
       example:
         config:
@@ -21533,6 +21538,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
     ModelAvailabilityGuardrailPolicyDetail:
       properties:
         api_key_hashes:
@@ -21636,6 +21642,7 @@ components:
         - 'opted_out_api_key_hashes'
         - 'overridden_api_key_hashes'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
     ModelAvailabilityGuardrailPolicyDetailResponse:
       properties:
         data:
@@ -22154,6 +22161,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModeration
     ModerationGuardrailPolicyDetail:
       properties:
         api_key_hashes:
@@ -22260,6 +22268,7 @@ components:
         - 'opted_out_api_key_hashes'
         - 'overridden_api_key_hashes'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModeration
     ModerationGuardrailPolicyDetailResponse:
       properties:
         data:
@@ -36199,6 +36208,7 @@ components:
         - 'name'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyBudget
     UpdateBYOKKeyRequest:
       example:
         disabled: false
@@ -36596,6 +36606,7 @@ components:
         - 'name'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
     UpdateModerationGuardrailPolicyRequest:
       properties:
         api_key_hashes:
@@ -36654,6 +36665,7 @@ components:
         - 'name'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModeration
     UpdateObservabilityDestinationRequest:
       example:
         enabled: false
@@ -48008,6 +48020,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'createBudgetPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#create
   /guardrails/policies/budget/{id}:
     delete:
       description: 'Delete a budget policy. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -48102,6 +48115,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'deleteBudgetPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#delete
     get:
       description: 'Get a budget policy with its member and API key assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'getBudgetPolicy'
@@ -48185,6 +48199,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'getBudgetPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#read
     put:
       description: 'Replace a budget policy''s name and config, and optionally its assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'updateBudgetPolicy'
@@ -48275,6 +48290,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'updateBudgetPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#update
   /guardrails/policies/model-availability:
     get:
       description: 'List the model availability policies in a workspace. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -48460,6 +48476,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'createModelAvailabilityPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#create
   /guardrails/policies/model-availability/{id}:
     delete:
       description: 'Delete a model availability policy. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -48554,6 +48571,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'deleteModelAvailabilityPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#delete
     get:
       description: 'Get a model availability policy with its member and API key assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'getModelAvailabilityPolicy'
@@ -48637,6 +48655,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'getModelAvailabilityPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#read
     put:
       description: 'Replace a model availability policy''s name and config, and optionally its assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'updateModelAvailabilityPolicy'
@@ -48727,6 +48746,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'updateModelAvailabilityPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#update
   /guardrails/policies/moderation:
     get:
       description: 'List the moderation policies in a workspace. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -48912,6 +48932,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'createModerationPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#create
   /guardrails/policies/moderation/{id}:
     delete:
       description: 'Delete a moderation policy. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -49006,6 +49027,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'deleteModerationPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#delete
     get:
       description: 'Get a moderation policy with its member and API key assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'getModerationPolicy'
@@ -49089,6 +49111,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'getModerationPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#read
     put:
       description: 'Replace a moderation policy''s name and config, and optionally its assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'updateModerationPolicy'
@@ -49179,6 +49202,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'updateModerationPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#update
   /images:
     post:
       description: 'Generates an image from a text prompt via the image generation router'
