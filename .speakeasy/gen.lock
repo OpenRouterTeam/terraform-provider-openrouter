@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 01cf4783176868aff9cb5f17c8f32e92
+  docChecksum: 9a7b33a45a83ded414934161b0b9db57
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
@@ -13,9 +13,9 @@ management:
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: 34d1d4f2-c93b-40d5-9465-74924ab89803
-  pristine_commit_hash: 92d7457fff81abfe81999471f613306864398034
-  pristine_tree_hash: d574e0570a9d8b3f161e218d782cd3597a27f386
+  generation_id: c36f2a94-43ba-4216-b7da-910b1999be45
+  pristine_commit_hash: 36de7b129fee98d0d02d14e74c1a8e78ce11a319
+  pristine_tree_hash: 5612998fc4ba2f13d2799e31c5b89f162fc84d66
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -545,8 +545,8 @@ trackedFiles:
     pristine_git_object: 4d374303f70fcc93db53a9a52b29ad99fa6cfd62
   internal/provider/guardrailpolicybudget_resource.go:
     id: e7861a8be213
-    last_write_checksum: sha1:54ec208e695c1dd349807c9197d93e5ab5fca472
-    pristine_git_object: 4a6fdbede9ee1a8a3cc974dbbdab0151e9418a92
+    last_write_checksum: sha1:e9fbfeb0dee748c4f013049b34351a86ca536d4d
+    pristine_git_object: 38c59a7dda1bd5e000e519c8857d2678a0955f70
   internal/provider/guardrailpolicybudget_resource_sdk.go:
     id: d1f5f01f2cc6
     last_write_checksum: sha1:9fd0379acbdf0579f017928aab0381ac42af2b80
@@ -561,8 +561,8 @@ trackedFiles:
     pristine_git_object: 615c4fceef7b8fe7f3f0e4eb72bae53414a6b1fd
   internal/provider/guardrailpolicymodelavailability_resource.go:
     id: "816024722769"
-    last_write_checksum: sha1:9725ad94f988dd985a3fabd9a56fb7709844cf21
-    pristine_git_object: 2ef24d254e4d426f62bf49e2592301a9d7eeb9b1
+    last_write_checksum: sha1:112d23e2014755a8f08d5f76cbd2437f6b9b0e55
+    pristine_git_object: 06419f9c1d6e6f2878c911c552ca392baec6e227
   internal/provider/guardrailpolicymodelavailability_resource_sdk.go:
     id: 3345c4d6be03
     last_write_checksum: sha1:90ee3ae9cc2f131b19791eee177b83ae3753f335
@@ -577,8 +577,8 @@ trackedFiles:
     pristine_git_object: 396594dda7b1948c88a32ad117885a4789343387
   internal/provider/guardrailpolicymoderation_resource.go:
     id: a0bcf529540f
-    last_write_checksum: sha1:60fabe8970d59a253afc3d82546fe4e726e97794
-    pristine_git_object: 6b35b539deca5a744cf77d029b819b00dd5a4593
+    last_write_checksum: sha1:bd93c9487526489e85beb7f107a803c6b7d3c009
+    pristine_git_object: 17e18d8c7b0b9a813b1b1b7bb78692530246b685
   internal/provider/guardrailpolicymoderation_resource_sdk.go:
     id: 69351af8dfa5
     last_write_checksum: sha1:c703003bb288cb41a11654bbf19b01d8092f12af
