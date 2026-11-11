@@ -627,6 +627,8 @@ func (e *ObjectEmbedding) UnmarshalJSON(data []byte) error {
 
 // BatchObjectData - A single embedding object
 type BatchObjectData struct {
+	// Index of the source document when `input` was a list of documents (contextual embeddings). Absent otherwise.
+	DocumentIndex *int64 `json:"document_index,omitzero"`
 	// Embedding vector as an array of floats or a base64 string
 	Embedding Embedding `json:"embedding"`
 	// Index of the embedding in the input list
@@ -643,6 +645,13 @@ func (b *BatchObjectData) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (b *BatchObjectData) GetDocumentIndex() *int64 {
+	if b == nil {
+		return nil
+	}
+	return b.DocumentIndex
 }
 
 func (b *BatchObjectData) GetEmbedding() Embedding {
