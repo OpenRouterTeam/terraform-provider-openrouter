@@ -142,6 +142,7 @@ type ProviderOptions struct {
 	SfCompute                map[string]any `json:"sf-compute,omitzero"`
 	Siliconflow              map[string]any `json:"siliconflow,omitzero"`
 	Sourceful                map[string]any `json:"sourceful,omitzero"`
+	Speechify                map[string]any `json:"speechify,omitzero"`
 	Stealth                  map[string]any `json:"stealth,omitzero"`
 	Stepfun                  map[string]any `json:"stepfun,omitzero"`
 	Streamlake               map[string]any `json:"streamlake,omitzero"`
@@ -1106,6 +1107,13 @@ func (p *ProviderOptions) GetSourceful() map[string]any {
 		return nil
 	}
 	return p.Sourceful
+}
+
+func (p *ProviderOptions) GetSpeechify() map[string]any {
+	if p == nil {
+		return nil
+	}
+	return p.Speechify
 }
 
 func (p *ProviderOptions) GetStealth() map[string]any {

@@ -121,6 +121,7 @@ const (
 	ProviderSeed                     Provider = "seed"
 	ProviderSiliconflow              Provider = "siliconflow"
 	ProviderSourceful                Provider = "sourceful"
+	ProviderSpeechify                Provider = "speechify"
 	ProviderStepfun                  Provider = "stepfun"
 	ProviderStreamlake               Provider = "streamlake"
 	ProviderSwitchpoint              Provider = "switchpoint"
@@ -361,6 +362,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "siliconflow":
 		fallthrough
 	case "sourceful":
+		fallthrough
+	case "speechify":
 		fallthrough
 	case "stepfun":
 		fallthrough
