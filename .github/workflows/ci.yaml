@@ -24,7 +24,7 @@ permissions:
 
 env:
   # Single source for the toolchain floor enforced by the checks below.
-  MIN_GO: "1.26.10"
+  MIN_GO: "1.26.11"
 
 # A new PR revision cancels the older run. Pushes and dispatches get a group
 # per run, so every main commit is checked: a shared group would let a newer

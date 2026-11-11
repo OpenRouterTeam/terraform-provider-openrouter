@@ -4,7 +4,7 @@ permissions:
 
 env:
   # Same floor CI enforces; the release path must not trust a regenerated go.mod.
-  MIN_GO: "1.26.10"
+  MIN_GO: "1.26.11"
 "on":
   push:
     branches:
