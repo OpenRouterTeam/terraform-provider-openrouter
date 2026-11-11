@@ -410,7 +410,7 @@ type VideoModel struct {
 	Seed *bool `json:"seed"`
 	// Supported output aspect ratios
 	SupportedAspectRatios []SupportedAspectRatio `json:"supported_aspect_ratios"`
-	// Supported video durations in seconds
+	// Supported video durations in seconds. -1 means the model accepts duration -1 and chooses the length itself.
 	SupportedDurations []int64 `json:"supported_durations"`
 	// Supported frame image types (e.g. first_frame, last_frame)
 	SupportedFrameImages []SupportedFrameImage `json:"supported_frame_images"`

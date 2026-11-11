@@ -37,7 +37,7 @@ data "openrouter_byok_keys" "my_byokkeys" {
 
 Read-Only:
 
-- `allowed_api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. A workspace-scoped management key can only name API keys in its own workspace.
+- `allowed_api_key_hashes` (List of String) Optional allowlist of OpenRouter API key hashes (`api_keys.hash`) that may use this credential. `null` means no restriction. Keys newly added to a credential pinned to a workspace must be in that workspace; a listed key that has since moved to another workspace stays listed.
 - `allowed_models` (List of String) Optional allowlist of model slugs this credential may be used for. `null` means no restriction.
 - `allowed_user_ids` (List of String) Optional allowlist of user IDs that may use this credential. `null` means no restriction.
 - `created_at` (String) ISO timestamp of when the credential was created.
