@@ -130,6 +130,381 @@ func (r *ResultError) GetType() string {
 	return r.Type
 }
 
+type BatchObjectFormat2 string
+
+const (
+	BatchObjectFormat2Pcm BatchObjectFormat2 = "pcm"
+)
+
+func (e BatchObjectFormat2) ToPointer() *BatchObjectFormat2 {
+	return &e
+}
+func (e *BatchObjectFormat2) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "pcm":
+		*e = BatchObjectFormat2(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for BatchObjectFormat2: %v", v)
+	}
+}
+
+type AudioPcm2 struct {
+	BitsPerSample float64            `json:"bits_per_sample"`
+	ByteLength    int64              `json:"byte_length"`
+	Channels      int64              `json:"channels"`
+	Format        BatchObjectFormat2 `json:"format"`
+	SampleRate    int64              `json:"sample_rate"`
+	Sha256        string             `json:"sha256"`
+}
+
+func (a AudioPcm2) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(a, "", false)
+}
+
+func (a *AudioPcm2) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &a, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *AudioPcm2) GetBitsPerSample() float64 {
+	if a == nil {
+		return 0.0
+	}
+	return a.BitsPerSample
+}
+
+func (a *AudioPcm2) GetByteLength() int64 {
+	if a == nil {
+		return 0
+	}
+	return a.ByteLength
+}
+
+func (a *AudioPcm2) GetChannels() int64 {
+	if a == nil {
+		return 0
+	}
+	return a.Channels
+}
+
+func (a *AudioPcm2) GetFormat() BatchObjectFormat2 {
+	if a == nil {
+		return BatchObjectFormat2("")
+	}
+	return a.Format
+}
+
+func (a *AudioPcm2) GetSampleRate() int64 {
+	if a == nil {
+		return 0
+	}
+	return a.SampleRate
+}
+
+func (a *AudioPcm2) GetSha256() string {
+	if a == nil {
+		return ""
+	}
+	return a.Sha256
+}
+
+// #region class-body-audiopcm2
+// #endregion class-body-audiopcm2
+
+type BatchObjectFormat1 string
+
+const (
+	BatchObjectFormat1Pcm BatchObjectFormat1 = "pcm"
+)
+
+func (e BatchObjectFormat1) ToPointer() *BatchObjectFormat1 {
+	return &e
+}
+func (e *BatchObjectFormat1) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "pcm":
+		*e = BatchObjectFormat1(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for BatchObjectFormat1: %v", v)
+	}
+}
+
+type AudioPcm1 struct {
+	BitsPerSample float64 `json:"bits_per_sample"`
+	Channels      int64   `json:"channels"`
+	// Base64-encoded PCM16 audio in the format the sibling fields give.
+	Data       string             `json:"data"`
+	Format     BatchObjectFormat1 `json:"format"`
+	SampleRate int64              `json:"sample_rate"`
+}
+
+func (a AudioPcm1) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(a, "", false)
+}
+
+func (a *AudioPcm1) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &a, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *AudioPcm1) GetBitsPerSample() float64 {
+	if a == nil {
+		return 0.0
+	}
+	return a.BitsPerSample
+}
+
+func (a *AudioPcm1) GetChannels() int64 {
+	if a == nil {
+		return 0
+	}
+	return a.Channels
+}
+
+func (a *AudioPcm1) GetData() string {
+	if a == nil {
+		return ""
+	}
+	return a.Data
+}
+
+func (a *AudioPcm1) GetFormat() BatchObjectFormat1 {
+	if a == nil {
+		return BatchObjectFormat1("")
+	}
+	return a.Format
+}
+
+func (a *AudioPcm1) GetSampleRate() int64 {
+	if a == nil {
+		return 0
+	}
+	return a.SampleRate
+}
+
+// #region class-body-audiopcm1
+// #endregion class-body-audiopcm1
+
+type AudioType string
+
+const (
+	AudioTypeAudioPcm1 AudioType = "audio_Pcm_1"
+	AudioTypeAudioPcm2 AudioType = "audio_Pcm_2"
+)
+
+type Audio struct {
+	AudioPcm1 *AudioPcm1 `queryParam:"inline" union:"member"`
+	AudioPcm2 *AudioPcm2 `queryParam:"inline" union:"member"`
+
+	Type AudioType
+}
+
+func CreateAudioAudioPcm1(audioPcm1 AudioPcm1) Audio {
+	typ := AudioTypeAudioPcm1
+
+	return Audio{
+		AudioPcm1: &audioPcm1,
+		Type:      typ,
+	}
+}
+
+func CreateAudioAudioPcm2(audioPcm2 AudioPcm2) Audio {
+	typ := AudioTypeAudioPcm2
+
+	return Audio{
+		AudioPcm2: &audioPcm2,
+		Type:      typ,
+	}
+}
+
+func (u *Audio) UnmarshalJSON(data []byte) (err error) {
+	previous := *u
+	*u = Audio{}
+	defer func() {
+		if err != nil {
+			*u = previous
+		}
+	}()
+
+	var candidates []utils.UnionCandidate
+
+	// Collect all valid candidates
+	var audioPcm1 AudioPcm1 = AudioPcm1{}
+	if err := utils.UnmarshalJSON(data, &audioPcm1, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  AudioTypeAudioPcm1,
+			Value: &audioPcm1,
+		})
+	}
+
+	var audioPcm2 AudioPcm2 = AudioPcm2{}
+	if err := utils.UnmarshalJSON(data, &audioPcm2, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  AudioTypeAudioPcm2,
+			Value: &audioPcm2,
+		})
+	}
+
+	if len(candidates) == 0 {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for Audio", string(data))
+	}
+
+	// Pick the best candidate using multi-stage filtering
+	best := utils.PickBestUnionCandidate(candidates, data)
+	if best == nil {
+		return fmt.Errorf("could not unmarshal `%s` into any supported union types for Audio", string(data))
+	}
+
+	// Set the union type and value based on the best candidate
+	u.Type = best.Type.(AudioType)
+	switch best.Type {
+	case AudioTypeAudioPcm1:
+		u.AudioPcm1 = best.Value.(*AudioPcm1)
+		return nil
+	case AudioTypeAudioPcm2:
+		u.AudioPcm2 = best.Value.(*AudioPcm2)
+		return nil
+	}
+
+	return fmt.Errorf("could not unmarshal `%s` into any supported union types for Audio", string(data))
+}
+
+func (u Audio) MarshalJSON() ([]byte, error) {
+	if u.AudioPcm1 != nil {
+		return utils.MarshalJSON(u.AudioPcm1, "", true)
+	}
+
+	if u.AudioPcm2 != nil {
+		return utils.MarshalJSON(u.AudioPcm2, "", true)
+	}
+
+	return nil, errors.New("could not marshal union type Audio: all fields are null")
+}
+
+type ObjectAudioSpeech string
+
+const (
+	ObjectAudioSpeechAudioSpeech ObjectAudioSpeech = "audio.speech"
+)
+
+func (e ObjectAudioSpeech) ToPointer() *ObjectAudioSpeech {
+	return &e
+}
+func (e *ObjectAudioSpeech) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "audio.speech":
+		*e = ObjectAudioSpeech(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for ObjectAudioSpeech: %v", v)
+	}
+}
+
+type BodyUsage4 struct {
+	CompletionTokens int64 `json:"completion_tokens"`
+	PromptTokens     int64 `json:"prompt_tokens"`
+	TotalTokens      int64 `json:"total_tokens"`
+}
+
+func (b BodyUsage4) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(b, "", false)
+}
+
+func (b *BodyUsage4) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &b, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *BodyUsage4) GetCompletionTokens() int64 {
+	if b == nil {
+		return 0
+	}
+	return b.CompletionTokens
+}
+
+func (b *BodyUsage4) GetPromptTokens() int64 {
+	if b == nil {
+		return 0
+	}
+	return b.PromptTokens
+}
+
+func (b *BodyUsage4) GetTotalTokens() int64 {
+	if b == nil {
+		return 0
+	}
+	return b.TotalTokens
+}
+
+// #region class-body-bodyusage4
+// #endregion class-body-bodyusage4
+
+type BodyAudioSpeech struct {
+	Audio  Audio             `json:"audio"`
+	Model  string            `json:"model"`
+	Object ObjectAudioSpeech `json:"object"`
+	Usage  BodyUsage4        `json:"usage"`
+}
+
+func (b BodyAudioSpeech) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(b, "", false)
+}
+
+func (b *BodyAudioSpeech) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &b, "", false, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *BodyAudioSpeech) GetAudio() Audio {
+	if b == nil {
+		return Audio{}
+	}
+	return b.Audio
+}
+
+func (b *BodyAudioSpeech) GetModel() string {
+	if b == nil {
+		return ""
+	}
+	return b.Model
+}
+
+func (b *BodyAudioSpeech) GetObject() ObjectAudioSpeech {
+	if b == nil {
+		return ObjectAudioSpeech("")
+	}
+	return b.Object
+}
+
+func (b *BodyAudioSpeech) GetUsage() BodyUsage4 {
+	if b == nil {
+		return BodyUsage4{}
+	}
+	return b.Usage
+}
+
 type EmbeddingType string
 
 const (
@@ -2444,6 +2819,7 @@ const (
 	BodyTypeOpenResponsesResult BodyType = "OpenResponsesResult"
 	BodyTypeBodyMessage         BodyType = "body_Message"
 	BodyTypeBodyList            BodyType = "body_List"
+	BodyTypeBodyAudioSpeech     BodyType = "body_AudioSpeech"
 )
 
 type Body struct {
@@ -2451,6 +2827,7 @@ type Body struct {
 	OpenResponsesResult *OpenResponsesResult `queryParam:"inline" union:"member"`
 	BodyMessage         *BodyMessage         `queryParam:"inline" union:"member"`
 	BodyList            *BodyList            `queryParam:"inline" union:"member"`
+	BodyAudioSpeech     *BodyAudioSpeech     `queryParam:"inline" union:"member"`
 
 	Type BodyType
 }
@@ -2488,6 +2865,15 @@ func CreateBodyBodyList(bodyList BodyList) Body {
 	return Body{
 		BodyList: &bodyList,
 		Type:     typ,
+	}
+}
+
+func CreateBodyBodyAudioSpeech(bodyAudioSpeech BodyAudioSpeech) Body {
+	typ := BodyTypeBodyAudioSpeech
+
+	return Body{
+		BodyAudioSpeech: &bodyAudioSpeech,
+		Type:            typ,
 	}
 }
 
@@ -2535,6 +2921,14 @@ func (u *Body) UnmarshalJSON(data []byte) (err error) {
 		})
 	}
 
+	var bodyAudioSpeech BodyAudioSpeech = BodyAudioSpeech{}
+	if err := utils.UnmarshalJSON(data, &bodyAudioSpeech, "", true, nil); err == nil {
+		candidates = append(candidates, utils.UnionCandidate{
+			Type:  BodyTypeBodyAudioSpeech,
+			Value: &bodyAudioSpeech,
+		})
+	}
+
 	if len(candidates) == 0 {
 		return fmt.Errorf("could not unmarshal `%s` into any supported union types for Body", string(data))
 	}
@@ -2560,6 +2954,9 @@ func (u *Body) UnmarshalJSON(data []byte) (err error) {
 	case BodyTypeBodyList:
 		u.BodyList = best.Value.(*BodyList)
 		return nil
+	case BodyTypeBodyAudioSpeech:
+		u.BodyAudioSpeech = best.Value.(*BodyAudioSpeech)
+		return nil
 	}
 
 	return fmt.Errorf("could not unmarshal `%s` into any supported union types for Body", string(data))
@@ -2580,6 +2977,10 @@ func (u Body) MarshalJSON() ([]byte, error) {
 
 	if u.BodyList != nil {
 		return utils.MarshalJSON(u.BodyList, "", true)
+	}
+
+	if u.BodyAudioSpeech != nil {
+		return utils.MarshalJSON(u.BodyAudioSpeech, "", true)
 	}
 
 	return nil, errors.New("could not marshal union type Body: all fields are null")

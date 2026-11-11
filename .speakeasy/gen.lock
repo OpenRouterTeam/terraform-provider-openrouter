@@ -1,21 +1,21 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 806a126ea7adfa34199b280af600e4dd
+  docChecksum: a2cb905af30359ac1860d06e9eef5668
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.239
-  configChecksum: 3c6b5405b089d97d3cb2dd474abcfd7a
+  releaseVersion: 0.3.240
+  configChecksum: 6df8a35e63e89e635589533ba110e64b
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: 401dd091-47de-41c3-84fa-e8b1b27bc5db
-  pristine_commit_hash: a560151919b184244b4958dbed9953fa03a5463c
-  pristine_tree_hash: f5f277571a591cb23b33692a071ea225ea4d83e4
+  generation_id: b452531b-3fab-4824-8963-7af70f161c15
+  pristine_commit_hash: a146e5a1b27da02a482e91d033d3b86bf4d0663b
+  pristine_tree_hash: 833b0f0a9cfe3085f6d8845d5e53a8811ab0725e
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -153,8 +153,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:d9513edaca800522d420f1651de78090d8eb8a9b
-    pristine_git_object: f779db61871c2423bf46d2b0b74ccbe7b7a5ced5
+    last_write_checksum: sha1:f7ff2c7ec75d2d1eefaf2b3c1462316e70c63e94
+    pristine_git_object: 8a3beddeb1d4c43ea2c0d1efa772e578f9514bd9
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1261,8 +1261,8 @@ trackedFiles:
     pristine_git_object: 68b4a3eb7a02dff73013f69b00dd5acbdf5de9e2
   internal/sdk/batch.go:
     id: 58f39ecc28cc
-    last_write_checksum: sha1:872a1cb04b7ad367192f385e632f69f206263624
-    pristine_git_object: b3e90a406ddd7d69c4d213498f813b1810171f2f
+    last_write_checksum: sha1:19ab97345419ece05d23a93d0c06c73cc27110aa
+    pristine_git_object: 7e29da960ade2612dd2e76502333b90585984d25
   internal/sdk/benchmarks.go:
     id: 9f6912f01cd6
     last_write_checksum: sha1:43e7fda76ae666c7a0c51784477c8eca6f1d544d
@@ -2733,8 +2733,8 @@ trackedFiles:
     pristine_git_object: d1e702d70d0e62a87ec400941ab37ece2bb85220
   internal/sdk/models/shared/batchobject.go:
     id: 9a1352ea29c9
-    last_write_checksum: sha1:cf575b993e1bcab1d5d4c64173f26434f7e6fe21
-    pristine_git_object: 0f28987efec39e92dd8de9e997b7021fee60eac1
+    last_write_checksum: sha1:cc8e2670aed71a9d57ad20559ab17ed4d5ba421b
+    pristine_git_object: 4a8eaad53280035d5a3125692087c36c1f85850a
   internal/sdk/models/shared/batchpaymentrequiredresponse.go:
     id: 2aa9195d3cf5
     last_write_checksum: sha1:f6ae33cf59cd2a0a165911ed17506e05d712fa8b
@@ -2745,8 +2745,8 @@ trackedFiles:
     pristine_git_object: 0387875cad0811f207017bf2b4229116cd569243
   internal/sdk/models/shared/batchsubmitbody.go:
     id: 9cd89788a34d
-    last_write_checksum: sha1:719c63ee90a47528e51866bc0b2ae2777bc80568
-    pristine_git_object: ffc62f0a81edc2f69ee7aacd05700d240eeeb4d1
+    last_write_checksum: sha1:5a1264663e6e8ba4b2abb5d2b0a4a36e5a2f905a
+    pristine_git_object: f05859c933ca94283510318fd10b14ce73e2429d
   internal/sdk/models/shared/booleancapability.go:
     id: b3db1ef5ac0b
     last_write_checksum: sha1:324e5232e3e5ec0cfb7c3c88b02bbe9d24ea1fd2
@@ -5565,8 +5565,8 @@ trackedFiles:
     pristine_git_object: 038f2e1d6b86fb9ef40e4a5b3ab683cb73119ca9
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:3ec15605d7a85ae03e598d3b46f906b2b7e0bc04
-    pristine_git_object: 1636262fc22af922cfa8367910fb72d40ab9c80e
+    last_write_checksum: sha1:42c3c91f9e5dab3f9b6a7af552445b406d4b4ed1
+    pristine_git_object: 89c731804961ac075feffe7d8d43b1d645502bd4
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
