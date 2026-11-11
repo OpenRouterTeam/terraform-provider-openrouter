@@ -35,7 +35,7 @@ func newGuardrails(rootSDK *OpenRouter, sdkConfig config.SDKConfiguration, hooks
 }
 
 // List guardrails
-// List all guardrails for the authenticated user. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// List all guardrails for the authenticated user. A workspace-scoped management key lists only its own workspace, which `workspace_id` defaults to; naming another workspace returns 403. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) List(ctx context.Context, request operations.ListGuardrailsRequest, opts ...operations.Option) (*operations.ListGuardrailsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -371,7 +371,7 @@ func (s *Guardrails) List(ctx context.Context, request operations.ListGuardrails
 }
 
 // Create a guardrail
-// Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace's traffic. To restrict all traffic in a workspace, update the workspace's default guardrail instead. Set `allowed_data_regions` to enforce [In-Region Routing](/docs/guides/features/in-region-routing#enforcing-in-region-routing-with-guardrails): governed requests must arrive through one of the listed OpenRouter domains and are rejected with a 403 otherwise. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace's traffic. To restrict all traffic in a workspace, update the workspace's default guardrail instead. Set `allowed_data_regions` to enforce [In-Region Routing](/docs/guides/features/in-region-routing#enforcing-in-region-routing-with-guardrails): governed requests must arrive through one of the listed OpenRouter domains and are rejected with a 403 otherwise. A workspace-scoped management key creates in its own workspace, which `workspace_id` defaults to; naming another workspace returns 403. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) Create(ctx context.Context, request shared.CreateGuardrailRequest, opts ...operations.Option) (*operations.CreateGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -661,7 +661,7 @@ func (s *Guardrails) Create(ctx context.Context, request shared.CreateGuardrailR
 }
 
 // Delete a guardrail
-// Delete an existing guardrail. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Delete an existing guardrail. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) Delete(ctx context.Context, request operations.DeleteGuardrailRequest, opts ...operations.Option) (*operations.DeleteGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -944,7 +944,7 @@ func (s *Guardrails) Delete(ctx context.Context, request operations.DeleteGuardr
 }
 
 // GetGuardrail - Get a guardrail
-// Get a single guardrail by ID. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Get a single guardrail by ID. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) GetGuardrail(ctx context.Context, request operations.GetGuardrailRequest, opts ...operations.Option) (*operations.GetGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -1227,7 +1227,7 @@ func (s *Guardrails) GetGuardrail(ctx context.Context, request operations.GetGua
 }
 
 // Update a guardrail
-// Update an existing guardrail, or materialize an unconfigured workspace default guardrail. Collection fields use replace semantics: send the full desired set on every update. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Update an existing guardrail, or materialize an unconfigured workspace default guardrail. Collection fields use replace semantics: send the full desired set on every update. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) Update(ctx context.Context, request operations.UpdateGuardrailRequest, opts ...operations.Option) (*operations.UpdateGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -1559,7 +1559,7 @@ func (s *Guardrails) Update(ctx context.Context, request operations.UpdateGuardr
 }
 
 // ListKeyAssignments - List key assignments for a guardrail
-// List all API key assignments for a specific guardrail. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// List all API key assignments for a specific guardrail. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) ListKeyAssignments(ctx context.Context, request operations.ListGuardrailKeyAssignmentsRequest, opts ...operations.Option) (*operations.ListGuardrailKeyAssignmentsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -1893,7 +1893,7 @@ func (s *Guardrails) ListKeyAssignments(ctx context.Context, request operations.
 }
 
 // BulkAssignKeys - Bulk assign keys to a guardrail
-// Assign multiple API keys to a specific guardrail. A key may hold at most one guardrail; assigning replaces any existing assignment. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Assign multiple API keys to a specific guardrail. A key may hold at most one guardrail; assigning replaces any existing assignment. A workspace-scoped management key reaches only guardrails in its own workspace (any other returns 404), and a batch naming an unknown or out-of-workspace key hash is rejected with 400 before anything changes. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) BulkAssignKeys(ctx context.Context, request operations.BulkAssignKeysToGuardrailRequest, opts ...operations.Option) (*operations.BulkAssignKeysToGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -2204,7 +2204,7 @@ func (s *Guardrails) BulkAssignKeys(ctx context.Context, request operations.Bulk
 }
 
 // BulkUnassignKeysFromGuardrail - Bulk unassign keys from a guardrail
-// Unassign multiple API keys from a specific guardrail. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Unassign multiple API keys from a specific guardrail. A workspace-scoped management key reaches only guardrails in its own workspace (any other returns 404), and a batch naming an unknown or out-of-workspace key hash is rejected with 400 before anything changes. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) BulkUnassignKeysFromGuardrail(ctx context.Context, request operations.BulkUnassignKeysFromGuardrailRequest, opts ...operations.Option) (*operations.BulkUnassignKeysFromGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -2515,7 +2515,7 @@ func (s *Guardrails) BulkUnassignKeysFromGuardrail(ctx context.Context, request 
 }
 
 // ListMemberAssignmentsByGuardrail - List member assignments for a guardrail
-// List all organization member assignments for a specific guardrail. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// List all organization member assignments for a specific guardrail. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) ListMemberAssignmentsByGuardrail(ctx context.Context, request operations.ListGuardrailMemberAssignmentsRequest, opts ...operations.Option) (*operations.ListGuardrailMemberAssignmentsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -2849,7 +2849,7 @@ func (s *Guardrails) ListMemberAssignmentsByGuardrail(ctx context.Context, reque
 }
 
 // BulkAssignMembers - Bulk assign members to a guardrail
-// Assign multiple organization members to a specific guardrail. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Assign multiple organization members to a specific guardrail. Requires an organization-scoped management key; workspace-scoped management keys return 403. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) BulkAssignMembers(ctx context.Context, request operations.BulkAssignMembersToGuardrailRequest, opts ...operations.Option) (*operations.BulkAssignMembersToGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -3160,7 +3160,7 @@ func (s *Guardrails) BulkAssignMembers(ctx context.Context, request operations.B
 }
 
 // BulkUnassignMembers - Bulk unassign members from a guardrail
-// Unassign multiple organization members from a specific guardrail. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Unassign multiple organization members from a specific guardrail. Requires an organization-scoped management key; workspace-scoped management keys return 403. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) BulkUnassignMembers(ctx context.Context, request operations.BulkUnassignMembersFromGuardrailRequest, opts ...operations.Option) (*operations.BulkUnassignMembersFromGuardrailResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -3471,7 +3471,7 @@ func (s *Guardrails) BulkUnassignMembers(ctx context.Context, request operations
 }
 
 // ListAPIKeyAssignments - List all key assignments
-// List all API key guardrail assignments for the authenticated user. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// List all API key guardrail assignments for the authenticated user. A workspace-scoped management key lists only its own workspace, which `workspace_id` defaults to; naming another workspace returns 403. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) ListAPIKeyAssignments(ctx context.Context, request operations.ListKeyAssignmentsRequest, opts ...operations.Option) (*operations.ListKeyAssignmentsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -3826,7 +3826,7 @@ func (s *Guardrails) ListAPIKeyAssignments(ctx context.Context, request operatio
 }
 
 // ListMemberAssignments - List all member assignments
-// List all organization member guardrail assignments for the authenticated user. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// List all organization member guardrail assignments for the authenticated user. A workspace-scoped management key lists only its own workspace, which `workspace_id` defaults to; naming another workspace returns 403. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Guardrails) ListMemberAssignments(ctx context.Context, request operations.ListMemberAssignmentsRequest, opts ...operations.Option) (*operations.ListMemberAssignmentsResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{

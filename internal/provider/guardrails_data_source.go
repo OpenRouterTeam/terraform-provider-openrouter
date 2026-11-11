@@ -214,7 +214,7 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 			},
 			"workspace_id": schema.StringAttribute{
 				Optional:    true,
-				Description: `Filter guardrails by workspace ID. By default, guardrails in the default workspace are returned.`,
+				Description: `Filter guardrails by workspace ID. When omitted, an organization management key gets guardrails in the default workspace and a workspace-scoped key gets guardrails in its own workspace. A workspace-scoped key gets 403 for any other workspace.`,
 			},
 		},
 	}
