@@ -1461,6 +1461,15 @@ func (r *ObservabilityDestinationResource) Schema(ctx context.Context, req resou
 								ElementType: types.StringType,
 								Description: `Custom HTTP headers as a JSON object. For Axiom, use {"Authorization": "Bearer xaat-xxx", "X-Axiom-Dataset": "your-dataset"}`,
 							},
+							"metrics_endpoint": schema.StringAttribute{
+								Computed:    true,
+								Description: `OTLP/HTTP metrics URL. Required when ` + "`" + `shouldSendMetrics` + "`" + ` (Send OTLP metrics) is true; ignored otherwise.`,
+							},
+							"should_send_metrics": schema.BoolAttribute{
+								Computed:    true,
+								Default:     booldefault.StaticBool(false),
+								Description: `Also send OTLP metrics for each delivered generation to the metrics endpoint, with the same headers. Default: false`,
+							},
 						},
 					},
 					"created_at": schema.StringAttribute{

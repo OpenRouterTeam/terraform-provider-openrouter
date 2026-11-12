@@ -802,6 +802,8 @@ func (r *ObservabilityDestinationsDataSourceModel) RefreshFromSharedListObservab
 						data.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
 					}
 				}
+				data.OtelCollector.Config.MetricsEndpoint = types.StringPointerValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Config.MetricsEndpoint)
+				data.OtelCollector.Config.ShouldSendMetrics = types.BoolPointerValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Config.ShouldSendMetrics)
 				data.OtelCollector.CreatedAt = types.StringValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.CreatedAt)
 				data.OtelCollector.Enabled = types.BoolValue(dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.Enabled)
 				if dataItem.ObservabilityDestinationObservabilityOtelCollectorDestination.FilterRules == nil {
