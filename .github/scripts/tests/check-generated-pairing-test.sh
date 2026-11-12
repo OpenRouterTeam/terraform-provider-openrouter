@@ -6,8 +6,9 @@
 # input that observes the edit. A guarded *prefix* exists only because the head's
 # lock file cannot list a file the pull request just added. Applying the prefix
 # clause to an edit of a hand-written file that was already there fails a pull
-# request that changes nothing generated (#1004), and forces a declaration
-# asserting something untrue.
+# request that changes nothing generated (#672, an edit to
+# internal/provider/guardrail_model_ids_test.go with no generator input), and
+# forces a declaration asserting something untrue.
 #
 # Runs against throwaway repositories; no network and no credentials.
 # usage: bash .github/scripts/tests/check-generated-pairing-test.sh

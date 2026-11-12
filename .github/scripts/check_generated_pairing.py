@@ -76,7 +76,8 @@ def changed(base: str, head: str) -> list[tuple[str, str]]:
         status = fields[0].strip()[:1]
         for index, field in enumerate(fields[1:]):
             # A rename or copy carries old then new under one status letter: the
-            # old path is a removal, the new path arrives at that location.
+            # first path is never an addition (a copy leaves it in place), the
+            # second arrives at that location.
             effective = status if len(fields) == 2 else ("A" if index else "D")
             entries.append((effective, field.strip()))
     return entries
