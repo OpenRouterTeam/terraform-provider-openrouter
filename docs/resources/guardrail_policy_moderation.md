@@ -6,7 +6,7 @@ description: |-
   A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. policy_type must be moderation and is fixed at create, where changing it replaces the policy.
   config is required. Fields inside it are sent only when you configure them: an omitted field is not sent, false travels explicitly, and an empty list is sent as [] to clear that filter. Because the request carries only the fields you set, name every field you want applied rather than expecting an update to clear one by leaving it out.
   member_ids and api_key_hashes replace the stored assignments and must be sent together: omit both to keep them, or set both to [] to clear them. is_workspace_default is optional, and omitting it keeps the stored status while false unsets the policy as the workspace default.
-  workspace_id is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes the policy id alone. The API never returns the workspace, so set workspace_id in configuration after import instead of expecting it in state.
+  workspace_id is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes <workspace_id>/<policy_id> for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.
 ---
 
 # openrouter_guardrail_policy_moderation (Resource)
@@ -17,7 +17,7 @@ A workspace moderation policy: the content-filtering surface a workspace's traff
 
 `member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.
 
-`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes the policy id alone. The API never returns the workspace, so set `workspace_id` in configuration after import instead of expecting it in state.
+`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.
 
 ## Example Usage
 
