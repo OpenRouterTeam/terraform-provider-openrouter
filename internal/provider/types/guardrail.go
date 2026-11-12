@@ -14,7 +14,7 @@ type Guardrail struct {
 	AllowedModels                  []types.String              `tfsdk:"allowed_models"`
 	AllowedProviders               []types.String              `tfsdk:"allowed_providers"`
 	ContentFilterBuiltins          []ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
-	ContentFilters                 []ContentFilterEntry        `tfsdk:"content_filters"`
+	ContentFilters                 []ContentFilterReadEntry    `tfsdk:"content_filters"`
 	CreatedAt                      types.String                `tfsdk:"created_at"`
 	Description                    types.String                `tfsdk:"description"`
 	EnableFreeModelPublication     types.Bool                  `tfsdk:"enable_free_model_publication"`

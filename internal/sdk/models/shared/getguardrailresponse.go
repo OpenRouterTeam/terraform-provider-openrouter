@@ -22,7 +22,7 @@ type GetGuardrailResponseData struct {
 	// Builtin content filters applied to requests. Includes PII detectors and the regex-based prompt injection detector.
 	ContentFilterBuiltins []ContentFilterBuiltinEntry `json:"content_filter_builtins,omitzero"`
 	// Custom regex content filters applied to request messages
-	ContentFilters []ContentFilterEntry `json:"content_filters,omitzero"`
+	ContentFilters []ContentFilterReadEntry `json:"content_filters,omitzero"`
 	// ISO 8601 timestamp of when the guardrail was created
 	CreatedAt string `json:"created_at"`
 	// Description of the guardrail
@@ -122,7 +122,7 @@ func (g *GetGuardrailResponseData) GetContentFilterBuiltins() []ContentFilterBui
 	return g.ContentFilterBuiltins
 }
 
-func (g *GetGuardrailResponseData) GetContentFilters() []ContentFilterEntry {
+func (g *GetGuardrailResponseData) GetContentFilters() []ContentFilterReadEntry {
 	if g == nil {
 		return nil
 	}
