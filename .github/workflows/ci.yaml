@@ -47,6 +47,13 @@ jobs:
       - name: Test the release tag lifecycle
         run: bash .github/scripts/tests/release-tag-test.sh
 
+      # The pairing guard tests two different things (a tracked generated file,
+      # and a path the head's lock file cannot list yet) and applying the wrong
+      # one to an edit of a hand-written file fails a pull request that changes
+      # nothing generated. Tested with throwaway repositories, no network.
+      - name: Test the generated-code pairing guard
+        run: bash .github/scripts/tests/check-generated-pairing-test.sh
+
       # .speakeasy regeneration owns go.mod, so this is the only thing that
       # keeps the toolchain floor from silently regressing.
       - name: Enforce the Go floor in go.mod

@@ -53,20 +53,33 @@ def tracked_generated_files() -> set[str]:
     return set(re.findall(r"^  (\S.*?):$", block[1].split("\nexamples:", 1)[0], re.M))
 
 
-def changed(base: str, head: str) -> list[str]:
-    """Both sides of every change, so moving a generated file out of a guarded
-    path is still seen at the path it left."""
+def changed(base: str, head: str) -> list[tuple[str, str]]:
+    """``(status, path)`` for both sides of every change, so moving a generated
+    file out of a guarded path is still seen at the path it left.
+
+    The status letter decides whether the path is *added* or merely edited, and
+    the guard needs that distinction: a tracked generated file is guarded
+    wherever it sits and however it is edited, while a guarded prefix is a
+    stand-in for "this path is new, so the head's lock file cannot list it yet"
+    and must not fire on an edit to a hand-written file that was already there.
+    """
     out = subprocess.run(
         ["git", "diff", "--name-status", f"{base}...{head}"],
         capture_output=True, text=True, check=True,
     ).stdout
-    paths: list[str] = []
+    entries: list[tuple[str, str]] = []
     for line in out.splitlines():
         # "<status>\t<path>" or "<status>\t<old>\t<new>" for renames and copies.
-        for field in line.split("\t")[1:]:
-            if field.strip():
-                paths.append(field.strip())
-    return paths
+        fields = [field for field in line.split("\t") if field.strip()]
+        if len(fields) < 2:
+            continue
+        status = fields[0].strip()[:1]
+        for index, field in enumerate(fields[1:]):
+            # A rename or copy carries old then new under one status letter: the
+            # old path is a removal, the new path arrives at that location.
+            effective = status if len(fields) == 2 else ("A" if index else "D")
+            entries.append((effective, field.strip()))
+    return entries
 
 
 def main() -> int:
@@ -82,9 +95,9 @@ def main() -> int:
 
     tracked = tracked_generated_files()
     guarded = [
-        f for f in files
+        f for status, f in files
         if f.endswith(GUARDED_SUFFIX)
-        and (f in tracked or f.startswith(GUARDED_PREFIXES))
+        and (f in tracked or (status == "A" and f.startswith(GUARDED_PREFIXES)))
     ]
     if not guarded:
         return 0
@@ -98,7 +111,7 @@ def main() -> int:
     # observe the edit. The three lock/out files above are excluded because a
     # release bump alone touches them.
     inputs = [
-        f for f in files
+        f for _status, f in files
         if f.startswith(".speakeasy/") and f not in GENERATED_LOCKS
     ]
     if inputs:
