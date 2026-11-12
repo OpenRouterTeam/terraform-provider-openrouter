@@ -17,6 +17,21 @@
 # canonical UUID; a generated resource would keep whatever the import string contained, which leaves
 # a slug in an identifier attribute. This comment is the declaration that makes regenerate.yaml run
 # on the PR that changes that file, and a regenerated commit should show no diff for it.
+#
+# internal/provider/guardrailpolicybudget_resource.go drops Computed from the limit_usd and
+# reset_interval attributes of the config object. The spec marks both nullable and required, so
+# generation emits Optional+Computed, and a removed attribute then arrives unknown in the plan:
+# merge keeps the stored value and the update re-sends the cap the caller meant to clear, while the
+# route needs both fields present with null meaning unset. Optional without Computed plans null,
+# which the request builder already renders as that explicit null.
+# internal/provider/workspacedefaultguardrail_resource.go uses the same shape for its clearable
+# attributes.
+#
+# ImportState in the three generated guardrail policy resources resolves the import identifier
+# through guardrailPolicyImportID in internal/provider/guardrail_policy_import.go: a policy read
+# needs a workspace scope, the API never returns one, so the import identifier is the only channel
+# that can carry it, and generation would restore a bare req.ID. This comment is the declaration
+# that makes regenerate.yaml run on the PR that changes those files.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:

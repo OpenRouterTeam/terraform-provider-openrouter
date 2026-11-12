@@ -24,7 +24,14 @@ package acceptance
 //     drops the parameter is untestable rather than wrong.
 //   - a 404 on read removes the resource instead of failing the plan, and a
 //     delete of something already gone is accepted.
-//   - import hydrates from the policy id alone.
+//   - import hydrates from the policy id alone when the key carries its own
+//     workspace, and from <workspace_id>/<policy_id> when it does not. Read
+//     needs a workspace scope, and no response model carries one back, so the
+//     import identifier is the only channel that can supply it.
+//   - clearing the budget limit reaches the wire as explicit nulls. The pair is
+//     Optional+Computed, so removing it from configuration leaves the stored
+//     value in the update body and the cap stays active while Terraform reads
+//     as though it were removed.
 //
 // Run: go test ./internal/acceptance -run TestStubGuardrailPolicy -v
 
@@ -35,6 +42,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"reflect"
+	"regexp"
 	"sync"
 	"testing"
 
@@ -51,6 +59,11 @@ const (
 // delete is a 404.
 type guardrailPolicyStub struct {
 	mu sync.Mutex
+	// orgKey makes every read and delete require a workspace scope, the way the
+	// real route behaves for an organization management key: the scope is
+	// resolved from the workspace_id query parameter, and the fallback to the
+	// key's own workspace exists only for a workspace-scoped key.
+	orgKey bool
 	// policies is keyed by type slug ("budget", "moderation", ...).
 	policies map[string]map[string]any
 	// createBodies and updateBodies are keyed the same way; last write wins,
@@ -70,7 +83,6 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 		updateBodies: map[string]map[string]any{},
 		deleted:      map[string]bool{},
 	}
-
 	writeJSON := func(w http.ResponseWriter, code int, body any) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(code)
@@ -143,6 +155,12 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 			p, ok := s.policies[slug]
 			gone := s.deleted[slug]
 			s.mu.Unlock()
+			if s.orgKey && r.URL.Query().Get("workspace_id") == "" {
+				writeJSON(w, http.StatusBadRequest, map[string]any{
+					"error": map[string]any{"code": 400, "message": "Invalid guardrail policy request"},
+				})
+				return
+			}
 			if !ok || gone {
 				notFound(w, "Policy not found.")
 				return
@@ -175,6 +193,12 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 			already := s.deleted[slug]
 			s.deleted[slug] = true
 			s.mu.Unlock()
+			if s.orgKey && r.URL.Query().Get("workspace_id") == "" {
+				writeJSON(w, http.StatusBadRequest, map[string]any{
+					"error": map[string]any{"code": 400, "message": "Invalid guardrail policy request"},
+				})
+				return
+			}
 			if !ok || already {
 				// The generated resource accepts 200 or 404 here, which is what
 				// makes a destroy of something already gone a no-op.
@@ -187,6 +211,15 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
+	return srv, s
+}
+
+// newOrgKeyGuardrailPolicyStub answers like the API does for an organization
+// management key: every read and delete needs an explicit workspace scope.
+func newOrgKeyGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStub) {
+	t.Helper()
+	srv, s := newGuardrailPolicyStub(t)
+	s.orgKey = true
 	return srv, s
 }
 
@@ -506,6 +539,136 @@ func TestStubGuardrailPolicyOtherFamiliesLifecycle(t *testing.T) {
 	} {
 		if got := stub.lastCreate(t, tc.slug)["policy_type"]; got != tc.policyType {
 			t.Errorf("%s create sent policy_type=%v, want %q", tc.slug, got, tc.policyType)
+		}
+	}
+}
+
+// orgKeyPolicyConfig is the config the import tests start from: a policy that
+// declares its workspace, as an organization key has to.
+func orgKeyPolicyConfig(serverURL string) string {
+	return guardrailPolicyStubConfig(serverURL, "budget", "budget", fmt.Sprintf(`
+  config = {
+    include_byok_in_budgets = true
+  }
+  name         = "stub policy"
+  workspace_id = %q
+`, stubWorkspaceID))
+}
+
+// TestStubGuardrailPolicyImportRejectsAMissingWorkspaceScope locks the failure
+// the import has to avoid: with an organization management key and an import id
+// that carries no scope, the read the import issues is a 400. Importing by id
+// alone only works for a workspace-scoped key, so this is the guard that the
+// provider resolves the scope rather than writing state it cannot read back.
+func TestStubGuardrailPolicyImportRejectsAMissingWorkspaceScope(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, _ := newOrgKeyGuardrailPolicyStub(t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: orgKeyPolicyConfig(srv.URL)},
+			{
+				ResourceName:  "openrouter_guardrail_policy_budget.test",
+				ImportState:   true,
+				ImportStateId: stubPolicyID,
+				ExpectError:   regexp.MustCompile(`400`),
+			},
+		},
+	})
+}
+
+// TestStubGuardrailPolicyImportByQualifiedID covers the fix: the import id can
+// carry the scope, and a read issued during and after the import sends it.
+// workspace_id is part of the verified state, so an import that dropped it would
+// fail the comparison against the config-managed state.
+func TestStubGuardrailPolicyImportByQualifiedID(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newOrgKeyGuardrailPolicyStub(t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: orgKeyPolicyConfig(srv.URL)},
+			{
+				ResourceName:      "openrouter_guardrail_policy_budget.test",
+				ImportState:       true,
+				ImportStateId:     stubWorkspaceID + "/" + stubPolicyID,
+				ImportStateVerify: true,
+			},
+		},
+	})
+
+	stub.mu.Lock()
+	defer stub.mu.Unlock()
+	if len(stub.getQueries) == 0 {
+		t.Fatal("read never reached the stub")
+	}
+	for i, q := range stub.getQueries {
+		if got := q.Get("workspace_id"); got != stubWorkspaceID {
+			t.Errorf("read call %d sent workspace_id=%q, want %q", i, got, stubWorkspaceID)
+		}
+	}
+}
+
+// TestStubGuardrailPolicyBudgetClearingTheLimitSendsNulls is the regression test
+// for the clearing path. The route needs limit_usd and reset_interval present on
+// every update, with null meaning unset, so a configuration that drops the pair
+// has to put nulls on the wire. While the attributes stay Computed, removing them
+// leaves them unknown in the plan, the merge keeps the stored values, and the
+// update re-sends the old cap: Terraform reads as though the limit were gone
+// while the API keeps enforcing it.
+func TestStubGuardrailPolicyBudgetClearingTheLimitSendsNulls(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyStub(t)
+
+	config := func(configBody string) string {
+		return guardrailPolicyStubConfig(srv.URL, "budget", "budget", configBody+`  name = "stub budget"
+`)
+	}
+	const (
+		withLimit = `  config = {
+    include_byok_in_budgets = true
+    limit_usd               = 50
+    reset_interval          = "monthly"
+  }
+`
+		withoutLimit = `  config = {
+    include_byok_in_budgets = true
+  }
+`
+	)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: config(withLimit),
+				Check:  resource.TestCheckResourceAttr("openrouter_guardrail_policy_budget.test", "config.limit_usd", "50"),
+			},
+			{
+				Config: config(withoutLimit),
+				Check:  resource.TestCheckNoResourceAttr("openrouter_guardrail_policy_budget.test", "config.limit_usd"),
+			},
+		},
+	})
+
+	body := stub.lastUpdate(t, "budget")
+	cfg, ok := body["config"].(map[string]any)
+	if !ok {
+		t.Fatalf("update sent config as %T, want an object", body["config"])
+	}
+	for _, key := range []string{"limit_usd", "reset_interval"} {
+		got, present := cfg[key]
+		if !present {
+			t.Errorf("update omitted config.%s; the route replaces the whole config, so the field has to be present and null to clear the cap", key)
+			continue
+		}
+		if got != nil {
+			t.Errorf("update sent config.%s=%v, want null: an omitted limit is cleared by sending explicit nulls", key, got)
 		}
 	}
 }
