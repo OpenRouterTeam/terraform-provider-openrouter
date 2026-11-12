@@ -130,10 +130,15 @@ def main() -> int:
     # Three terms, one per clause of the rule CONTRIBUTING.md states:
     #   * generated at the head, whichever way it was changed;
     #   * added under a guarded prefix, which the head's lock cannot list yet;
-    #   * deleted after having been generated, which is visible only at the merge
-    #     base - the head's lock has dropped the entry, and a hand edit that
-    #     removes generated Go is dropped by the next regeneration just as an
-    #     edit is.
+    #   * deleted after having been generated, under a guarded prefix, where the
+    #     head's lock has dropped the entry and only the merge base can still
+    #     show it. A hand edit that removes generated Go is dropped by the next
+    #     regeneration just as an edit is.
+    # The deletion term is scoped to the prefixes on purpose: that is exactly the
+    # coverage the old prefix term provided for a delete, so no diff that passed
+    # before fails now. Widening it to tracked paths outside the prefixes would
+    # close a real hole - deleting tracked `main.go` with no generator input
+    # regenerates back - but that is a separate change, not this narrowing.
     # Deliberately absent: a file that was generated at the merge base and is
     # edited after leaving the lock. That is a declassification, and guarding it
     # would restore the false positive this change exists to remove.
@@ -145,7 +150,11 @@ def main() -> int:
         and (
             f in head_tracked
             or (status == "A" and f.startswith(GUARDED_PREFIXES))
-            or (status == "D" and f in base_tracked)
+            or (
+                status == "D"
+                and f in base_tracked
+                and f.startswith(GUARDED_PREFIXES)
+            )
         )
     ]
     if not guarded:

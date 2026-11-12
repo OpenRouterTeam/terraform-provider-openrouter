@@ -207,6 +207,13 @@ echo 'package provider // now hand-written' > "$base/internal/provider/thing.go"
 commit "$base" "declassify and edit"
 check "$base" "edit after leaving gen.lock" 0
 
+echo "15. deleting a tracked file outside the guarded prefixes passes, as it did before"
+base=$(new_fixture delete-tracked-elsewhere)
+git -C "$base" rm -q main.go
+drop_lock_entry "$base" main.go
+git -C "$base" commit -q -am "delete tracked main.go"
+check "$base" "deleted tracked main.go, outside the prefixes" 0
+
 if [ "$failures" -ne 0 ]; then
   printf '\n%d check(s) failed\n' "$failures"
   exit 1
