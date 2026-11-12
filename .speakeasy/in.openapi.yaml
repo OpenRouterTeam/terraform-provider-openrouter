@@ -6140,6 +6140,10 @@ components:
                                 index: 0
                                 object: 'embedding'
                               properties:
+                                document_index:
+                                  description: 'Index of the source document when `input` was a list of documents (contextual embeddings). Absent otherwise.'
+                                  example: 0
+                                  type: 'integer'
                                 embedding:
                                   anyOf:
                                     - items:
@@ -6229,6 +6233,101 @@ components:
                           - 'object'
                           - 'data'
                           - 'model'
+                        type: 'object'
+                      - additionalProperties: false
+                        properties:
+                          audio:
+                            anyOf:
+                              - additionalProperties: false
+                                properties:
+                                  bits_per_sample:
+                                    enum:
+                                      - 16
+                                    type: 'number'
+                                  channels:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: 'integer'
+                                  data:
+                                    description: 'Base64-encoded PCM16 audio in the format the sibling fields give.'
+                                    minLength: 1
+                                    type: 'string'
+                                  format:
+                                    enum:
+                                      - 'pcm'
+                                    type: 'string'
+                                  sample_rate:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: 'integer'
+                                required:
+                                  - 'format'
+                                  - 'sample_rate'
+                                  - 'channels'
+                                  - 'bits_per_sample'
+                                  - 'data'
+                                type: 'object'
+                              - additionalProperties: false
+                                properties:
+                                  bits_per_sample:
+                                    enum:
+                                      - 16
+                                    type: 'number'
+                                  byte_length:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: 'integer'
+                                  channels:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: 'integer'
+                                  format:
+                                    enum:
+                                      - 'pcm'
+                                    type: 'string'
+                                  sample_rate:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: 'integer'
+                                  sha256:
+                                    pattern: '^[0-9a-f]{64}$'
+                                    type: 'string'
+                                required:
+                                  - 'format'
+                                  - 'sample_rate'
+                                  - 'channels'
+                                  - 'bits_per_sample'
+                                  - 'byte_length'
+                                  - 'sha256'
+                                type: 'object'
+                          model:
+                            type: 'string'
+                          object:
+                            enum:
+                              - 'audio.speech'
+                            type: 'string'
+                          usage:
+                            additionalProperties: false
+                            properties:
+                              completion_tokens:
+                                minimum: 0
+                                type: 'integer'
+                              prompt_tokens:
+                                minimum: 0
+                                type: 'integer'
+                              total_tokens:
+                                minimum: 0
+                                type: 'integer'
+                            required:
+                              - 'prompt_tokens'
+                              - 'completion_tokens'
+                              - 'total_tokens'
+                            type: 'object'
+                        required:
+                          - 'object'
+                          - 'model'
+                          - 'audio'
+                          - 'usage'
                         type: 'object'
                   request_id:
                     type:
@@ -6642,6 +6741,7 @@ components:
             - '/v1/responses'
             - '/v1/messages'
             - '/v1/embeddings'
+            - '/v1/audio/speech'
           type: 'string'
         model:
           minLength: 1
@@ -7026,7 +7126,7 @@ components:
           - 'user_def456'
       properties:
         user_ids:
-          description: 'List of user IDs to add to the workspace. Members are assigned the same role they hold in the organization.'
+          description: 'List of user IDs to add to the workspace. New members are assigned the workspace role that matches their organization role; users already in the workspace keep their current role.'
           example:
             - 'user_abc123'
             - 'user_def456'
@@ -7049,7 +7149,7 @@ components:
             workspace_id: '550e8400-e29b-41d4-a716-446655440000'
       properties:
         added_count:
-          description: 'Number of workspace memberships created or updated'
+          description: 'Number of workspace memberships created'
           example: 2
           type: 'integer'
         data:
@@ -11252,7 +11352,7 @@ components:
           format: 'double'
           type: 'number'
         is_data_discount_logging_enabled:
-          description: 'Whether data discount logging is enabled'
+          description: 'Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.'
           example: true
           type: 'boolean'
         is_observability_broadcast_enabled:
@@ -11379,6 +11479,37 @@ components:
           $ref: '#/components/schemas/CreditPurchase'
       required:
         - 'data'
+      type: 'object'
+    CreditPurchaseUnavailableResponse:
+      example:
+        error:
+          code: 503
+          message: 'The payment transfer could not be confirmed; poll the purchase before retrying'
+          metadata:
+            purchase_id: 'pi_3PqXyZ2eZvKYlo2C0abc1234'
+      properties:
+        error:
+          properties:
+            code:
+              type: 'integer'
+            message:
+              type: 'string'
+            metadata:
+              description: 'Present when the outcome of a paid request is unknown and its purchase is known.'
+              properties:
+                purchase_id:
+                  description: 'The purchase to poll with `GET /api/v1/credits/purchases/{id}` before paying again.'
+                  example: 'pi_3PqXyZ2eZvKYlo2C0abc1234'
+                  type: 'string'
+              required:
+                - 'purchase_id'
+              type: 'object'
+          required:
+            - 'code'
+            - 'message'
+          type: 'object'
+      required:
+        - 'error'
       type: 'object'
     CustomTool:
       description: 'Custom tool configuration'
@@ -33429,7 +33560,7 @@ components:
             $ref: '#/components/schemas/SpeechTurn'
           minItems: 1
           type: 'array'
-      description: 'Text to synthesize, or a list of turns for multi-speaker input. Each turn has its own text, voice, and instructions. Multi-speaker input is supported by Gemini TTS models and by Fish Audio models other than S1.'
+      description: 'Text to synthesize, or a list of turns for multi-speaker input. Each turn has its own text, voice, and instructions. Multi-speaker input is supported by Gemini TTS models, by Fish Audio models other than S1, and by Speechify dialogue models.'
       example: 'Hello world'
     SpeechInputReference:
       description: 'Reference content part for stateless voice cloning or voice design'
@@ -36995,7 +37126,7 @@ components:
           format: 'double'
           type: 'number'
         is_data_discount_logging_enabled:
-          description: 'Whether data discount logging is enabled'
+          description: 'Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.'
           example: true
           type: 'boolean'
         is_observability_broadcast_enabled:
@@ -40728,7 +40859,7 @@ paths:
           results: '$.data'
         type: 'cursor'
     post:
-      description: 'Creates a batch of requests that run asynchronously against a single endpoint (`/v1/chat/completions`, `/v1/responses`, `/v1/messages`, `/v1/embeddings`). Returns `202` with `status: "validating"`. Poll `GET /batches/{id}` for progress and results. See the [Batch API Quickstart](https://openrouter.ai/docs/batch-quickstart).'
+      description: 'Creates a batch of requests that run asynchronously against a single endpoint (`/v1/chat/completions`, `/v1/responses`, `/v1/messages`, `/v1/embeddings`, `/v1/audio/speech`). Returns `202` with `status: "validating"`. Poll `GET /batches/{id}` for progress and results. See the [Batch API Quickstart](https://openrouter.ai/docs/batch-quickstart).'
       operationId: 'createBatches'
       requestBody:
         content:
@@ -42751,6 +42882,22 @@ paths:
       x-speakeasy-ignore: true
       x-speakeasy-name-override: 'createCoinbaseCharge'
   /credits/purchases:
+    get:
+      operationId: 'getCreditPurchasesSetupGuide'
+      responses:
+        '200':
+          content:
+            text/markdown:
+              schema:
+                type: 'string'
+          description: 'Markdown document, readable without a key.'
+      security: []
+      summary: 'Agent setup guide, served at the purchases collection'
+      tags:
+        - 'Credits'
+      x-fern-ignore: true
+      x-hidden: true
+      x-speakeasy-ignore: true
     post:
       description: 'Starts an agent credit purchase paid with a Machine Payments Protocol (MPP) credential: USDC on Tempo, or a card when one is offered. The first call answers `402` with one `WWW-Authenticate: Payment ...` challenge per payment option; pay one of them and retry the same request, same `Idempotency-Key`, with the signed credential in `Payment-Authorization: Payment ...` (or in `Authorization: Payment ...` when the management key is sent as `X-Api-Key`). A paid request answers `202`: the transfer was broadcast or the card was charged, and the payment is still being confirmed, so credits arrive asynchronously. Poll the URL in the `Location` header, `GET /api/v1/credits/purchases/{id}`, until `status` is `credited` or `failed`.'
       operationId: 'createCreditsPurchases'
@@ -42886,13 +43033,17 @@ paths:
         '503':
           content:
             application/json:
-              example:
-                error:
-                  code: 503
-                  message: 'Service temporarily unavailable'
               schema:
-                $ref: '#/components/schemas/ServiceUnavailableResponse'
-          description: 'Service Unavailable - Service temporarily unavailable'
+                $ref: '#/components/schemas/CreditPurchaseUnavailableResponse'
+          description: 'Temporarily unavailable, or the outcome of a paid request is unknown. When the outcome is unknown and the purchase is known, `Location` and `error.metadata.purchase_id` name the purchase: poll it before paying again.'
+          headers:
+            Location:
+              description: 'The purchase to poll: `GET /api/v1/credits/purchases/{id}`. Present when the outcome of a paid request is unknown and its purchase is known.'
+              required: false
+              schema:
+                description: 'The purchase to poll: `GET /api/v1/credits/purchases/{id}`. Present when the outcome of a paid request is unknown and its purchase is known.'
+                example: '/api/v1/credits/purchases/pi_3PqXyZ2eZvKYlo2C0abc1234'
+                type: 'string'
       security:
         - bearerAuth: []
       summary: 'Buy credits with a machine payment'
@@ -43531,6 +43682,19 @@ paths:
                         minLength: 1
                         type: 'string'
                       type: 'array'
+                    - description: 'Documents to embed with document-level context: each item is an ordered list of chunk strings. One embedding is returned per chunk, in document order, with `document_index` set on each. Only models that support contextual embeddings accept this shape.'
+                      example:
+                        - - 'Paris is the capital of France.'
+                          - 'It sits on the Seine.'
+                        - - 'Berlin is the capital of Germany.'
+                      items:
+                        items:
+                          minLength: 1
+                          type: 'string'
+                        minItems: 1
+                        type: 'array'
+                      minItems: 1
+                      type: 'array'
                     - items:
                         type: 'number'
                       type: 'array'
@@ -43584,7 +43748,7 @@ paths:
                   description: 'Text, token, or multimodal input(s) to embed'
                   example: 'The quick brown fox jumps over the lazy dog'
                 input_type:
-                  description: 'The type of input (e.g. search_query, search_document)'
+                  description: 'The type of input (e.g. search_query, search_document). Document-chunk input (`string[][]`) is only valid with a document input type.'
                   example: 'search_query'
                   type: 'string'
                 model:
@@ -43650,6 +43814,10 @@ paths:
                         index: 0
                         object: 'embedding'
                       properties:
+                        document_index:
+                          description: 'Index of the source document when `input` was a list of documents (contextual embeddings). Absent otherwise.'
+                          example: 0
+                          type: 'integer'
                         embedding:
                           anyOf:
                             - items:
@@ -60869,7 +61037,7 @@ paths:
         type: 'offsetLimit'
   /workspaces/{id}/members/add:
     post:
-      description: 'Add multiple organization members to a workspace. Members are assigned the same role they hold in the organization. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      description: 'Add multiple organization members to a workspace. New members are assigned the workspace role that matches their organization role. Users who are already members of the workspace keep their current role and are not included in the response. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'bulkAddWorkspaceMembers'
       parameters:
         - description: 'The workspace ID (UUID) or slug'
