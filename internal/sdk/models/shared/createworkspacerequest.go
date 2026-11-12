@@ -83,7 +83,7 @@ type CreateWorkspaceRequest struct {
 	IoLoggingAPIKeyIds []int64 `json:"io_logging_api_key_ids,omitzero"`
 	// Sampling rate for I/O logging (0.0001-1)
 	IoLoggingSamplingRate *float64 `json:"io_logging_sampling_rate,omitzero"`
-	// Whether data discount logging is enabled
+	// Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.
 	IsDataDiscountLoggingEnabled *bool `json:"is_data_discount_logging_enabled,omitzero"`
 	// Whether broadcast is enabled
 	IsObservabilityBroadcastEnabled *bool `json:"is_observability_broadcast_enabled,omitzero"`

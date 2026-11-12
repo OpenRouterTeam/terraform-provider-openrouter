@@ -53,7 +53,7 @@ resource "openrouter_workspace" "my_workspace" {
 - `disabled_server_tools` (List of String) OpenRouter server tools that requests in this workspace may not invoke. Requests naming a disabled tool are rejected with 403. An empty array or null clears the list.
 - `io_logging_api_key_ids` (List of Number) Optional array of API key IDs to filter I/O logging
 - `io_logging_sampling_rate` (Number) Sampling rate for I/O logging (0.0001-1)
-- `is_data_discount_logging_enabled` (Boolean) Whether data discount logging is enabled
+- `is_data_discount_logging_enabled` (Boolean) Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.
 - `is_observability_broadcast_enabled` (Boolean) Whether broadcast is enabled
 - `is_observability_io_logging_enabled` (Boolean) Whether private logging is enabled
 
