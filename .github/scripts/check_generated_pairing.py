@@ -45,8 +45,8 @@ def tracked_generated_files(ref: str | None = None) -> set[str]:
 
     With ``ref``, read the lock as of that revision instead of the working tree.
     A diff that deletes a generated file also removes its entry from the head's
-    lock, so membership has to be observable at either end of the diff for a
-    deleted path to stay guarded.
+    lock, so for a deleted path membership is only visible at the revision the
+    diff starts from - the merge base, never the base tip.
     """
     if ref is None:
         try:
@@ -90,7 +90,7 @@ def changed(base: str, head: str) -> list[tuple[str, str]]:
         fields = [field for field in line.split("\t") if field.strip()]
         if len(fields) < 2:
             continue
-        status = fields[0].strip()[:1]
+        status = fields[0][:1]
         for index, field in enumerate(fields[1:]):
             # A rename or copy carries old then new under one status letter: the
             # first path is never an addition (a copy leaves it in place), the
@@ -160,10 +160,6 @@ def main() -> int:
     if not guarded:
         return 0
 
-    # `gen.yaml` counts even though regeneration rewrites it: it is also on
-    # regenerate.yaml's path filter, so changing it is what makes a generation
-    # observe the edit. The three lock/out files above are excluded because a
-    # release bump alone touches them.
     # `gen.yaml` counts even though regeneration rewrites it: it is also on
     # regenerate.yaml's path filter, so changing it is what makes a generation
     # observe the edit. The three lock/out files above are excluded because a

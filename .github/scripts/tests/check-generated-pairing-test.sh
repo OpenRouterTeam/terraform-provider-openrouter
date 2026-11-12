@@ -10,6 +10,10 @@
 # internal/provider/guardrail_model_ids_test.go with no generator input), and
 # forces a declaration asserting something untrue.
 #
+# A delete is the third shape: the head's lock no longer lists the file, so the
+# guard reads membership at the merge base for a deletion under a guarded prefix.
+# Deleting a tracked file outside those prefixes is left alone, exactly as before.
+#
 # Runs against throwaway repositories; no network and no credentials.
 # usage: bash .github/scripts/tests/check-generated-pairing-test.sh
 
