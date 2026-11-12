@@ -100,6 +100,22 @@ def changed(base: str, head: str) -> list[tuple[str, str]]:
     return entries
 
 
+def merge_base(base: str, head: str) -> str:
+    """The revision a three-dot diff actually starts from.
+
+    ``changed()`` diffs ``base...head``, so the changed paths come from the merge
+    base. Lock membership has to come from the same revision: reading the base
+    tip instead both misses a file whose lock entry ``main`` removed after the
+    merge base, and guards a hand-written file ``main`` only started tracking.
+    """
+    out = subprocess.run(
+        ["git", "merge-base", base, head], capture_output=True, text=True
+    )
+    if out.returncode != 0 or not out.stdout.strip():
+        return base
+    return out.stdout.strip()
+
+
 def main() -> int:
     if len(sys.argv) != 3:
         print(__doc__)
@@ -111,14 +127,26 @@ def main() -> int:
         print("No changed files; nothing to check.")
         return 0
 
-    # Membership at either end of the diff: a path the branch deletes is gone
-    # from the head's lock by the time this runs, and a hand edit that removes
-    # generated Go is dropped by the next regeneration exactly as an edit is.
-    tracked = tracked_generated_files() | tracked_generated_files(base)
+    # Three terms, one per clause of the rule CONTRIBUTING.md states:
+    #   * generated at the head, whichever way it was changed;
+    #   * added under a guarded prefix, which the head's lock cannot list yet;
+    #   * deleted after having been generated, which is visible only at the merge
+    #     base - the head's lock has dropped the entry, and a hand edit that
+    #     removes generated Go is dropped by the next regeneration just as an
+    #     edit is.
+    # Deliberately absent: a file that was generated at the merge base and is
+    # edited after leaving the lock. That is a declassification, and guarding it
+    # would restore the false positive this change exists to remove.
+    head_tracked = tracked_generated_files()
+    base_tracked = tracked_generated_files(merge_base(base, head))
     guarded = [
         f for status, f in files
         if f.endswith(GUARDED_SUFFIX)
-        and (f in tracked or (status == "A" and f.startswith(GUARDED_PREFIXES)))
+        and (
+            f in head_tracked
+            or (status == "A" and f.startswith(GUARDED_PREFIXES))
+            or (status == "D" and f in base_tracked)
+        )
     ]
     if not guarded:
         return 0

@@ -59,13 +59,16 @@ YAML
   echo "$base"
 }
 
-# Runs the script over the single commit the fixture's edit produced.
+# Runs the script over one commit the fixture's edit produced. `base_rev` and
+# `head_rev` default to that commit's parent and the commit itself; a fixture that
+# diverges passes the two branch tips, so the guard's own merge-base resolution is
+# what is under test.
 check() {
-  local base="$1" label="$2" expected="$3"
+  local dir="$1" label="$2" expected="$3" base_rev="${4:-HEAD~1}" head_rev="${5:-HEAD}"
   local parent head out status
-  parent=$(git -C "$base" rev-parse HEAD~1)
-  head=$(git -C "$base" rev-parse HEAD)
-  out=$(cd "$base" && python3 "$SCRIPT" "$parent" "$head" 2>&1)
+  parent=$(git -C "$dir" rev-parse "$base_rev")
+  head=$(git -C "$dir" rev-parse "$head_rev")
+  out=$(cd "$dir" && python3 "$SCRIPT" "$parent" "$head" 2>&1)
   status=$?
   if [ "$status" -eq "$expected" ]; then
     pass "$label (exit $status)"
@@ -76,6 +79,17 @@ check() {
 }
 
 commit() { git -C "$1" commit -q -am "$2"; }
+
+# Removes one path's entry from a fixture's lock file, the way a regeneration or a
+# declassification does.
+drop_lock_entry() {
+  python3 - "$1" "$2" <<'PY'
+import sys
+path, entry = sys.argv[1] + "/.speakeasy/gen.lock", sys.argv[2]
+text = open(path, encoding="utf-8").read()
+open(path, "w", encoding="utf-8").write(text.replace("  " + entry + ":\n", "", 1))
+PY
+}
 
 echo "1. an edit to a hand-written file under a guarded prefix passes"
 base=$(new_fixture edit-handwritten)
@@ -155,6 +169,43 @@ echo 'package sdk' > "$base/internal/sdk/client_extra.go"
 git -C "$base" add -A
 git -C "$base" commit -q -m "add sdk"
 check "$base" "added internal/sdk/client_extra.go" 1
+
+echo "12. a deletion is still caught when main advanced past the merge base"
+base=$(new_fixture diverged-delete)
+git -C "$base" checkout -q -b main-advance
+drop_lock_entry "$base" internal/provider/thing.go
+git -C "$base" commit -q -am "main stops tracking the file"
+git -C "$base" checkout -q -b topic main-advance~1
+git -C "$base" rm -q internal/provider/thing.go
+drop_lock_entry "$base" internal/provider/thing.go
+git -C "$base" commit -q -am "delete a generated file"
+check "$base" "deleted generated file, entry gone from both tips" 1 \
+  refs/heads/main-advance refs/heads/topic
+
+echo "13. an edit to a file main has only just started tracking passes"
+base=$(new_fixture diverged-track)
+git -C "$base" checkout -q -b main-advance
+python3 - "$base" <<'PY'
+import sys
+path = sys.argv[1] + "/.speakeasy/gen.lock"
+text = open(path, encoding="utf-8").read()
+open(path, "w", encoding="utf-8").write(
+    text.replace("trackedFiles:\n", "trackedFiles:\n  internal/provider/extra_resource.go:\n", 1)
+)
+PY
+git -C "$base" commit -q -am "main starts tracking the path"
+git -C "$base" checkout -q -b topic main-advance~1
+echo 'package provider // tweak' > "$base/internal/provider/extra_resource.go"
+commit "$base" "tweak hand-written"
+check "$base" "edit at the merge base, generated only at the base tip" 0 \
+  refs/heads/main-advance refs/heads/topic
+
+echo "14. an edit after a file leaves gen.lock passes, so a declassification is not guarded"
+base=$(new_fixture declassified)
+drop_lock_entry "$base" internal/provider/thing.go
+echo 'package provider // now hand-written' > "$base/internal/provider/thing.go"
+commit "$base" "declassify and edit"
+check "$base" "edit after leaving gen.lock" 0
 
 if [ "$failures" -ne 0 ]; then
   printf '\n%d check(s) failed\n' "$failures"
