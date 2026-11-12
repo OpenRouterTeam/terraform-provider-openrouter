@@ -77,12 +77,13 @@ func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponseData(ctx
 		r.ContentFilterBuiltins = nil
 	}
 	if resp.ContentFilters != nil {
-		r.ContentFilters = []tfTypes.ContentFilterEntry{}
+		r.ContentFilters = []tfTypes.ContentFilterReadEntry{}
 
 		for _, contentFiltersItem := range resp.ContentFilters {
-			var contentFilters tfTypes.ContentFilterEntry
+			var contentFilters tfTypes.ContentFilterReadEntry
 
 			contentFilters.Action = types.StringValue(string(contentFiltersItem.Action))
+			contentFilters.IsEnforced = types.BoolValue(contentFiltersItem.IsEnforced)
 			contentFilters.Label = types.StringPointerValue(contentFiltersItem.Label)
 			contentFilters.Pattern = types.StringValue(contentFiltersItem.Pattern)
 

@@ -199,6 +199,10 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 								),
 							},
 						},
+						"is_enforced": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether inference applies this pattern. False for a pattern saved before pattern validation that is too complex to run safely; it is kept but skipped until replaced.`,
+						},
 						"label": schema.StringAttribute{
 							Computed:    true,
 							Optional:    true,

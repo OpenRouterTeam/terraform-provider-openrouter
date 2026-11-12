@@ -36,7 +36,7 @@ type GuardrailDataSourceModel struct {
 	AllowSafetyRetentionGoogle     types.Bool                          `tfsdk:"allow_safety_retention_google"`
 	AllowSafetyRetentionOther      types.Bool                          `tfsdk:"allow_safety_retention_other"`
 	ContentFilterBuiltins          []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
-	ContentFilters                 []tfTypes.ContentFilterEntry        `tfsdk:"content_filters"`
+	ContentFilters                 []tfTypes.ContentFilterReadEntry    `tfsdk:"content_filters"`
 	CreatedAt                      types.String                        `tfsdk:"created_at"`
 	Description                    types.String                        `tfsdk:"description"`
 	EnableFreeModelPublication     types.Bool                          `tfsdk:"enable_free_model_publication"`
@@ -125,6 +125,10 @@ func (r *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaR
 						"action": schema.StringAttribute{
 							Computed:    true,
 							Description: `Action taken when the pattern matches`,
+						},
+						"is_enforced": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether inference applies this pattern. False for a pattern saved before pattern validation that is too complex to run safely; it is kept but skipped until replaced.`,
 						},
 						"label": schema.StringAttribute{
 							Computed:    true,

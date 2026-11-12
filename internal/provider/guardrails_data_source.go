@@ -105,6 +105,10 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 										Computed:    true,
 										Description: `Action taken when the pattern matches`,
 									},
+									"is_enforced": schema.BoolAttribute{
+										Computed:    true,
+										Description: `Whether inference applies this pattern. False for a pattern saved before pattern validation that is too complex to run safely; it is kept but skipped until replaced.`,
+									},
 									"label": schema.StringAttribute{
 										Computed:    true,
 										Description: `Optional label used in redaction placeholders or error messages`,
