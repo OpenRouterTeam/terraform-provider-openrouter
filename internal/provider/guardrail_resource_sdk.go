@@ -83,6 +83,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 			var contentFilters tfTypes.ContentFilterEntry
 
 			contentFilters.Action = types.StringValue(string(contentFiltersItem.Action))
+			contentFilters.IsEnforced = types.BoolValue(contentFiltersItem.IsEnforced)
 			contentFilters.Label = types.StringPointerValue(contentFiltersItem.Label)
 			contentFilters.Pattern = types.StringValue(contentFiltersItem.Pattern)
 
@@ -205,6 +206,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 			var contentFilters tfTypes.ContentFilterEntry
 
 			contentFilters.Action = types.StringValue(string(contentFiltersItem.Action))
+			contentFilters.IsEnforced = types.BoolValue(contentFiltersItem.IsEnforced)
 			contentFilters.Label = types.StringPointerValue(contentFiltersItem.Label)
 			contentFilters.Pattern = types.StringValue(contentFiltersItem.Pattern)
 
@@ -327,6 +329,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 			var contentFilters tfTypes.ContentFilterEntry
 
 			contentFilters.Action = types.StringValue(string(contentFiltersItem.Action))
+			contentFilters.IsEnforced = types.BoolValue(contentFiltersItem.IsEnforced)
 			contentFilters.Label = types.StringPointerValue(contentFiltersItem.Label)
 			contentFilters.Pattern = types.StringValue(contentFiltersItem.Pattern)
 
