@@ -1664,6 +1664,10 @@ type GetObservabilityDestinationResponseConfigOtelCollector struct {
 	Endpoint string `json:"endpoint"`
 	// Custom HTTP headers as a JSON object. For Axiom, use {"Authorization": "Bearer xaat-xxx", "X-Axiom-Dataset": "your-dataset"}
 	Headers map[string]string `json:"headers,omitzero"`
+	// OTLP/HTTP metrics URL. Required when `shouldSendMetrics` (Send OTLP metrics) is true; ignored otherwise.
+	MetricsEndpoint *string `json:"metricsEndpoint,omitzero"`
+	// Also send OTLP metrics for each delivered generation to the metrics endpoint, with the same headers.
+	ShouldSendMetrics *bool `default:"false" json:"shouldSendMetrics"`
 }
 
 func (g GetObservabilityDestinationResponseConfigOtelCollector) MarshalJSON() ([]byte, error) {
@@ -1689,6 +1693,20 @@ func (g *GetObservabilityDestinationResponseConfigOtelCollector) GetHeaders() ma
 		return nil
 	}
 	return g.Headers
+}
+
+func (g *GetObservabilityDestinationResponseConfigOtelCollector) GetMetricsEndpoint() *string {
+	if g == nil {
+		return nil
+	}
+	return g.MetricsEndpoint
+}
+
+func (g *GetObservabilityDestinationResponseConfigOtelCollector) GetShouldSendMetrics() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.ShouldSendMetrics
 }
 
 type GetObservabilityDestinationResponseObservabilityOtelCollectorDestination struct {

@@ -104,6 +104,8 @@ type OutputToolSearchServerToolItem struct {
 	CatalogChanges *string `json:"catalog_changes,omitzero"`
 	// The deferred-tool index the router showed the model with a pre-search, listing tool sources and names. Replaying the item shows the same index.
 	CatalogIndex *string `json:"catalog_index,omitzero"`
+	// Whether the model read, after the catalog index, that the listed sources are those connected so far. Replaying the item shows that note only when this is true. Its wording follows the replaying request: it names `WaitForMcpServers` only while that request carries the tool.
+	CatalogIndexNote *bool `json:"catalog_index_note,omitzero"`
 	// The error message when the tool call failed before producing a result. Set together with `status: 'failed'`; absent on a successful call.
 	Error *string `json:"error,omitzero"`
 	// How the model saw the matches. `compact` means each tool by name, description, and input shape, plus a call example. Replaying the item renders the same result.
@@ -158,6 +160,13 @@ func (o *OutputToolSearchServerToolItem) GetCatalogIndex() *string {
 		return nil
 	}
 	return o.CatalogIndex
+}
+
+func (o *OutputToolSearchServerToolItem) GetCatalogIndexNote() *bool {
+	if o == nil {
+		return nil
+	}
+	return o.CatalogIndexNote
 }
 
 func (o *OutputToolSearchServerToolItem) GetError() *string {
