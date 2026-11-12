@@ -40,12 +40,29 @@ GENERATED_LOCKS = (
 )
 
 
-def tracked_generated_files() -> set[str]:
-    """Paths Speakeasy tracks, from the lock file it writes."""
-    try:
-        text = open(".speakeasy/gen.lock", encoding="utf-8").read()
-    except FileNotFoundError:
-        return set()
+def tracked_generated_files(ref: str | None = None) -> set[str]:
+    """Paths Speakeasy tracks, from the lock file it writes.
+
+    With ``ref``, read the lock as of that revision instead of the working tree.
+    A diff that deletes a generated file also removes its entry from the head's
+    lock, so membership has to be observable at either end of the diff for a
+    deleted path to stay guarded.
+    """
+    if ref is None:
+        try:
+            text = open(".speakeasy/gen.lock", encoding="utf-8").read()
+        except FileNotFoundError:
+            return set()
+    else:
+        # Absent either the revision or the lock file at it, the path is simply
+        # not known to be generated; the prefix clause still covers an addition.
+        shown = subprocess.run(
+            ["git", "show", f"{ref}:.speakeasy/gen.lock"],
+            capture_output=True, text=True,
+        )
+        if shown.returncode != 0:
+            return set()
+        text = shown.stdout
     block = text.split("\ntrackedFiles:\n", 1)
     if len(block) != 2:
         return set()
@@ -94,7 +111,10 @@ def main() -> int:
         print("No changed files; nothing to check.")
         return 0
 
-    tracked = tracked_generated_files()
+    # Membership at either end of the diff: a path the branch deletes is gone
+    # from the head's lock by the time this runs, and a hand edit that removes
+    # generated Go is dropped by the next regeneration exactly as an edit is.
+    tracked = tracked_generated_files() | tracked_generated_files(base)
     guarded = [
         f for status, f in files
         if f.endswith(GUARDED_SUFFIX)

@@ -128,6 +128,34 @@ echo '# docs, edited' > "$base/docs/readme.md"
 commit "$base" "docs"
 check "$base" "modified docs/readme.md" 0
 
+echo "9. deleting a tracked generated file, and its lock entry, fails"
+base=$(new_fixture delete-tracked)
+git -C "$base" rm -q internal/provider/thing.go
+python3 - "$base" <<'PY'
+import sys
+path = sys.argv[1] + "/.speakeasy/gen.lock"
+text = open(path, encoding="utf-8").read()
+open(path, "w", encoding="utf-8").write(
+    text.replace("  internal/provider/thing.go:\n", "")
+)
+PY
+git -C "$base" add -A
+git -C "$base" commit -q -m "delete generated"
+check "$base" "deleted tracked internal/provider/thing.go" 1
+
+echo "10. deleting a hand-written file under a guarded prefix passes"
+base=$(new_fixture delete-handwritten)
+git -C "$base" rm -q internal/provider/extra_resource.go
+commit "$base" "delete hand-written"
+check "$base" "deleted internal/provider/extra_resource.go, not in gen.lock" 0
+
+echo "11. an added file under internal/sdk/ fails like one under internal/provider/"
+base=$(new_fixture add-under-sdk)
+echo 'package sdk' > "$base/internal/sdk/client_extra.go"
+git -C "$base" add -A
+git -C "$base" commit -q -m "add sdk"
+check "$base" "added internal/sdk/client_extra.go" 1
+
 if [ "$failures" -ne 0 ]; then
   printf '\n%d check(s) failed\n' "$failures"
   exit 1
