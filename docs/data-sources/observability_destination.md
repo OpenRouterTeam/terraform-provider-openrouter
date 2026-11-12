@@ -732,6 +732,8 @@ Read-Only:
 
 - `endpoint` (String)
 - `headers` (Map of String) Custom HTTP headers as a JSON object. For Axiom, use {"Authorization": "Bearer xaat-xxx", "X-Axiom-Dataset": "your-dataset"}
+- `metrics_endpoint` (String) OTLP/HTTP metrics URL. Required when `shouldSendMetrics` (Send OTLP metrics) is true; ignored otherwise.
+- `should_send_metrics` (Boolean) Also send OTLP metrics for each delivered generation to the metrics endpoint, with the same headers.
 
 
 <a id="nestedatt--otel_collector--filter_rules"></a>

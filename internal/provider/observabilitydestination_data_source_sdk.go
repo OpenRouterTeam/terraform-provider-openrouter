@@ -847,6 +847,8 @@ func (r *ObservabilityDestinationDataSourceModel) RefreshFromSharedGetObservabil
 				r.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
 			}
 		}
+		r.OtelCollector.Config.MetricsEndpoint = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.MetricsEndpoint)
+		r.OtelCollector.Config.ShouldSendMetrics = types.BoolPointerValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.ShouldSendMetrics)
 		r.OtelCollector.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.CreatedAt)
 		r.CreatedAt = r.OtelCollector.CreatedAt
 		r.OtelCollector.Enabled = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Enabled)
