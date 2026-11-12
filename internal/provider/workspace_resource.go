@@ -135,7 +135,7 @@ func (r *WorkspaceResource) Schema(ctx context.Context, req resource.SchemaReque
 			"is_data_discount_logging_enabled": schema.BoolAttribute{
 				Computed:    true,
 				Optional:    true,
-				Description: `Whether data discount logging is enabled`,
+				Description: `Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.`,
 			},
 			"is_observability_broadcast_enabled": schema.BoolAttribute{
 				Computed:    true,
