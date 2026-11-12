@@ -17,6 +17,8 @@ const (
 	ResponseIncludesEnumReasoningEncryptedContent        ResponseIncludesEnum = "reasoning.encrypted_content"
 	ResponseIncludesEnumOutputEncryptedContent           ResponseIncludesEnum = "output.encrypted_content"
 	ResponseIncludesEnumCodeInterpreterCallOutputs       ResponseIncludesEnum = "code_interpreter_call.outputs"
+	ResponseIncludesEnumWebSearchCallResults             ResponseIncludesEnum = "web_search_call.results"
+	ResponseIncludesEnumWebSearchCallActionSources       ResponseIncludesEnum = "web_search_call.action.sources"
 )
 
 func (e ResponseIncludesEnum) ToPointer() *ResponseIncludesEnum {
@@ -39,6 +41,10 @@ func (e *ResponseIncludesEnum) UnmarshalJSON(data []byte) error {
 	case "output.encrypted_content":
 		fallthrough
 	case "code_interpreter_call.outputs":
+		fallthrough
+	case "web_search_call.results":
+		fallthrough
+	case "web_search_call.action.sources":
 		*e = ResponseIncludesEnum(v)
 		return nil
 	default:
