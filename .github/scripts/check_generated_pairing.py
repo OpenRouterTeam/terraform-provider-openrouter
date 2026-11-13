@@ -12,6 +12,15 @@ lints the freshly generated tree before custom code is re-applied, so a helper
 whose only caller is a custom-code line is dead code at generate time. That is a
 review problem, not something this script can see.
 
+The guard has one deliberate hole, and it is also review's: a *declassification*,
+where a file that was generated at the merge base is edited after its entry
+leaves `gen.lock`. Guarding it would restore the false positive this check exists
+to remove, because the ordinary way a file stops being generated is that it
+became hand-written. A missing lock entry is not evidence of that, though -
+neither this script nor a regeneration can tell an honest declassification from
+one that just makes an edit to generated code unpoliced. The script therefore
+names the paths it sees and leaves the judgement to the reviewer.
+
 Usage: check_generated_pairing.py <base-sha> <head-sha>
 """
 
@@ -40,12 +49,29 @@ GENERATED_LOCKS = (
 )
 
 
-def tracked_generated_files() -> set[str]:
-    """Paths Speakeasy tracks, from the lock file it writes."""
-    try:
-        text = open(".speakeasy/gen.lock", encoding="utf-8").read()
-    except FileNotFoundError:
-        return set()
+def tracked_generated_files(ref: str | None = None) -> set[str]:
+    """Paths Speakeasy tracks, from the lock file it writes.
+
+    With ``ref``, read the lock as of that revision instead of the working tree.
+    A diff that deletes a generated file also removes its entry from the head's
+    lock, so for a deleted path membership is only visible at the revision the
+    diff starts from - the merge base, never the base tip.
+    """
+    if ref is None:
+        try:
+            text = open(".speakeasy/gen.lock", encoding="utf-8").read()
+        except FileNotFoundError:
+            return set()
+    else:
+        # Absent either the revision or the lock file at it, the path is simply
+        # not known to be generated; the prefix clause still covers an addition.
+        shown = subprocess.run(
+            ["git", "show", f"{ref}:.speakeasy/gen.lock"],
+            capture_output=True, text=True,
+        )
+        if shown.returncode != 0:
+            return set()
+        text = shown.stdout
     block = text.split("\ntrackedFiles:\n", 1)
     if len(block) != 2:
         return set()
@@ -53,20 +79,50 @@ def tracked_generated_files() -> set[str]:
     return set(re.findall(r"^  (\S.*?):$", block[1].split("\nexamples:", 1)[0], re.M))
 
 
-def changed(base: str, head: str) -> list[str]:
-    """Both sides of every change, so moving a generated file out of a guarded
-    path is still seen at the path it left."""
+def changed(base: str, head: str) -> list[tuple[str, str]]:
+    """``(status, path)`` for both sides of every change, so moving a generated
+    file out of a guarded path is still seen at the path it left.
+
+    The status letter decides whether the path is *added* or merely edited, and
+    the guard needs that distinction: a tracked generated file is guarded
+    wherever it sits and however it is edited, while a guarded prefix is a
+    stand-in for "this path is new, so the head's lock file cannot list it yet"
+    and must not fire on an edit to a hand-written file that was already there.
+    """
     out = subprocess.run(
         ["git", "diff", "--name-status", f"{base}...{head}"],
         capture_output=True, text=True, check=True,
     ).stdout
-    paths: list[str] = []
+    entries: list[tuple[str, str]] = []
     for line in out.splitlines():
         # "<status>\t<path>" or "<status>\t<old>\t<new>" for renames and copies.
-        for field in line.split("\t")[1:]:
-            if field.strip():
-                paths.append(field.strip())
-    return paths
+        fields = [field for field in line.split("\t") if field.strip()]
+        if len(fields) < 2:
+            continue
+        status = fields[0][:1]
+        for index, field in enumerate(fields[1:]):
+            # A rename or copy carries old then new under one status letter: the
+            # first path is never an addition (a copy leaves it in place), the
+            # second arrives at that location.
+            effective = status if len(fields) == 2 else ("A" if index else "D")
+            entries.append((effective, field.strip()))
+    return entries
+
+
+def merge_base(base: str, head: str) -> str:
+    """The revision a three-dot diff actually starts from.
+
+    ``changed()`` diffs ``base...head``, so the changed paths come from the merge
+    base. Lock membership has to come from the same revision: reading the base
+    tip instead both misses a file whose lock entry ``main`` removed after the
+    merge base, and guards a hand-written file ``main`` only started tracking.
+    """
+    out = subprocess.run(
+        ["git", "merge-base", base, head], capture_output=True, text=True
+    )
+    if out.returncode != 0 or not out.stdout.strip():
+        return base
+    return out.stdout.strip()
 
 
 def main() -> int:
@@ -80,11 +136,51 @@ def main() -> int:
         print("No changed files; nothing to check.")
         return 0
 
-    tracked = tracked_generated_files()
+    # Three terms, one per clause of the rule CONTRIBUTING.md states:
+    #   * generated at the head, whichever way it was changed;
+    #   * added under a guarded prefix, which the head's lock cannot list yet;
+    #   * deleted after having been generated, under a guarded prefix, where the
+    #     head's lock has dropped the entry and only the merge base can still
+    #     show it. A hand edit that removes generated Go is dropped by the next
+    #     regeneration just as an edit is.
+    # The deletion term is scoped to the prefixes on purpose: that is exactly the
+    # coverage the old prefix term provided for a delete, so no diff that passed
+    # before fails now. Widening it to tracked paths outside the prefixes would
+    # close a real hole - deleting tracked `main.go` with no generator input
+    # regenerates back - but that is a separate change, not this narrowing.
+    # Deliberately absent: a file that was generated at the merge base and is
+    # edited after leaving the lock. That is a declassification, and guarding it
+    # would restore the false positive this change exists to remove. It is not
+    # silent, though: the paths are named below so the claim that they became
+    # hand-written is checked in review rather than assumed.
+    head_tracked = tracked_generated_files()
+    base_tracked = tracked_generated_files(merge_base(base, head))
+    declassified = sorted(
+        f for _status, f in files
+        if f.endswith(GUARDED_SUFFIX) and f in base_tracked and f not in head_tracked
+    )
+    if declassified:
+        print("Declassified generated files changed in this pull request:")
+        for f in declassified:
+            print(f"  {f}")
+        print("")
+        print("An entry leaving gen.lock is not proof the file is hand-written now:")
+        print("neither this check nor a regeneration can show that, and an edit to a")
+        print("file that is still generated is dropped by the next regeneration.")
+        print("Confirm by hand that the file is maintained as custom code.")
+        print("")
     guarded = [
-        f for f in files
+        f for status, f in files
         if f.endswith(GUARDED_SUFFIX)
-        and (f in tracked or f.startswith(GUARDED_PREFIXES))
+        and (
+            f in head_tracked
+            or (status == "A" and f.startswith(GUARDED_PREFIXES))
+            or (
+                status == "D"
+                and f in base_tracked
+                and f.startswith(GUARDED_PREFIXES)
+            )
+        )
     ]
     if not guarded:
         return 0
@@ -93,12 +189,8 @@ def main() -> int:
     # regenerate.yaml's path filter, so changing it is what makes a generation
     # observe the edit. The three lock/out files above are excluded because a
     # release bump alone touches them.
-    # `gen.yaml` counts even though regeneration rewrites it: it is also on
-    # regenerate.yaml's path filter, so changing it is what makes a generation
-    # observe the edit. The three lock/out files above are excluded because a
-    # release bump alone touches them.
     inputs = [
-        f for f in files
+        f for _status, f in files
         if f.startswith(".speakeasy/") and f not in GENERATED_LOCKS
     ]
     if inputs:
