@@ -848,6 +848,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedCreateObservabi
 				r.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
 			}
 		}
+		r.OtelCollector.Config.MetricsEndpoint = types.StringPointerValue(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.MetricsEndpoint)
+		r.OtelCollector.Config.ShouldSendMetrics = types.BoolPointerValue(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.ShouldSendMetrics)
 		r.OtelCollector.CreatedAt = types.StringValue(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.CreatedAt)
 		r.CreatedAt = r.OtelCollector.CreatedAt
 		r.OtelCollector.Enabled = types.BoolValue(resp.CreateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Enabled)
@@ -2377,6 +2379,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedGetObservabilit
 				r.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
 			}
 		}
+		r.OtelCollector.Config.MetricsEndpoint = types.StringPointerValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.MetricsEndpoint)
+		r.OtelCollector.Config.ShouldSendMetrics = types.BoolPointerValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.ShouldSendMetrics)
 		r.OtelCollector.CreatedAt = types.StringValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.CreatedAt)
 		r.CreatedAt = r.OtelCollector.CreatedAt
 		r.OtelCollector.Enabled = types.BoolValue(resp.GetObservabilityDestinationResponseObservabilityOtelCollectorDestination.Enabled)
@@ -3906,6 +3910,8 @@ func (r *ObservabilityDestinationResourceModel) RefreshFromSharedUpdateObservabi
 				r.OtelCollector.Config.Headers[key9] = types.StringValue(value9)
 			}
 		}
+		r.OtelCollector.Config.MetricsEndpoint = types.StringPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.MetricsEndpoint)
+		r.OtelCollector.Config.ShouldSendMetrics = types.BoolPointerValue(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Config.ShouldSendMetrics)
 		r.OtelCollector.CreatedAt = types.StringValue(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.CreatedAt)
 		r.CreatedAt = r.OtelCollector.CreatedAt
 		r.OtelCollector.Enabled = types.BoolValue(resp.UpdateObservabilityDestinationResponseObservabilityOtelCollectorDestination.Enabled)

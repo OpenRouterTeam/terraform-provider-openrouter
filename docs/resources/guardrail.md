@@ -129,6 +129,10 @@ Optional:
 - `label` (String) Optional label used in redaction placeholders or error messages
 - `pattern` (String) A regex pattern to match against request content. Not Null
 
+Read-Only:
+
+- `is_enforced` (Boolean) Whether inference applies this pattern. False for a pattern saved before pattern validation that is too complex to run safely; it is kept but skipped until replaced.
+
 ## Import
 
 Import is supported using the following syntax:

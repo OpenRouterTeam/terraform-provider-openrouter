@@ -8,7 +8,8 @@ import (
 )
 
 type ContentFilterEntry struct {
-	Action  types.String `tfsdk:"action"`
-	Label   types.String `tfsdk:"label"`
-	Pattern types.String `tfsdk:"pattern"`
+	Action     types.String `tfsdk:"action"`
+	IsEnforced types.Bool   `tfsdk:"is_enforced"`
+	Label      types.String `tfsdk:"label"`
+	Pattern    types.String `tfsdk:"pattern"`
 }

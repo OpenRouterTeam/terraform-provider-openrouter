@@ -93,10 +93,13 @@ type BatchSubmitBody struct {
 	CallbackURL      *string                          `json:"callback_url,omitzero"`
 	CompletionWindow *BatchSubmitBodyCompletionWindow `default:"24h" json:"completion_window"`
 	Endpoint         Endpoint                         `json:"endpoint"`
-	Model            string                           `json:"model"`
+	// A batch input file or table in your own storage, named in place of `requests`. Available to allowlisted callers on Google Vertex BYOK endpoints only.
+	Input *BatchInputReference `json:"input,omitzero"`
+	Model string               `json:"model"`
 	// Batch provider routing preferences. Only `provider.only` and `provider.allow_fallbacks` are supported.
 	Provider *BatchProviderPreferences `json:"provider,omitzero"`
-	Requests []Request                 `json:"requests"`
+	// The batch requests. Send exactly one of `requests` or `input`; `requests` must be the last field in the request body.
+	Requests []Request `json:"requests,omitzero"`
 }
 
 func (b BatchSubmitBody) MarshalJSON() ([]byte, error) {
@@ -131,6 +134,13 @@ func (b *BatchSubmitBody) GetEndpoint() Endpoint {
 	return b.Endpoint
 }
 
+func (b *BatchSubmitBody) GetInput() *BatchInputReference {
+	if b == nil {
+		return nil
+	}
+	return b.Input
+}
+
 func (b *BatchSubmitBody) GetModel() string {
 	if b == nil {
 		return ""
@@ -147,7 +157,7 @@ func (b *BatchSubmitBody) GetProvider() *BatchProviderPreferences {
 
 func (b *BatchSubmitBody) GetRequests() []Request {
 	if b == nil {
-		return []Request{}
+		return nil
 	}
 	return b.Requests
 }
