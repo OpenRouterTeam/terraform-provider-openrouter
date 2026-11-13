@@ -394,6 +394,8 @@ type BatchPaymentRequiredResponse struct {
 	ID          string                             `json:"id"`
 	Model       string                             `json:"model"`
 	Object      BatchPaymentRequiredResponseObject `json:"object"`
+	// The output location of a batch submitted with `input`, whose `results` are `null`. Returned only by `GET /batches/{id}`, once the batch has ended and the provider reported an output folder. Batch lists and responses for a batch with an unpaid charge leave it out.
+	Output *BatchOutputReference `json:"output,omitzero"`
 	// Provider OpenRouter assigned to run the batch, using the same name as the `provider` field of sync responses.
 	Provider      *string                                   `json:"provider"`
 	RequestCounts BatchPaymentRequiredResponseRequestCounts `json:"request_counts"`
@@ -401,6 +403,17 @@ type BatchPaymentRequiredResponse struct {
 	Results any                                `json:"results"`
 	Status  BatchPaymentRequiredResponseStatus `json:"status"`
 	Usage   *BatchPaymentRequiredResponseUsage `json:"usage"`
+}
+
+func (b BatchPaymentRequiredResponse) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(b, "", false)
+}
+
+func (b *BatchPaymentRequiredResponse) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &b, "", false, nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (b *BatchPaymentRequiredResponse) GetCompletionWindow() BatchPaymentRequiredResponseCompletionWindow {
@@ -464,6 +477,13 @@ func (b *BatchPaymentRequiredResponse) GetObject() BatchPaymentRequiredResponseO
 		return BatchPaymentRequiredResponseObject("")
 	}
 	return b.Object
+}
+
+func (b *BatchPaymentRequiredResponse) GetOutput() *BatchOutputReference {
+	if b == nil {
+		return nil
+	}
+	return b.Output
 }
 
 func (b *BatchPaymentRequiredResponse) GetProvider() *string {
