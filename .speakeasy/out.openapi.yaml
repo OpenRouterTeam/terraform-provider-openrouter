@@ -6978,6 +6978,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyBudget
     BudgetGuardrailPolicyDetail:
       properties:
         api_key_hashes:
@@ -7081,6 +7082,7 @@ components:
         - 'opted_out_api_key_hashes'
         - 'overridden_api_key_hashes'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyBudget
     BudgetGuardrailPolicyDetailResponse:
       properties:
         data:
@@ -10448,6 +10450,8 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyBudget
+      x-speakeasy-entity-description: "A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. `policy_type` must be `budget` and is fixed at create, where changing it replaces the policy.\n\n`config` is required, and the provider sends it whole on every update: a step that changes only `name` still sends `include_byok_in_budgets`, `limit_usd` and `reset_interval`. `include_byok_in_budgets` decides whether bring-your-own-key spend counts toward the limit alongside OpenRouter credit spend. `limit_usd` and `reset_interval` are optional and travel as explicit nulls when unset.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
     CreateBYOKKeyRequest:
       example:
         key: 'sk-proj-abc123...'
@@ -10944,6 +10948,8 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
+      x-speakeasy-entity-description: "A workspace model-availability policy: which models, providers and data regions a workspace's traffic may use, plus ZDR enforcement and the model training and publication toggles. `policy_type` must be `model_availability`, with an underscore, while this resource's API route is hyphenated; the type is fixed at create, where changing it replaces the policy.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. An empty list is sent as `[]` to clear that dimension and `false` travels explicitly, so name every field you want applied rather than expecting an update to clear one by leaving it out.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
     CreateModerationGuardrailPolicyRequest:
       properties:
         api_key_hashes:
@@ -11007,6 +11013,8 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModeration
+      x-speakeasy-entity-description: "A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation` and is fixed at create, where changing it replaces the policy.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
     CreateObservabilityDestinationRequest:
       example:
         config:
@@ -21846,6 +21854,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
     ModelAvailabilityGuardrailPolicyDetail:
       properties:
         api_key_hashes:
@@ -21949,6 +21958,7 @@ components:
         - 'opted_out_api_key_hashes'
         - 'overridden_api_key_hashes'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
     ModelAvailabilityGuardrailPolicyDetailResponse:
       properties:
         data:
@@ -22467,6 +22477,7 @@ components:
         - 'policy_type'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModeration
     ModerationGuardrailPolicyDetail:
       properties:
         api_key_hashes:
@@ -22573,6 +22584,7 @@ components:
         - 'opted_out_api_key_hashes'
         - 'overridden_api_key_hashes'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModeration
     ModerationGuardrailPolicyDetailResponse:
       properties:
         data:
@@ -36584,6 +36596,7 @@ components:
         - 'name'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyBudget
     UpdateBYOKKeyRequest:
       example:
         disabled: false
@@ -36981,6 +36994,7 @@ components:
         - 'name'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
     UpdateModerationGuardrailPolicyRequest:
       properties:
         api_key_hashes:
@@ -37039,6 +37053,7 @@ components:
         - 'name'
         - 'config'
       type: 'object'
+      x-speakeasy-entity: GuardrailPolicyModeration
     UpdateObservabilityDestinationRequest:
       example:
         enabled: false
@@ -48430,6 +48445,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'createBudgetPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#create
   /guardrails/policies/budget/{id}:
     delete:
       description: 'Delete a budget policy. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -48524,6 +48540,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'deleteBudgetPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#delete
     get:
       description: 'Get a budget policy with its member and API key assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'getBudgetPolicy'
@@ -48607,6 +48624,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'getBudgetPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#read
     put:
       description: 'Replace a budget policy''s name and config, and optionally its assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'updateBudgetPolicy'
@@ -48697,6 +48715,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'updateBudgetPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#update
   /guardrails/policies/model-availability:
     get:
       description: 'List the model availability policies in a workspace. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -48882,6 +48901,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'createModelAvailabilityPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#create
   /guardrails/policies/model-availability/{id}:
     delete:
       description: 'Delete a model availability policy. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -48976,6 +48996,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'deleteModelAvailabilityPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#delete
     get:
       description: 'Get a model availability policy with its member and API key assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'getModelAvailabilityPolicy'
@@ -49059,6 +49080,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'getModelAvailabilityPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#read
     put:
       description: 'Replace a model availability policy''s name and config, and optionally its assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'updateModelAvailabilityPolicy'
@@ -49149,6 +49171,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'updateModelAvailabilityPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#update
   /guardrails/policies/moderation:
     get:
       description: 'List the moderation policies in a workspace. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -49334,6 +49357,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'createModerationPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#create
   /guardrails/policies/moderation/{id}:
     delete:
       description: 'Delete a moderation policy. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
@@ -49428,6 +49452,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'deleteModerationPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#delete
     get:
       description: 'Get a moderation policy with its member and API key assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'getModerationPolicy'
@@ -49511,6 +49536,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'getModerationPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#read
     put:
       description: 'Replace a moderation policy''s name and config, and optionally its assignments. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
       operationId: 'updateModerationPolicy'
@@ -49601,6 +49627,7 @@ paths:
       tags:
         - 'Guardrail Policies'
       x-speakeasy-name-override: 'updateModerationPolicy'
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#update
   /images:
     post:
       description: 'Generates an image from a text prompt via the image generation router'

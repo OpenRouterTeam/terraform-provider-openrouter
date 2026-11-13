@@ -7,7 +7,8 @@ info:
     Maps OpenRouter management API operations to Terraform entities via
     x-speakeasy-entity / x-speakeasy-entity-operation. Resources: ApiKey,
     Guardrail, Workspace, ByokKey, ObservabilityDestination,
-    ScimGroupMapping, WorkspaceBudget, PrivateEndpoint, OrganizationSettings.
+    ScimGroupMapping, WorkspaceBudget, PrivateEndpoint, OrganizationSettings,
+    GuardrailPolicyBudget, GuardrailPolicyModeration, GuardrailPolicyModelAvailability.
     Plus read-only
     data-source entities for management lists and the model/provider/preset
     /credits catalog.
@@ -90,6 +91,117 @@ actions:
   - target: $["paths"]["/guardrails/{id}"]["delete"]
     update:
       x-speakeasy-entity-operation: Guardrail#delete
+
+  # ---------------------------------------------------------------------------
+  # GuardrailPolicyBudget
+  # (POST /guardrails/policies/budget, GET|PUT|DELETE /guardrails/policies/budget/{id})
+  # Component-based, one entity per policy type. The request schemas, the short
+  # response model used by create/update, and the detail read model all carry the
+  # same entity name; the read model is the only one that exposes subjects and
+  # is_workspace_default, so state hydrates from it.
+  # workspace_id is on the create and update bodies as the workspace the policy
+  # belongs to, and on get/delete as a query parameter, so no replacement is
+  # inferred for it; policy_type is create-only, where replacement is correct.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["CreateBudgetGuardrailPolicyRequest"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyBudget
+      x-speakeasy-entity-description: "A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. `policy_type` must be `budget` and is fixed at create, where changing it replaces the policy.\n\n`config` is required, and the provider sends it whole on every update: a step that changes only `name` still sends `include_byok_in_budgets`, `limit_usd` and `reset_interval`. `include_byok_in_budgets` decides whether bring-your-own-key spend counts toward the limit alongside OpenRouter credit spend. `limit_usd` and `reset_interval` are optional and travel as explicit nulls when unset.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
+  - target: $["components"]["schemas"]["UpdateBudgetGuardrailPolicyRequest"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyBudget
+  - target: $["components"]["schemas"]["BudgetGuardrailPolicy"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyBudget
+  - target: $["components"]["schemas"]["BudgetGuardrailPolicyDetail"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyBudget
+  - target: $["paths"]["/guardrails/policies/budget"]["post"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#create
+  - target: $["paths"]["/guardrails/policies/budget/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#read
+  - target: $["paths"]["/guardrails/policies/budget/{id}"]["put"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#update
+  - target: $["paths"]["/guardrails/policies/budget/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyBudget#delete
+
+  # ---------------------------------------------------------------------------
+  # GuardrailPolicyModeration
+  # (POST /guardrails/policies/moderation, GET|PUT|DELETE /guardrails/policies/moderation/{id})
+  # Component-based, one entity per policy type. The request schemas, the short
+  # response model used by create/update, and the detail read model all carry the
+  # same entity name; the read model is the only one that exposes subjects and
+  # is_workspace_default, so state hydrates from it.
+  # workspace_id is on the create and update bodies as the workspace the policy
+  # belongs to, and on get/delete as a query parameter, so no replacement is
+  # inferred for it; policy_type is create-only, where replacement is correct.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["CreateModerationGuardrailPolicyRequest"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyModeration
+      x-speakeasy-entity-description: "A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation` and is fixed at create, where changing it replaces the policy.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
+  - target: $["components"]["schemas"]["UpdateModerationGuardrailPolicyRequest"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyModeration
+  - target: $["components"]["schemas"]["ModerationGuardrailPolicy"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyModeration
+  - target: $["components"]["schemas"]["ModerationGuardrailPolicyDetail"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyModeration
+  - target: $["paths"]["/guardrails/policies/moderation"]["post"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#create
+  - target: $["paths"]["/guardrails/policies/moderation/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#read
+  - target: $["paths"]["/guardrails/policies/moderation/{id}"]["put"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#update
+  - target: $["paths"]["/guardrails/policies/moderation/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyModeration#delete
+
+  # ---------------------------------------------------------------------------
+  # GuardrailPolicyModelAvailability
+  # (POST /guardrails/policies/model-availability, GET|PUT|DELETE /guardrails/policies/model-availability/{id})
+  # Component-based, one entity per policy type. The request schemas, the short
+  # response model used by create/update, and the detail read model all carry the
+  # same entity name; the read model is the only one that exposes subjects and
+  # is_workspace_default, so state hydrates from it.
+  # workspace_id is on the create and update bodies as the workspace the policy
+  # belongs to, and on get/delete as a query parameter, so no replacement is
+  # inferred for it; policy_type is create-only, where replacement is correct.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["CreateModelAvailabilityGuardrailPolicyRequest"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
+      x-speakeasy-entity-description: "A workspace model-availability policy: which models, providers and data regions a workspace's traffic may use, plus ZDR enforcement and the model training and publication toggles. `policy_type` must be `model_availability`, with an underscore, while this resource's API route is hyphenated; the type is fixed at create, where changing it replaces the policy.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. An empty list is sent as `[]` to clear that dimension and `false` travels explicitly, so name every field you want applied rather than expecting an update to clear one by leaving it out.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
+  - target: $["components"]["schemas"]["UpdateModelAvailabilityGuardrailPolicyRequest"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
+  - target: $["components"]["schemas"]["ModelAvailabilityGuardrailPolicy"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
+  - target: $["components"]["schemas"]["ModelAvailabilityGuardrailPolicyDetail"]
+    update:
+      x-speakeasy-entity: GuardrailPolicyModelAvailability
+  - target: $["paths"]["/guardrails/policies/model-availability"]["post"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#create
+  - target: $["paths"]["/guardrails/policies/model-availability/{id}"]["get"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#read
+  - target: $["paths"]["/guardrails/policies/model-availability/{id}"]["put"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#update
+  - target: $["paths"]["/guardrails/policies/model-availability/{id}"]["delete"]
+    update:
+      x-speakeasy-entity-operation: GuardrailPolicyModelAvailability#delete
 
   # ---------------------------------------------------------------------------
   # Workspace  (POST /workspaces, GET/PATCH/DELETE /workspaces/{id})

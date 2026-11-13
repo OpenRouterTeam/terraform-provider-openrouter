@@ -23,7 +23,7 @@ terraform {
   required_providers {
     openrouter = {
       source  = "OpenRouterTeam/openrouter"
-      version = "0.3.261"
+      version = "0.3.263"
     }
   }
 }
@@ -88,6 +88,9 @@ Available configuration:
 * [openrouter_api_key](docs/resources/api_key.md)
 * [openrouter_byok_key](docs/resources/byok_key.md)
 * [openrouter_guardrail](docs/resources/guardrail.md)
+* [openrouter_guardrail_policy_budget](docs/resources/guardrail_policy_budget.md)
+* [openrouter_guardrail_policy_model_availability](docs/resources/guardrail_policy_model_availability.md)
+* [openrouter_guardrail_policy_moderation](docs/resources/guardrail_policy_moderation.md)
 * [openrouter_observability_destination](docs/resources/observability_destination.md)
 * [openrouter_organization_settings](docs/resources/organization_settings.md)
 * [openrouter_private_endpoint](docs/resources/private_endpoint.md)
@@ -105,6 +108,9 @@ Available configuration:
 * [openrouter_guardrail](docs/data-sources/guardrail.md)
 * [openrouter_guardrail_key_assignments](docs/data-sources/guardrail_key_assignments.md)
 * [openrouter_guardrail_member_assignments](docs/data-sources/guardrail_member_assignments.md)
+* [openrouter_guardrail_policy_budget](docs/data-sources/guardrail_policy_budget.md)
+* [openrouter_guardrail_policy_model_availability](docs/data-sources/guardrail_policy_model_availability.md)
+* [openrouter_guardrail_policy_moderation](docs/data-sources/guardrail_policy_moderation.md)
 * [openrouter_guardrails](docs/data-sources/guardrails.md)
 * [openrouter_model](docs/data-sources/model.md)
 * [openrouter_models](docs/data-sources/models.md)
