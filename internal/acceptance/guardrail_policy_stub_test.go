@@ -32,6 +32,14 @@ package acceptance
 //     Optional+Computed, so removing it from configuration leaves the stored
 //     value in the update body and the cap stays active while Terraform reads
 //     as though it were removed.
+//   - an update that names no config field still sends the config the policy
+//     already holds, and the same goes for the subject lists. The update starts
+//     from state, so "an omitted field is not sent" only holds for a field that
+//     is neither configured nor stored.
+//   - removing the armor block clears Model Armor. It is the one object-valued
+//     config field, so removal is the only clear gesture, and it needs the
+//     attribute to be Optional without Computed: as Optional+Computed the stored
+//     block is re-sent and the removal is a no-op Terraform cannot see.
 //
 // Run: go test ./internal/acceptance -run TestStubGuardrailPolicy -v
 
@@ -669,6 +677,142 @@ func TestStubGuardrailPolicyBudgetClearingTheLimitSendsNulls(t *testing.T) {
 		}
 		if got != nil {
 			t.Errorf("update sent config.%s=%v, want null: an omitted limit is cleared by sending explicit nulls", key, got)
+		}
+	}
+}
+
+// TestStubGuardrailPolicyModerationNameOnlyUpdateKeepsStoredConfig pins the
+// behaviour the moderation description used to state wrongly. The update starts
+// from state, so a config field the policy already holds is re-sent even when
+// the configuration names none of it: "an omitted field is not sent" is only
+// true for a field that is neither configured nor stored.
+func TestStubGuardrailPolicyModerationNameOnlyUpdateKeepsStoredConfig(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyStub(t)
+
+	config := func(name string) string {
+		return guardrailPolicyStubConfig(srv.URL, "moderation", "moderation", fmt.Sprintf(`
+  config = {
+    armor = {
+      mode     = "audit"
+      on_error = "log"
+    }
+    content_filter_blocks_requests = true
+  }
+  name = %q
+`, name))
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config("stub moderation policy")},
+			{Config: config("stub moderation policy renamed")},
+		},
+	})
+
+	body := stub.lastUpdate(t, "moderation")
+	cfg, ok := body["config"].(map[string]any)
+	if !ok {
+		t.Fatalf("update sent config as %T, want an object", body["config"])
+	}
+	armor, ok := cfg["armor"].(map[string]any)
+	if !ok {
+		t.Fatalf("name-only update dropped config.armor: a field the policy already holds has to keep being sent, because the route replaces the config wholesale")
+	}
+	if got := armor["mode"]; got != "audit" {
+		t.Errorf("name-only update sent config.armor.mode=%v, want the stored %q", got, "audit")
+	}
+	if got := cfg["content_filter_blocks_requests"]; got != true {
+		t.Errorf("name-only update sent content_filter_blocks_requests=%v, want the stored true", got)
+	}
+}
+
+// TestStubGuardrailPolicyModerationRemovingArmorClearsIt pins the clear gesture
+// for the one object-valued config field. Removing the block is how a user says
+// "no Model Armor", and the update has to stop sending it: the route replaces
+// the config wholesale, so an absent armor key is what clears a stored one.
+func TestStubGuardrailPolicyModerationRemovingArmorClearsIt(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyStub(t)
+
+	config := func(armor bool) string {
+		body := ""
+		if armor {
+			body = `
+    armor = {
+      mode     = "audit"
+      on_error = "log"
+    }`
+		}
+		return guardrailPolicyStubConfig(srv.URL, "moderation", "moderation", fmt.Sprintf(`
+  config = {%s
+    content_filter_blocks_requests = true
+  }
+  name = "stub moderation policy"
+`, body))
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: config(true),
+				Check:  resource.TestCheckResourceAttr("openrouter_guardrail_policy_moderation.test", "config.armor.mode", "audit"),
+			},
+			{
+				Config: config(false),
+				Check:  resource.TestCheckResourceAttr("openrouter_guardrail_policy_moderation.test", "config.armor.%", "0"),
+			},
+		},
+	})
+
+	body := stub.lastUpdate(t, "moderation")
+	cfg, ok := body["config"].(map[string]any)
+	if !ok {
+		t.Fatalf("update sent config as %T, want an object", body["config"])
+	}
+	if got, present := cfg["armor"]; present {
+		t.Errorf("update sent config.armor=%v after the block was removed; the route replaces the config wholesale, so the key has to be absent for the stored configuration to be cleared", got)
+	}
+}
+
+// TestStubGuardrailPolicyModerationNameOnlyUpdateKeepsAssignments covers the
+// other half of the same rule: the subject lists an update does not name are
+// re-sent from state rather than dropped, so a step that changes only the name
+// keeps the policy's members and keys.
+func TestStubGuardrailPolicyModerationNameOnlyUpdateKeepsAssignments(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyStub(t)
+
+	config := func(name string) string {
+		return guardrailPolicyStubConfig(srv.URL, "moderation", "moderation", fmt.Sprintf(`
+  api_key_hashes = ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"]
+  config         = {}
+  member_ids     = ["user_2abcDEFghiJKLmnoPQRstu"]
+  name           = %q
+`, name))
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config("stub moderation policy")},
+			{Config: config("stub moderation policy renamed")},
+		},
+	})
+
+	body := stub.lastUpdate(t, "moderation")
+	for _, key := range []string{"member_ids", "api_key_hashes"} {
+		got, ok := body[key].([]any)
+		if !ok {
+			t.Fatalf("update sent %s as %T, want the stored list", key, body[key])
+		}
+		if len(got) != 1 {
+			t.Errorf("name-only update sent %s=%v, want the one stored assignment: an update that names neither list keeps them", key, got)
 		}
 	}
 }

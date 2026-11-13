@@ -27,6 +27,13 @@
 # internal/provider/workspacedefaultguardrail_resource.go uses the same shape for its clearable
 # attributes.
 #
+# internal/provider/guardrailpolicymoderation_resource.go drops Computed from the armor attribute of
+# its config object for the same reason, and armor is the one field in that config whose only clear
+# gesture is removal: the builder omits a nil armor block, the route replaces the config wholesale,
+# and a live probe of the route confirmed the stored block is gone afterwards. The rest of the
+# config is scalars and lists, which have their own clear gestures (false, []) and keep the
+# generated Optional+Computed. A regenerated commit should show no diff for either file.
+#
 # ImportState in the three generated guardrail policy resources resolves the import identifier
 # through guardrailPolicyImportID in internal/provider/guardrail_policy_import.go: a policy read
 # needs a workspace scope, the API never returns one, so the import identifier is the only channel

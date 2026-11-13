@@ -81,7 +81,6 @@ func (r *GuardrailPolicyModerationResource) Schema(ctx context.Context, req reso
 				Required: true,
 				Attributes: map[string]schema.Attribute{
 					"armor": schema.SingleNestedAttribute{
-						Computed: true,
 						Optional: true,
 						Attributes: map[string]schema.Attribute{
 							"classifier_context": schema.SingleNestedAttribute{
