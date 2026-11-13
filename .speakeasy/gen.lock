@@ -1,21 +1,21 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 5292301d477632bd2d0978136e14da44
+  docChecksum: bd3722820b2878a8de0782a1d546b008
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.258
-  configChecksum: 274c313c3b05ddf44b13451ed7060122
+  releaseVersion: 0.3.259
+  configChecksum: 6787255cdbdfd41e489d12d91cae8916
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: 35b5d41f-0792-40ca-b6b6-234b8357cd45
-  pristine_commit_hash: 2bf8cdc6d7598424beb1296d6525827f679f1a91
-  pristine_tree_hash: ad0e3a4bdfca074d62ba8c9399baad92a687fef1
+  generation_id: 23a9de0b-7406-4851-bec2-515ae450f240
+  pristine_commit_hash: 7604bff37637e6da3143d8265c9f9399184d93bb
+  pristine_tree_hash: be19a24328682d3fc66ecf3acb2a332a8ab51f50
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -153,8 +153,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:4c9364ab6214fa7dee2a0496c691f2e07ad7f4fc
-    pristine_git_object: a940950f251c8c1817593b0a0f44379e243a6390
+    last_write_checksum: sha1:b868734e2c5aa5b6e36c9090240bee451d301f68
+    pristine_git_object: 9c1fe819ebbb67dc737f030bd7c3826f1fa7865c
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -2723,10 +2723,14 @@ trackedFiles:
     id: 5c55c4e54b1b
     last_write_checksum: sha1:ad20fc607da28427858993eb4becbedd458d1b58
     pristine_git_object: 02f023301da5a6177889fd8af847eec53e941af3
+  internal/sdk/models/shared/batchinputreference.go:
+    id: b502e99ba71a
+    last_write_checksum: sha1:6be30d3646a57ab7fb7fe1f9df93ce287e1d45e3
+    pristine_git_object: 5c3efe281c539ecc187d8af120b17c722a068ca7
   internal/sdk/models/shared/batchlistitem.go:
     id: 24a1c60959b9
-    last_write_checksum: sha1:59f5dde0e4ee44efbaeaea081f73803dcdbad7db
-    pristine_git_object: 9a4a5420d57f4019a3038be0576bec4bf796ae65
+    last_write_checksum: sha1:0229deca9188416f59b79b1127a5d4eeab1c839b
+    pristine_git_object: af99c259a2ffb0701d2b0193a93aae35672df814
   internal/sdk/models/shared/batchlistresponse.go:
     id: d5cb6654f755
     last_write_checksum: sha1:fed6d83101252c44ca50bd3ddcab0b8519586dba
@@ -2737,20 +2741,24 @@ trackedFiles:
     pristine_git_object: d1e702d70d0e62a87ec400941ab37ece2bb85220
   internal/sdk/models/shared/batchobject.go:
     id: 9a1352ea29c9
-    last_write_checksum: sha1:1b2c2507d7bc981f86f0dd3f7620e1a7d2bc5e11
-    pristine_git_object: 3de3708319369a7260dc14f45e6d86f603d6c136
+    last_write_checksum: sha1:130c1d41dbd139a03f499217b40bea30625e58b2
+    pristine_git_object: 93cddfb6d58b7e9a1c971248e30117fa3141f2df
+  internal/sdk/models/shared/batchoutputreference.go:
+    id: bf77e31f9042
+    last_write_checksum: sha1:d95f0307ec8cf3f899c11cf9e6bc973e5c5ec07c
+    pristine_git_object: d6165d14e8c4884be93d513a6d8adad48790a62d
   internal/sdk/models/shared/batchpaymentrequiredresponse.go:
     id: 2aa9195d3cf5
-    last_write_checksum: sha1:f6ae33cf59cd2a0a165911ed17506e05d712fa8b
-    pristine_git_object: 16508d77575958ac8b6ebf91a5b3a87943e09b9a
+    last_write_checksum: sha1:37fc9fe8ad2519b65e798820bc45d16dac43bf83
+    pristine_git_object: 7b3c82ec377af5f0bf69e9d200d95e761723a148
   internal/sdk/models/shared/batchproviderpreferences.go:
     id: aaa25235182a
     last_write_checksum: sha1:14a9b905f059bbd008b1b51db177ecc4fee2e589
     pristine_git_object: 0387875cad0811f207017bf2b4229116cd569243
   internal/sdk/models/shared/batchsubmitbody.go:
     id: 9cd89788a34d
-    last_write_checksum: sha1:5a1264663e6e8ba4b2abb5d2b0a4a36e5a2f905a
-    pristine_git_object: f05859c933ca94283510318fd10b14ce73e2429d
+    last_write_checksum: sha1:72516a1e4e23462a0938a64ac3b777aa378b5867
+    pristine_git_object: 78f2063c87de04113dc995d224a0b2f817e64f2f
   internal/sdk/models/shared/booleancapability.go:
     id: b3db1ef5ac0b
     last_write_checksum: sha1:324e5232e3e5ec0cfb7c3c88b02bbe9d24ea1fd2
@@ -5573,8 +5581,8 @@ trackedFiles:
     pristine_git_object: 038f2e1d6b86fb9ef40e4a5b3ab683cb73119ca9
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:c4ace5c1141002c645aebb8c22897c31189874b8
-    pristine_git_object: 3fec6ce503b420685d574b1101c1e14ab63de2a1
+    last_write_checksum: sha1:c9e4fb34ce9f395135ace1b5e87294fccedd8f7b
+    pristine_git_object: a4e98cf524096ae2d5891245274c6e6e00fe970b
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -9377,7 +9385,7 @@ examples:
         application/json: {"completion_window": "24h", "endpoint": "/v1/chat/completions", "model": "openai/gpt-4o", "requests": [{"body": {"messages": [{"content": "Summarize ...", "role": "user"}], "model": "openai/gpt-4o"}, "custom_id": "req-0001"}]}
       responses:
         "202":
-          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
+          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "output": {"uri": "gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"}, "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
         "400":
           application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
         "500":
@@ -9387,7 +9395,7 @@ examples:
         application/json: {"completion_window": "24h", "endpoint": "/v1/messages", "model": "openai/gpt-5-nano", "requests": [{"body": {"max_tokens": 1024, "messages": [{"content": "Summarize ...", "role": "user"}], "model": "openai/gpt-5-nano"}, "custom_id": "req-0001"}]}
       responses:
         "202":
-          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
+          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "output": {"uri": "gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"}, "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
         "400":
           application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
         "500":
@@ -9397,7 +9405,7 @@ examples:
         application/json: {"completion_window": "24h", "endpoint": "/v1/chat/completions", "model": "google/gemini-3.6-flash", "provider": {"only": ["google-vertex"]}, "requests": [{"body": {"messages": [{"content": "Summarize ...", "role": "user"}], "model": "google/gemini-3.6-flash"}, "custom_id": "req-0001"}]}
       responses:
         "202":
-          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
+          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "output": {"uri": "gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"}, "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
         "400":
           application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
         "500":
@@ -9407,17 +9415,17 @@ examples:
         application/json: {"completion_window": "24h", "endpoint": "/v1/responses", "model": "openai/gpt-4o", "requests": [{"body": {"input": [{"content": [{"text": "Summarize ...", "type": "input_text"}], "role": "user"}], "model": "openai/gpt-4o"}, "custom_id": "req-0001"}]}
       responses:
         "202":
-          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
+          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "output": {"uri": "gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"}, "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
         "400":
           application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
         "500":
           application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
     speakeasy-default-create-batches:
       requestBody:
-        application/json: {"completion_window": "24h", "endpoint": "/v1/messages", "model": "Grand Cherokee", "provider": {"only": ["google-vertex"]}, "requests": [{"body": {"key": "<value>"}, "custom_id": "<id>"}]}
+        application/json: {"completion_window": "24h", "endpoint": "/v1/messages", "input": {"uri": "gs://my-bucket/batches/input.jsonl"}, "model": "Grand Cherokee", "provider": {"only": ["google-vertex"]}}
       responses:
         "202":
-          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
+          application/json: {"completion_window": "24h", "created_at": 511243, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 239149, "finalized_at": 665164, "id": "<id>", "model": "CX-9", "object": "batch", "output": {"uri": "gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"}, "provider": "<value>", "request_counts": {"completed": 719289, "failed": 238478, "total": 928444}, "results": [{"custom_id": "<id>", "error": {"error_type": "rate_limit_exceeded", "message": "<value>", "param": "<value>", "type": "<value>"}, "id": "<id>", "response": {"body": {"completed_at": 1704067210, "created_at": 1704067200, "error": null, "frequency_penalty": null, "id": "resp-abc123", "incomplete_details": null, "instructions": null, "max_output_tokens": null, "metadata": null, "model": "gpt-4", "object": "response", "output": [{"content": [{"annotations": [], "text": "Hello! How can I help you today?", "type": "output_text"}], "id": "msg-abc123", "role": "assistant", "status": "completed", "type": "message"}], "parallel_tool_calls": true, "presence_penalty": null, "status": "completed", "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 10, "input_tokens_details": {"cached_tokens": 0}, "output_tokens": 25, "output_tokens_details": {"reasoning_tokens": 0}, "total_tokens": 35}, "access_programs": {"cyber": "standard"}}, "request_id": "<id>", "status_code": 296735}}], "status": "in_progress", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 323461, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 757531, "speed": "standard", "total_tokens": 374496}}
         "400":
           application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
         "500":
@@ -9441,9 +9449,9 @@ examples:
           id: "batch_abc123"
       responses:
         "200":
-          application/json: {"completion_window": "24h", "created_at": 503378, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 631751, "finalized_at": 354647, "id": "<id>", "model": "Challenger", "object": "batch", "provider": "<value>", "request_counts": {"completed": 781860, "failed": 146323, "total": 565365}, "results": null, "status": "failed", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 871340, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 553781, "speed": "standard", "total_tokens": 852840}}
+          application/json: {"completion_window": "24h", "created_at": 503378, "endpoint": "<value>", "error": {"message": "<value>"}, "expires_at": 631751, "finalized_at": 354647, "id": "<id>", "model": "Challenger", "object": "batch", "output": {"uri": "gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"}, "provider": "<value>", "request_counts": {"completed": 781860, "failed": 146323, "total": 565365}, "results": null, "status": "failed", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 871340, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 553781, "speed": "standard", "total_tokens": 852840}}
         "402":
-          application/json: {"completion_window": "24h", "created_at": 991646, "endpoint": "<value>", "error": {"code": 800342, "message": "<value>"}, "expires_at": 254986, "finalized_at": 708673, "id": "<id>", "model": "Roadster", "object": "batch", "provider": "<value>", "request_counts": {"completed": 962054, "failed": 811028, "total": 210701}, "results": "<value>", "status": "cancelled", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 726701, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 343181, "speed": "standard", "total_tokens": 114876}}
+          application/json: {"completion_window": "24h", "created_at": 991646, "endpoint": "<value>", "error": {"code": 800342, "message": "<value>"}, "expires_at": 254986, "finalized_at": 708673, "id": "<id>", "model": "Roadster", "object": "batch", "output": {"uri": "gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"}, "provider": "<value>", "request_counts": {"completed": 962054, "failed": 811028, "total": 210701}, "results": "<value>", "status": "cancelled", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 726701, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 343181, "speed": "standard", "total_tokens": 114876}}
         "401":
           application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
         "500":
