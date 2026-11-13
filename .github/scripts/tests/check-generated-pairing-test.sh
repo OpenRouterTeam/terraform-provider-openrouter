@@ -218,6 +218,20 @@ drop_lock_entry "$base" main.go
 git -C "$base" commit -q -am "delete tracked main.go"
 check "$base" "deleted tracked main.go, outside the prefixes" 0
 
+echo "16. a declassification passes but is named for review"
+base=$(new_fixture declassified-reported)
+drop_lock_entry "$base" internal/provider/thing.go
+echo 'package provider // now hand-written' > "$base/internal/provider/thing.go"
+commit "$base" "declassify and edit"
+out=$(cd "$base" && python3 "$SCRIPT" "$(git -C "$base" rev-parse HEAD~1)" "$(git -C "$base" rev-parse HEAD)" 2>&1)
+if printf '%s' "$out" | grep -q "Declassified generated files changed" \
+  && printf '%s' "$out" | grep -q "internal/provider/thing.go"; then
+  pass "declassified path named for review"
+else
+  fail "declassified path not named in the output"
+  printf '%s\n' "$out" | sed 's/^/       /'
+fi
+
 if [ "$failures" -ne 0 ]; then
   printf '\n%d check(s) failed\n' "$failures"
   exit 1

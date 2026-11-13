@@ -12,6 +12,15 @@ lints the freshly generated tree before custom code is re-applied, so a helper
 whose only caller is a custom-code line is dead code at generate time. That is a
 review problem, not something this script can see.
 
+The guard has one deliberate hole, and it is also review's: a *declassification*,
+where a file that was generated at the merge base is edited after its entry
+leaves `gen.lock`. Guarding it would restore the false positive this check exists
+to remove, because the ordinary way a file stops being generated is that it
+became hand-written. A missing lock entry is not evidence of that, though -
+neither this script nor a regeneration can tell an honest declassification from
+one that just makes an edit to generated code unpoliced. The script therefore
+names the paths it sees and leaves the judgement to the reviewer.
+
 Usage: check_generated_pairing.py <base-sha> <head-sha>
 """
 
@@ -141,9 +150,25 @@ def main() -> int:
     # regenerates back - but that is a separate change, not this narrowing.
     # Deliberately absent: a file that was generated at the merge base and is
     # edited after leaving the lock. That is a declassification, and guarding it
-    # would restore the false positive this change exists to remove.
+    # would restore the false positive this change exists to remove. It is not
+    # silent, though: the paths are named below so the claim that they became
+    # hand-written is checked in review rather than assumed.
     head_tracked = tracked_generated_files()
     base_tracked = tracked_generated_files(merge_base(base, head))
+    declassified = sorted(
+        f for _status, f in files
+        if f.endswith(GUARDED_SUFFIX) and f in base_tracked and f not in head_tracked
+    )
+    if declassified:
+        print("Declassified generated files changed in this pull request:")
+        for f in declassified:
+            print(f"  {f}")
+        print("")
+        print("An entry leaving gen.lock is not proof the file is hand-written now:")
+        print("neither this check nor a regeneration can show that, and an edit to a")
+        print("file that is still generated is dropped by the next regeneration.")
+        print("Confirm by hand that the file is maintained as custom code.")
+        print("")
     guarded = [
         f for status, f in files
         if f.endswith(GUARDED_SUFFIX)
