@@ -566,14 +566,5 @@ func (r *GuardrailPolicyModelAvailabilityResource) Delete(ctx context.Context, r
 }
 
 func (r *GuardrailPolicyModelAvailabilityResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	workspaceID, policyID, err := guardrailPolicyImportID(req.ID)
-	if err != nil {
-		resp.Diagnostics.AddError("invalid import ID", err.Error())
-		return
-	}
-
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), policyID)...)
-	if workspaceID != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("workspace_id"), workspaceID)...)
-	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
 }

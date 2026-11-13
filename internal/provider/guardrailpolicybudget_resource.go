@@ -76,6 +76,7 @@ func (r *GuardrailPolicyBudgetResource) Schema(ctx context.Context, req resource
 						Description: `Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false.`,
 					},
 					"limit_usd": schema.Float64Attribute{
+						Computed:    true,
 						Optional:    true,
 						Description: `Spending limit in USD. Must be provided together with ` + "`" + `reset_interval` + "`" + `: a request that sets only one of the two is rejected with a 400.`,
 						Validators: []validator.Float64{
@@ -83,6 +84,7 @@ func (r *GuardrailPolicyBudgetResource) Schema(ctx context.Context, req resource
 						},
 					},
 					"reset_interval": schema.StringAttribute{
+						Computed:    true,
 						Optional:    true,
 						Description: `Interval at which the limit resets (daily, weekly, monthly). must be one of ["daily", "weekly", "monthly"]`,
 						Validators: []validator.String{
@@ -491,14 +493,5 @@ func (r *GuardrailPolicyBudgetResource) Delete(ctx context.Context, req resource
 }
 
 func (r *GuardrailPolicyBudgetResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	workspaceID, policyID, err := guardrailPolicyImportID(req.ID)
-	if err != nil {
-		resp.Diagnostics.AddError("invalid import ID", err.Error())
-		return
-	}
-
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), policyID)...)
-	if workspaceID != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("workspace_id"), workspaceID)...)
-	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
 }
