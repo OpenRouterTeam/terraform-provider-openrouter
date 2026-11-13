@@ -49,6 +49,7 @@ const (
 	ProviderNameDeepSeek            ProviderName = "DeepSeek"
 	ProviderNameDekaLlm             ProviderName = "DekaLLM"
 	ProviderNameDigitalOcean        ProviderName = "DigitalOcean"
+	ProviderNameDoubleword          ProviderName = "Doubleword"
 	ProviderNameElevenLabs          ProviderName = "ElevenLabs"
 	ProviderNameFeatherless         ProviderName = "Featherless"
 	ProviderNameFireworks           ProviderName = "Fireworks"
@@ -221,6 +222,8 @@ func (e *ProviderName) UnmarshalJSON(data []byte) error {
 	case "DekaLLM":
 		fallthrough
 	case "DigitalOcean":
+		fallthrough
+	case "Doubleword":
 		fallthrough
 	case "ElevenLabs":
 		fallthrough

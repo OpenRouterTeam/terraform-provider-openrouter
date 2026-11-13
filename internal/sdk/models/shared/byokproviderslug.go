@@ -50,6 +50,7 @@ const (
 	BYOKProviderSlugDeepseek                 BYOKProviderSlug = "deepseek"
 	BYOKProviderSlugDekallm                  BYOKProviderSlug = "dekallm"
 	BYOKProviderSlugDigitalocean             BYOKProviderSlug = "digitalocean"
+	BYOKProviderSlugDoubleword               BYOKProviderSlug = "doubleword"
 	BYOKProviderSlugElevenlabs               BYOKProviderSlug = "elevenlabs"
 	BYOKProviderSlugFeatherless              BYOKProviderSlug = "featherless"
 	BYOKProviderSlugFireworks                BYOKProviderSlug = "fireworks"
@@ -223,6 +224,8 @@ func (e *BYOKProviderSlug) UnmarshalJSON(data []byte) error {
 	case "dekallm":
 		fallthrough
 	case "digitalocean":
+		fallthrough
+	case "doubleword":
 		fallthrough
 	case "elevenlabs":
 		fallthrough

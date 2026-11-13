@@ -296,6 +296,7 @@ type VideoGenerationRequestOptions struct {
 	Deepseek                 map[string]any `json:"deepseek,omitzero"`
 	Dekallm                  map[string]any `json:"dekallm,omitzero"`
 	Digitalocean             map[string]any `json:"digitalocean,omitzero"`
+	Doubleword               map[string]any `json:"doubleword,omitzero"`
 	Elevenlabs               map[string]any `json:"elevenlabs,omitzero"`
 	Enfer                    map[string]any `json:"enfer,omitzero"`
 	FakeProvider             map[string]any `json:"fake-provider,omitzero"`
@@ -727,6 +728,13 @@ func (v *VideoGenerationRequestOptions) GetDigitalocean() map[string]any {
 		return nil
 	}
 	return v.Digitalocean
+}
+
+func (v *VideoGenerationRequestOptions) GetDoubleword() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Doubleword
 }
 
 func (v *VideoGenerationRequestOptions) GetElevenlabs() map[string]any {

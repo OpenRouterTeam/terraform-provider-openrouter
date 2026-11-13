@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 )
 
 type BatchObjectCompletionWindow string
@@ -1423,7 +1424,9 @@ type BatchObjectURLCitation struct {
 	EndIndex   int64   `json:"end_index"`
 	StartIndex int64   `json:"start_index"`
 	Title      string  `json:"title"`
-	URL        string  `json:"url"`
+	//lint:ignore U1000 accessed via reflection for JSON marshaling
+	uncited *bool  `const:"true" json:"uncited,omitzero"`
+	URL     string `json:"url"`
 }
 
 func (b BatchObjectURLCitation) MarshalJSON() ([]byte, error) {
@@ -1463,6 +1466,10 @@ func (b *BatchObjectURLCitation) GetTitle() string {
 		return ""
 	}
 	return b.Title
+}
+
+func (b *BatchObjectURLCitation) GetUncited() *bool {
+	return types.Pointer(true)
 }
 
 func (b *BatchObjectURLCitation) GetURL() string {
