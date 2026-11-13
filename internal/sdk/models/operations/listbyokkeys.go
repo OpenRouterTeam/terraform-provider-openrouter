@@ -53,6 +53,7 @@ const (
 	ProviderDeepseek                 Provider = "deepseek"
 	ProviderDekallm                  Provider = "dekallm"
 	ProviderDigitalocean             Provider = "digitalocean"
+	ProviderDoubleword               Provider = "doubleword"
 	ProviderElevenlabs               Provider = "elevenlabs"
 	ProviderFeatherless              Provider = "featherless"
 	ProviderFireworks                Provider = "fireworks"
@@ -226,6 +227,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "dekallm":
 		fallthrough
 	case "digitalocean":
+		fallthrough
+	case "doubleword":
 		fallthrough
 	case "elevenlabs":
 		fallthrough
