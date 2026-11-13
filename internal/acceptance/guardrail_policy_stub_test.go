@@ -32,10 +32,10 @@ package acceptance
 //     Optional+Computed, so removing it from configuration leaves the stored
 //     value in the update body and the cap stays active while Terraform reads
 //     as though it were removed.
-//   - an update that names no config field still sends the config the policy
-//     already holds, and the same goes for the subject lists. The update starts
-//     from state, so "an omitted field is not sent" only holds for a field that
-//     is neither configured nor stored.
+//   - a config field or subject list that the configuration omits still reaches
+//     the wire with its stored value. The update starts from state, so "an
+//     omitted field is not sent" only holds for a field that is neither
+//     configured nor stored, and both sibling descriptions said it generally.
 //   - removing the armor block clears Model Armor. It is the one object-valued
 //     config field, so removal is the only clear gesture, and it needs the
 //     attribute to be Optional without Computed: as Optional+Computed the stored
@@ -686,29 +686,41 @@ func TestStubGuardrailPolicyBudgetClearingTheLimitSendsNulls(t *testing.T) {
 // from state, so a config field the policy already holds is re-sent even when
 // the configuration names none of it: "an omitted field is not sent" is only
 // true for a field that is neither configured nor stored.
-func TestStubGuardrailPolicyModerationNameOnlyUpdateKeepsStoredConfig(t *testing.T) {
+// TestStubGuardrailPolicyModerationOmittedConfigValueComesFromState is the
+// regression test for the sentence the moderation description used to carry:
+// "an omitted field is not sent". The update starts from state, so a config
+// field the policy already holds is re-sent when the configuration omits it,
+// and the omission is only a true absence for a field that is neither
+// configured nor stored. Armor stays configured on purpose: with the attribute
+// now Optional instead of Optional+Computed, removing that block is a clear
+// rather than an omission, and it is covered by its own test.
+func TestStubGuardrailPolicyModerationOmittedConfigValueComesFromState(t *testing.T) {
 	t.Setenv("TF_ACC", "1")
 
 	srv, stub := newGuardrailPolicyStub(t)
 
-	config := func(name string) string {
+	config := func(name string, blocksRequests bool) string {
+		scalar := ""
+		if blocksRequests {
+			scalar = "\n    content_filter_blocks_requests = true"
+		}
 		return guardrailPolicyStubConfig(srv.URL, "moderation", "moderation", fmt.Sprintf(`
   config = {
     armor = {
       mode     = "audit"
       on_error = "log"
-    }
-    content_filter_blocks_requests = true
+    }%s
   }
   name = %q
-`, name))
+`, scalar, name))
 	}
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
 		Steps: []resource.TestStep{
-			{Config: config("stub moderation policy")},
-			{Config: config("stub moderation policy renamed")},
+			{Config: config("stub moderation policy", true)},
+			// Step two omits the scalar: nothing in the configuration names it.
+			{Config: config("stub moderation policy renamed", false)},
 		},
 	})
 
@@ -717,22 +729,18 @@ func TestStubGuardrailPolicyModerationNameOnlyUpdateKeepsStoredConfig(t *testing
 	if !ok {
 		t.Fatalf("update sent config as %T, want an object", body["config"])
 	}
+	if got := cfg["content_filter_blocks_requests"]; got != true {
+		t.Errorf("update sent content_filter_blocks_requests=%v after the configuration omitted it, want the stored true: the update starts from state", got)
+	}
 	armor, ok := cfg["armor"].(map[string]any)
 	if !ok {
-		t.Fatalf("name-only update dropped config.armor: a field the policy already holds has to keep being sent, because the route replaces the config wholesale")
+		t.Fatalf("update dropped config.armor, which was still configured: got %T", cfg["armor"])
 	}
 	if got := armor["mode"]; got != "audit" {
-		t.Errorf("name-only update sent config.armor.mode=%v, want the stored %q", got, "audit")
-	}
-	if got := cfg["content_filter_blocks_requests"]; got != true {
-		t.Errorf("name-only update sent content_filter_blocks_requests=%v, want the stored true", got)
+		t.Errorf("update sent config.armor.mode=%v, want %q", got, "audit")
 	}
 }
 
-// TestStubGuardrailPolicyModerationRemovingArmorClearsIt pins the clear gesture
-// for the one object-valued config field. Removing the block is how a user says
-// "no Model Armor", and the update has to stop sending it: the route replaces
-// the config wholesale, so an absent armor key is what clears a stored one.
 func TestStubGuardrailPolicyModerationRemovingArmorClearsIt(t *testing.T) {
 	t.Setenv("TF_ACC", "1")
 
@@ -783,36 +791,114 @@ func TestStubGuardrailPolicyModerationRemovingArmorClearsIt(t *testing.T) {
 // other half of the same rule: the subject lists an update does not name are
 // re-sent from state rather than dropped, so a step that changes only the name
 // keeps the policy's members and keys.
-func TestStubGuardrailPolicyModerationNameOnlyUpdateKeepsAssignments(t *testing.T) {
+// TestStubGuardrailPolicyModerationOmittedAssignmentsComeFromState covers the
+// subject lists, which are Optional+Computed too: a step that names neither list
+// keeps the stored assignments, and the rule that matters is that they reach the
+// wire rather than being dropped by an update that replaces the config wholesale.
+func TestStubGuardrailPolicyModerationOmittedAssignmentsComeFromState(t *testing.T) {
 	t.Setenv("TF_ACC", "1")
 
 	srv, stub := newGuardrailPolicyStub(t)
 
-	config := func(name string) string {
+	const memberID = "user_2abcDEFghiJKLmnoPQRstu"
+	const keyHash = "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"
+
+	config := func(name string, withAssignments bool) string {
+		assignments := ""
+		if withAssignments {
+			assignments = fmt.Sprintf(`
+  api_key_hashes = [%q]
+  member_ids     = [%q]`, keyHash, memberID)
+		}
 		return guardrailPolicyStubConfig(srv.URL, "moderation", "moderation", fmt.Sprintf(`
-  api_key_hashes = ["c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93"]
-  config         = {}
-  member_ids     = ["user_2abcDEFghiJKLmnoPQRstu"]
-  name           = %q
-`, name))
+  config = {
+    armor = {
+      mode     = "audit"
+      on_error = "log"
+    }
+  }%s
+  name = %q
+`, assignments, name))
 	}
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
 		Steps: []resource.TestStep{
-			{Config: config("stub moderation policy")},
-			{Config: config("stub moderation policy renamed")},
+			{Config: config("stub moderation policy", true)},
+			// Step two names neither list: they have to come back from state.
+			{Config: config("stub moderation policy renamed", false)},
 		},
 	})
 
 	body := stub.lastUpdate(t, "moderation")
-	for _, key := range []string{"member_ids", "api_key_hashes"} {
-		got, ok := body[key].([]any)
+	for _, tc := range []struct {
+		key  string
+		want string
+	}{
+		{"member_ids", memberID},
+		{"api_key_hashes", keyHash},
+	} {
+		got, ok := body[tc.key].([]any)
 		if !ok {
-			t.Fatalf("update sent %s as %T, want the stored list", key, body[key])
+			t.Fatalf("update sent %s as %T, want the stored list", tc.key, body[tc.key])
 		}
-		if len(got) != 1 {
-			t.Errorf("name-only update sent %s=%v, want the one stored assignment: an update that names neither list keeps them", key, got)
+		if len(got) != 1 || got[0] != tc.want {
+			t.Errorf("update sent %s=%v after the configuration omitted it, want exactly [%q]: an update that names neither list keeps the stored assignments", tc.key, got, tc.want)
 		}
+	}
+}
+
+// TestStubGuardrailPolicyModelAvailabilityOmittedConfigComesFromState pins the
+// same rule for the sibling family, whose description carried the same wrong
+// sentence about omitted lists. Its config fields are Optional+Computed as well,
+// so a step whose config names none of them re-sends what the policy holds.
+func TestStubGuardrailPolicyModelAvailabilityOmittedConfigComesFromState(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyStub(t)
+
+	const allowedModel = "openai/gpt-4o"
+
+	config := func(name string, configured bool) string {
+		body := ""
+		if configured {
+			body = fmt.Sprintf(`
+  config = {
+    allowed_models = [%q]
+    enforce_zdr    = true
+  }
+`, allowedModel)
+		} else {
+			body = `
+  config = {}
+`
+		}
+		return guardrailPolicyStubConfig(srv.URL, "model_availability", "model_availability", fmt.Sprintf(`%s  name = %q
+`, body, name))
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config("stub model availability policy", true)},
+			// An empty config names nothing: every field has to come from state.
+			{Config: config("stub model availability policy renamed", false)},
+		},
+	})
+
+	body := stub.lastUpdate(t, "model-availability")
+	cfg, ok := body["config"].(map[string]any)
+	if !ok {
+		t.Fatalf("update sent config as %T, want an object", body["config"])
+	}
+	if got := cfg["enforce_zdr"]; got != true {
+		t.Errorf("update sent enforce_zdr=%v for a config that omitted it, want the stored true", got)
+	}
+	got, ok := cfg["allowed_models"].([]any)
+	if !ok {
+		t.Fatalf("update sent allowed_models as %T, want the stored list", cfg["allowed_models"])
+	}
+	if len(got) != 1 || got[0] != allowedModel {
+		t.Errorf("update sent allowed_models=%v for a config that omitted it, want exactly [%q]", got, allowedModel)
 	}
 }
