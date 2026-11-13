@@ -93,7 +93,7 @@ type BatchSubmitBody struct {
 	CallbackURL      *string                          `json:"callback_url,omitzero"`
 	CompletionWindow *BatchSubmitBodyCompletionWindow `default:"24h" json:"completion_window"`
 	Endpoint         Endpoint                         `json:"endpoint"`
-	// A batch input file in your own storage, named in place of `requests`. Available to allowlisted callers on Google Vertex BYOK endpoints only.
+	// A batch input file or table in your own storage, named in place of `requests`. Available to allowlisted callers on Google Vertex BYOK endpoints only.
 	Input *BatchInputReference `json:"input,omitzero"`
 	Model string               `json:"model"`
 	// Batch provider routing preferences. Only `provider.only` and `provider.allow_fallbacks` are supported.
