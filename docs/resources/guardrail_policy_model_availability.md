@@ -4,7 +4,7 @@ page_title: "openrouter_guardrail_policy_model_availability Resource - terraform
 subcategory: ""
 description: |-
   A workspace model-availability policy: which models, providers and data regions a workspace's traffic may use, plus ZDR enforcement and the model training and publication toggles. policy_type must be model_availability, with an underscore, while this resource's API route is hyphenated; the type is fixed at create, where changing it replaces the policy.
-  config is required. The allowed_* and ignored_* lists travel only when you configure them: an empty list is sent as [] to clear that dimension, and an omitted list is not sent at all. Boolean fields behave the same way, with false travelling explicitly.
+  config is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. An empty list is sent as [] to clear that dimension and false travels explicitly, so name every field you want applied rather than expecting an update to clear one by leaving it out.
   member_ids and api_key_hashes replace the stored assignments and must be sent together: omit both to keep them, or set both to [] to clear them. is_workspace_default is optional, and omitting it keeps the stored status while false unsets the policy as the workspace default.
   workspace_id is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes <workspace_id>/<policy_id> for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.
 ---
@@ -13,7 +13,7 @@ description: |-
 
 A workspace model-availability policy: which models, providers and data regions a workspace's traffic may use, plus ZDR enforcement and the model training and publication toggles. `policy_type` must be `model_availability`, with an underscore, while this resource's API route is hyphenated; the type is fixed at create, where changing it replaces the policy.
 
-`config` is required. The `allowed_*` and `ignored_*` lists travel only when you configure them: an empty list is sent as `[]` to clear that dimension, and an omitted list is not sent at all. Boolean fields behave the same way, with `false` travelling explicitly.
+`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. An empty list is sent as `[]` to clear that dimension and `false` travels explicitly, so name every field you want applied rather than expecting an update to clear one by leaving it out.
 
 `member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default.
 
