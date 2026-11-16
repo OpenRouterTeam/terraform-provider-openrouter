@@ -1,21 +1,21 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 5bf47bf05253d9057426fa1f7a2e52fd
+  docChecksum: bde0bbaaf07fcdee3dd8a369af94e29b
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.266
-  configChecksum: 24df18dab106838e15f4a3e3ffd771c4
+  releaseVersion: 0.3.267
+  configChecksum: dce1ca10c3b8d791cbdb43af2d887700
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: 687f42c1-1264-4ffa-8ba7-2a6815ce62fc
-  pristine_commit_hash: 03ceacb6476f11bc9e75b5fa95ecb01db9080a16
-  pristine_tree_hash: 30206ce791c7c1d997d120de861123b394347f03
+  generation_id: 4ec6bea8-151a-4f0a-9b4c-19bec73cfc4f
+  pristine_commit_hash: feac351d19440e730531bc759cbf7c0f8dbe4939
+  pristine_tree_hash: 6b45b3352a0742542a499ebfe3f84af201bf7f12
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -153,8 +153,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:1059af9a379f572a0178936466e676185d2ce865
-    pristine_git_object: 562db2fe0753820213962b9629893f85f9815f16
+    last_write_checksum: sha1:4f278fe72257f4040e65c9be6e173fb2ec446300
+    pristine_git_object: 38827ff857e34069df1884abdf960ef363237941
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1321,8 +1321,8 @@ trackedFiles:
     pristine_git_object: b13cf9f6192666267bb1c8ed287ed0c7973fd8ac
   internal/sdk/generations.go:
     id: 3af0bc3ca334
-    last_write_checksum: sha1:9ad48ba33be9060d714ce519c7dea8f89d626206
-    pristine_git_object: 03b88d30aaa73d5fa9b6e815e3d580a125c82d02
+    last_write_checksum: sha1:baea8fd4cf1eb2088e49de01947dd762782bd2ec
+    pristine_git_object: 8b6da1ef381b5dffd6522b5cffa934f246d2110b
   internal/sdk/guardrailpolicies.go:
     id: d01342c09e87
     last_write_checksum: sha1:64fc973f7b3008ecccd388a472fdbde92c1d3dbc
@@ -1849,8 +1849,8 @@ trackedFiles:
     pristine_git_object: 2acfa355caf85110eb8fc712b44ea2e2bea2287a
   internal/sdk/models/operations/listgenerationcontent.go:
     id: d0424d221314
-    last_write_checksum: sha1:c483bdc10936729e47687e359c30942c963c4714
-    pristine_git_object: 27bd7d379d229139cef60d271b89edcbcc9f2c0d
+    last_write_checksum: sha1:8117a864be9dfd70f1a03492dcd7a1639e2f0fab
+    pristine_git_object: f136728185dfa9858a1864148496c3838a77ee88
   internal/sdk/models/operations/listguardrailkeyassignments.go:
     id: 4045304affe0
     last_write_checksum: sha1:1dd11987b6f9af71344215a49423c90a302894eb
@@ -5085,8 +5085,8 @@ trackedFiles:
     pristine_git_object: 4b8d0128086e4d63f8b3b3ee528144309e3bef7a
   internal/sdk/models/shared/speechrequest.go:
     id: 62ae2098c4e4
-    last_write_checksum: sha1:06c968edf38695974c5c8e18179752eedc298ae1
-    pristine_git_object: b7b3534f68d7009de663cde08ca8833ae604f298
+    last_write_checksum: sha1:f024ede86d415569d14a159df651e420585d69d3
+    pristine_git_object: 0c6dc41d16d96aff2c2ec896e811518f8d382200
   internal/sdk/models/shared/speechturn.go:
     id: 6d931094b941
     last_write_checksum: sha1:4ec8b78e5a0e01887071a288136e26019b144f92
@@ -5581,8 +5581,8 @@ trackedFiles:
     pristine_git_object: 038f2e1d6b86fb9ef40e4a5b3ab683cb73119ca9
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:04a8e2b2c1df281c32c9a7ded2d76568fa415a39
-    pristine_git_object: 59d92d452da28613dd9f499d06c5dec377d34464
+    last_write_checksum: sha1:88989d5d3da4d2883e9c97c5de4d94cd98a8e8f9
+    pristine_git_object: ca36e2622b334089896202a669afccdb8dc54b93
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -6381,6 +6381,8 @@ examples:
           application/json: {"error": {"code": 529, "message": "Provider returned error"}}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
+        "503":
+          application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
   submitGenerationFeedback:
     speakeasy-default-submit-generation-feedback:
       requestBody:
