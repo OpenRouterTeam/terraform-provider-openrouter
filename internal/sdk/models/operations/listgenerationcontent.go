@@ -44,6 +44,8 @@ type ListGenerationContentResponse struct {
 	InternalServerResponse *shared.InternalServerResponse
 	// Bad Gateway - Provider/upstream API failure
 	BadGatewayResponse *shared.BadGatewayResponse
+	// Service Unavailable - Service temporarily unavailable
+	ServiceUnavailableResponse *shared.ServiceUnavailableResponse
 	// Infrastructure Timeout - Provider request timed out at edge network
 	EdgeNetworkTimeoutResponse *shared.EdgeNetworkTimeoutResponse
 	// Provider Overloaded - Provider is temporarily overloaded
@@ -136,6 +138,13 @@ func (l *ListGenerationContentResponse) GetBadGatewayResponse() *shared.BadGatew
 		return nil
 	}
 	return l.BadGatewayResponse
+}
+
+func (l *ListGenerationContentResponse) GetServiceUnavailableResponse() *shared.ServiceUnavailableResponse {
+	if l == nil {
+		return nil
+	}
+	return l.ServiceUnavailableResponse
 }
 
 func (l *ListGenerationContentResponse) GetEdgeNetworkTimeoutResponse() *shared.EdgeNetworkTimeoutResponse {

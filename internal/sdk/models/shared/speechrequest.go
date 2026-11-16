@@ -461,7 +461,7 @@ type SpeechRequest struct {
 	Trace *TraceConfig `json:"trace,omitzero"`
 	// A unique identifier representing your end-user. Forwarded to Broadcast and private logging as the end-user id; never sent to the provider.
 	User *string `json:"user,omitzero"`
-	// Voice identifier (provider-specific).
+	// Voice identifier (provider-specific). Required by most providers; only Seed Audio, HeyGen, Fish Audio, AssemblyAI, Speechify accept requests without it.
 	Voice *string `json:"voice,omitzero"`
 }
 
