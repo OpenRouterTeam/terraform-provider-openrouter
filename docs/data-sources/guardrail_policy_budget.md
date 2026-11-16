@@ -51,6 +51,6 @@ data "openrouter_guardrail_policy_budget" "my_guardrailpolicybudget" {
 
 Read-Only:
 
-- `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false.
+- `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend.
 - `limit_usd` (Number) Spending limit in USD. Must be provided together with `reset_interval`: a request that sets only one of the two is rejected with a 400.
 - `reset_interval` (String) Interval at which the limit resets (daily, weekly, monthly)

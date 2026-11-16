@@ -68,7 +68,7 @@ func (r *GuardrailPolicyBudgetDataSource) Schema(ctx context.Context, req dataso
 				Attributes: map[string]schema.Attribute{
 					"include_byok_in_budgets": schema.BoolAttribute{
 						Computed:    true,
-						Description: `Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false.`,
+						Description: `Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend.`,
 					},
 					"limit_usd": schema.Float64Attribute{
 						Computed:    true,
