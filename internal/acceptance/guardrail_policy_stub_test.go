@@ -22,8 +22,10 @@ package acceptance
 //     delete. A workspace-scoped key needs no value to read its own policies
 //     and an organization key cannot read without one, so a provider that
 //     drops the parameter is untestable rather than wrong.
-//   - a 404 on read removes the resource instead of failing the plan, and a
-//     delete of something already gone is accepted.
+//   - a 404 on read removes the resource so the next plan re-creates it, and a
+//     destroy reaches the API at all. The 404 answer to a delete of something
+//     already gone stays code-read rather than tested: no test here drives a
+//     destroy of a policy the stub has already dropped.
 //   - import hydrates from the policy id alone when the key carries its own
 //     workspace, and from <workspace_id>/<policy_id> when it does not. Read
 //     needs a workspace scope, and no response model carries one back, so the
@@ -55,6 +57,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
 const (
@@ -81,6 +84,11 @@ type guardrailPolicyStub struct {
 	getQueries    []url.Values
 	deleteQueries []url.Values
 	deleted       map[string]bool
+	// deleteCalls counts the DELETEs that reached the route, per type slug.
+	// Destroys are asserted against it: a provider whose Delete returns early
+	// still completes a destroy cleanly, so the request count is the only
+	// signal that a destroy reached the API.
+	deleteCalls map[string]int
 }
 
 func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStub) {
@@ -90,6 +98,7 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 		createBodies: map[string]map[string]any{},
 		updateBodies: map[string]map[string]any{},
 		deleted:      map[string]bool{},
+		deleteCalls:  map[string]int{},
 	}
 	writeJSON := func(w http.ResponseWriter, code int, body any) {
 		w.Header().Set("Content-Type", "application/json")
@@ -99,6 +108,13 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 	notFound := func(w http.ResponseWriter, message string) {
 		writeJSON(w, http.StatusNotFound, map[string]any{
 			"error": map[string]any{"code": 404, "message": message},
+		})
+	}
+	// The live route answers every malformed policy request with the same
+	// shape, including a write that carries a query string.
+	badRequest := func(w http.ResponseWriter, message string) {
+		writeJSON(w, http.StatusBadRequest, map[string]any{
+			"error": map[string]any{"code": 400, "message": message},
 		})
 	}
 
@@ -144,6 +160,13 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 	mux := http.NewServeMux()
 	for _, slug := range []string{"budget", "moderation", "model-availability"} {
 		mux.HandleFunc("POST /guardrails/policies/"+slug, func(w http.ResponseWriter, r *http.Request) {
+			// A write carries no query string on this route: the scope lives in
+			// the body for create and update, and the live API rejects a write
+			// that adds one. Nothing else here would notice a stray parameter.
+			if r.URL.RawQuery != "" {
+				badRequest(w, "Invalid guardrail policy request")
+				return
+			}
 			var body map[string]any
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				writeJSON(w, http.StatusBadRequest, map[string]any{"error": map[string]any{"code": 400, "message": "bad json"}})
@@ -164,9 +187,14 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 			gone := s.deleted[slug]
 			s.mu.Unlock()
 			if s.orgKey && r.URL.Query().Get("workspace_id") == "" {
-				writeJSON(w, http.StatusBadRequest, map[string]any{
-					"error": map[string]any{"code": 400, "message": "Invalid guardrail policy request"},
-				})
+				badRequest(w, "Invalid guardrail policy request")
+				return
+			}
+			// The route addresses one policy: an id the stub does not hold is a
+			// 404 rather than a read of whatever it does hold. Without this, a
+			// request carrying the wrong id still hydrates state.
+			if stored, _ := p["id"].(string); stored != "" && r.PathValue("id") != stored {
+				notFound(w, "Policy not found.")
 				return
 			}
 			if !ok || gone {
@@ -177,10 +205,31 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 		})
 
 		mux.HandleFunc("PUT /guardrails/policies/"+slug+"/{id}", func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.RawQuery != "" {
+				badRequest(w, "Invalid guardrail policy request")
+				return
+			}
 			var body map[string]any
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				writeJSON(w, http.StatusBadRequest, map[string]any{"error": map[string]any{"code": 400, "message": "bad json"}})
 				return
+			}
+			s.mu.Lock()
+			stored := s.policies[slug]
+			s.mu.Unlock()
+			if stored != nil {
+				if id, _ := stored["id"].(string); id != "" && r.PathValue("id") != id {
+					notFound(w, "Policy not found.")
+					return
+				}
+			}
+			// An organization key names the workspace it is writing to on every
+			// write, create and update alike.
+			if s.orgKey {
+				if ws, _ := body["workspace_id"].(string); ws == "" {
+					badRequest(w, "Invalid guardrail policy request")
+					return
+				}
 			}
 			s.mu.Lock()
 			s.updateBodies[slug] = body
@@ -197,14 +246,17 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 		mux.HandleFunc("DELETE /guardrails/policies/"+slug+"/{id}", func(w http.ResponseWriter, r *http.Request) {
 			s.mu.Lock()
 			s.deleteQueries = append(s.deleteQueries, r.URL.Query())
-			_, ok := s.policies[slug]
+			s.deleteCalls[slug]++
+			p, ok := s.policies[slug]
 			already := s.deleted[slug]
 			s.deleted[slug] = true
 			s.mu.Unlock()
 			if s.orgKey && r.URL.Query().Get("workspace_id") == "" {
-				writeJSON(w, http.StatusBadRequest, map[string]any{
-					"error": map[string]any{"code": 400, "message": "Invalid guardrail policy request"},
-				})
+				badRequest(w, "Invalid guardrail policy request")
+				return
+			}
+			if stored, _ := p["id"].(string); stored != "" && r.PathValue("id") != stored {
+				notFound(w, "Policy not found.")
 				return
 			}
 			if !ok || already {
@@ -251,6 +303,13 @@ func (s *guardrailPolicyStub) lastCreate(t *testing.T, slug string) map[string]a
 		t.Fatalf("no create reached the stub for %s", slug)
 	}
 	return body
+}
+
+// deleteCount reports how many DELETEs reached the route for a type slug.
+func (s *guardrailPolicyStub) deleteCount(slug string) int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.deleteCalls[slug]
 }
 
 // stubProviderBlock renders a provider block pointed at the stub server.
@@ -472,6 +531,14 @@ func TestStubGuardrailPolicyVanishedLeavesState(t *testing.T) {
 				// config from the previous step, and a step cannot carry both.
 				RefreshState:       true,
 				ExpectNonEmptyPlan: true,
+				// ExpectNonEmptyPlan on its own permits a plan of any shape, so
+				// it can never fail. The plan check is what asserts that the
+				// refresh dropped the resource and the next plan re-creates it.
+				RefreshPlanChecks: resource.RefreshPlanChecks{
+					PostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("openrouter_guardrail_policy_budget.test", plancheck.ResourceActionCreate),
+					},
+				},
 			},
 		},
 	})
@@ -538,6 +605,15 @@ func TestStubGuardrailPolicyOtherFamiliesLifecycle(t *testing.T) {
 			},
 		},
 	})
+
+	// Destroy runs as resource.Test finishes, so the DELETEs it issued are
+	// assertable here. Without this the test passes when Delete never reaches
+	// the API at all, which is how it read before.
+	for _, slug := range []string{"moderation", "model-availability"} {
+		if got := stub.deleteCount(slug); got == 0 {
+			t.Errorf("%s: destroy sent no DELETE to the stub, so the policy was never destroyed", slug)
+		}
+	}
 
 	for _, tc := range []struct{ slug, policyType string }{
 		{"moderation", "moderation"},

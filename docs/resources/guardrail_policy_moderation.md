@@ -315,12 +315,12 @@ In Terraform v1.5.0 and later, the [`import` block](https://developer.hashicorp.
 ```terraform
 import {
   to = openrouter_guardrail_policy_moderation.my_openrouter_guardrail_policy_moderation
-  id = "550e8400-e29b-41d4-a716-446655440000"
+  id = "3f7c2a4e-9b1d-4c6e-8a2f-5d0e1b7c9a31/550e8400-e29b-41d4-a716-446655440000"
 }
 ```
 
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-terraform import openrouter_guardrail_policy_moderation.my_openrouter_guardrail_policy_moderation "550e8400-e29b-41d4-a716-446655440000"
+terraform import openrouter_guardrail_policy_moderation.my_openrouter_guardrail_policy_moderation "3f7c2a4e-9b1d-4c6e-8a2f-5d0e1b7c9a31/550e8400-e29b-41d4-a716-446655440000"
 ```
