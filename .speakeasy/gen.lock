@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: b5f0b56ff2aca4f6d95996ab9f3825b8
+  docChecksum: b2619a0c82a87d8742fa95e05e9b550e
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
@@ -5625,8 +5625,8 @@ trackedFiles:
     pristine_git_object: f6f68a9171483613b1efe58b6b4ad5d15580c8c7
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:c156c4438424825054b6704d6fef01d891e44972
-    pristine_git_object: afed38eeb21fe604f945f062595ef64d3facf291
+    last_write_checksum: sha1:c51f655647d46e560dec97c4a306127d161c52de
+    pristine_git_object: 9753f2150701baf93067ab6e9ff8e60e469b4ccc
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
     last_write_checksum: sha1:6d2308c1941b46714e59d1f5a58430b8ff11fc8e
@@ -5637,8 +5637,8 @@ trackedFiles:
     pristine_git_object: a0ce60b358f780a696e943fbaa6176449c970d5e
   internal/sdk/models/shared/videomodel.go:
     id: 4a6266e95ed6
-    last_write_checksum: sha1:12d8a77ab27b7d0b481209e12d3053ba40d8729b
-    pristine_git_object: 5554ce2a68ab0637d89dde4149ad6b62c7d77fc9
+    last_write_checksum: sha1:78c5aec898c4dcf869219b6429afb78a311eabf6
+    pristine_git_object: cdc2985c2b9c881a7f64a00351d98bf1c913bb3e
   internal/sdk/models/shared/videomodelslistresponse.go:
     id: 11e35b4e3b57
     last_write_checksum: sha1:33e380e205f3353b220a7bfc34d9240eb13a127b

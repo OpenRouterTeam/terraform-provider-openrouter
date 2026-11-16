@@ -23,6 +23,8 @@ const (
 	VideoGenerationRequestAspectRatioTwentyThree             VideoGenerationRequestAspectRatio = "2:3"
 	VideoGenerationRequestAspectRatioTwoHundredAndNineteen   VideoGenerationRequestAspectRatio = "21:9"
 	VideoGenerationRequestAspectRatioNineHundredAndTwentyOne VideoGenerationRequestAspectRatio = "9:21"
+	VideoGenerationRequestAspectRatioTwentyOne               VideoGenerationRequestAspectRatio = "2:1"
+	VideoGenerationRequestAspectRatioFiftyTwo                VideoGenerationRequestAspectRatio = "5:2"
 )
 
 func (e VideoGenerationRequestAspectRatio) ToPointer() *VideoGenerationRequestAspectRatio {
@@ -51,6 +53,10 @@ func (e *VideoGenerationRequestAspectRatio) UnmarshalJSON(data []byte) error {
 	case "21:9":
 		fallthrough
 	case "9:21":
+		fallthrough
+	case "2:1":
+		fallthrough
+	case "5:2":
 		*e = VideoGenerationRequestAspectRatio(v)
 		return nil
 	default:
@@ -1774,7 +1780,7 @@ type VideoGenerationRequest struct {
 	Duration *int64 `json:"duration,omitzero"`
 	// Images to use as the first and/or last frame of the generated video. Each image must specify a frame_type of first_frame or last_frame.
 	FrameImages []FrameImage `json:"frame_images,omitzero"`
-	// Whether to generate audio alongside the video. Defaults to the endpoint's generate_audio capability flag, false if not set.
+	// Whether to generate audio alongside the video. Defaults to the endpoint's generate_audio capability flag, false if not set. When neither is set, some providers (such as xAI) apply their own default and generate audio, so send false to request a silent video. Some models always include audio and ignore false.
 	GenerateAudio *bool `json:"generate_audio,omitzero"`
 	// Reference assets to guide video generation. Accepts image, audio, and video references. Audio and video references are only honored by providers that support them (including BytePlus Seedance generation 2 and newer); other providers use image references and ignore the rest.
 	InputReferences []InputReference `json:"input_references,omitzero"`
