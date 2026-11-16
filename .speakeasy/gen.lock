@@ -1,21 +1,21 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 32a17273330bd9df428f7d7a35ab3fa7
+  docChecksum: 2c4286fcd69bf091404138bab3849883
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.270
-  configChecksum: bfa183304cf6ff9bde2b1f6853689308
+  releaseVersion: 0.3.271
+  configChecksum: 9ec77b6a53102b64612334db206fe7a3
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: b1bb90b8-9916-445d-97a1-9bb7080a59f9
-  pristine_commit_hash: c5c42d7da8fc4816dc595a781d261070abfeb189
-  pristine_tree_hash: 646cddba30e127de2d48ca426701184062b1b17c
+  generation_id: a3cbbdf3-8e66-43bd-ac2c-895d29faca45
+  pristine_commit_hash: c478a81d0ba96db24d9eef89d1316e3ac8f2bf86
+  pristine_tree_hash: 781759dc43d378fbc63afad649ec8f7fe254083f
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -165,8 +165,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:7e1baa2794196362b1021b0f55af5f4da22944e2
-    pristine_git_object: 551d42347c2038f2b39ab56cd4ac08e1f89fd21e
+    last_write_checksum: sha1:40ef49c2a0ba5fa8541e40e2ff111a0a4ca6f047
+    pristine_git_object: da25e059fb879fb37e05ff5f9b4eb9dc34d56491
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -5745,8 +5745,8 @@ trackedFiles:
     pristine_git_object: 038f2e1d6b86fb9ef40e4a5b3ab683cb73119ca9
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:daf41611176d8020cafc701d19336a0951b6c57c
-    pristine_git_object: c5371dc367a15b54858d1a471810fc80a278d605
+    last_write_checksum: sha1:5cfc39fb17192146ebf3550ddb16cc7ce0747cfc
+    pristine_git_object: f6bbc8796bae300bc6a0087b0ed6c98da908bd92
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
