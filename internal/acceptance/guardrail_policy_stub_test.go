@@ -176,6 +176,11 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 			s.mu.Lock()
 			s.createBodies[slug] = body
 			s.policies[slug] = body
+			// A create puts a policy of this type back, so the read that follows
+			// one has to succeed even when an earlier delete in the same test
+			// marked the type gone. Without this, a replacement (destroy then
+			// create) could never read the policy it just created.
+			s.deleted[slug] = false
 			s.mu.Unlock()
 			writeJSON(w, http.StatusCreated, map[string]any{"data": short(body)})
 		})
@@ -977,4 +982,48 @@ func TestStubGuardrailPolicyModelAvailabilityOmittedConfigComesFromState(t *test
 	if len(got) != 1 || got[0] != allowedModel {
 		t.Errorf("update sent allowed_models=%v for a config that omitted it, want exactly [%q]", got, allowedModel)
 	}
+}
+
+// TestStubGuardrailPolicyWorkspaceChangeForcesReplacement locks the plan-time
+// contract for workspace_id. The route answers an update that carries a
+// different workspace_id with 400 "Policy belongs to a different workspace", so
+// a change has to plan a replacement rather than the in-place update the
+// generated resource planned on its own, and a plan that removes the attribute
+// has to fail: the update omits it, the route keeps the policy where it is, and
+// state would record a workspace the API never applied while the read that
+// follows needs that workspace as its scope.
+func TestStubGuardrailPolicyWorkspaceChangeForcesReplacement(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, _ := newGuardrailPolicyStub(t)
+
+	const addr = "openrouter_guardrail_policy_model_availability.test"
+
+	config := func(workspaceAttr string) string {
+		return guardrailPolicyStubConfig(srv.URL, "model_availability", "model_availability", fmt.Sprintf(`  config = {}
+  name = "stub model availability policy"
+%s`, workspaceAttr))
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: config("  workspace_id = \"stub-workspace-a\"\n"),
+				Check:  resource.TestCheckResourceAttr(addr, "workspace_id", "stub-workspace-a"),
+			},
+			{
+				Config: config("  workspace_id = \"stub-workspace-b\"\n"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(addr, plancheck.ResourceActionDestroyBeforeCreate),
+					},
+				},
+			},
+			{
+				Config:      config(""),
+				ExpectError: regexp.MustCompile("workspace_id cannot be removed"),
+			},
+		},
+	})
 }

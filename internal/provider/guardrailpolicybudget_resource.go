@@ -164,6 +164,9 @@ func (r *GuardrailPolicyBudgetResource) Schema(ctx context.Context, req resource
 			"workspace_id": schema.StringAttribute{
 				Optional:    true,
 				Description: `Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.`,
+				PlanModifiers: []planmodifier.String{
+					speakeasy_stringplanmodifier.GuardrailPolicyWorkspaceImmutable(),
+				},
 			},
 		},
 	}
