@@ -3,7 +3,7 @@
 page_title: "openrouter_guardrail_policy_moderation Resource - terraform-provider-openrouter"
 subcategory: ""
 description: |-
-  A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. policy_type must be moderation and is fixed at create, where changing it replaces the policy.
+  A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. policy_type must be moderation, and is fixed for this resource: the corresponding resource manages another policy family.
   config is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. false travels explicitly and an empty list is sent as [] to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. armor is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.
   member_ids and api_key_hashes replace the stored assignments and must be sent together: omit both to keep them, or set both to [] to clear them. is_workspace_default is optional, and omitting it keeps the stored status while false unsets the policy as the workspace default.
   workspace_id is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes <workspace_id>/<policy_id> for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.
@@ -11,7 +11,7 @@ description: |-
 
 # openrouter_guardrail_policy_moderation (Resource)
 
-A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation` and is fixed at create, where changing it replaces the policy.
+A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation`, and is fixed for this resource: the corresponding resource manages another policy family.
 
 `config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.
 
@@ -322,5 +322,6 @@ import {
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
+# The import ID is <workspace_id>/<policy_id> for an organization management key, or <policy_id> for a workspace-scoped key.
 terraform import openrouter_guardrail_policy_moderation.my_openrouter_guardrail_policy_moderation "3f7c2a4e-9b1d-4c6e-8a2f-5d0e1b7c9a31/550e8400-e29b-41d4-a716-446655440000"
 ```

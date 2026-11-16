@@ -3,7 +3,7 @@
 page_title: "openrouter_guardrail_policy_budget Resource - terraform-provider-openrouter"
 subcategory: ""
 description: |-
-  A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. policy_type must be budget and is fixed at create, where changing it replaces the policy.
+  A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. policy_type must be budget, and is fixed for this resource: the corresponding resource manages another policy family.
   config is required, and the provider sends it whole on every update: a step that changes only name still sends include_byok_in_budgets, limit_usd and reset_interval. include_byok_in_budgets decides whether bring-your-own-key spend counts toward the limit alongside OpenRouter credit spend. limit_usd and reset_interval are optional and travel as explicit nulls when unset.
   member_ids and api_key_hashes replace the stored assignments and must be sent together: omit both to keep them, or set both to [] to clear them. is_workspace_default is optional, and omitting it keeps the stored status while false unsets the policy as the workspace default.
   workspace_id is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. Import takes <workspace_id>/<policy_id> for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.
@@ -11,7 +11,7 @@ description: |-
 
 # openrouter_guardrail_policy_budget (Resource)
 
-A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. `policy_type` must be `budget` and is fixed at create, where changing it replaces the policy.
+A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. `policy_type` must be `budget`, and is fixed for this resource: the corresponding resource manages another policy family.
 
 `config` is required, and the provider sends it whole on every update: a step that changes only `name` still sends `include_byok_in_budgets`, `limit_usd` and `reset_interval`. `include_byok_in_budgets` decides whether bring-your-own-key spend counts toward the limit alongside OpenRouter credit spend. `limit_usd` and `reset_interval` are optional and travel as explicit nulls when unset.
 
@@ -102,5 +102,6 @@ import {
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
+# The import ID is <workspace_id>/<policy_id> for an organization management key, or <policy_id> for a workspace-scoped key.
 terraform import openrouter_guardrail_policy_budget.my_openrouter_guardrail_policy_budget "3f7c2a4e-9b1d-4c6e-8a2f-5d0e1b7c9a31/550e8400-e29b-41d4-a716-446655440000"
 ```

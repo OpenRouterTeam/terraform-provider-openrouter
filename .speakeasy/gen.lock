@@ -1,7 +1,7 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: 2c4286fcd69bf091404138bab3849883
+  docChecksum: b5f0b56ff2aca4f6d95996ab9f3825b8
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
@@ -13,9 +13,9 @@ management:
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: a3cbbdf3-8e66-43bd-ac2c-895d29faca45
-  pristine_commit_hash: c478a81d0ba96db24d9eef89d1316e3ac8f2bf86
-  pristine_tree_hash: 781759dc43d378fbc63afad649ec8f7fe254083f
+  generation_id: b1159e23-49b1-4d95-bb66-e23aa0eb3c09
+  pristine_commit_hash: f5c8c2de491eca1b8c999983a028f0d37a2e91ed
+  pristine_tree_hash: 0c94bece63452632d85838b4970bdeef050b32ce
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -205,11 +205,11 @@ trackedFiles:
     pristine_git_object: e2e482e4dcaf61df0f1fd83249657fd06305c7cd
   examples/resources/openrouter_guardrail_policy_budget/import-by-string-id.tf:
     id: f4e1f6b46c97
-    last_write_checksum: sha1:cc50c9549cbc86d8dad7a1d365b01c2867296d38
+    last_write_checksum: sha1:6bffe4382a0e704e63c6a669dc35f11f976c22d6
     pristine_git_object: dcab692121bb030635b1cfebe4923d54a8cef7a8
   examples/resources/openrouter_guardrail_policy_budget/import.sh:
     id: 3f3ecb88251c
-    last_write_checksum: sha1:97991a05c5c26c6d2db90c88829b383b6e86f237
+    last_write_checksum: sha1:5840295da50fd552d75a6a031f299e5fdd04c421
     pristine_git_object: 7d58427f19cdddf8b21815f904a51f49ced1b6d4
   examples/resources/openrouter_guardrail_policy_budget/resource.tf:
     id: e45c58b81bac
@@ -217,11 +217,11 @@ trackedFiles:
     pristine_git_object: 5f5cf4ea3ba1a3cde29f408bebfe99d0f7810cea
   examples/resources/openrouter_guardrail_policy_model_availability/import-by-string-id.tf:
     id: 647be9abe9dc
-    last_write_checksum: sha1:8805b612ab66483779fa1c1e7388b395f459918f
+    last_write_checksum: sha1:8427931df0a41ba780060645354355007644a5bb
     pristine_git_object: bdb68f9a4a77eff31645624afe6358ae7a71964e
   examples/resources/openrouter_guardrail_policy_model_availability/import.sh:
     id: ae2ee64dcfa1
-    last_write_checksum: sha1:e8debeb5f9487af99aa4ade616e64c250777bf95
+    last_write_checksum: sha1:e5d3e5b8df18539166ec06a91b3a68048142d71a
     pristine_git_object: 05b3f64eb483cbdf7fe1d5efa486de34e4e3cecf
   examples/resources/openrouter_guardrail_policy_model_availability/resource.tf:
     id: 298b47c18e9e
@@ -229,11 +229,11 @@ trackedFiles:
     pristine_git_object: ae0a6db5a7308659eb8041247a8307718664b03a
   examples/resources/openrouter_guardrail_policy_moderation/import-by-string-id.tf:
     id: a9d6983ad7c4
-    last_write_checksum: sha1:53a089cbc05c42c34fbc82a8dcbe701b7633b0d7
+    last_write_checksum: sha1:d669a18eb35b418a6ee77877ce4863005f049453
     pristine_git_object: e9b3f5f6a09e0a0364ee47697935bc373443d893
   examples/resources/openrouter_guardrail_policy_moderation/import.sh:
     id: 0837a6ae74a3
-    last_write_checksum: sha1:54d1c2cf64d0ab54a7136ab726e1b1fe2a928512
+    last_write_checksum: sha1:65926e787c2c113760571d058ef9296de6b1a26b
     pristine_git_object: 346c769ee5a34b9f688222d3b10dba215210309a
   examples/resources/openrouter_guardrail_policy_moderation/resource.tf:
     id: 0e25980ac7c3
@@ -545,8 +545,8 @@ trackedFiles:
     pristine_git_object: 4d374303f70fcc93db53a9a52b29ad99fa6cfd62
   internal/provider/guardrailpolicybudget_resource.go:
     id: e7861a8be213
-    last_write_checksum: sha1:4edee22ef220fe0399cabf78d669a67f7b27379c
-    pristine_git_object: edfb77e6e2bcafeae1ed74b64aa936447d4b69b1
+    last_write_checksum: sha1:5a5364c6795b4c3b2d89617c23b4926e2eab966c
+    pristine_git_object: a403bb123c0c6d228b3dceeb79b2a7b215462a83
   internal/provider/guardrailpolicybudget_resource_sdk.go:
     id: d1f5f01f2cc6
     last_write_checksum: sha1:9fd0379acbdf0579f017928aab0381ac42af2b80
@@ -561,8 +561,8 @@ trackedFiles:
     pristine_git_object: 615c4fceef7b8fe7f3f0e4eb72bae53414a6b1fd
   internal/provider/guardrailpolicymodelavailability_resource.go:
     id: "816024722769"
-    last_write_checksum: sha1:ffeab33224aba2fcbff0a24fb92a8c6dace09fe5
-    pristine_git_object: 0b19d4a315a4c4515b831394c2830edc88ce3570
+    last_write_checksum: sha1:ea1508f718c765b4784419b88020f46548333c79
+    pristine_git_object: bd5a71627e9bb04022c5cfd554d62265fe5bb70a
   internal/provider/guardrailpolicymodelavailability_resource_sdk.go:
     id: 3345c4d6be03
     last_write_checksum: sha1:90ee3ae9cc2f131b19791eee177b83ae3753f335
@@ -577,8 +577,8 @@ trackedFiles:
     pristine_git_object: 396594dda7b1948c88a32ad117885a4789343387
   internal/provider/guardrailpolicymoderation_resource.go:
     id: a0bcf529540f
-    last_write_checksum: sha1:076406bf426075df6f968f10440ed52f2dc48ed2
-    pristine_git_object: eb27e7090e77b9fa619a39b25aa44f053f40a493
+    last_write_checksum: sha1:3ebd58f81700b63f0afd966fd2c1b01a0adf7e4a
+    pristine_git_object: 4208c5fcd273f4a2841a8eb0ae73a9ee9734e98d
   internal/provider/guardrailpolicymoderation_resource_sdk.go:
     id: 69351af8dfa5
     last_write_checksum: sha1:c703003bb288cb41a11654bbf19b01d8092f12af
