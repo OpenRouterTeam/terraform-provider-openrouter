@@ -5751,6 +5751,9 @@ components:
                                                     type: 'integer'
                                                   title:
                                                     type: 'string'
+                                                  uncited:
+                                                    const: true
+                                                    type: 'boolean'
                                                   url:
                                                     type: 'string'
                                                 required:
@@ -7510,6 +7513,7 @@ components:
         - 'deepseek'
         - 'dekallm'
         - 'digitalocean'
+        - 'doubleword'
         - 'elevenlabs'
         - 'featherless'
         - 'fireworks'
@@ -16832,6 +16836,17 @@ components:
           type:
             - 'boolean'
             - 'null'
+        data_collection:
+          description: "Data collection setting. If no available model provider meets the requirement, your request will return an error.\n- allow: (default) allow providers that may train on user data\n\n- deny: use only providers that do not train on user data. Providers may still retain prompts; set `zdr: true` to exclude retention."
+          enum:
+            - 'deny'
+            - 'allow'
+            - null
+          example: 'allow'
+          title: 'ImageGenerationRequestDataCollection'
+          type:
+            - 'string'
+            - 'null'
         ignore:
           description: 'List of provider slugs to ignore. If provided, this list is merged with your account-wide ignored provider settings for this request.'
           example:
@@ -16882,6 +16897,12 @@ components:
             - type: 'null'
           description: 'The sorting strategy to use for this request, if "order" is not specified. When set, no load balancing is performed.'
           example: 'price'
+        zdr:
+          description: 'Whether to restrict routing to only ZDR (Zero Data Retention) endpoints. When true, only endpoints that do not retain prompts will be used.'
+          example: true
+          type:
+            - 'boolean'
+            - 'null'
       type: 'object'
     ImageGenerationRequest:
       description: 'Image generation request input'
@@ -21105,6 +21126,7 @@ components:
                 - 'DeepSeek'
                 - 'DekaLLM'
                 - 'DigitalOcean'
+                - 'Doubleword'
                 - 'ElevenLabs'
                 - 'Featherless'
                 - 'Fireworks'
@@ -30527,6 +30549,7 @@ components:
         - 'DeepSeek'
         - 'DekaLLM'
         - 'DigitalOcean'
+        - 'Doubleword'
         - 'ElevenLabs'
         - 'Featherless'
         - 'Fireworks'
@@ -30751,6 +30774,9 @@ components:
           additionalProperties: {}
           type: 'object'
         digitalocean:
+          additionalProperties: {}
+          type: 'object'
+        doubleword:
           additionalProperties: {}
           type: 'object'
         elevenlabs:
@@ -31347,6 +31373,7 @@ components:
             - 'DeepSeek'
             - 'DekaLLM'
             - 'DigitalOcean'
+            - 'Doubleword'
             - 'ElevenLabs'
             - 'Featherless'
             - 'Fireworks'
@@ -34041,7 +34068,7 @@ components:
           maxLength: 256
           type: 'string'
         voice:
-          description: 'Voice identifier (provider-specific).'
+          description: 'Voice identifier (provider-specific). Required by most providers; only Seed Audio, HeyGen, Fish Audio, AssemblyAI, Speechify accept requests without it.'
           example: 'en_paul_neutral'
           minLength: 1
           type: 'string'
@@ -37494,6 +37521,9 @@ components:
           enum:
             - 'url_citation'
           type: 'string'
+        uncited:
+          const: true
+          type: 'boolean'
         url:
           type: 'string'
       required:
@@ -38230,8 +38260,19 @@ components:
           example: 'A serene mountain landscape at sunset'
           type: 'string'
         provider:
-          description: 'Provider routing preferences (order, only, ignore) and provider-specific passthrough configuration'
+          description: 'Provider routing preferences (order, only, ignore), request-level data policy (zdr, data_collection) and provider-specific passthrough configuration. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing.'
           properties:
+            data_collection:
+              description: "Data collection setting. If no available model provider meets the requirement, your request will return an error.\n- allow: (default) allow providers that may train on user data\n\n- deny: use only providers that do not train on user data. Providers may still retain prompts; set `zdr: true` to exclude retention."
+              enum:
+                - 'deny'
+                - 'allow'
+                - null
+              example: 'allow'
+              title: 'VideoGenerationRequestDataCollection'
+              type:
+                - 'string'
+                - 'null'
             ignore:
               description: 'List of provider slugs to ignore. If provided, this list is merged with your account-wide ignored provider settings for this request.'
               example:
@@ -38274,6 +38315,12 @@ components:
                   - type: 'string'
               type:
                 - 'array'
+                - 'null'
+            zdr:
+              description: 'Whether to restrict routing to only ZDR (Zero Data Retention) endpoints. When true, only endpoints that do not retain prompts will be used.'
+              example: true
+              type:
+                - 'boolean'
                 - 'null'
           type: 'object'
         resolution:
@@ -40749,7 +40796,7 @@ paths:
                     - 'string'
                     - 'null'
                 code_verifier:
-                  description: 'The code verifier if code_challenge was used in the authorization request'
+                  description: 'The `code_verifier` whose SHA-256 hash was sent as `code_challenge` in the authorization request.'
                   example: 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk'
                   type: 'string'
               required:
@@ -40841,7 +40888,7 @@ paths:
                   format: 'uri'
                   type: 'string'
                 code_challenge:
-                  description: 'PKCE code challenge for enhanced security'
+                  description: 'PKCE code challenge: the base64url-encoded SHA-256 hash of your `code_verifier`. Send it with `code_challenge_method` set to `S256`.'
                   example: 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM'
                   type: 'string'
                 code_challenge_method:
@@ -41728,6 +41775,7 @@ paths:
               - 'deepseek'
               - 'dekallm'
               - 'digitalocean'
+              - 'doubleword'
               - 'elevenlabs'
               - 'featherless'
               - 'fireworks'
@@ -45951,6 +45999,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/BadGatewayResponse'
           description: 'Bad Gateway - Provider/upstream API failure'
+        '503':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 503
+                  message: 'Service temporarily unavailable'
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableResponse'
+          description: 'Service Unavailable - Service temporarily unavailable'
         '524':
           content:
             application/json:

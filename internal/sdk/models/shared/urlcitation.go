@@ -5,6 +5,7 @@ package shared
 
 import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 )
 
 type URLCitation struct {
@@ -14,7 +15,9 @@ type URLCitation struct {
 	Title      string  `json:"title"`
 	//lint:ignore U1000 accessed via reflection for JSON marshaling
 	type_ string `const:"url_citation" json:"type"`
-	URL   string `json:"url"`
+	//lint:ignore U1000 accessed via reflection for JSON marshaling
+	uncited *bool  `const:"true" json:"uncited,omitzero"`
+	URL     string `json:"url"`
 }
 
 func (u URLCitation) MarshalJSON() ([]byte, error) {
@@ -58,6 +61,10 @@ func (u *URLCitation) GetTitle() string {
 
 func (u *URLCitation) GetType() string {
 	return "url_citation"
+}
+
+func (u *URLCitation) GetUncited() *bool {
+	return types.Pointer(true)
 }
 
 func (u *URLCitation) GetURL() string {

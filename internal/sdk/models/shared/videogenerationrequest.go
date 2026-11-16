@@ -58,6 +58,36 @@ func (e *VideoGenerationRequestAspectRatio) UnmarshalJSON(data []byte) error {
 	}
 }
 
+// VideoGenerationRequestDataCollection - Data collection setting. If no available model provider meets the requirement, your request will return an error.
+// - allow: (default) allow providers that may train on user data
+//
+// - deny: use only providers that do not train on user data. Providers may still retain prompts; set `zdr: true` to exclude retention.
+type VideoGenerationRequestDataCollection string
+
+const (
+	VideoGenerationRequestDataCollectionDeny  VideoGenerationRequestDataCollection = "deny"
+	VideoGenerationRequestDataCollectionAllow VideoGenerationRequestDataCollection = "allow"
+)
+
+func (e VideoGenerationRequestDataCollection) ToPointer() *VideoGenerationRequestDataCollection {
+	return &e
+}
+func (e *VideoGenerationRequestDataCollection) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "deny":
+		fallthrough
+	case "allow":
+		*e = VideoGenerationRequestDataCollection(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for VideoGenerationRequestDataCollection: %v", v)
+	}
+}
+
 type VideoGenerationRequestIgnoreType string
 
 const (
@@ -296,6 +326,7 @@ type VideoGenerationRequestOptions struct {
 	Deepseek                 map[string]any `json:"deepseek,omitzero"`
 	Dekallm                  map[string]any `json:"dekallm,omitzero"`
 	Digitalocean             map[string]any `json:"digitalocean,omitzero"`
+	Doubleword               map[string]any `json:"doubleword,omitzero"`
 	Elevenlabs               map[string]any `json:"elevenlabs,omitzero"`
 	Enfer                    map[string]any `json:"enfer,omitzero"`
 	FakeProvider             map[string]any `json:"fake-provider,omitzero"`
@@ -727,6 +758,13 @@ func (v *VideoGenerationRequestOptions) GetDigitalocean() map[string]any {
 		return nil
 	}
 	return v.Digitalocean
+}
+
+func (v *VideoGenerationRequestOptions) GetDoubleword() map[string]any {
+	if v == nil {
+		return nil
+	}
+	return v.Doubleword
 }
 
 func (v *VideoGenerationRequestOptions) GetElevenlabs() map[string]any {
@@ -1609,8 +1647,13 @@ func (u VideoGenerationRequestOrder) MarshalJSON() ([]byte, error) {
 	return nil, errors.New("could not marshal union type VideoGenerationRequestOrder: all fields are null")
 }
 
-// VideoGenerationRequestProvider - Provider routing preferences (order, only, ignore) and provider-specific passthrough configuration
+// VideoGenerationRequestProvider - Provider routing preferences (order, only, ignore), request-level data policy (zdr, data_collection) and provider-specific passthrough configuration. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing.
 type VideoGenerationRequestProvider struct {
+	// Data collection setting. If no available model provider meets the requirement, your request will return an error.
+	// - allow: (default) allow providers that may train on user data
+	//
+	// - deny: use only providers that do not train on user data. Providers may still retain prompts; set `zdr: true` to exclude retention.
+	DataCollection *VideoGenerationRequestDataCollection `json:"data_collection,omitzero"`
 	// List of provider slugs to ignore. If provided, this list is merged with your account-wide ignored provider settings for this request.
 	Ignore []VideoGenerationRequestIgnore `json:"ignore,omitzero"`
 	// List of provider slugs to allow. If provided, this list is merged with your account-wide allowed provider settings for this request.
@@ -1618,6 +1661,8 @@ type VideoGenerationRequestProvider struct {
 	Options *VideoGenerationRequestOptions `json:"options,omitzero"`
 	// An ordered list of provider slugs. The router will attempt to use the first provider in the subset of this list that supports your requested model, and fall back to the next if it is unavailable. If no providers are available, the request will fail with an error message.
 	Order []VideoGenerationRequestOrder `json:"order,omitzero"`
+	// Whether to restrict routing to only ZDR (Zero Data Retention) endpoints. When true, only endpoints that do not retain prompts will be used.
+	Zdr *bool `json:"zdr,omitzero"`
 }
 
 func (v VideoGenerationRequestProvider) MarshalJSON() ([]byte, error) {
@@ -1629,6 +1674,13 @@ func (v *VideoGenerationRequestProvider) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (v *VideoGenerationRequestProvider) GetDataCollection() *VideoGenerationRequestDataCollection {
+	if v == nil {
+		return nil
+	}
+	return v.DataCollection
 }
 
 func (v *VideoGenerationRequestProvider) GetIgnore() []VideoGenerationRequestIgnore {
@@ -1657,6 +1709,13 @@ func (v *VideoGenerationRequestProvider) GetOrder() []VideoGenerationRequestOrde
 		return nil
 	}
 	return v.Order
+}
+
+func (v *VideoGenerationRequestProvider) GetZdr() *bool {
+	if v == nil {
+		return nil
+	}
+	return v.Zdr
 }
 
 // VideoGenerationRequestResolution - Resolution of the generated video
@@ -1724,7 +1783,7 @@ type VideoGenerationRequest struct {
 	PreviousJobID *string `json:"previous_job_id,omitzero"`
 	// Text prompt describing the video to generate. Optional for models that support generating a video from image input alone; required by all other models.
 	Prompt *string `json:"prompt,omitzero"`
-	// Provider routing preferences (order, only, ignore) and provider-specific passthrough configuration
+	// Provider routing preferences (order, only, ignore), request-level data policy (zdr, data_collection) and provider-specific passthrough configuration. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing.
 	Provider *VideoGenerationRequestProvider `json:"provider,omitzero"`
 	// Resolution of the generated video
 	Resolution *VideoGenerationRequestResolution `json:"resolution,omitzero"`
