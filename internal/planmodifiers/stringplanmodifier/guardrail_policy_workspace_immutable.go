@@ -25,6 +25,14 @@ var _ planmodifier.String = StringGuardrailPolicyWorkspaceImmutablePlanModifier{
 // a plan modifier may not write a value for a non-computed attribute, and the
 // read that follows needs the workspace as its scope, which no response
 // carries.
+//
+// Two cases keep the update path rather than the replacement. A policy whose
+// state records no workspace, which is what a create under a workspace-scoped
+// key and an import by bare id both produce, has nothing to compare against,
+// and a value Terraform cannot resolve until apply is unknown at plan time; in
+// both the update reaches the API, which answers a change with 400. A policy
+// that replaced a legacy default guardrail is one the API refuses to delete, so
+// a replacement of one fails at the destroy half.
 type StringGuardrailPolicyWorkspaceImmutablePlanModifier struct{}
 
 // Description describes the plan modification in plain text formatting.
@@ -45,7 +53,10 @@ func (v StringGuardrailPolicyWorkspaceImmutablePlanModifier) PlanModifyString(ct
 		return
 	}
 	if guardrailPolicyWorkspaceRemoved(req.StateValue, req.PlanValue) {
-		resp.Diagnostics.AddError(
+		// Attribute-scoped, matching how the sibling resources report a
+		// resource that belongs to another workspace.
+		resp.Diagnostics.AddAttributeError(
+			req.Path,
 			"workspace_id cannot be removed",
 			"A guardrail policy stays in the workspace it was created in. The API answers an update that omits workspace_id by keeping the policy where it is, so removing the attribute would leave something else in charge of where the policy lives while Terraform recorded no workspace, and the read that follows needs that workspace as its scope. Keep the configured value, or declare a separate policy in the destination workspace and remove this one deliberately.",
 		)
