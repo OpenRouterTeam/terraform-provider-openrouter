@@ -8,7 +8,7 @@ import (
 )
 
 type GuardrailBudgetPolicyConfig struct {
-	// Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false.
+	// Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend.
 	IncludeByokInBudgets *bool `json:"include_byok_in_budgets,omitzero"`
 	// Spending limit in USD. Must be provided together with `reset_interval`: a request that sets only one of the two is rejected with a 400.
 	LimitUsd *float64 `json:"limit_usd,omitzero"`
