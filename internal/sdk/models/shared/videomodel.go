@@ -21,6 +21,8 @@ const (
 	SupportedAspectRatioTwentyThree             SupportedAspectRatio = "2:3"
 	SupportedAspectRatioTwoHundredAndNineteen   SupportedAspectRatio = "21:9"
 	SupportedAspectRatioNineHundredAndTwentyOne SupportedAspectRatio = "9:21"
+	SupportedAspectRatioTwentyOne               SupportedAspectRatio = "2:1"
+	SupportedAspectRatioFiftyTwo                SupportedAspectRatio = "5:2"
 )
 
 func (e SupportedAspectRatio) ToPointer() *SupportedAspectRatio {
@@ -49,6 +51,10 @@ func (e *SupportedAspectRatio) UnmarshalJSON(data []byte) error {
 	case "21:9":
 		fallthrough
 	case "9:21":
+		fallthrough
+	case "2:1":
+		fallthrough
+	case "5:2":
 		*e = SupportedAspectRatio(v)
 		return nil
 	default:
@@ -146,6 +152,7 @@ const (
 	SupportedSizeSixHundredAndFortyx360                  SupportedSize = "640x360"
 	SupportedSizeSixHundredAndFortyx480                  SupportedSize = "640x480"
 	SupportedSizeSixHundredAndFortyx640                  SupportedSize = "640x640"
+	SupportedSizeSevenHundredAndTwentyx360               SupportedSize = "720x360"
 	SupportedSizeSevenHundredAndTwentyx480               SupportedSize = "720x480"
 	SupportedSizeSevenHundredAndTwentyx720               SupportedSize = "720x720"
 	SupportedSizeSevenHundredAndTwentyx960               SupportedSize = "720x960"
@@ -162,6 +169,8 @@ const (
 	SupportedSizeEightHundredAndFortyx360                SupportedSize = "840x360"
 	SupportedSizeEightHundredAndFiftyFourx480            SupportedSize = "854x480"
 	SupportedSizeEightHundredAndSixtyFourx496            SupportedSize = "864x496"
+	SupportedSizeNineHundredAndSixtyx480                 SupportedSize = "960x480"
+	SupportedSizeNineHundredx360                         SupportedSize = "900x360"
 	SupportedSizeNineHundredAndSixtyx720                 SupportedSize = "960x720"
 	SupportedSizeNineHundredAndSixtyx960                 SupportedSize = "960x960"
 	SupportedSizeNineHundredAndNinetyTwox432             SupportedSize = "992x432"
@@ -175,8 +184,10 @@ const (
 	SupportedSizeOneThousandOneHundredAndTwelvex834      SupportedSize = "1112x834"
 	SupportedSizeOneThousandOneHundredAndTwentyx480      SupportedSize = "1120x480"
 	SupportedSizeOneThousandOneHundredAndFiftyTwox768    SupportedSize = "1152x768"
+	SupportedSizeOneThousandTwoHundredx480               SupportedSize = "1200x480"
 	SupportedSizeOneThousandTwoHundredAndEightyx720      SupportedSize = "1280x720"
 	SupportedSizeOneThousandThreeHundredAndSixtySixx768  SupportedSize = "1366x768"
+	SupportedSizeOneThousandFourHundredAndFortyx720      SupportedSize = "1440x720"
 	SupportedSizeOneThousandFourHundredAndFortyx1080     SupportedSize = "1440x1080"
 	SupportedSizeOneThousandFourHundredAndFortyx1440     SupportedSize = "1440x1440"
 	SupportedSizeOneThousandFourHundredAndFortyx1920     SupportedSize = "1440x1920"
@@ -184,11 +195,15 @@ const (
 	SupportedSizeOneThousandFourHundredAndFortyx2560     SupportedSize = "1440x2560"
 	SupportedSizeOneThousandFourHundredAndFortyx3360     SupportedSize = "1440x3360"
 	SupportedSizeOneThousandFourHundredAndSeventyx630    SupportedSize = "1470x630"
+	SupportedSizeOneThousandFiveHundredAndThirtySixx768  SupportedSize = "1536x768"
 	SupportedSizeOneThousandSixHundredAndTwentyx1080     SupportedSize = "1620x1080"
 	SupportedSizeOneThousandSixHundredAndEightyx720      SupportedSize = "1680x720"
 	SupportedSizeOneThousandSevenHundredAndNinetyTwox768 SupportedSize = "1792x768"
+	SupportedSizeOneThousandEightHundredx720             SupportedSize = "1800x720"
+	SupportedSizeOneThousandNineHundredAndTwentyx768     SupportedSize = "1920x768"
 	SupportedSizeOneThousandNineHundredAndTwentyx1080    SupportedSize = "1920x1080"
 	SupportedSizeOneThousandNineHundredAndTwentyx1440    SupportedSize = "1920x1440"
+	SupportedSizeTwoThousandOneHundredAndSixtyx1080      SupportedSize = "2160x1080"
 	SupportedSizeTwoThousandOneHundredAndSixtyx1440      SupportedSize = "2160x1440"
 	SupportedSizeTwoThousandOneHundredAndSixtyx2160      SupportedSize = "2160x2160"
 	SupportedSizeTwoThousandOneHundredAndSixtyx2880      SupportedSize = "2160x2880"
@@ -197,11 +212,16 @@ const (
 	SupportedSizeTwoThousandOneHundredAndSixtyx5040      SupportedSize = "2160x5040"
 	SupportedSizeTwoThousandFiveHundredAndTwentyx1080    SupportedSize = "2520x1080"
 	SupportedSizeTwoThousandFiveHundredAndSixtyx1440     SupportedSize = "2560x1440"
+	SupportedSizeTwoThousandEightHundredAndEightyx1440   SupportedSize = "2880x1440"
+	SupportedSizeTwoThousandSevenHundredx1080            SupportedSize = "2700x1080"
 	SupportedSizeTwoThousandEightHundredAndEightyx2160   SupportedSize = "2880x2160"
 	SupportedSizeThreeThousandTwoHundredAndFortyx2160    SupportedSize = "3240x2160"
 	SupportedSizeThreeThousandThreeHundredAndSixtyx1440  SupportedSize = "3360x1440"
+	SupportedSizeThreeThousandSixHundredx1440            SupportedSize = "3600x1440"
 	SupportedSizeThreeThousandEightHundredAndFortyx2160  SupportedSize = "3840x2160"
+	SupportedSizeFourThousandThreeHundredAndTwentyx2160  SupportedSize = "4320x2160"
 	SupportedSizeFiveThousandAndFortyx2160               SupportedSize = "5040x2160"
+	SupportedSizeFiveThousandFourHundredx2160            SupportedSize = "5400x2160"
 )
 
 func (e SupportedSize) ToPointer() *SupportedSize {
@@ -247,6 +267,8 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "640x640":
 		fallthrough
+	case "720x360":
+		fallthrough
 	case "720x480":
 		fallthrough
 	case "720x720":
@@ -279,6 +301,10 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "864x496":
 		fallthrough
+	case "960x480":
+		fallthrough
+	case "900x360":
+		fallthrough
 	case "960x720":
 		fallthrough
 	case "960x960":
@@ -305,9 +331,13 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "1152x768":
 		fallthrough
+	case "1200x480":
+		fallthrough
 	case "1280x720":
 		fallthrough
 	case "1366x768":
+		fallthrough
+	case "1440x720":
 		fallthrough
 	case "1440x1080":
 		fallthrough
@@ -323,15 +353,23 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "1470x630":
 		fallthrough
+	case "1536x768":
+		fallthrough
 	case "1620x1080":
 		fallthrough
 	case "1680x720":
 		fallthrough
 	case "1792x768":
 		fallthrough
+	case "1800x720":
+		fallthrough
+	case "1920x768":
+		fallthrough
 	case "1920x1080":
 		fallthrough
 	case "1920x1440":
+		fallthrough
+	case "2160x1080":
 		fallthrough
 	case "2160x1440":
 		fallthrough
@@ -349,15 +387,25 @@ func (e *SupportedSize) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "2560x1440":
 		fallthrough
+	case "2880x1440":
+		fallthrough
+	case "2700x1080":
+		fallthrough
 	case "2880x2160":
 		fallthrough
 	case "3240x2160":
 		fallthrough
 	case "3360x1440":
 		fallthrough
+	case "3600x1440":
+		fallthrough
 	case "3840x2160":
 		fallthrough
+	case "4320x2160":
+		fallthrough
 	case "5040x2160":
+		fallthrough
+	case "5400x2160":
 		*e = SupportedSize(v)
 		return nil
 	default:
