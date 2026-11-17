@@ -33,7 +33,7 @@ func newOauth2(rootSDK *OpenRouter, sdkConfig config.SDKConfiguration, hooks *ho
 }
 
 // CreateAuthCode - Create authorization code
-// Create an authorization code for the PKCE flow to generate a user-controlled API key
+// Create an authorization code for the PKCE flow to generate a user-controlled API key. Requires a Clerk session that completed reverification recently (Clerk `lax` level); otherwise the response is `403` with `error.metadata.reverification` set to `lax`, and the caller must reverify the session before retrying.
 func (s *Oauth2) CreateAuthCode(ctx context.Context, request operations.CreateAuthKeysCodeRequest, opts ...operations.Option) (*operations.CreateAuthKeysCodeResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
