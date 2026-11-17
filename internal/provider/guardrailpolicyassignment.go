@@ -36,10 +36,13 @@ func guardrailPolicyAssignmentTypeValidator() validator.String {
 // The racing writer is not a sibling resource. This route sets the assignment for
 // a policy type rather than adding to it — verified live: assigning a second
 // policy of one type to a subject that already held one left only the second —
-// so one subject holds one policy per type and no two resources of this family
-// contend for the same state. A conflict that outlives the retry means another
-// apply, the dashboard or another API client is writing continuously, which is
-// worth reporting rather than retrying through.
+// so one subject holds one policy per type. Two resources of this family
+// declaring the same subject and policy type displace each other rather than
+// conflict: each write carries the state it read immediately before it, so the
+// compare-and-swap succeeds and the retry is not what reconciles them. A
+// conflict that outlives the retry means another apply, the dashboard or another
+// API client is writing continuously, which is worth reporting rather than
+// retrying through.
 const maxGuardrailPolicyAssignmentAttempts = 2
 
 // guardrailPolicyAssignment identifies one policy's assignment to one subject.
@@ -151,7 +154,7 @@ func reconcileGuardrailPolicyAssignment(ctx context.Context, api guardrailPolicy
 			}
 			diags.AddError(
 				fmt.Sprintf("assignments changed while %s policy %q", assignmentVerb(want), a.PolicyID),
-				fmt.Sprintf("The API answered 409 for the state read immediately before the write, %d times, so this apply never observed a stable state to write against. The route also answers 409 for a removal that was never an assignment, but that case is decided by the read in front of each write and does not reach here. %s Re-run once whatever else is writing this assignment stops.", maxGuardrailPolicyAssignmentAttempts, detail),
+				fmt.Sprintf("The API answered 409 for the state read immediately before the write, %d times, so this apply never observed a stable state to write against. The route also answers 409 for a removal that was never an assignment; the read in front of each write rules that case out for the state it observed, but a writer that removed the membership after that read produces the same status, so the API's message above is carried rather than interpreted. %s Re-run once whatever else is writing this assignment stops.", maxGuardrailPolicyAssignmentAttempts, detail),
 			)
 			return diags
 		}
