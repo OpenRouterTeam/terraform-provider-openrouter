@@ -287,9 +287,10 @@ func TestReconcileGuardrailPolicyAssignmentReportsASecondConflict(t *testing.T) 
 	}
 }
 
-// TestReconcileGuardrailPolicyAssignmentOnAMissingSubject covers the 404 of the
-// read, which on this route means the key, the member or the scope is gone
-// rather than that nothing is assigned.
+// TestReconcileGuardrailPolicyAssignmentOnAMissingSubject covers a read that
+// reports the subject as gone, which this route answers with a 400 naming the
+// subject rather than with a 404: a read 404 is not an absence signal here and
+// is reported as an error instead.
 func TestReconcileGuardrailPolicyAssignmentOnAMissingSubject(t *testing.T) {
 	t.Run("removing is complete", func(t *testing.T) {
 		fake := &fakeGuardrailPolicyAssignmentAPI{reads: []guardrailPolicyAssignmentRead{{NotFound: true}}, conflicts: []bool{false}}

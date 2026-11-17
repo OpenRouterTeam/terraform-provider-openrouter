@@ -85,6 +85,18 @@ func (r *GuardrailPolicyAPIKeyAssignmentResource) Schema(ctx context.Context, re
 				Description: "Workspace the policy belongs to. Required for an organization management key; a workspace-scoped key defaults to its own workspace and gets 403 for any other.",
 				PlanModifiers: []planmodifier.String{
 					speakeasy_stringplanmodifier.GuardrailPolicyWorkspaceImmutable(),
+					// The shared modifier replaces a changed workspace and refuses
+					// a removal, but it returns early when state records no
+					// workspace, on the assumption that the update reaches the API
+					// and is answered with 400. This resource's Update never calls
+					// the API, so without this second modifier a configuration
+					// that added workspace_id to a resource whose state has none,
+					// which a bare three-part import and a workspace-scoped
+					// create both produce, would record the value unchecked.
+					// Replacing instead routes it through create, where the API
+					// refuses a bad scope, matching
+					// guardrailmemberassignment_resource.go.
+					stringplanmodifier.RequiresReplaceIfConfigured(),
 				},
 			},
 		},
@@ -229,11 +241,16 @@ func guardrailPolicyAPIKeyAssignmentAPI(client *sdk.OpenRouter) guardrailPolicyA
 				diags.AddError("unexpected response from API", "nil response")
 				return guardrailPolicyAssignmentRead{}, diags
 			}
-			if res.StatusCode == 404 || (res.StatusCode == 400 && guardrailPolicyAssignmentSubjectGone(res.BadRequestResponse)) {
-				// The subject or the workspace scope is gone, so there is no
-				// assignment left to read and the resource is absent. The write
-				// route also answers 404, for a policy that is not in the
-				// workspace, which is a different case and not handled here.
+			if res.StatusCode == 400 && guardrailPolicyAssignmentSubjectGone(res.BadRequestResponse) {
+				// The subject is gone, so there is no assignment left to read and
+				// the resource is absent. This 400 is the only absence signal: a
+				// subject holding nothing answers 200 with empty lists, and a 404
+				// is deliberately left to the error path below because on these
+				// routes it does not mean absence. The write route answers 404 for
+				// a policy that is not in the workspace, and every route answers
+				// 404 for an organization without the guardrails backend, so a
+				// read 404 read as absence would clear state over a route that is
+				// merely unavailable while the assignment still exists.
 				return guardrailPolicyAssignmentRead{NotFound: true}, diags
 			}
 			if res.StatusCode != 200 || res.GuardrailPolicyAssignmentResponse == nil {
@@ -275,19 +292,27 @@ func guardrailPolicyAPIKeyAssignmentAPI(client *sdk.OpenRouter) guardrailPolicyA
 				return true, guardrailPolicyAssignmentConflictMessage(res.ConflictResponse), diags
 			}
 			if res.StatusCode == 404 {
-				// Measured: a 404 here means the policy is not in this workspace,
-				// not that the subject is missing, which is a 400. Assigning such
-				// a policy cannot succeed; removing one leaves nothing behind,
-				// because an assignment to a policy that does not exist is gone
-				// whether or not the caller still has it in state.
-				if assigned {
-					diags.AddAttributeError(
-						path.Root("policy_id"),
-						"policy not found in this workspace",
-						fmt.Sprintf("The API answered 404: policy %q is not in this workspace, so it cannot be assigned. Nothing was assigned.", a.PolicyID),
-					)
+				// Measured: this status is about the policy, not the subject — a
+				// policy that is not in this workspace answers 404, while a
+				// subject that is gone answers 400. Only a body naming the policy
+				// establishes anything, because every route also answers 404 for
+				// an organization without the guardrails backend, and reading
+				// that as a finished removal would drop an assignment that is
+				// still there. Anything else keeps the error path below.
+				if guardrailPolicyAssignmentPolicyAbsent(res.NotFoundResponse) {
+					if assigned {
+						diags.AddAttributeError(
+							path.Root("policy_id"),
+							"policy not found in this workspace",
+							fmt.Sprintf("The API answered 404: policy %q is not in this workspace, so it cannot be assigned. Nothing was assigned.", a.PolicyID),
+						)
+						return false, "", diags
+					}
+					// The assignment names a policy that is not in this
+					// workspace, so it went with the policy and the removal is
+					// complete rather than failed.
+					return false, "", diags
 				}
-				return false, "", diags
 			}
 			if res.StatusCode != 200 || res.ChangeGuardrailPolicyAssignmentResponse == nil {
 				diags.AddError(

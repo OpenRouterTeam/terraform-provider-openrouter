@@ -57,12 +57,14 @@ type guardrailPolicyAssignment struct {
 
 // guardrailPolicyAssignmentRead is the answer to one assignment read.
 type guardrailPolicyAssignmentRead struct {
-	// State is the stored assignment state, nil when the route answered 404.
+	// State is the stored assignment state, nil when the subject is gone.
 	State *shared.GuardrailPolicyAssignmentState
-	// NotFound reports a 404. On this route that means the subject or the
-	// workspace scope is absent rather than that nothing is assigned: a subject
-	// with no policies of a type still answers 200 with empty lists, which the
-	// live route was observed doing for all four types.
+	// NotFound reports that the subject is gone, which the route answers with a
+	// 400 naming the subject rather than with a 404: a subject holding no
+	// policies of a type still answers 200 with empty lists, which the live route
+	// was observed doing for all four types. A read 404 is not an absence signal
+	// here and is reported as an error instead, because these routes also answer
+	// 404 for reasons that leave the assignment in place.
 	NotFound bool
 }
 
@@ -188,6 +190,22 @@ func guardrailPolicyAssignmentSubjectGone(badRequest *shared.BadRequestResponse)
 	message := badRequest.Error.Message
 	return strings.Contains(message, "API keys were not found") ||
 		strings.Contains(message, "subject is unavailable in this workspace")
+}
+
+// guardrailPolicyAssignmentPolicyAbsent reports whether a 404 body names the
+// policy as absent from the workspace. That is the only 404 measured on these
+// routes, and the only one that establishes anything: every route answers 404
+// for an organization without the guardrails backend, where nothing about the
+// assignment is known either way, so a caller that read the status alone would
+// mistake an unavailable route for a finished removal. The comparison is exact
+// against the measured message, because a removal that completes on a merely
+// similar sentence would write off an assignment that is still there: a
+// reworded or padded message fails closed and asks for a re-run instead.
+func guardrailPolicyAssignmentPolicyAbsent(body *shared.NotFoundResponse) bool {
+	if body == nil {
+		return false
+	}
+	return body.Error.Message == "Policy not found in this workspace"
 }
 
 // guardrailPolicyAssignmentConflictMessage reads the API's explanation from a

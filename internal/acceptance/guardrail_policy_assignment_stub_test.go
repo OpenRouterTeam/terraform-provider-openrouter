@@ -92,6 +92,14 @@ type guardrailPolicyAssignmentStub struct {
 	// rejectNextPut makes the next write answer 409 once, which is how a
 	// concurrent writer is reproduced without a second driver.
 	rejectNextPut bool
+	// nextPutStatus and nextPutMessage make the next write answer that status
+	// once, which reproduces a write refused for a reason the caller cannot
+	// read off the code: an unavailable route answers 404 on every path here.
+	nextPutStatus  int
+	nextPutMessage string
+	// rejectNextGet makes the next read answer 404 once, which reproduces a
+	// route that is unavailable rather than a resource that is gone.
+	rejectNextGet bool
 	getQueries    []url.Values
 	puts          []map[string]any
 }
@@ -143,7 +151,21 @@ func newGuardrailPolicyAssignmentStub(t *testing.T) (*httptest.Server, *guardrai
 			s.mu.Lock()
 			s.getQueries = append(s.getQueries, r.URL.Query())
 			orgKey := s.orgKey
+			reject := s.rejectNextGet
+			s.rejectNextGet = false
 			s.mu.Unlock()
+
+			if reject {
+				// A 404 that is not absence. An organization without the
+				// guardrails backend answers 404 on every route here while its
+				// assignments are still in place, which is why the provider
+				// reports this status rather than reading it as a removed
+				// resource.
+				writeJSON(w, http.StatusNotFound, map[string]any{
+					"error": map[string]any{"code": 404, "message": "guardrails are not enabled for this organization"},
+				})
+				return
+			}
 
 			// Measured, and the reason this is not a 404: a deleted API key and
 			// a member who is not in the workspace both answer 400 with a
@@ -181,6 +203,10 @@ func newGuardrailPolicyAssignmentStub(t *testing.T) (*httptest.Server, *guardrai
 			s.puts = append(s.puts, body)
 			reject := s.rejectNextPut
 			s.rejectNextPut = false
+			status := s.nextPutStatus
+			message := s.nextPutMessage
+			s.nextPutStatus = 0
+			s.nextPutMessage = ""
 			s.mu.Unlock()
 
 			requestedWorkspace, _ := body["workspace_id"].(string)
@@ -193,6 +219,16 @@ func newGuardrailPolicyAssignmentStub(t *testing.T) (*httptest.Server, *guardrai
 			}
 			if reject {
 				conflict(w, "Assignments changed; review the current assignments before trying again")
+				return
+			}
+			if status != 0 {
+				// A refusal the caller cannot infer from the code: an
+				// unavailable route answers this on every path, and treating a
+				// removal's 404 as completion would drop an assignment that is
+				// still there.
+				writeJSON(w, status, map[string]any{
+					"error": map[string]any{"code": status, "message": message},
+				})
 				return
 			}
 
@@ -351,6 +387,19 @@ func (s *guardrailPolicyAssignmentStub) rejectNextWrite() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.rejectNextPut = true
+}
+
+func (s *guardrailPolicyAssignmentStub) rejectNextRead() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.rejectNextGet = true
+}
+
+func (s *guardrailPolicyAssignmentStub) rejectNextWriteWith(status int, message string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.nextPutStatus = status
+	s.nextPutMessage = message
 }
 
 func (s *guardrailPolicyAssignmentStub) putBodies() []map[string]any {
@@ -873,5 +922,154 @@ func TestStubGuardrailPolicyAssignmentPolicyNotInTheWorkspace(t *testing.T) {
 	}
 	if got := assigned[0]["policy_id"]; got != unknownPolicy {
 		t.Errorf("the refused write named policy_id=%v, want %q", got, unknownPolicy)
+	}
+}
+
+const memberAssignmentTestResource = "openrouter_guardrail_policy_member_assignment.test"
+
+// assignmentSubjectKinds is what the regression tests below run over. The two
+// resources share the helper but not the adapter or the schema, so a test that
+// exercised only one of them would pass with the other's fix reverted.
+var assignmentSubjectKinds = []struct {
+	name             string
+	config           func(serverURL, attrs string) string
+	resource         string
+	subject          string
+	attrs            string
+	attrsNoWorkspace string
+}{
+	{
+		name:             "api key",
+		config:           apiKeyAssignmentConfig,
+		resource:         assignmentTestResource,
+		subject:          stubAssignmentKeyHash,
+		attrs:            "  key_hash     = %q\n  policy_type  = \"moderation\"\n  policy_id    = %q\n  workspace_id = %q\n",
+		attrsNoWorkspace: "  key_hash     = %q\n  policy_type  = \"moderation\"\n  policy_id    = %q\n",
+	},
+	{
+		name:             "member",
+		config:           memberAssignmentConfig,
+		resource:         memberAssignmentTestResource,
+		subject:          stubAssignmentMemberID,
+		attrs:            "  member_id    = %q\n  policy_type  = \"moderation\"\n  policy_id    = %q\n  workspace_id = %q\n",
+		attrsNoWorkspace: "  member_id    = %q\n  policy_type  = \"moderation\"\n  policy_id    = %q\n",
+	},
+}
+
+// A read 404 is not absence. These routes answer 404 for reasons that leave the
+// assignment in place: the write path answers it for a policy outside the
+// workspace, and every route answers it for an organization without the
+// guardrails backend. Reading it as a removed resource cleared state on a
+// refresh while the assignment still existed, so the next plan re-created it and
+// a destroy left it behind. The diagnostic has to reach the caller instead, and
+// it has to carry what the API said rather than only the status, which is why
+// the expectation names the message.
+func TestStubGuardrailPolicyAssignmentRead404IsNotAbsence(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	for _, kind := range assignmentSubjectKinds {
+		t.Run(kind.name, func(t *testing.T) {
+			srv, stub := newGuardrailPolicyAssignmentStub(t)
+			cfg := kind.config(srv.URL, fmt.Sprintf(kind.attrs, kind.subject, stubAssignmentPolicyID, stubWorkspaceID))
+
+			resource.Test(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{Config: cfg},
+					{
+						// Terraform refreshes before it plans, so this 404 lands
+						// on the read that decides whether the resource is still
+						// there.
+						PreConfig:   func() { stub.rejectNextRead() },
+						Config:      cfg,
+						ExpectError: regexp.MustCompile(`API returned status 404: guardrails are not enabled for this organization`),
+					},
+				},
+			})
+
+			// Only the create assigned. The closing destroy of the resource that
+			// is still in state contributes its own removal, which is why
+			// removals are not asserted here: the point is that the refused read
+			// produced an error rather than a plan that quietly re-created the
+			// resource.
+			if assigned, _ := assignmentWrites(stub); len(assigned) != 1 {
+				t.Errorf("want exactly the create's write, got %d assigning write(s)", len(assigned))
+			}
+		})
+	}
+}
+
+// Adding workspace_id to a resource whose state records none must plan a
+// replacement. The update path never calls the API, so an in-place update would
+// record a scope nothing validated, and the route would then be read with it.
+// A workspace-scoped key's create with no workspace_id is how that state arises,
+// which is what the first step produces.
+func TestStubGuardrailPolicyAssignmentAddingAWorkspaceReplaces(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	for _, kind := range assignmentSubjectKinds {
+		t.Run(kind.name, func(t *testing.T) {
+			srv, _ := newGuardrailPolicyAssignmentStub(t)
+
+			withoutWorkspace := kind.config(srv.URL, fmt.Sprintf(kind.attrsNoWorkspace, kind.subject, stubAssignmentPolicyID))
+			withWorkspace := kind.config(srv.URL, fmt.Sprintf(kind.attrs, kind.subject, stubAssignmentPolicyID, stubWorkspaceID))
+
+			resource.Test(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{Config: withoutWorkspace},
+					{
+						Config: withWorkspace,
+						ConfigPlanChecks: resource.ConfigPlanChecks{
+							PreApply: []plancheck.PlanCheck{
+								plancheck.ExpectResourceAction(kind.resource, plancheck.ResourceActionDestroyBeforeCreate),
+							},
+						},
+					},
+				},
+			})
+		})
+	}
+}
+
+// A removal whose write answers 404 without naming the policy must fail rather
+// than complete. The pre-read cannot prevent it: the status is also what an
+// unavailable route answers, and completing would drop an assignment that is
+// still there. Only the body that names the policy as absent may be read as a
+// finished removal, because then the assignment went with the policy.
+func TestStubGuardrailPolicyAssignmentRemovalWrite404IsNotCompletion(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	for _, kind := range assignmentSubjectKinds {
+		t.Run(kind.name, func(t *testing.T) {
+			srv, stub := newGuardrailPolicyAssignmentStub(t)
+			cfg := kind.config(srv.URL, fmt.Sprintf(kind.attrs, kind.subject, stubAssignmentPolicyID, stubWorkspaceID))
+
+			resource.Test(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{Config: cfg},
+					{
+						// Dropping the resource from the configuration destroys
+						// it, so the refused write here is the delete path's.
+						PreConfig: func() {
+							stub.rejectNextWriteWith(http.StatusNotFound, "guardrails are not enabled for this organization")
+						},
+						Config:      stubProviderBlock(srv.URL),
+						ExpectError: regexp.MustCompile(`API returned status 404: guardrails are not enabled for this organization`),
+					},
+				},
+			})
+
+			// The refused attempt is on the record. The server's state cannot be
+			// asserted after the fact, because the framework's closing cleanup
+			// destroy runs once the one-shot refusal has been consumed and takes
+			// the assignment with it — so the error reaching the caller is the
+			// oracle, and it is the one a removal read from the status alone
+			// could not produce.
+			if _, removed := assignmentWrites(stub); len(removed) == 0 {
+				t.Error("want the refused removal attempt on the record")
+			}
+		})
 	}
 }
