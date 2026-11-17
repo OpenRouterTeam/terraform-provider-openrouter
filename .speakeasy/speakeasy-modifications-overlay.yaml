@@ -39,6 +39,15 @@
 # needs a workspace scope, the API never returns one, so the import identifier is the only channel
 # that can carry it, and generation would restore a bare req.ID. This comment is the declaration
 # that makes regenerate.yaml run on the PR that changes those files.
+#
+# The three generated guardrail policy resources attach a plan modifier from
+# internal/planmodifiers/stringplanmodifier/guardrail_policy_workspace_immutable.go to
+# workspace_id: a change to that attribute replaces the resource rather than planning an update
+# the route answers with 400 "Policy belongs to a different workspace", and a plan that removes
+# the attribute is refused, because an update that omits it leaves the policy where it is and
+# the read that follows needs that workspace as its scope. The spec cannot express a plan
+# modifier, so the three call sites stay as persistent edits, and this comment is the
+# declaration that makes regenerate.yaml run on the PR that adds them.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:

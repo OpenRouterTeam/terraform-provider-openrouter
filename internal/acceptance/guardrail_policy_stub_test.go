@@ -38,6 +38,11 @@ package acceptance
 //     the wire with its stored value. The update starts from state, so "an
 //     omitted field is not sent" only holds for a field that is neither
 //     configured nor stored, and both sibling descriptions said it generally.
+//   - a write that moves a policy to another workspace is refused with 400, the
+//     way the live route refuses it, and read and delete address the workspace
+//     they name rather than any workspace. The generated resource planned an
+//     in-place update for that change, which the route rejects, so the stub has
+//     to reject it too for the replacement to be tested rather than assumed.
 //   - removing the armor block clears Model Armor. It is the one object-valued
 //     config field, so removal is the only clear gesture, and it needs the
 //     attribute to be Optional without Computed: as Optional+Computed the stored
@@ -79,8 +84,13 @@ type guardrailPolicyStub struct {
 	policies map[string]map[string]any
 	// createBodies and updateBodies are keyed the same way; last write wins,
 	// which is what the assertions inspect.
-	createBodies  map[string]map[string]any
-	updateBodies  map[string]map[string]any
+	createBodies map[string]map[string]any
+	updateBodies map[string]map[string]any
+	// createScopes records the workspace_id of every create per type slug, in
+	// order, which is how a replacement's two halves are told apart: the
+	// destroy has to name the workspace the policy held and the create the one
+	// the configuration asked for.
+	createScopes  map[string][]string
 	getQueries    []url.Values
 	deleteQueries []url.Values
 	deleted       map[string]bool
@@ -97,6 +107,7 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 		policies:     map[string]map[string]any{},
 		createBodies: map[string]map[string]any{},
 		updateBodies: map[string]map[string]any{},
+		createScopes: map[string][]string{},
 		deleted:      map[string]bool{},
 		deleteCalls:  map[string]int{},
 	}
@@ -175,7 +186,15 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 			body["id"] = stubPolicyID
 			s.mu.Lock()
 			s.createBodies[slug] = body
+			if ws, _ := body["workspace_id"].(string); ws != "" {
+				s.createScopes[slug] = append(s.createScopes[slug], ws)
+			}
 			s.policies[slug] = body
+			// A create puts a policy of this type back, so the read that follows
+			// one has to succeed even when an earlier delete in the same test
+			// marked the type gone. Without this, a replacement (destroy then
+			// create) could never read the policy it just created.
+			s.deleted[slug] = false
 			s.mu.Unlock()
 			writeJSON(w, http.StatusCreated, map[string]any{"data": short(body)})
 		})
@@ -189,6 +208,16 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 			if s.orgKey && r.URL.Query().Get("workspace_id") == "" {
 				badRequest(w, "Invalid guardrail policy request")
 				return
+			}
+			// The scope addresses the policy, so one naming another workspace
+			// is a read of something this key cannot see, which the route
+			// answers with 404. Without this, a provider that scoped its read
+			// to the wrong workspace would still hydrate state from here.
+			if storedWS, _ := p["workspace_id"].(string); storedWS != "" {
+				if ws := r.URL.Query().Get("workspace_id"); ws != "" && ws != storedWS {
+					notFound(w, "Policy not found.")
+					return
+				}
 			}
 			// The route addresses one policy: an id the stub does not hold is a
 			// 404 rather than a read of whatever it does hold. Without this, a
@@ -223,6 +252,19 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 					return
 				}
 			}
+			// The route refuses a write that moves a policy to another
+			// workspace, which is the contract the resource's plan modifier
+			// exists for. Without this the stub accepts what the live API
+			// answers with 400 "Policy belongs to a different workspace", so a
+			// provider that planned an in-place update would pass here.
+			if stored != nil {
+				if storedWS, _ := stored["workspace_id"].(string); storedWS != "" {
+					if ws, _ := body["workspace_id"].(string); ws != "" && ws != storedWS {
+						badRequest(w, "Policy belongs to a different workspace")
+						return
+					}
+				}
+			}
 			// An organization key names the workspace it is writing to on every
 			// write, create and update alike.
 			if s.orgKey {
@@ -254,6 +296,14 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 			if s.orgKey && r.URL.Query().Get("workspace_id") == "" {
 				badRequest(w, "Invalid guardrail policy request")
 				return
+			}
+			// The destroy half of a replacement has to address the workspace
+			// the policy is in, not the one it is moving to.
+			if storedWS, _ := p["workspace_id"].(string); storedWS != "" {
+				if ws := r.URL.Query().Get("workspace_id"); ws != "" && ws != storedWS {
+					notFound(w, "Policy not found.")
+					return
+				}
 			}
 			if stored, _ := p["id"].(string); stored != "" && r.PathValue("id") != stored {
 				notFound(w, "Policy not found.")
@@ -303,6 +353,28 @@ func (s *guardrailPolicyStub) lastCreate(t *testing.T, slug string) map[string]a
 		t.Fatalf("no create reached the stub for %s", slug)
 	}
 	return body
+}
+
+// createdScopes reports the workspace_id of every create that reached the route
+// for a type slug, in order.
+func (s *guardrailPolicyStub) createdScopes(slug string) []string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return append([]string(nil), s.createScopes[slug]...)
+}
+
+// deleteScopes reports the workspace_id every delete carried, skipping the ones
+// that carried none.
+func (s *guardrailPolicyStub) deleteScopes() []string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	scopes := []string{}
+	for _, q := range s.deleteQueries {
+		if ws := q.Get("workspace_id"); ws != "" {
+			scopes = append(scopes, ws)
+		}
+	}
+	return scopes
 }
 
 // deleteCount reports how many DELETEs reached the route for a type slug.
@@ -977,4 +1049,123 @@ func TestStubGuardrailPolicyModelAvailabilityOmittedConfigComesFromState(t *test
 	if len(got) != 1 || got[0] != allowedModel {
 		t.Errorf("update sent allowed_models=%v for a config that omitted it, want exactly [%q]", got, allowedModel)
 	}
+}
+
+// TestStubGuardrailPolicyWorkspaceChangeForcesReplacement locks the plan-time
+// contract for workspace_id on every family that carries the attribute. The
+// route answers an update that carries a different workspace_id with 400
+// "Policy belongs to a different workspace", so a change has to plan a
+// replacement rather than the in-place update the generated resource planned on
+// its own. A step whose configuration did not change has to plan nothing, so
+// the replacement fires on a real change rather than on every plan. A plan that
+// removes the attribute has to fail, because the update omits it, the route
+// keeps the policy where it is, and state would record a workspace the API
+// never applied while the read that follows needs that workspace as its scope.
+//
+// Every case runs against a stub in organization-key mode, where a request that
+// drops its workspace scope is an error rather than an implicit one, and each
+// one asserts both halves of the replacement: the policy is created in the new
+// workspace and deleted in the one it held.
+func TestStubGuardrailPolicyWorkspaceChangeForcesReplacement(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	for _, tc := range []struct {
+		name       string
+		slug       string
+		pathSlug   string
+		policyType string
+		attrs      string
+	}{
+		{
+			name:       "budget",
+			slug:       "budget",
+			pathSlug:   "budget",
+			policyType: "budget",
+			attrs:      "  config = {\n    include_byok_in_budgets = true\n  }\n",
+		},
+		{
+			name:       "moderation",
+			slug:       "moderation",
+			pathSlug:   "moderation",
+			policyType: "moderation",
+			attrs:      "  config = {}\n",
+		},
+		{
+			name:       "model_availability",
+			slug:       "model_availability",
+			pathSlug:   "model-availability",
+			policyType: "model_availability",
+			attrs:      "  config = {}\n",
+		},
+	} {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			srv, stub := newGuardrailPolicyStub(t)
+			stub.orgKey = true
+
+			addr := "openrouter_guardrail_policy_" + tc.slug + ".test"
+			const (
+				workspaceA = "  workspace_id = \"stub-workspace-a\"\n"
+				workspaceB = "  workspace_id = \"stub-workspace-b\"\n"
+			)
+			config := func(workspaceAttr string) string {
+				return guardrailPolicyStubConfig(srv.URL, tc.slug, tc.policyType,
+					fmt.Sprintf("%s  name = \"stub %s policy\"\n%s", tc.attrs, tc.name, workspaceAttr))
+			}
+
+			resource.Test(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{
+						Config: config(workspaceA),
+						Check:  resource.TestCheckResourceAttr(addr, "workspace_id", "stub-workspace-a"),
+					},
+					{
+						Config: config(workspaceB),
+						ConfigPlanChecks: resource.ConfigPlanChecks{
+							PreApply: []plancheck.PlanCheck{
+								plancheck.ExpectResourceAction(addr, plancheck.ResourceActionDestroyBeforeCreate),
+							},
+						},
+						Check: resource.TestCheckResourceAttr(addr, "workspace_id", "stub-workspace-b"),
+					},
+					{
+						// The same configuration again: the stored workspace
+						// and the planned one agree, so nothing may be
+						// replaced.
+						Config: config(workspaceB),
+						ConfigPlanChecks: resource.ConfigPlanChecks{
+							PreApply: []plancheck.PlanCheck{
+								plancheck.ExpectResourceAction(addr, plancheck.ResourceActionNoop),
+							},
+						},
+					},
+					{
+						Config:      config(""),
+						ExpectError: regexp.MustCompile("workspace_id cannot be removed"),
+					},
+				},
+			})
+
+			if got, want := stub.createdScopes(tc.pathSlug), []string{"stub-workspace-a", "stub-workspace-b"}; !reflect.DeepEqual(got, want) {
+				t.Errorf("creates carried workspace_id %v, want %v: a replacement creates the policy in the new workspace after destroying it in the old one", got, want)
+			}
+			if got := stub.deleteScopes(); !containsString(got, "stub-workspace-a") {
+				t.Errorf("deletes carried workspace_id %v, want one naming stub-workspace-a: the destroy half of the replacement has to address the workspace the policy was in", got)
+			}
+			if got := stub.deleteCount(tc.pathSlug); got == 0 {
+				t.Errorf("no DELETE reached the route for %s: a replacement the provider only planned leaves the policy behind", tc.pathSlug)
+			}
+		})
+	}
+}
+
+// containsString reports whether want is among got.
+func containsString(got []string, want string) bool {
+	for _, v := range got {
+		if v == want {
+			return true
+		}
+	}
+	return false
 }
