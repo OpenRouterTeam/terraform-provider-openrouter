@@ -58,6 +58,8 @@ terraform:
     - resource: NewWorkspaceDefaultGuardrailResource
     - resource: NewWorkspaceMemberResource
     - resource: NewGuardrailKeyAssignmentResource
+    - resource: NewGuardrailPolicyAPIKeyAssignmentResource
+    - resource: NewGuardrailPolicyMemberAssignmentResource
   author: OpenRouterTeam
   baseErrorName: OpenRouterError
   debugLogging: {}
