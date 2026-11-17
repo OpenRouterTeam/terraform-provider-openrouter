@@ -1098,15 +1098,18 @@ func TestStubGuardrailPolicyWorkspaceChangeForcesReplacement(t *testing.T) {
 			attrs:      "  config = {}\n",
 		},
 	} {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			srv, stub := newGuardrailPolicyStub(t)
 			stub.orgKey = true
 
 			addr := "openrouter_guardrail_policy_" + tc.slug + ".test"
+			// The route validates workspace_id as a UUID on every operation, so the
+			// fixture carries UUIDs: a slug would exercise a shape the API refuses.
 			const (
-				workspaceA = "  workspace_id = \"stub-workspace-a\"\n"
-				workspaceB = "  workspace_id = \"stub-workspace-b\"\n"
+				workspaceAID = "11111111-1111-4111-8111-111111111111"
+				workspaceBID = "22222222-2222-4222-8222-222222222222"
+				workspaceA   = "  workspace_id = \"" + workspaceAID + "\"\n"
+				workspaceB   = "  workspace_id = \"" + workspaceBID + "\"\n"
 			)
 			config := func(workspaceAttr string) string {
 				return guardrailPolicyStubConfig(srv.URL, tc.slug, tc.policyType,
@@ -1118,7 +1121,7 @@ func TestStubGuardrailPolicyWorkspaceChangeForcesReplacement(t *testing.T) {
 				Steps: []resource.TestStep{
 					{
 						Config: config(workspaceA),
-						Check:  resource.TestCheckResourceAttr(addr, "workspace_id", "stub-workspace-a"),
+						Check:  resource.TestCheckResourceAttr(addr, "workspace_id", workspaceAID),
 					},
 					{
 						Config: config(workspaceB),
@@ -1127,7 +1130,7 @@ func TestStubGuardrailPolicyWorkspaceChangeForcesReplacement(t *testing.T) {
 								plancheck.ExpectResourceAction(addr, plancheck.ResourceActionDestroyBeforeCreate),
 							},
 						},
-						Check: resource.TestCheckResourceAttr(addr, "workspace_id", "stub-workspace-b"),
+						Check: resource.TestCheckResourceAttr(addr, "workspace_id", workspaceBID),
 					},
 					{
 						// The same configuration again: the stored workspace
@@ -1147,11 +1150,11 @@ func TestStubGuardrailPolicyWorkspaceChangeForcesReplacement(t *testing.T) {
 				},
 			})
 
-			if got, want := stub.createdScopes(tc.pathSlug), []string{"stub-workspace-a", "stub-workspace-b"}; !reflect.DeepEqual(got, want) {
+			if got, want := stub.createdScopes(tc.pathSlug), []string{workspaceAID, workspaceBID}; !reflect.DeepEqual(got, want) {
 				t.Errorf("creates carried workspace_id %v, want %v: a replacement creates the policy in the new workspace after destroying it in the old one", got, want)
 			}
-			if got := stub.deleteScopes(); !containsString(got, "stub-workspace-a") {
-				t.Errorf("deletes carried workspace_id %v, want one naming stub-workspace-a: the destroy half of the replacement has to address the workspace the policy was in", got)
+			if got := stub.deleteScopes(); !containsString(got, workspaceAID) {
+				t.Errorf("deletes carried workspace_id %v, want one naming workspaceAID: the destroy half of the replacement has to address the workspace the policy was in", got)
 			}
 			if got := stub.deleteCount(tc.pathSlug); got == 0 {
 				t.Errorf("no DELETE reached the route for %s: a replacement the provider only planned leaves the policy behind", tc.pathSlug)
