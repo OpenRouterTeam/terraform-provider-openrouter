@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
@@ -111,6 +113,59 @@ func guardrailPolicyAccountID(policy shared.AccountGuardrailPolicy) string {
 		}
 	}
 	return ""
+}
+
+// guardrailPolicyAccountOptOutsModifier drops a carried opt-out list from the plan when the
+// policy stops being the account default.
+//
+// `opted_out_workspace_ids` is Optional+Computed, so Terraform carries the state's value
+// into the plan when the configuration leaves it out, and the write then sends it. For a
+// policy that is no longer the default the list is meaningless: the route answers it with
+// 400 "Only the account default can have default assignment fields". The configuration is
+// the only place a carried list is distinguishable from a written one, which is why this is
+// a plan modifier rather than a check in the write path: clearing it here keeps the plan
+// equal to what will be stored, so the apply and the read agree on the same list. A list
+// the configuration does write is left alone, and the config validator refuses that
+// combination instead.
+type guardrailPolicyAccountOptOutsModifier struct{}
+
+func (guardrailPolicyAccountOptOutsModifier) Description(context.Context) string {
+	return "drops a carried opted-out workspace list when the policy is not the account default"
+}
+
+func (guardrailPolicyAccountOptOutsModifier) MarkdownDescription(context.Context) string {
+	return "drops a carried opted-out workspace list when the policy is not the account default"
+}
+
+func (guardrailPolicyAccountOptOutsModifier) PlanModifyList(ctx context.Context, req planmodifier.ListRequest, resp *planmodifier.ListResponse) {
+	configured := !req.ConfigValue.IsNull() && !req.ConfigValue.IsUnknown() && len(req.ConfigValue.Elements()) > 0
+	if configured {
+		return
+	}
+
+	var isDefault types.Bool
+	if diags := req.Plan.GetAttribute(ctx, path.Root("is_default"), &isDefault); diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+	// An unknown flag is not a false one: on a create the configuration may be about to
+	// make this policy the default, so the value stays as planned and the write path
+	// decides from the flag that actually travels.
+	if isDefault.IsNull() || isDefault.IsUnknown() || isDefault.ValueBool() {
+		return
+	}
+	if req.PlanValue.IsNull() {
+		return
+	}
+	if !req.PlanValue.IsUnknown() && len(req.PlanValue.Elements()) == 0 {
+		return
+	}
+
+	// Unknown counts as "nothing the configuration asked for": measured in the test suite,
+	// the plan marks this attribute unknown when the configuration omits it and the policy
+	// stops being the default, and the write path is handed a list it must not send. Pinning
+	// it to an empty list keeps the plan equal to what will be stored, so the read agrees.
+	resp.PlanValue = types.ListValueMust(types.StringType, []attr.Value{})
 }
 
 // guardrailPolicyAccountCoverageValidator refuses the two coverage combinations the

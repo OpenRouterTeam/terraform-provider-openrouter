@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -172,7 +173,7 @@ func (r *GuardrailPolicyAccountModelAvailabilityResource) Schema(ctx context.Con
 			"is_default": schema.BoolAttribute{
 				Computed:    true,
 				Optional:    true,
-				Description: `Cover every workspace in the account except ` + "`" + `opted_out_workspace_ids` + "`" + `. Set it to ` + "`" + `false` + "`" + ` to unset that status. Only one policy of a type can be the account default: declaring it on a second policy of the same type unsets it on the first and clears its coverage, so two policies that both declare it change on every run. Destroying a policy that holds this status removes it from state without deleting it, because the route would release the baseline for every workspace that resolves to it.`,
+				Description: `Cover every workspace in the account except ` + "`" + `opted_out_workspace_ids` + "`" + `. Set it to ` + "`" + `false` + "`" + ` to unset that status. Only one policy of a type can be the account default: declaring it on a second policy of the same type unsets it on the first and clears its coverage, so two policies that both declare it change on every run. Destroying a policy that holds this status is refused: the route deletes the account default with no complaint and cannot restore it, so a destroy fails and names the two ways forward.`,
 			},
 			"is_synced": schema.BoolAttribute{
 				Computed:    true,
@@ -190,10 +191,13 @@ func (r *GuardrailPolicyAccountModelAvailabilityResource) Schema(ctx context.Con
 				},
 			},
 			"opted_out_workspace_ids": schema.ListAttribute{
-				Computed:    true,
+				Computed: true,
+				PlanModifiers: []planmodifier.List{
+					guardrailPolicyAccountOptOutsModifier{},
+				},
 				Optional:    true,
 				ElementType: types.StringType,
-				Description: `Workspaces left out of a default policy. Only the account default accepts these, and the API answers a policy that is not the default with 400 when it carries them, so flipping ` + "`" + `is_default` + "`" + ` off drops them.`,
+				Description: `Workspaces left out of a default policy. Only the account default accepts these, and the API answers a policy that is not the default with 400 when it carries them, so flipping ` + "`" + `is_default` + "`" + ` off drops them: these require an effective ` + "`" + `is_default = true` + "`" + `, and a write that carries them while the flag is false or unset is refused.`,
 			},
 			"updated_at": schema.StringAttribute{
 				Computed: true,
@@ -475,13 +479,20 @@ func (r *GuardrailPolicyAccountModelAvailabilityResource) Delete(ctx context.Con
 		return
 	}
 
-	// A destroy of the account default does not reach the route. Measured 2026-11-18:
-	// DELETE succeeds for a policy that holds the default flag, with no refusal, so
-	// sending it would release the baseline for every workspace that resolves to the
-	// policy, silently and with no undelete. The resource is forgotten instead, which
-	// leaves the policy in place and managed by nobody: write the configuration back, or
-	// delete the policy deliberately from the dashboard.
+	// The destroy of the account default is refused, not sent and not silently skipped.
+	// Measured 2026-11-18: DELETE answers 200 for a policy that holds the default flag,
+	// with no refusal, and there is no undelete, so sending it would release the baseline
+	// for every workspace that resolves to the policy with no way back. Skipping it is
+	// the other failure: a destroy that reports success while the policy still enforces
+	// hands back a resource nobody manages, and writing the configuration again creates a
+	// second policy rather than adopting that one. An error keeps the resource in state
+	// and lets the operator choose, and the two paths are named in the message.
 	if data.IsDefault.ValueBool() {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("is_default"),
+			"refusing to destroy the account default",
+			"This policy is the account default for its type. The API deletes it with no complaint and cannot restore it, and every workspace that resolves to it would lose this policy, so the provider refuses. To remove it: set `is_default = false`, apply, then destroy. To leave it enforcing and stop managing it here: `terraform state rm` on this resource address.",
+		)
 		return
 	}
 
@@ -664,9 +675,11 @@ func (r *GuardrailPolicyAccountModelAvailabilityResourceModel) flattenConfig(res
 //     combination with 400 "The account default covers workspaces through opt-outs",
 //     and for a default the read's `workspace_ids` is resolved coverage rather than
 //     configuration.
-//   - while `is_default` is false, `opted_out_workspace_ids` is not sent, because the
-//     route answers that with 400 "Only the account default can have default assignment
-//     fields". Flipping a default off therefore drops its opt-outs.
+//   - while the effective `is_default` is false, a non-empty `opted_out_workspace_ids`
+//     is refused instead of sent or dropped. The route answers that combination with 400
+//     "Only the account default can have default assignment fields", and silently
+//     omitting the list would make the configuration describe coverage that no apply
+//     stores, so the write fails and says which flag it needs.
 //
 // `is_default` itself always travels, as an explicit true or false, because the route
 // treats an absent value as no change while the provider's state always knows which one
@@ -842,9 +855,26 @@ func (r *GuardrailPolicyAccountModelAvailabilityResourceModel) toSharedAccountGu
 
 	if isDefault {
 		body.OptedOutWorkspaceIds = guardrailPolicyAccountValueStrings(r.OptedOutWorkspaceIDs)
-	} else {
-		body.WorkspaceIds = guardrailPolicyAccountValueStrings(r.WorkspaceIDs)
+		return body, diags
 	}
+
+	// `is_default` is Optional+Computed, so a configuration that omits it arrives here
+	// null or unknown and becomes false on the wire, which is what the route does with an
+	// absent flag too. Opt-outs configured while the effective flag is false are refused
+	// here rather than dropped: it is the same combination the route answers with "Only
+	// the account default can have default assignment fields", and dropping them would
+	// leave a configuration describing coverage no apply can store, because the read
+	// returns the empty list the route actually holds.
+	if len(r.OptedOutWorkspaceIDs) > 0 {
+		diags.AddAttributeError(
+			path.Root("opted_out_workspace_ids"),
+			"Only the account default can have default assignment fields",
+			"`opted_out_workspace_ids` describes the account default's coverage, so it requires an effective `is_default = true`. This configuration leaves the flag unset or false, which the route answers with 400 rather than storing these workspaces, so the provider refuses instead of dropping them.",
+		)
+		return body, diags
+	}
+
+	body.WorkspaceIds = guardrailPolicyAccountValueStrings(r.WorkspaceIDs)
 
 	return body, diags
 }

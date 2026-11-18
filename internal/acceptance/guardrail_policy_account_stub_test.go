@@ -343,6 +343,15 @@ func TestStubGuardrailPolicyAccountDefaultSendsNoWorkspaceIDs(t *testing.T) {
   name       = "account baseline"
   opted_out_workspace_ids = ["stub-workspace-b"]
 `)
+	// Only for cleanup: a destroy of a policy holding the default flag is refused by
+	// design, and the refusal test below is the one that asserts it.
+	demotedForCleanup := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_model_availability", `
+  config = {
+    enforce_zdr = true
+  }
+  is_default = false
+  name       = "account baseline"
+`)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
@@ -357,10 +366,15 @@ func TestStubGuardrailPolicyAccountDefaultSendsNoWorkspaceIDs(t *testing.T) {
 					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_model_availability.test", "workspace_ids.#", "2"),
 				),
 			},
+			{Config: demotedForCleanup},
 		},
 	})
 
-	body := stub.lastUpdate(t)
+	stub.mu.Lock()
+	// The first PUT is the promotion; the demotion that lets the case clean up is the
+	// second, so the wire shape under test is read by position rather than as the last.
+	body := stub.updates[0]
+	stub.mu.Unlock()
 	if got, present := body["workspace_ids"]; present {
 		t.Errorf("the update sent workspace_ids=%v; the route refuses the account default that carries one", got)
 	}
@@ -413,11 +427,15 @@ func TestStubGuardrailPolicyAccountRejectsCoverageWithTheWrongDefault(t *testing
 	})
 }
 
-// TestStubGuardrailPolicyAccountForgetsTheDefaultInsteadOfDeletingIt covers the one
-// delete this provider does not send: the route accepts a DELETE for the account default
-// with no complaint and there is no undelete, so the destroy forgets the policy instead
-// of releasing the baseline for every workspace that resolves to it.
-func TestStubGuardrailPolicyAccountRefusesToDeleteTheDefault(t *testing.T) {
+// TestStubGuardrailPolicyAccountRefusesToDestroyTheDefault covers the one destroy this
+// provider refuses to send. The route accepts a DELETE for the policy holding the default
+// flag with no complaint and there is no undelete, so sending it would release the
+// baseline for every workspace that resolves to it. It is not skipped either: a destroy
+// that reports success while the policy still enforces would hand back a resource nobody
+// manages, and writing the configuration again creates a second policy rather than
+// adopting that one. The test asserts both halves: the error reaches the operator, and no
+// DELETE reaches the route.
+func TestStubGuardrailPolicyAccountRefusesToDestroyTheDefault(t *testing.T) {
 	t.Setenv("TF_ACC", "1")
 
 	srv, stub := newGuardrailPolicyAccountStub(t)
@@ -435,14 +453,141 @@ func TestStubGuardrailPolicyAccountRefusesToDeleteTheDefault(t *testing.T) {
   name       = "account default moderation"
 `)
 
+	demoted := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_moderation", `
+  config = {
+    content_filter_builtins = [
+      {
+        action = "block"
+        slug   = "secrets"
+      }
+    ]
+  }
+  is_default = false
+  name       = "account default moderation"
+`)
+
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
 		Steps: []resource.TestStep{
 			{Config: cfg},
+			{
+				Config:      cfg,
+				Destroy:     true,
+				ExpectError: regexp.MustCompile(`refusing to destroy the account default`),
+			},
+			// The escape hatch the refusal message names: demote, apply, destroy. Exactly
+			// one DELETE follows, and it is this one: the refused destroy sent none.
+			{Config: demoted},
 		},
 	})
 
-	if stub.deleteCalls != 0 {
-		t.Errorf("%d DELETE(s) reached the stub; the destroy has to be refused before it reaches the route", stub.deleteCalls)
+	if stub.deleteCalls != 1 {
+		t.Errorf("%d DELETE(s) reached the stub, want exactly the demoted policy's destroy", stub.deleteCalls)
 	}
+}
+
+// TestStubGuardrailPolicyAccountRefusesOptOutsWhileTheFlagIsUnset covers the combination
+// the route rejects but a plan-time validator cannot see: `is_default` is
+// Optional+Computed, so a configuration that omits it reaches the validator as null and
+// the write carries an effective false. Opt-outs in that shape have to fail the write
+// rather than be dropped, because dropping them would leave the configuration describing
+// coverage that no apply stores.
+func TestStubGuardrailPolicyAccountRefusesOptOutsWhileTheFlagIsUnset(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyAccountStub(t)
+
+	cfg := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_budget", `
+  config = {
+    include_byok_in_budgets = false
+    limit_usd               = 50
+    reset_interval          = "monthly"
+  }
+  name = "opt-outs without the flag"
+  opted_out_workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:      cfg,
+				ExpectError: regexp.MustCompile(`Only the account default can have default assignment fields`),
+			},
+		},
+	})
+
+	if len(stub.createBodies) != 0 {
+		t.Errorf("a create reached the stub with opt-outs and no effective default flag: %v", stub.createBodies[0])
+	}
+}
+
+// TestStubGuardrailPolicyAccountDemotionTurnsTheProjectionIntoAssignments pins what
+// unsetting `is_default` actually does. The state of a default carries the resolved
+// coverage, so the demoting write sends that resolved set as explicit assignments: the
+// policy keeps covering the same workspaces, and the coverage is no longer automatic. The
+// test also runs the same configuration twice, so a state that disagreed with the read
+// would fail the framework's own consistency check rather than pass unnoticed.
+func TestStubGuardrailPolicyAccountDemotionTurnsTheProjectionIntoAssignments(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyAccountStub(t)
+
+	asDefault := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_model_availability", `
+  config = {
+    enforce_zdr = true
+  }
+  is_default = true
+  name       = "account baseline"
+  opted_out_workspace_ids = ["stub-workspace-b"]
+`)
+	demoted := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_model_availability", `
+  config = {
+    enforce_zdr = true
+  }
+  is_default = false
+  name       = "account baseline"
+`)
+
+	var id string
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: asDefault,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_model_availability.test", "workspace_ids.#", "2"),
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_model_availability.test", "opted_out_workspace_ids.#", "1"),
+				),
+			},
+			{
+				Config: demoted,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_model_availability.test", "is_default", "false"),
+					// The two workspaces the default resolved to become explicit floor
+					// coverage, and the opt-out list is gone because a floor cannot carry one.
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_model_availability.test", "workspace_ids.#", "2"),
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_model_availability.test", "opted_out_workspace_ids.#", "0"),
+				),
+			},
+			// Same configuration again: a plan that is not empty here would mean state and
+			// the API disagree about the coverage this write produced.
+			{Config: demoted},
+		},
+	})
+
+	stub.mu.Lock()
+	for pid := range stub.policies {
+		id = pid
+	}
+	stub.mu.Unlock()
+
+	body := stub.lastUpdate(t)
+	if got := asList(body["workspace_ids"]); len(got) != 2 {
+		t.Errorf("the demoting write sent workspace_ids=%v, want the two workspaces the default resolved to", got)
+	}
+	if got, present := body["opted_out_workspace_ids"]; present && len(asList(got)) > 0 {
+		t.Errorf("the demoting write sent opted_out_workspace_ids=%v; a floor cannot carry one", got)
+	}
+	_ = id
 }
