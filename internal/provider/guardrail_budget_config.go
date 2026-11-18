@@ -1,52 +1,27 @@
 package provider
 
 import (
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"context"
 
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 )
 
-// The budget config is shared by the hand-written account resource
-// (guardrailpolicyaccountbudget_resource.go) and the generated workspace-scoped resource (guardrailpolicybudget_resource.go). The account
-// resource carried a hand copy of the generated declaration and both mapping directions; these two
-// functions are the single implementation of the mapping, and the schema attribute is taken from the
-// generated resource instead of restated. See guardrail_policy_config_schema.go.
+// The account resource delegates budget config conversion to the generated
+// workspace-scoped model methods. Only the account resource calls these wrappers;
+// the generated resource calls its own model methods directly. Schema reuse is
+// handled separately by generatedGuardrailPolicyConfigSchemaAttribute.
 //
-// Both resources hold *tfTypes.GuardrailBudgetPolicyAuthoringConfig on the Terraform side, so one pair of functions
-// serves both with no adapter.
-
+// The generated methods currently return no diagnostics for these conversions.
+// The throwaway model's non-config fields are discarded, not used for account scope.
 func flattenGuardrailBudgetConfig(resp *shared.GuardrailBudgetPolicyConfig) *tfTypes.GuardrailBudgetPolicyAuthoringConfig {
-	config := &tfTypes.GuardrailBudgetPolicyAuthoringConfig{}
-	config.IncludeByokInBudgets = types.BoolPointerValue(resp.IncludeByokInBudgets)
-	config.LimitUsd = types.Float64PointerValue(resp.LimitUsd)
-	if resp.ResetInterval != nil {
-		config.ResetInterval = types.StringValue(string(*resp.ResetInterval))
-	} else {
-		config.ResetInterval = types.StringNull()
-	}
-	return config
+	var model GuardrailPolicyBudgetResourceModel
+	_ = model.RefreshFromSharedBudgetGuardrailPolicy(context.Background(), &shared.BudgetGuardrailPolicy{Config: *resp})
+	return model.Config
 }
 
 func expandGuardrailBudgetConfig(c *tfTypes.GuardrailBudgetPolicyAuthoringConfig) shared.GuardrailBudgetPolicyAuthoringConfig {
-	includeByokInBudgets := c.IncludeByokInBudgets.ValueBool()
-
-	limitUsd := new(float64)
-	if !c.LimitUsd.IsUnknown() && !c.LimitUsd.IsNull() {
-		*limitUsd = c.LimitUsd.ValueFloat64()
-	} else {
-		limitUsd = nil
-	}
-	resetInterval := new(shared.GuardrailBudgetPolicyAuthoringConfigResetInterval)
-	if !c.ResetInterval.IsUnknown() && !c.ResetInterval.IsNull() {
-		*resetInterval = shared.GuardrailBudgetPolicyAuthoringConfigResetInterval(c.ResetInterval.ValueString())
-	} else {
-		resetInterval = nil
-	}
-	config := shared.GuardrailBudgetPolicyAuthoringConfig{
-		IncludeByokInBudgets: includeByokInBudgets,
-		LimitUsd:             limitUsd,
-		ResetInterval:        resetInterval,
-	}
-	return config
+	model := GuardrailPolicyBudgetResourceModel{Config: c}
+	request, _ := model.ToSharedCreateBudgetGuardrailPolicyRequest(context.Background())
+	return request.Config
 }
