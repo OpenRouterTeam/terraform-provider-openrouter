@@ -19,7 +19,6 @@ import (
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
-	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -66,33 +65,7 @@ func (r *GuardrailPolicyAccountBudgetResource) Schema(ctx context.Context, req r
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "An account (workspace-wide) budget policy: the spend limit every workspace it covers is measured against, and the account default when `is_default` is true.\n\nThis is the layer that binds members and API keys that hold a budget policy of their own, which the workspace default does not: a subject's own policy replaces the default it would otherwise inherit.\n\nA policy that is not the default covers exactly `workspace_ids`. The default covers every workspace except `opted_out_workspace_ids`, in which case `workspace_ids` must be left unset. Only one policy of a type can be the account default.\n\nImport takes the bare policy id.",
 		Attributes: map[string]schema.Attribute{
-			"config": schema.SingleNestedAttribute{
-				Required: true,
-				Attributes: map[string]schema.Attribute{
-					"include_byok_in_budgets": schema.BoolAttribute{
-						Required:    true,
-						Description: `Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend.`,
-					},
-					"limit_usd": schema.Float64Attribute{
-						Optional:    true,
-						Description: `Spending limit in USD. Must be provided together with ` + "`" + `reset_interval` + "`" + `: a request that sets only one of the two is rejected with a 400.`,
-						Validators: []validator.Float64{
-							float64validator.AtLeast(0),
-						},
-					},
-					"reset_interval": schema.StringAttribute{
-						Optional:    true,
-						Description: `Interval at which the limit resets (daily, weekly, monthly). must be one of ["daily", "weekly", "monthly"]`,
-						Validators: []validator.String{
-							stringvalidator.OneOf(
-								"daily",
-								"weekly",
-								"monthly",
-							),
-						},
-					},
-				},
-			},
+			"config": generatedGuardrailPolicyConfigSchemaAttribute(ctx, NewGuardrailPolicyBudgetResource()),
 			"id": schema.StringAttribute{
 				Computed:    true,
 				Description: `Policy ID`,
@@ -508,22 +481,9 @@ func (r *GuardrailPolicyAccountBudgetResourceModel) refreshFromRow(ctx context.C
 		r.OptedOutWorkspaceIDs = append(r.OptedOutWorkspaceIDs, types.StringValue(v))
 	}
 
-	r.flattenConfig(resp)
+	r.Config = flattenGuardrailBudgetConfig(&resp.Config)
 
 	return diags
-}
-
-// flattenConfig lifts the config out of the row the way the generated workspace-scoped
-// sibling does for its own response shape.
-func (r *GuardrailPolicyAccountBudgetResourceModel) flattenConfig(resp *shared.BudgetAccountGuardrailPolicy) {
-	r.Config = &tfTypes.GuardrailBudgetPolicyAuthoringConfig{}
-	r.Config.IncludeByokInBudgets = types.BoolPointerValue(resp.Config.IncludeByokInBudgets)
-	r.Config.LimitUsd = types.Float64PointerValue(resp.Config.LimitUsd)
-	if resp.Config.ResetInterval != nil {
-		r.Config.ResetInterval = types.StringValue(string(*resp.Config.ResetInterval))
-	} else {
-		r.Config.ResetInterval = types.StringNull()
-	}
 }
 
 // toSharedAccountGuardrailPolicyRequest renders the write body for both create and
@@ -551,25 +511,7 @@ func (r *GuardrailPolicyAccountBudgetResourceModel) flattenConfig(resp *shared.B
 func (r *GuardrailPolicyAccountBudgetResourceModel) toSharedAccountGuardrailPolicyRequest() (*shared.BudgetAccountGuardrailPolicyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	includeByokInBudgets := r.Config.IncludeByokInBudgets.ValueBool()
-
-	limitUsd := new(float64)
-	if !r.Config.LimitUsd.IsUnknown() && !r.Config.LimitUsd.IsNull() {
-		*limitUsd = r.Config.LimitUsd.ValueFloat64()
-	} else {
-		limitUsd = nil
-	}
-	resetInterval := new(shared.GuardrailBudgetPolicyAuthoringConfigResetInterval)
-	if !r.Config.ResetInterval.IsUnknown() && !r.Config.ResetInterval.IsNull() {
-		*resetInterval = shared.GuardrailBudgetPolicyAuthoringConfigResetInterval(r.Config.ResetInterval.ValueString())
-	} else {
-		resetInterval = nil
-	}
-	config := shared.GuardrailBudgetPolicyAuthoringConfig{
-		IncludeByokInBudgets: includeByokInBudgets,
-		LimitUsd:             limitUsd,
-		ResetInterval:        resetInterval,
-	}
+	config := expandGuardrailBudgetConfig(r.Config)
 
 	body := &shared.BudgetAccountGuardrailPolicyRequest{
 		Config: config,

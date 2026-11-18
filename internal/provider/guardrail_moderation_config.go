@@ -1,12 +1,9 @@
 package provider
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
-	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
@@ -550,23 +547,4 @@ func expandGuardrailModerationConfig(c *tfTypes.GuardrailModerationPolicyConfig)
 		PlatformModeratedProviders:          platformModeratedProviders,
 	}
 	return config
-}
-
-// guardrailModerationConfigSchemaAttribute returns the generated workspace-scoped resource's
-// `config` attribute rather than a second declaration of it.
-//
-// The spec cannot express the account family as a resource (the route has no get-by-id), so
-// `guardrailpolicymoderation_resource.go` is generated while the account resource is
-// hand-written. Both describe the same config object, and the account resource used to carry a
-// 501-line hand copy of the generated attribute; taking it from the generated resource keeps one
-// declaration, removes the copy, and needs no persistent edit inside generated code, which the
-// repository's CONTRIBUTING.md tells contributors to keep to a few lines.
-//
-// A regeneration that changes this entity therefore reaches the account resource's schema as
-// well, which is the intended direction: the two surfaces describe the same object and should
-// not be able to drift.
-func guardrailModerationConfigSchemaAttribute(ctx context.Context) schema.Attribute {
-	var resp resource.SchemaResponse
-	NewGuardrailPolicyModerationResource().Schema(ctx, resource.SchemaRequest{}, &resp)
-	return resp.Schema.Attributes["config"]
 }

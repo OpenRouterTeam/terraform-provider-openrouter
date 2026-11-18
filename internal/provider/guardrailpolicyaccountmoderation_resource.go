@@ -65,7 +65,7 @@ func (r *GuardrailPolicyAccountModerationResource) Schema(ctx context.Context, r
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "An account (workspace-wide) moderation policy: the content-filtering surface the covered workspaces' traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists.\n\nA policy that is not the default covers exactly `workspace_ids`. The default covers every workspace except `opted_out_workspace_ids`, in which case `workspace_ids` must be left unset. Only one policy of a type can be the account default.\n\nImport takes the bare policy id.",
 		Attributes: map[string]schema.Attribute{
-			"config": guardrailModerationConfigSchemaAttribute(ctx),
+			"config": generatedGuardrailPolicyConfigSchemaAttribute(ctx, NewGuardrailPolicyModerationResource()),
 			"id": schema.StringAttribute{
 				Computed:    true,
 				Description: `Policy ID`,

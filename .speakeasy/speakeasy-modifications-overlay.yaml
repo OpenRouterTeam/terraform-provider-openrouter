@@ -61,12 +61,14 @@
 # guardrailpolicyaccount.go. This comment is the declaration that makes regenerate.yaml run on the PR that
 # adds them.
 #
-# internal/provider/guardrail_moderation_config.go is hand-written and shared by both moderation
-# resources. The account resource was written first and carried a hand copy of the generated
-# workspace-scoped resource's config declaration and both mapping directions, which lleadbet flagged
-# on #1087. The two mapping functions now live there once; the account resource calls them, and it
-# takes the `config` attribute from the generated resource's own Schema instead of restating 501
-# lines of it, so nothing in generated code is edited for this and the two surfaces cannot drift.
+# internal/provider/guardrail_policy_config_schema.go, with the three config files beside it
+# (guardrail_budget_config.go, guardrail_model_availability_config.go, guardrail_moderation_config.go),
+# is hand-written and shared by the account resources and their generated workspace-scoped siblings.
+# The account resources were written first and each carried a hand copy of the generated resource's
+# config declaration and both mapping directions, which lleadbet flagged on #1087. The mapping now
+# lives once per policy type in those files, and each account resource takes its `config` attribute
+# from the generated resource's own Schema through the one helper, so nothing in generated code is
+# edited for this and the two surfaces cannot drift.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:
