@@ -51,18 +51,18 @@ func accountPolicyListServer(t *testing.T, policies []map[string]any, status int
 
 func accountPolicyRow(id, policyType, name string) map[string]any {
 	return map[string]any{
-		"id":                           id,
-		"name":                         name,
-		"policy_type":                  policyType,
-		"config":                       map[string]any{},
-		"created_at":                   "2026-11-18T00:00:00Z",
-		"updated_at":                   "2026-11-18T00:00:00Z",
-		"is_default":                   false,
-		"is_synced":                    false,
-		"is_workspace_default_synced":  false,
-		"workspace_count":              0,
-		"workspace_ids":                []any{},
-		"opted_out_workspace_ids":      []any{},
+		"id":                          id,
+		"name":                        name,
+		"policy_type":                 policyType,
+		"config":                      map[string]any{},
+		"created_at":                  "2026-11-18T00:00:00Z",
+		"updated_at":                  "2026-11-18T00:00:00Z",
+		"is_default":                  false,
+		"is_synced":                   false,
+		"is_workspace_default_synced": false,
+		"workspace_count":             0,
+		"workspace_ids":               []any{},
+		"opted_out_workspace_ids":     []any{},
 	}
 }
 
