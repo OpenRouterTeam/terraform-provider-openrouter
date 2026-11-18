@@ -1212,19 +1212,16 @@ func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrail
 				allow := make([]shared.Allow, 0, len(r.Config.Armor.ClassifierContext.AutoMode.Allow))
 				for allowItem := range r.Config.Armor.ClassifierContext.AutoMode.Allow {
 					if !r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].Str.IsUnknown() && !r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].Str.IsNull() {
-						var str string
-						str = r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].Str.ValueString()
+						str := r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].Str.ValueString()
 
 						allow = append(allow, shared.Allow{
 							Str: &str,
 						})
 					}
 					if r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].ArmorRule != nil {
-						var id string
-						id = r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].ArmorRule.ID.ValueString()
+						id := r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].ArmorRule.ID.ValueString()
 
-						var instructions string
-						instructions = r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].ArmorRule.Instructions.ValueString()
+						instructions := r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].ArmorRule.Instructions.ValueString()
 
 						name := new(string)
 						if !r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].ArmorRule.Name.IsUnknown() && !r.Config.Armor.ClassifierContext.AutoMode.Allow[allowItem].ArmorRule.Name.IsNull() {
@@ -1252,19 +1249,16 @@ func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrail
 				environment := make([]shared.Environment, 0, len(r.Config.Armor.ClassifierContext.AutoMode.Environment))
 				for environmentItem := range r.Config.Armor.ClassifierContext.AutoMode.Environment {
 					if !r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].Str.IsUnknown() && !r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].Str.IsNull() {
-						var str1 string
-						str1 = r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].Str.ValueString()
+						str1 := r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].Str.ValueString()
 
 						environment = append(environment, shared.Environment{
 							Str: &str1,
 						})
 					}
 					if r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].ArmorEnvironmentEntry != nil {
-						var name1 string
-						name1 = r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].ArmorEnvironmentEntry.Name.ValueString()
+						name1 := r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].ArmorEnvironmentEntry.Name.ValueString()
 
-						var value string
-						value = r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].ArmorEnvironmentEntry.Value.ValueString()
+						value := r.Config.Armor.ClassifierContext.AutoMode.Environment[environmentItem].ArmorEnvironmentEntry.Value.ValueString()
 
 						armorEnvironmentEntry := shared.ArmorEnvironmentEntry{
 							Name:  name1,
@@ -1278,19 +1272,16 @@ func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrail
 				hardDeny := make([]shared.HardDeny, 0, len(r.Config.Armor.ClassifierContext.AutoMode.HardDeny))
 				for hardDenyItem := range r.Config.Armor.ClassifierContext.AutoMode.HardDeny {
 					if !r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].Str.IsUnknown() && !r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].Str.IsNull() {
-						var str2 string
-						str2 = r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].Str.ValueString()
+						str2 := r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].Str.ValueString()
 
 						hardDeny = append(hardDeny, shared.HardDeny{
 							Str: &str2,
 						})
 					}
 					if r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].ArmorRule != nil {
-						var id1 string
-						id1 = r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].ArmorRule.ID.ValueString()
+						id1 := r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].ArmorRule.ID.ValueString()
 
-						var instructions1 string
-						instructions1 = r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].ArmorRule.Instructions.ValueString()
+						instructions1 := r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].ArmorRule.Instructions.ValueString()
 
 						name2 := new(string)
 						if !r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].ArmorRule.Name.IsUnknown() && !r.Config.Armor.ClassifierContext.AutoMode.HardDeny[hardDenyItem].ArmorRule.Name.IsNull() {
@@ -1318,19 +1309,16 @@ func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrail
 				softDeny := make([]shared.SoftDeny, 0, len(r.Config.Armor.ClassifierContext.AutoMode.SoftDeny))
 				for softDenyItem := range r.Config.Armor.ClassifierContext.AutoMode.SoftDeny {
 					if !r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].Str.IsUnknown() && !r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].Str.IsNull() {
-						var str3 string
-						str3 = r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].Str.ValueString()
+						str3 := r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].Str.ValueString()
 
 						softDeny = append(softDeny, shared.SoftDeny{
 							Str: &str3,
 						})
 					}
 					if r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].ArmorRule != nil {
-						var id2 string
-						id2 = r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].ArmorRule.ID.ValueString()
+						id2 := r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].ArmorRule.ID.ValueString()
 
-						var instructions2 string
-						instructions2 = r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].ArmorRule.Instructions.ValueString()
+						instructions2 := r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].ArmorRule.Instructions.ValueString()
 
 						name3 := new(string)
 						if !r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].ArmorRule.Name.IsUnknown() && !r.Config.Armor.ClassifierContext.AutoMode.SoftDeny[softDenyItem].ArmorRule.Name.IsNull() {
@@ -1362,8 +1350,7 @@ func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrail
 					SoftDeny:    softDeny,
 				}
 			}
-			var v float64
-			v = r.Config.Armor.ClassifierContext.V.ValueFloat64()
+			v := r.Config.Armor.ClassifierContext.V.ValueFloat64()
 
 			additionalProperties := make(map[string]interface{})
 			for additionalPropertiesKey := range r.Config.Armor.ClassifierContext.AdditionalProperties {
@@ -1458,8 +1445,7 @@ func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrail
 			} else {
 				label1 = nil
 			}
-			var pattern string
-			pattern = r.Config.ContentFilters[contentFiltersIndex].Pattern.ValueString()
+			pattern := r.Config.ContentFilters[contentFiltersIndex].Pattern.ValueString()
 
 			contentFilters = append(contentFilters, shared.ContentFilter{
 				Action:  action1,
@@ -1497,8 +1483,7 @@ func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrail
 		piiFilters = make([]shared.PiiFilter, 0, len(r.Config.PiiFilters))
 		for piiFiltersIndex := range r.Config.PiiFilters {
 			action2 := shared.PiiFilterAction(r.Config.PiiFilters[piiFiltersIndex].Action.ValueString())
-			var entityType string
-			entityType = r.Config.PiiFilters[piiFiltersIndex].EntityType.ValueString()
+			entityType := r.Config.PiiFilters[piiFiltersIndex].EntityType.ValueString()
 
 			scoreThreshold := new(float64)
 			if !r.Config.PiiFilters[piiFiltersIndex].ScoreThreshold.IsUnknown() && !r.Config.PiiFilters[piiFiltersIndex].ScoreThreshold.IsNull() {

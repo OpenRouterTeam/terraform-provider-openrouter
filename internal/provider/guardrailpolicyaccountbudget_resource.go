@@ -531,8 +531,7 @@ func (r *GuardrailPolicyAccountBudgetResourceModel) flattenConfig(resp *shared.B
 func (r *GuardrailPolicyAccountBudgetResourceModel) toSharedAccountGuardrailPolicyRequest() (*shared.BudgetAccountGuardrailPolicyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var includeByokInBudgets bool
-	includeByokInBudgets = r.Config.IncludeByokInBudgets.ValueBool()
+	includeByokInBudgets := r.Config.IncludeByokInBudgets.ValueBool()
 
 	limitUsd := new(float64)
 	if !r.Config.LimitUsd.IsUnknown() && !r.Config.LimitUsd.IsNull() {
