@@ -60,6 +60,13 @@
 # The read, the two coverage rules the route answers with 400 and the error rendering they share live in
 # guardrailpolicyaccount.go. This comment is the declaration that makes regenerate.yaml run on the PR that
 # adds them.
+#
+# internal/provider/guardrail_moderation_config.go is hand-written and shared by both moderation
+# resources. The account resource was written first and carried a hand copy of the generated
+# workspace-scoped resource's config declaration and both mapping directions, which lleadbet flagged
+# on #1087. The two mapping functions now live there once; the account resource calls them, and it
+# takes the `config` attribute from the generated resource's own Schema instead of restating 501
+# lines of it, so nothing in generated code is edited for this and the two surfaces cannot drift.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:
