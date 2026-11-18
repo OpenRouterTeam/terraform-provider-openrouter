@@ -48,6 +48,18 @@
 # the read that follows needs that workspace as its scope. The spec cannot express a plan
 # modifier, so the three call sites stay as persistent edits, and this comment is the
 # declaration that makes regenerate.yaml run on the PR that adds them.
+#
+# internal/provider/guardrailpolicyaccountbudget_resource.go,
+# guardrailpolicyaccountmodelavailability_resource.go and guardrailpolicyaccountmoderation_resource.go
+# are hand-written and registered through terraform.additionalResources in gen.yaml, so generation never
+# writes them. They manage the account (workspace-wide) policy layer, which the spec's account operations
+# model as a list plus a discriminated union: the route publishes POST and a list GET on
+# /guardrails/policies/account and PUT and DELETE on /guardrails/policies/account/{id}, and no get-by-id,
+# so a generated resource would have no read to build and would have to expose the coverage projection
+# (a default's workspace_ids is what currently resolves to it, not what was configured) as writable state.
+# The read, the two coverage rules the route answers with 400 and the error rendering they share live in
+# guardrailpolicyaccount.go. This comment is the declaration that makes regenerate.yaml run on the PR that
+# adds them.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:
