@@ -19,13 +19,13 @@ import (
 // here without an account-level change, which is why
 // .speakeasy/speakeasy-modifications-overlay.yaml names the delegation.
 //
-// Diagnostics are propagated rather than dropped: the generated methods report none for
-// these conversions today, and any diagnostic a later generation reports reaches the write
-// or the refresh path instead of being swallowed. An error there aborts the write; a
-// warning is reported and does not. Only the request's `Config` is reused here, and the read
-// direction is the generated refresh mapping rather than this one. The generated methods
-// ignore ctx, so context.Background() stands in for the request context this model-level
-// builder does not carry.
+// Diagnostics are propagated rather than dropped: the generated methods report none for these
+// conversions today, and anything a later generation reports reaches the caller instead of being
+// swallowed. On the write side an error stops the API call before it is made; on the read side it
+// stops refreshed state from being saved, and cannot undo a write that already succeeded. A warning
+// stops neither. Only the request's `Config` is reused here, and the read direction is the generated
+// refresh mapping rather than this one. The generated methods ignore ctx, so context.Background()
+// stands in for the request context this model-level builder does not carry.
 func flattenGuardrailModerationConfig(resp *shared.GuardrailModerationPolicyConfig) (*tfTypes.GuardrailModerationPolicyConfig, diag.Diagnostics) {
 	var model GuardrailPolicyModerationResourceModel
 	diags := model.RefreshFromSharedModerationGuardrailPolicy(context.Background(), &shared.ModerationGuardrailPolicy{Config: *resp})

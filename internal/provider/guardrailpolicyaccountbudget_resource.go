@@ -484,6 +484,8 @@ func (r *GuardrailPolicyAccountBudgetResourceModel) refreshFromRow(ctx context.C
 	config, configDiags := flattenGuardrailBudgetConfig(&resp.Config)
 	diags.Append(configDiags...)
 	if diags.HasError() {
+		// Reachable from Create as well as Read. A remote policy exists by the time Create gets here,
+		// so if this ever fires the error has to name that policy's id rather than leave it to be found.
 		return diags
 	}
 	r.Config = config
