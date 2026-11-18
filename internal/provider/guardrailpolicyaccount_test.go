@@ -19,7 +19,7 @@ import (
 // than an absence.
 func accountPolicyTestClient(t *testing.T, serverURL string) *sdk.OpenRouter {
 	t.Helper()
-	key := "sk-or-v1-stub"
+	key := "sk-stub-key"
 	return sdk.New(
 		sdk.WithServerURL(serverURL),
 		sdk.WithSecurity(shared.Security{APIKey: &key}),
