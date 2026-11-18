@@ -133,6 +133,9 @@ func (r *GuardrailPolicyAccountBudgetResource) Schema(ctx context.Context, req r
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.StringType,
+				PlanModifiers: []planmodifier.List{
+					guardrailPolicyAccountWorkspaceIDsModifier{},
+				},
 				Description: `Workspaces a policy covers when it is not the default. For the account default this attribute reads back the workspaces currently resolving to it, which is more than what was configured, and the provider does not send it while ` + "`" + `is_default` + "`" + ` is true.`,
 			},
 		},
@@ -437,6 +440,10 @@ func (r *GuardrailPolicyAccountBudgetResource) Delete(ctx context.Context, req r
 		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
 		return
 	}
+	// A 404 is success, the way it is in the three generated workspace-scoped siblings (the
+	// same `case 200, 404` appears in each): a delete of a policy that is already gone is
+	// satisfied, and re-running the destroy after an out-of-band removal cannot fail. An
+	// absence becomes state removal in the read, which is where it is reported.
 	switch res.StatusCode {
 	case 200, 404:
 		break

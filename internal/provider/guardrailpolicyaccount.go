@@ -92,6 +92,21 @@ func guardrailPolicyAccountLookup(ctx context.Context, client *sdk.OpenRouter, p
 		return &policy, true, diags
 	}
 
+	// The list carries `total_count`, so a page shorter than it is a clamped response rather
+	// than proof that the policy is gone. Reporting absence would plan a recreate against a
+	// policy that still exists, which is the failure the non-200 rule above exists to
+	// prevent, so a short list is an error and never a miss.
+	if body := res.ListAccountGuardrailPoliciesResponse; int64(len(body.Data)) < body.TotalCount {
+		diags.AddError(
+			"the account policy list was truncated",
+			fmt.Sprintf(
+				"The list returned %d of %d account policies, so policy %s could not be looked up. The read asks for the whole list by sending neither `offset` nor `limit`, so a short page means the route clamped the response rather than that the policy is absent.",
+				len(body.Data), body.TotalCount, id,
+			),
+		)
+		return nil, false, diags
+	}
+
 	return nil, false, diags
 }
 
@@ -170,6 +185,58 @@ func (guardrailPolicyAccountOptOutsModifier) PlanModifyList(ctx context.Context,
 	// stops being the default, and the write path is handed a list it must not send. Pinning
 	// it to an empty list keeps the plan equal to what will be stored, so the read agrees.
 	resp.PlanValue = types.ListValueMust(types.StringType, []attr.Value{})
+}
+
+// guardrailPolicyAccountWorkspaceIDsModifier refuses a configuration that writes
+// `workspace_ids` while the policy is the account default.
+//
+// The combination is already refused at config level when the configuration also writes
+// `is_default = true` (see guardrailPolicyAccountCoverageValidator). This modifier covers
+// the case that validator cannot see: `is_default` is Optional+Computed, so a policy that
+// became the default outside Terraform, or one imported while already the default, carries
+// `true` from state into the plan while the configuration leaves the flag out. The write
+// path then takes its `is_default` branch, sends the flag alone, and drops the configured
+// `workspace_ids` with no error: the apply reads as successful, the policy still covers
+// every workspace, and every later plan shows the same diff. Config and plan are the only
+// pair that separates a written list from a carried one, so the refusal belongs here rather
+// than in the write path.
+type guardrailPolicyAccountWorkspaceIDsModifier struct{}
+
+func (guardrailPolicyAccountWorkspaceIDsModifier) Description(context.Context) string {
+	return "refuses a configured workspace list while the policy is the account default"
+}
+
+func (guardrailPolicyAccountWorkspaceIDsModifier) MarkdownDescription(context.Context) string {
+	return "refuses a configured workspace list while the policy is the account default"
+}
+
+func (guardrailPolicyAccountWorkspaceIDsModifier) PlanModifyList(ctx context.Context, req planmodifier.ListRequest, resp *planmodifier.ListResponse) {
+	// Only a list the configuration writes is refused: a null or unresolved config means
+	// the value could have come from state, and a carried list is dropped by the write path
+	// on purpose, which is the `is_default` branch below.
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+	if len(req.ConfigValue.Elements()) == 0 {
+		return
+	}
+
+	var isDefault types.Bool
+	if diags := req.Plan.GetAttribute(ctx, path.Root("is_default"), &isDefault); diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+	// An unknown flag is not a true one: on a create the plan has not decided yet, and the
+	// write path is where the flag that actually travels is read.
+	if isDefault.IsUnknown() || !isDefault.ValueBool() {
+		return
+	}
+
+	resp.Diagnostics.AddAttributeError(
+		path.Root("workspace_ids"),
+		"The account default covers workspaces through opt-outs",
+		"`is_default` is true for this policy, and the account default already covers every workspace except the ones in `opted_out_workspace_ids`, so this `workspace_ids` list cannot be stored: the write sends the default's coverage and never this list, which would drop it without an error. Set `is_default = false` or remove `workspace_ids`.",
+	)
 }
 
 // guardrailPolicyAccountCoverageValidator refuses the two coverage combinations the

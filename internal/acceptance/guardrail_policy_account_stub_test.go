@@ -427,6 +427,64 @@ func TestStubGuardrailPolicyAccountRejectsCoverageWithTheWrongDefault(t *testing
 	})
 }
 
+// TestStubGuardrailPolicyAccountRejectsWorkspaceIDsOnAStoredDefault covers the coverage
+// combination the config validator cannot see. `is_default` is Optional+Computed, so a
+// policy that is already the default while the configuration leaves the flag out carries
+// `true` from state into the plan. The write path then takes its `is_default` branch, sends
+// the flag alone, and drops a configured `workspace_ids` with no error: the apply looks
+// successful, the policy still covers every workspace, and every later plan shows the same
+// diff. The first step stores the default, the second configures the list with the flag
+// omitted, and the plan modifier on `workspace_ids` is the only place that pair is visible.
+// It reads the detail sentence rather than the summary, because the summary is the route's
+// own wording and the config validator uses it too.
+func TestStubGuardrailPolicyAccountRejectsWorkspaceIDsOnAStoredDefault(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, _ := newGuardrailPolicyAccountStub(t)
+
+	asDefault := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_budget", `
+  config = {
+    include_byok_in_budgets = false
+    limit_usd               = 50
+    reset_interval          = "monthly"
+  }
+  is_default = true
+  name       = "stored default"
+`)
+	withWorkspaces := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_budget", `
+  config = {
+    include_byok_in_budgets = false
+    limit_usd               = 50
+    reset_interval          = "monthly"
+  }
+  name          = "stored default"
+  workspace_ids = ["stub-workspace-a"]
+`)
+	// Only for cleanup: the refused plan leaves the default in state, and a destroy of a
+	// policy holding the flag is refused by design.
+	demotedForCleanup := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_budget", `
+  config = {
+    include_byok_in_budgets = false
+    limit_usd               = 50
+    reset_interval          = "monthly"
+  }
+  is_default = false
+  name       = "stored default"
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: asDefault},
+			{
+				Config:      withWorkspaces,
+				ExpectError: regexp.MustCompile("which would drop it without an error"),
+			},
+			{Config: demotedForCleanup},
+		},
+	})
+}
+
 // TestStubGuardrailPolicyAccountRefusesToDestroyTheDefault covers the one destroy this
 // provider refuses to send. The route accepts a DELETE for the policy holding the default
 // flag with no complaint and there is no undelete, so sending it would release the

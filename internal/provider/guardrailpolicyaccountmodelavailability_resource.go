@@ -206,6 +206,9 @@ func (r *GuardrailPolicyAccountModelAvailabilityResource) Schema(ctx context.Con
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.StringType,
+				PlanModifiers: []planmodifier.List{
+					guardrailPolicyAccountWorkspaceIDsModifier{},
+				},
 				Description: `Workspaces a policy covers when it is not the default. For the account default this attribute reads back the workspaces currently resolving to it, which is more than what was configured, and the provider does not send it while ` + "`" + `is_default` + "`" + ` is true.`,
 			},
 		},

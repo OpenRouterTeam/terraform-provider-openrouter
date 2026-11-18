@@ -28,6 +28,13 @@ func accountPolicyTestClient(t *testing.T, serverURL string) *sdk.OpenRouter {
 
 func accountPolicyListServer(t *testing.T, policies []map[string]any, status int) *httptest.Server {
 	t.Helper()
+	return accountPolicyListServerWithTotal(t, policies, len(policies), status)
+}
+
+// accountPolicyListServerWithTotal serves a page whose length and reported `total_count`
+// need not agree, which is what a clamped response looks like.
+func accountPolicyListServerWithTotal(t *testing.T, policies []map[string]any, total, status int) *httptest.Server {
+	t.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/guardrails/policies/account" {
 			t.Errorf("unexpected path %s", r.URL.Path)
@@ -43,7 +50,7 @@ func accountPolicyListServer(t *testing.T, policies []map[string]any, status int
 			})
 			return
 		}
-		_ = json.NewEncoder(w).Encode(map[string]any{"data": policies, "total_count": len(policies)})
+		_ = json.NewEncoder(w).Encode(map[string]any{"data": policies, "total_count": total})
 	}))
 	t.Cleanup(srv.Close)
 	return srv
@@ -132,5 +139,28 @@ func TestGuardrailPolicyAccountLookupTreatsANon200AsAnError(t *testing.T) {
 	}
 	if found {
 		t.Error("a failed read was reported as found")
+	}
+}
+
+// TestGuardrailPolicyAccountLookupRefusesATruncatedList covers a list that arrives shorter
+// than the `total_count` it reports. The read asks for the whole list by sending neither
+// `offset` nor `limit`, so a short page is a clamped response rather than proof that the
+// policy is gone: reading it as a miss would drop the resource from state and plan a
+// recreate against a policy the account still holds.
+func TestGuardrailPolicyAccountLookupRefusesATruncatedList(t *testing.T) {
+	srv := accountPolicyListServerWithTotal(t, []map[string]any{
+		accountPolicyRow("stub-a", "budget", "another policy"),
+	}, 40, http.StatusOK)
+	client := accountPolicyTestClient(t, srv.URL)
+
+	_, found, diags := guardrailPolicyAccountLookup(context.Background(), client, "budget", "stub-missing")
+	if !diags.HasError() {
+		t.Fatal("a truncated list resolved without an error; the missing row is not evidence that the policy is gone")
+	}
+	if found {
+		t.Error("a truncated list was reported as found")
+	}
+	if got := diags[0].Summary(); !strings.Contains(got, "truncated") {
+		t.Errorf("diagnostic summary is %q, want it to name the truncation", got)
 	}
 }
