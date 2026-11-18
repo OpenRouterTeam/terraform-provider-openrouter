@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
 // Each fixture holds an independent input and the original hand mapper's output.
@@ -18,11 +20,17 @@ func guardrailConfigFixturePtr[T any](value T) *T {
 	return &value
 }
 
-func checkGuardrailConfigFixtures[Input, Output any](t *testing.T, cases []guardrailConfigFixture[Input, Output], convert func(Input) Output) {
+// convert is a wrapper pair's own shape: one value in, one value plus the diagnostics
+// the generated method reported. Asserting the diagnostics are empty is what makes a
+// generation that starts reporting one fail here, rather than being carried into state.
+func checkGuardrailConfigFixtures[Input, Output any](t *testing.T, cases []guardrailConfigFixture[Input, Output], convert func(Input) (Output, diag.Diagnostics)) {
 	t.Helper()
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := convert(tc.input)
+			got, diags := convert(tc.input)
+			if diags.HasError() {
+				t.Fatalf("config conversion reported diagnostics: %v", diags)
+			}
 			if !reflect.DeepEqual(got, tc.want) {
 				t.Fatalf("config differs from legacy mapping: %s", guardrailConfigDifference("Config", reflect.ValueOf(got), reflect.ValueOf(tc.want)))
 			}

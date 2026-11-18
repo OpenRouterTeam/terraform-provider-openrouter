@@ -3,25 +3,41 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 )
 
 // The account resource delegates budget config conversion to the generated
-// workspace-scoped model methods. Only the account resource calls these wrappers;
-// the generated resource calls its own model methods directly. Schema reuse is
-// handled separately by generatedGuardrailPolicyConfigSchemaAttribute.
+// workspace-scoped model methods. Only the account resource calls these wrappers; the
+// generated resource calls its own model methods directly, and schema reuse is handled
+// separately by generatedGuardrailPolicyConfigSchemaAttribute.
 //
-// The generated methods currently return no diagnostics for these conversions.
-// The throwaway model's non-config fields are discarded, not used for account scope.
-func flattenGuardrailBudgetConfig(resp *shared.GuardrailBudgetPolicyConfig) *tfTypes.GuardrailBudgetPolicyAuthoringConfig {
+// The delegated method is the workspace-scoped create request builder, so the account
+// resource's `config` surface follows that wire shape: a field the spec adds to it lands
+// here without an account-level change, which is why
+// .speakeasy/speakeasy-modifications-overlay.yaml names the delegation.
+//
+// Diagnostics are propagated rather than dropped. The generated methods report none for
+// these conversions today, and propagating them means a generation that starts reporting
+// one surfaces as a write or refresh error instead of storing a config it could not
+// convert. The generated methods ignore ctx, so context.Background() stands in for the
+// request context this model-level builder does not carry.
+func flattenGuardrailBudgetConfig(resp *shared.GuardrailBudgetPolicyConfig) (*tfTypes.GuardrailBudgetPolicyAuthoringConfig, diag.Diagnostics) {
 	var model GuardrailPolicyBudgetResourceModel
-	_ = model.RefreshFromSharedBudgetGuardrailPolicy(context.Background(), &shared.BudgetGuardrailPolicy{Config: *resp})
-	return model.Config
+	diags := model.RefreshFromSharedBudgetGuardrailPolicy(context.Background(), &shared.BudgetGuardrailPolicy{Config: *resp})
+	if diags.HasError() {
+		return nil, diags
+	}
+	return model.Config, diags
 }
 
-func expandGuardrailBudgetConfig(c *tfTypes.GuardrailBudgetPolicyAuthoringConfig) shared.GuardrailBudgetPolicyAuthoringConfig {
+func expandGuardrailBudgetConfig(c *tfTypes.GuardrailBudgetPolicyAuthoringConfig) (shared.GuardrailBudgetPolicyAuthoringConfig, diag.Diagnostics) {
 	model := GuardrailPolicyBudgetResourceModel{Config: c}
-	request, _ := model.ToSharedCreateBudgetGuardrailPolicyRequest(context.Background())
-	return request.Config
+	request, diags := model.ToSharedCreateBudgetGuardrailPolicyRequest(context.Background())
+	if diags.HasError() {
+		return shared.GuardrailBudgetPolicyAuthoringConfig{}, diags
+	}
+	return request.Config, diags
 }

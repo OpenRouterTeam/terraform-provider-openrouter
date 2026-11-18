@@ -477,7 +477,12 @@ func (r *GuardrailPolicyAccountModerationResourceModel) refreshFromRow(ctx conte
 		r.OptedOutWorkspaceIDs = append(r.OptedOutWorkspaceIDs, types.StringValue(v))
 	}
 
-	r.Config = flattenGuardrailModerationConfig(&resp.Config)
+	config, configDiags := flattenGuardrailModerationConfig(&resp.Config)
+	diags.Append(configDiags...)
+	if diags.HasError() {
+		return diags
+	}
+	r.Config = config
 
 	return diags
 }
@@ -507,7 +512,11 @@ func (r *GuardrailPolicyAccountModerationResourceModel) refreshFromRow(ctx conte
 func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrailPolicyRequest() (*shared.ModerationAccountGuardrailPolicyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	config := expandGuardrailModerationConfig(r.Config)
+	config, configDiags := expandGuardrailModerationConfig(r.Config)
+	diags.Append(configDiags...)
+	if diags.HasError() {
+		return nil, diags
+	}
 
 	body := &shared.ModerationAccountGuardrailPolicyRequest{
 		Config: config,

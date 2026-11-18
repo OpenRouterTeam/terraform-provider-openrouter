@@ -481,7 +481,12 @@ func (r *GuardrailPolicyAccountBudgetResourceModel) refreshFromRow(ctx context.C
 		r.OptedOutWorkspaceIDs = append(r.OptedOutWorkspaceIDs, types.StringValue(v))
 	}
 
-	r.Config = flattenGuardrailBudgetConfig(&resp.Config)
+	config, configDiags := flattenGuardrailBudgetConfig(&resp.Config)
+	diags.Append(configDiags...)
+	if diags.HasError() {
+		return diags
+	}
+	r.Config = config
 
 	return diags
 }
@@ -511,7 +516,11 @@ func (r *GuardrailPolicyAccountBudgetResourceModel) refreshFromRow(ctx context.C
 func (r *GuardrailPolicyAccountBudgetResourceModel) toSharedAccountGuardrailPolicyRequest() (*shared.BudgetAccountGuardrailPolicyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	config := expandGuardrailBudgetConfig(r.Config)
+	config, configDiags := expandGuardrailBudgetConfig(r.Config)
+	diags.Append(configDiags...)
+	if diags.HasError() {
+		return nil, diags
+	}
 
 	body := &shared.BudgetAccountGuardrailPolicyRequest{
 		Config: config,

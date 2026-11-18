@@ -477,7 +477,12 @@ func (r *GuardrailPolicyAccountModelAvailabilityResourceModel) refreshFromRow(ct
 		r.OptedOutWorkspaceIDs = append(r.OptedOutWorkspaceIDs, types.StringValue(v))
 	}
 
-	r.Config = flattenGuardrailModelAvailabilityConfig(&resp.Config)
+	config, configDiags := flattenGuardrailModelAvailabilityConfig(&resp.Config)
+	diags.Append(configDiags...)
+	if diags.HasError() {
+		return diags
+	}
+	r.Config = config
 
 	return diags
 }
@@ -507,7 +512,11 @@ func (r *GuardrailPolicyAccountModelAvailabilityResourceModel) refreshFromRow(ct
 func (r *GuardrailPolicyAccountModelAvailabilityResourceModel) toSharedAccountGuardrailPolicyRequest() (*shared.ModelAvailabilityAccountGuardrailPolicyRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	config := expandGuardrailModelAvailabilityConfig(r.Config)
+	config, configDiags := expandGuardrailModelAvailabilityConfig(r.Config)
+	diags.Append(configDiags...)
+	if diags.HasError() {
+		return nil, diags
+	}
 
 	body := &shared.ModelAvailabilityAccountGuardrailPolicyRequest{
 		Config: config,
