@@ -46,7 +46,7 @@ resource "openrouter_guardrail_policy_account_budget" "my_account_budget" {
 
 ### Optional
 
-- `is_default` (Boolean) Cover every workspace in the account except `opted_out_workspace_ids`. Set it to `false` to unset that status. Only one policy of a type can be the account default: declaring it on a second policy of the same type unsets it on the first and clears its coverage, so two policies that both declare it change on every run.
+- `is_default` (Boolean) Cover every workspace in the account except `opted_out_workspace_ids`. Set it to `false` to unset that status. Only one policy of a type can be the account default: declaring it on a second policy of the same type unsets it on the first and clears its coverage, so two policies that both declare it change on every run. Destroying a policy that holds this status removes it from state without deleting it, because the route would release the baseline for every workspace that resolves to it.
 - `opted_out_workspace_ids` (List of String) Workspaces left out of a default policy. Only the account default accepts these, and the API answers a policy that is not the default with 400 when it carries them, so flipping `is_default` off drops them.
 - `workspace_ids` (List of String) Workspaces a policy covers when it is not the default. For the account default this attribute reads back the workspaces currently resolving to it, which is more than what was configured, and the provider does not send it while `is_default` is true.
 
