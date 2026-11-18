@@ -138,8 +138,12 @@ func (guardrailPolicyAccountOptOutsModifier) MarkdownDescription(context.Context
 }
 
 func (guardrailPolicyAccountOptOutsModifier) PlanModifyList(ctx context.Context, req planmodifier.ListRequest, resp *planmodifier.ListResponse) {
-	configured := !req.ConfigValue.IsNull() && !req.ConfigValue.IsUnknown() && len(req.ConfigValue.Elements()) > 0
-	if configured {
+	// Anything the configuration writes is left alone, an unresolved value included: a list
+	// whose value is not known yet is still a list the user asked for, and replacing it with
+	// a concrete empty list would make the plan claim something the configuration did not
+	// say. HashiCorp's own list modifier refuses to touch unknown configuration for the same
+	// reason. Only a null config means the value could have come from state instead.
+	if !req.ConfigValue.IsNull() {
 		return
 	}
 

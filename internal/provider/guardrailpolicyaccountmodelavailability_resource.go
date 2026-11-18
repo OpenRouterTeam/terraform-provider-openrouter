@@ -864,7 +864,10 @@ func (r *GuardrailPolicyAccountModelAvailabilityResourceModel) toSharedAccountGu
 	// here rather than dropped: it is the same combination the route answers with "Only
 	// the account default can have default assignment fields", and dropping them would
 	// leave a configuration describing coverage no apply can store, because the read
-	// returns the empty list the route actually holds.
+	// returns the empty list the route actually holds. An unresolved list counts as
+	// configured here: this path cannot tell it from a non-empty one, and dropping it would
+	// be the same silence. A list carried from state never arrives, because the plan
+	// modifier pins it to empty when the configuration does not write it.
 	if len(r.OptedOutWorkspaceIDs) > 0 {
 		diags.AddAttributeError(
 			path.Root("opted_out_workspace_ids"),
