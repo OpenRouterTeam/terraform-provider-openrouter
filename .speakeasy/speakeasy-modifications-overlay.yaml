@@ -70,8 +70,8 @@
 # captured from the original hand mappings test equivalence in both directions for each policy type.
 # The create-side method is the workspace-scoped create request builder, so a field the spec adds to
 # that wire shape reaches the account resource's `config` with no account-level change. Diagnostics
-# from both generated methods are propagated rather than dropped, and the fixtures assert they are
-# empty, so a generation that starts reporting one fails a test instead of being carried into state.
+# from both generated methods are propagated rather than dropped, and the fixtures require them to be
+# empty, so a generation that starts reporting any fails a test instead of being carried into state.
 # This reuse needs no edit inside generated code.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535

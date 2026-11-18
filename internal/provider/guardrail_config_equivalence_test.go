@@ -20,15 +20,16 @@ func guardrailConfigFixturePtr[T any](value T) *T {
 	return &value
 }
 
-// convert is a wrapper pair's own shape: one value in, one value plus the diagnostics
-// the generated method reported. Asserting the diagnostics are empty is what makes a
-// generation that starts reporting one fail here, rather than being carried into state.
+// convert is a wrapper pair's own shape: one value in, one value plus the diagnostics the
+// generated method reported. Requiring the result to be empty, rather than merely free of
+// errors, is what makes a generation that starts reporting anything here fail a test: a
+// warning-only change to the generated mapping would otherwise pass unnoticed.
 func checkGuardrailConfigFixtures[Input, Output any](t *testing.T, cases []guardrailConfigFixture[Input, Output], convert func(Input) (Output, diag.Diagnostics)) {
 	t.Helper()
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			got, diags := convert(tc.input)
-			if diags.HasError() {
+			if len(diags) != 0 {
 				t.Fatalf("config conversion reported diagnostics: %v", diags)
 			}
 			if !reflect.DeepEqual(got, tc.want) {
