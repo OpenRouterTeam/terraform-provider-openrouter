@@ -179,28 +179,18 @@ func guardrailPolicyAccountCreate[M any](ctx context.Context, client *sdk.OpenRo
 		return
 	}
 
-	// The write response carries the new id and not the read model, so take the id from
-	// it and read the policy back the way every other operation does.
+	// The write response carries the whole row, not only the id. Measured on the live route
+	// 2026-11-20: the 201 answer's field set is identical to the same policy's row in the
+	// list, and its config came back byte-equal to what was sent. So state comes from the
+	// response and no list read follows a write, which removes the window in which a read
+	// issued milliseconds after a write could miss the row just created.
 	ops.setID(data, guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data))
 	if ops.id(data) == "" {
 		resp.Diagnostics.AddError("unexpected response from API", "the created policy carried no id")
 		return
 	}
 
-	policy, found, lookupDiags := guardrailPolicyAccountLookup(ctx, client, ops.policyType, ops.id(data))
-	resp.Diagnostics.Append(lookupDiags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	if !found {
-		resp.Diagnostics.AddError(
-			"the policy is not in the account policy list after it was created",
-			"The API answered the create with a policy id that the account policy list does not return. The policy exists; re-running the plan should read it.",
-		)
-		return
-	}
-
-	resp.Diagnostics.Append(ops.refreshFromRow(ctx, data, *policy)...)
+	resp.Diagnostics.Append(ops.refreshFromRow(ctx, data, res.AccountGuardrailPolicyResponse.Data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -300,22 +290,11 @@ func guardrailPolicyAccountUpdate[M any](ctx context.Context, client *sdk.OpenRo
 		return
 	}
 
-	// See Create: the write response is not the read model, and for an update the id is
-	// already the one state holds.
-	policy, found, lookupDiags := guardrailPolicyAccountLookup(ctx, client, ops.policyType, ops.id(data))
-	resp.Diagnostics.Append(lookupDiags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	if !found {
-		resp.Diagnostics.AddError(
-			"the policy is not in the account policy list after it was updated",
-			"The API answered the update with a policy id that the account policy list does not return. Re-running the plan should read it.",
-		)
-		return
-	}
-
-	resp.Diagnostics.Append(ops.refreshFromRow(ctx, data, *policy)...)
+	// See Create: the write response carries the whole row, so an update takes its state
+	// from it rather than re-reading the list. Measured on the live route 2026-11-20, the
+	// PUT's 200 carries the same field set the list does, and its updated_at is the
+	// post-update value that the list would return. The id is already the one state holds.
+	resp.Diagnostics.Append(ops.refreshFromRow(ctx, data, res.AccountGuardrailPolicyResponse.Data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}

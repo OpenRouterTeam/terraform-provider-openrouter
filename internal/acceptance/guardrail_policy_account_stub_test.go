@@ -31,6 +31,12 @@ type guardrailPolicyAccountStub struct {
 	createBodies []map[string]any
 	listQueries  []string
 	deleteCalls  int
+	// hideAfterNextWrite makes the next list read after a write leave that policy out, which
+	// is the shape of a write whose row has not reached the list yet. A test that sets it
+	// proves a write path takes its state from the write response rather than from a read:
+	// a write that still read the list would find nothing and fail.
+	hideAfterNextWrite bool
+	hideOnce           map[string]bool
 }
 
 func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPolicyAccountStub) {
@@ -94,6 +100,9 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 		s.mu.Lock()
 		defer s.mu.Unlock()
 		s.listQueries = append(s.listQueries, r.URL.RawQuery)
+		// Rows hidden by the last write are left out of this read and of no other.
+		hidden := s.hideOnce
+		s.hideOnce = map[string]bool{}
 		data := []any{}
 		// Reverse insertion order, so a provider that assumed the newest row was
 		// first, or the only one, would fail here rather than pass by luck.
@@ -102,6 +111,9 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			ids = append(ids, id)
 		}
 		for i := len(ids) - 1; i >= 0; i-- {
+			if hidden[ids[i]] {
+				continue
+			}
 			data = append(data, full(s.policies[ids[i]]))
 		}
 		writeJSON(w, http.StatusOK, map[string]any{"data": data, "total_count": len(data)})
@@ -115,6 +127,12 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 		s.mu.Lock()
 		defer s.mu.Unlock()
 		body["id"] = fmt.Sprintf("stub-account-%d", len(s.policies)+1)
+		if s.hideAfterNextWrite {
+			if s.hideOnce == nil {
+				s.hideOnce = map[string]bool{}
+			}
+			s.hideOnce[body["id"].(string)] = true
+		}
 		if body["is_default"] == nil {
 			body["is_default"] = false
 		}
@@ -156,6 +174,9 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			"opted_out_workspace_ids": asList(body["opted_out_workspace_ids"]),
 		}
 		s.policies[id] = store
+		if s.hideAfterNextWrite {
+			s.hideOnce[id] = true
+		}
 		s.updates = append(s.updates, body)
 		writeJSON(w, http.StatusOK, map[string]any{"data": full(store)})
 	})
@@ -648,4 +669,99 @@ func TestStubGuardrailPolicyAccountDemotionTurnsTheProjectionIntoAssignments(t *
 		t.Errorf("the demoting write sent opted_out_workspace_ids=%v; a floor cannot carry one", got)
 	}
 	_ = id
+}
+
+// TestStubGuardrailPolicyAccountCreateTakesStateFromTheWriteResponse pins the create path:
+// state comes from the write response and no list read follows the write. The stub leaves
+// the row out of the next list read after a write, so a create that still read the list
+// would find nothing and fail here rather than pass by luck. Measured on the live route
+// 2026-11-20, the 201 answer's field set is identical to the same policy's row in the list
+// and its config came back byte-equal to what was sent.
+//
+// The step allows a non-empty plan because the hiding is exactly the case where the read
+// Terraform runs after the apply cannot find the row: the resource drops out of state and
+// the plan wants to recreate it. That is the world this test builds, not a provider defect.
+func TestStubGuardrailPolicyAccountCreateTakesStateFromTheWriteResponse(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyAccountStub(t)
+	stub.hideAfterNextWrite = true
+
+	cfg := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_budget", `
+  config = {
+    include_byok_in_budgets = true
+    limit_usd               = 50
+    reset_interval          = "monthly"
+  }
+  name          = "engineering budget"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:             cfg,
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "id", "stub-account-1"),
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "name", "engineering budget"),
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "config.limit_usd", "50"),
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "workspace_ids.#", "1"),
+				),
+			},
+		},
+	})
+}
+
+// TestStubGuardrailPolicyAccountUpdateTakesStateFromTheWriteResponse is the update half of
+// the same property. The hide is armed for the update step only, because the row has to be
+// in the list for Terraform to plan an update rather than a create: the update's own read is
+// what must not happen. Measured on the live route 2026-11-20, the PUT's 200 carries the
+// same field set the list does and its updated_at is the post-update value.
+func TestStubGuardrailPolicyAccountUpdateTakesStateFromTheWriteResponse(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyAccountStub(t)
+
+	first := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_budget", `
+  config = {
+    include_byok_in_budgets = true
+    limit_usd               = 50
+    reset_interval          = "monthly"
+  }
+  name          = "engineering budget"
+  workspace_ids = ["stub-workspace-a"]
+`)
+	second := accountStubConfig(srv.URL, "openrouter_guardrail_policy_account_budget", `
+  config = {
+    include_byok_in_budgets = true
+    limit_usd               = 75
+    reset_interval          = "monthly"
+  }
+  name          = "engineering budget"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: first,
+			},
+			{
+				PreConfig: func() {
+					stub.mu.Lock()
+					defer stub.mu.Unlock()
+					stub.hideAfterNextWrite = true
+				},
+				Config:             second,
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "config.limit_usd", "75"),
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "workspace_ids.#", "1"),
+				),
+			},
+		},
+	})
 }
