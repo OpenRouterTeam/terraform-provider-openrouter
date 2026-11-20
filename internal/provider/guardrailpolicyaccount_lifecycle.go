@@ -21,48 +21,106 @@ import (
 )
 
 // The account (workspace-wide) policy family has three resources whose five lifecycle
-// operations are the same operation against the same route with a different body and a
-// different row in the union. This file carries that one implementation.
+// operations are one operation against one route, differing only in the generated types
+// they name. This file carries everything they share: the model, the schema, the
+// hydration, the write rules and the operations themselves.
 //
-// `guardrailpolicyaccount.go` carries the route contract they all read; the three
-// `guardrailpolicyaccount*_resource.go` files carry only what differs: the schema's
-// description and config attribute, the generated types, and the four mappings in the
-// descriptor below. A rule stated here is stated once, which matters because every round
-// of review on this family so far has found a rule applied to one member of three.
+// `guardrailpolicyaccount.go` carries the route contract. The three
+// `guardrailpolicyaccount*_resource.go` files carry what genuinely differs, which is the
+// resource name and schema description, the generated types, and the six functions in the
+// descriptor below. A rule stated here is stated once; every review round on this family
+// so far has found a rule applied to one member of three.
 
-// guardrailPolicyAccountOps is the per-family half of the lifecycle.
-//
-// The descriptor is parameterized on the family's model type, so a family that wires a
-// mapping to the wrong type fails to compile. Every closure here names a generated type
-// that only the family's own file can see.
-type guardrailPolicyAccountOps[M any] struct {
+// guardrailPolicyAccountModel is the data model all three resources publish. Its only
+// per-family part is the authoring config type, so the three resource files alias it
+// rather than each declaring the same nine fields.
+type guardrailPolicyAccountModel[C any] struct {
+	Config                   *C             `tfsdk:"config"`
+	ID                       types.String   `tfsdk:"id"`
+	IsDefault                types.Bool     `tfsdk:"is_default"`
+	IsSynced                 types.Bool     `tfsdk:"is_synced"`
+	IsWorkspaceDefaultSynced types.Bool     `tfsdk:"is_workspace_default_synced"`
+	Name                     types.String   `tfsdk:"name"`
+	OptedOutWorkspaceIDs     []types.String `tfsdk:"opted_out_workspace_ids"`
+	UpdatedAt                types.String   `tfsdk:"updated_at"`
+	WorkspaceIDs             []types.String `tfsdk:"workspace_ids"`
+}
+
+// guardrailPolicyAccountRowFields is the scalar half of a row. Every family's row carries
+// these under the same names, but each row is a generated type of its own, and Go cannot
+// read a field by name across types, so a family hands them over through this struct.
+// Everything done with them is shared.
+type guardrailPolicyAccountRowFields struct {
+	IsDefault                bool
+	IsSynced                 bool
+	IsWorkspaceDefaultSynced bool
+	Name                     string
+	UpdatedAt                *string
+	WorkspaceIDs             []string
+	OptedOutWorkspaceIDs     []string
+}
+
+// guardrailPolicyAccountCoverage is what a write body carries besides the config: the name
+// and the two exclusivity rules' inputs, which are identical across the three families.
+type guardrailPolicyAccountCoverage struct {
+	Name                 string
+	IsDefault            bool
+	OptedOutWorkspaceIDs []string
+	WorkspaceIDs         []string
+}
+
+// guardrailPolicyAccountOps is the per-family half of the lifecycle: the policy type the
+// routes resolve an id by, and five mappings between the family's generated types and this
+// file's model. The descriptor is parameterized on the family's three types, so a family
+// that wires a mapping to the wrong one fails to compile rather than at runtime.
+type guardrailPolicyAccountOps[C any, A any, R any] struct {
 	// policyType is the value the routes resolve a policy id by. A row found under another
 	// type is a mismatched import rather than this resource's policy, and
 	// guardrailPolicyAccountLookup reports it.
 	policyType string
 
-	// id reads the policy id state holds, which is the identifier every operation passes
-	// to the route.
-	id func(*M) string
+	// variant unwraps the union row the list and the write responses carry.
+	variant func(shared.AccountGuardrailPolicy) *R
 
-	// setID writes the id a write response carried onto the model.
-	setID func(*M, string)
+	// fields reads the scalars this file hydrates from.
+	fields func(*R) guardrailPolicyAccountRowFields
 
-	// isDefault reads the flag the destroy refusal and the write body are both conditional
-	// on.
-	isDefault func(*M) bool
+	// flatten converts a row's config into the model's authoring config.
+	flatten func(*R) (*C, diag.Diagnostics)
 
-	// refreshFromRow hydrates the model from the union row the list returns. A nil model
-	// comes back as an error naming the mismatched type rather than as a panic.
-	refreshFromRow func(ctx context.Context, model *M, policy shared.AccountGuardrailPolicy) diag.Diagnostics
+	// expand converts the model's authoring config into the config the write body takes.
+	expand func(*C) (A, diag.Diagnostics)
 
-	// writeBody renders the body both write routes take.
-	writeBody func(ctx context.Context, model *M) (shared.AccountGuardrailPolicyRequest, diag.Diagnostics)
+	// wrap builds the union body both write routes take from the expanded config and the
+	// coverage this file computed.
+	wrap func(A, guardrailPolicyAccountCoverage) shared.AccountGuardrailPolicyRequest
 }
 
-// guardrailPolicyAccountSchema builds the schema all three resources publish. Only the
-// description and the `config` attribute differ per family, and the attribute is built from
-// each family's own generated workspace-scoped resource, so it is passed in.
+// guardrailPolicyAccountUnexpectedRow is the diagnostic for a union row that carries
+// another family's type. The read refuses that case by type through the lookup, so this is
+// a guard for the write responses rather than a user-facing branch.
+func guardrailPolicyAccountUnexpectedRow() diag.Diagnostics {
+	var diags diag.Diagnostics
+	diags.AddError("unexpected response from API", "the account policy carried a type this resource cannot read")
+	return diags
+}
+
+// guardrailPolicyAccountMissingObject is the diagnostic for an absent plan or state. It
+// replaces what would otherwise be a nil dereference; the framework does not hand these
+// operations an absent object, so it is unreachable in practice.
+func guardrailPolicyAccountMissingObject() diag.Diagnostics {
+	var diags diag.Diagnostics
+	diags.AddError(
+		"unexpected empty object from the framework",
+		"The plan or prior state this operation was given was absent, so there was nothing to read or write. This is always an error in the provider; please report it.",
+	)
+	return diags
+}
+
+// guardrailPolicyAccountSchema builds the schema all three resources publish. The attribute
+// map is identical across the family; only the description and the `config` attribute
+// differ, and the attribute is built from each family's own generated workspace-scoped
+// resource, so both are passed in.
 func guardrailPolicyAccountSchema(configAttribute schema.Attribute, markdownDescription string) schema.Schema {
 	return schema.Schema{
 		MarkdownDescription: markdownDescription,
@@ -117,17 +175,147 @@ func guardrailPolicyAccountSchema(configAttribute schema.Attribute, markdownDesc
 	}
 }
 
-// guardrailPolicyAccountUnexpectedRow is the diagnostic for a union row that carries
-// another family's type. The read already refuses that case by type, so this is a guard
-// for the write paths rather than a user-facing branch.
-func guardrailPolicyAccountUnexpectedRow() diag.Diagnostics {
-	var diags diag.Diagnostics
-	diags.AddError("unexpected response from API", "the account policy list returned a policy of a type this resource cannot read")
-	return diags
+// guardrailPolicyAccountHydrate copies a union row onto the model. `id` is deliberately not
+// taken from here: the identifier that resolved the row is the one state keeps.
+func guardrailPolicyAccountHydrate[C any, A any, R any](model *guardrailPolicyAccountModel[C], policy shared.AccountGuardrailPolicy, ops guardrailPolicyAccountOps[C, A, R]) diag.Diagnostics {
+	row := ops.variant(policy)
+	if row == nil {
+		return guardrailPolicyAccountUnexpectedRow()
+	}
+
+	fields := ops.fields(row)
+
+	model.IsDefault = types.BoolValue(fields.IsDefault)
+	model.IsSynced = types.BoolValue(fields.IsSynced)
+	model.IsWorkspaceDefaultSynced = types.BoolValue(fields.IsWorkspaceDefaultSynced)
+	model.Name = types.StringValue(fields.Name)
+	model.UpdatedAt = types.StringPointerValue(fields.UpdatedAt)
+
+	model.WorkspaceIDs = make([]types.String, 0, len(fields.WorkspaceIDs))
+	for _, v := range fields.WorkspaceIDs {
+		model.WorkspaceIDs = append(model.WorkspaceIDs, types.StringValue(v))
+	}
+	model.OptedOutWorkspaceIDs = make([]types.String, 0, len(fields.OptedOutWorkspaceIDs))
+	for _, v := range fields.OptedOutWorkspaceIDs {
+		model.OptedOutWorkspaceIDs = append(model.OptedOutWorkspaceIDs, types.StringValue(v))
+	}
+
+	config, configDiags := ops.flatten(row)
+	// Reachable from a write as well as from the read: a remote policy exists by the time a
+	// write gets here, so if this ever fires the error has to name that policy's id rather
+	// than leave it to be found.
+	if configDiags.HasError() {
+		return configDiags
+	}
+	model.Config = config
+
+	return configDiags
 }
 
-func guardrailPolicyAccountCreate[M any](ctx context.Context, client *sdk.OpenRouter, ops guardrailPolicyAccountOps[M], req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data *M
+// guardrailPolicyAccountWriteBody renders the body both write routes take.
+//
+// The route replaces a policy and its coverage wholesale, so every field travels on every
+// write and an omitted field is a clear rather than a no-op: a PUT whose body carried no
+// `workspace_ids` left the policy covering no workspaces at all, measured 2026-11-18. The
+// two exclusivity rules the route enforces are applied here as well as at plan time, so a
+// merged state holding a stale value cannot reach it:
+//
+//   - while `is_default` is true, `workspace_ids` is not sent. The route answers that
+//     combination with 400 "The account default covers workspaces through opt-outs", and for
+//     a default the read's `workspace_ids` is resolved coverage rather than configuration.
+//   - while the effective `is_default` is false, a non-empty `opted_out_workspace_ids` is
+//     refused instead of sent or dropped. The route answers that combination with 400 "Only
+//     the account default can have default assignment fields", and silently omitting the
+//     list would make the configuration describe coverage that no apply stores, so the write
+//     fails and says which flag it needs.
+//
+// `is_default` itself always travels, as an explicit true or false, because the route treats
+// an absent value as no change while the provider's state always knows which one the
+// configuration asked for.
+func guardrailPolicyAccountWriteBody[C any, A any, R any](model *guardrailPolicyAccountModel[C], ops guardrailPolicyAccountOps[C, A, R]) (shared.AccountGuardrailPolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	config, configDiags := ops.expand(model.Config)
+	diags.Append(configDiags...)
+	if diags.HasError() {
+		return shared.AccountGuardrailPolicyRequest{}, diags
+	}
+
+	coverage := guardrailPolicyAccountCoverage{
+		Name:      model.Name.ValueString(),
+		IsDefault: model.IsDefault.ValueBool(),
+	}
+
+	if coverage.IsDefault {
+		coverage.OptedOutWorkspaceIDs = guardrailPolicyAccountValueStrings(model.OptedOutWorkspaceIDs)
+		return ops.wrap(config, coverage), diags
+	}
+
+	// `is_default` is Optional+Computed, so a configuration that omits it arrives here null or
+	// unknown and becomes false on the wire, which is what the route does with an absent flag
+	// too. Opt-outs configured while the effective flag is false are refused here rather than
+	// dropped: it is the same combination the route answers with "Only the account default can
+	// have default assignment fields", and dropping them would leave a configuration
+	// describing coverage no apply can store, because the read returns the empty list the
+	// route actually holds. An unresolved list counts as configured here: this path cannot
+	// tell it from a non-empty one, and dropping it would be the same silence. A list carried
+	// from state never arrives, because the plan modifier pins it to empty when the
+	// configuration does not write it.
+	if len(model.OptedOutWorkspaceIDs) > 0 {
+		diags.AddAttributeError(
+			path.Root("opted_out_workspace_ids"),
+			"Only the account default can have default assignment fields",
+			"`opted_out_workspace_ids` describes the account default's coverage, so it requires an effective `is_default = true`. This configuration leaves the flag unset or false, which the route answers with 400 rather than storing these workspaces, so the provider refuses instead of dropping them.",
+		)
+		return shared.AccountGuardrailPolicyRequest{}, diags
+	}
+
+	coverage.WorkspaceIDs = guardrailPolicyAccountValueStrings(model.WorkspaceIDs)
+	return ops.wrap(config, coverage), diags
+}
+
+// guardrailPolicyAccountBase is what every resource in the family embeds. It carries the
+// client and the descriptor and implements the seven methods that are the same for all
+// three, so each resource file declares only its name, its description and its types. The
+// three public resource types stay concrete and greppable, and the provider's registry
+// keeps constructing them through three New…Resource functions.
+type guardrailPolicyAccountBase[C any, A any, R any] struct {
+	// Provider configured SDK client.
+	client *sdk.OpenRouter
+
+	ops guardrailPolicyAccountOps[C, A, R]
+}
+
+func (b *guardrailPolicyAccountBase[C, A, R]) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	// Prevent panic if the provider has not been configured.
+	if req.ProviderData == nil {
+		return
+	}
+
+	client, ok := req.ProviderData.(*sdk.OpenRouter)
+
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected *sdk.OpenRouter, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	b.client = client
+}
+
+// ConfigValidators refuses the two coverage combinations the route answers with 400, at plan
+// time. It is config-level because each rule relates two attributes.
+func (b *guardrailPolicyAccountBase[C, A, R]) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
+	return []resource.ConfigValidator{
+		guardrailPolicyAccountCoverageValidator{},
+	}
+}
+
+func (b *guardrailPolicyAccountBase[C, A, R]) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data *guardrailPolicyAccountModel[C]
 	var plan types.Object
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
@@ -143,14 +331,18 @@ func guardrailPolicyAccountCreate[M any](ctx context.Context, client *sdk.OpenRo
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	if data == nil {
+		resp.Diagnostics.Append(guardrailPolicyAccountMissingObject()...)
+		return
+	}
 
-	body, bodyDiags := ops.writeBody(ctx, data)
+	body, bodyDiags := guardrailPolicyAccountWriteBody(data, b.ops)
 	resp.Diagnostics.Append(bodyDiags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	res, err := client.GuardrailPolicies.CreateAccountPolicy(ctx, body)
+	res, err := b.client.GuardrailPolicies.CreateAccountPolicy(ctx, body)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
 		if res != nil && res.RawResponse != nil {
@@ -184,13 +376,13 @@ func guardrailPolicyAccountCreate[M any](ctx context.Context, client *sdk.OpenRo
 	// list, and its config came back byte-equal to what was sent. So state comes from the
 	// response and no list read follows a write, which removes the window in which a read
 	// issued milliseconds after a write could miss the row just created.
-	ops.setID(data, guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data))
-	if ops.id(data) == "" {
+	data.ID = types.StringValue(guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data))
+	if data.ID.ValueString() == "" {
 		resp.Diagnostics.AddError("unexpected response from API", "the created policy carried no id")
 		return
 	}
 
-	resp.Diagnostics.Append(ops.refreshFromRow(ctx, data, res.AccountGuardrailPolicyResponse.Data)...)
+	resp.Diagnostics.Append(guardrailPolicyAccountHydrate(data, res.AccountGuardrailPolicyResponse.Data, b.ops)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -204,8 +396,8 @@ func guardrailPolicyAccountCreate[M any](ctx context.Context, client *sdk.OpenRo
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func guardrailPolicyAccountRead[M any](ctx context.Context, client *sdk.OpenRouter, ops guardrailPolicyAccountOps[M], req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data *M
+func (b *guardrailPolicyAccountBase[C, A, R]) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data *guardrailPolicyAccountModel[C]
 	var item types.Object
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &item)...)
@@ -221,22 +413,26 @@ func guardrailPolicyAccountRead[M any](ctx context.Context, client *sdk.OpenRout
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	if data == nil {
+		resp.Diagnostics.Append(guardrailPolicyAccountMissingObject()...)
+		return
+	}
 
-	policy, found, lookupDiags := guardrailPolicyAccountLookup(ctx, client, ops.policyType, ops.id(data))
+	policy, found, lookupDiags := guardrailPolicyAccountLookup(ctx, b.client, b.ops.policyType, data.ID.ValueString())
 	resp.Diagnostics.Append(lookupDiags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 	if !found {
-		// An account policy list that returns in full without the id is the only
-		// absence signal these routes give: there is no get-by-id to answer 404 for
-		// a single policy. A route that is unavailable answers non-200 above and
-		// reaches this as an error rather than as absence.
+		// An account policy list that returns in full without the id is the only absence
+		// signal these routes give: there is no get-by-id to answer 404 for a single policy.
+		// A route that is unavailable answers non-200 above and reaches this as an error
+		// rather than as absence.
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	resp.Diagnostics.Append(ops.refreshFromRow(ctx, data, *policy)...)
+	resp.Diagnostics.Append(guardrailPolicyAccountHydrate(data, *policy, b.ops)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -245,8 +441,8 @@ func guardrailPolicyAccountRead[M any](ctx context.Context, client *sdk.OpenRout
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func guardrailPolicyAccountUpdate[M any](ctx context.Context, client *sdk.OpenRouter, ops guardrailPolicyAccountOps[M], req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data *M
+func (b *guardrailPolicyAccountBase[C, A, R]) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var data *guardrailPolicyAccountModel[C]
 	var plan types.Object
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
@@ -258,15 +454,19 @@ func guardrailPolicyAccountUpdate[M any](ctx context.Context, client *sdk.OpenRo
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	if data == nil {
+		resp.Diagnostics.Append(guardrailPolicyAccountMissingObject()...)
+		return
+	}
 
-	body, bodyDiags := ops.writeBody(ctx, data)
+	body, bodyDiags := guardrailPolicyAccountWriteBody(data, b.ops)
 	resp.Diagnostics.Append(bodyDiags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	res, err := client.GuardrailPolicies.UpdateAccountPolicy(ctx, operations.UpdateAccountPolicyRequest{
-		ID:   ops.id(data),
+	res, err := b.client.GuardrailPolicies.UpdateAccountPolicy(ctx, operations.UpdateAccountPolicyRequest{
+		ID:   data.ID.ValueString(),
 		Body: body,
 	})
 	if err != nil {
@@ -290,11 +490,11 @@ func guardrailPolicyAccountUpdate[M any](ctx context.Context, client *sdk.OpenRo
 		return
 	}
 
-	// See Create: the write response carries the whole row, so an update takes its state
-	// from it rather than re-reading the list. Measured on the live route 2026-11-20, the
-	// PUT's 200 carries the same field set the list does, and its updated_at is the
-	// post-update value that the list would return. The id is already the one state holds.
-	resp.Diagnostics.Append(ops.refreshFromRow(ctx, data, res.AccountGuardrailPolicyResponse.Data)...)
+	// See Create: the write response carries the whole row, so an update takes its state from
+	// it rather than re-reading the list. Measured on the live route 2026-11-20, the PUT's 200
+	// carries the same field set the list does, and its updated_at is the post-update value
+	// that the list would return. The id is already the one state holds.
+	resp.Diagnostics.Append(guardrailPolicyAccountHydrate(data, res.AccountGuardrailPolicyResponse.Data, b.ops)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -308,8 +508,8 @@ func guardrailPolicyAccountUpdate[M any](ctx context.Context, client *sdk.OpenRo
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func guardrailPolicyAccountDelete[M any](ctx context.Context, client *sdk.OpenRouter, ops guardrailPolicyAccountOps[M], req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data *M
+func (b *guardrailPolicyAccountBase[C, A, R]) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data *guardrailPolicyAccountModel[C]
 	var item types.Object
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &item)...)
@@ -325,16 +525,20 @@ func guardrailPolicyAccountDelete[M any](ctx context.Context, client *sdk.OpenRo
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	if data == nil {
+		resp.Diagnostics.Append(guardrailPolicyAccountMissingObject()...)
+		return
+	}
 
 	// The destroy of the account default is refused, not sent and not silently skipped.
-	// Measured 2026-11-18: DELETE answers 200 for a policy that holds the default flag,
-	// with no refusal, and there is no undelete, so sending it would release the baseline
-	// for every workspace that resolves to the policy with no way back. Skipping it is
-	// the other failure: a destroy that reports success while the policy still enforces
-	// hands back a resource nobody manages, and writing the configuration again creates a
-	// second policy rather than adopting that one. An error keeps the resource in state
-	// and lets the operator choose, and the two paths are named in the message.
-	if ops.isDefault(data) {
+	// Measured 2026-11-18: DELETE answers 200 for a policy that holds the default flag, with
+	// no refusal, and there is no undelete, so sending it would release the baseline for every
+	// workspace that resolves to the policy with no way back. Skipping it is the other
+	// failure: a destroy that reports success while the policy still enforces hands back a
+	// resource nobody manages, and writing the configuration again creates a second policy
+	// rather than adopting that one. An error keeps the resource in state and lets the
+	// operator choose, and the two paths are named in the message.
+	if data.IsDefault.ValueBool() {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("is_default"),
 			"refusing to destroy the account default",
@@ -343,8 +547,8 @@ func guardrailPolicyAccountDelete[M any](ctx context.Context, client *sdk.OpenRo
 		return
 	}
 
-	res, err := client.GuardrailPolicies.DeleteAccountPolicy(ctx, operations.DeleteAccountPolicyRequest{
-		ID: ops.id(data),
+	res, err := b.client.GuardrailPolicies.DeleteAccountPolicy(ctx, operations.DeleteAccountPolicyRequest{
+		ID: data.ID.ValueString(),
 	})
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
@@ -371,11 +575,10 @@ func guardrailPolicyAccountDelete[M any](ctx context.Context, client *sdk.OpenRo
 	}
 }
 
-// guardrailPolicyAccountImportState takes the bare policy id. The list read is
-// account-wide, so unlike the workspace-scoped policy resources this family needs no
-// workspace prefix, and the resource's own type supplies the `policy_type` the route
-// resolves the id by.
-func guardrailPolicyAccountImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+// guardrailPolicyAccountImportState takes the bare policy id. The list read is account-wide,
+// so unlike the workspace-scoped policy resources this family needs no workspace prefix, and
+// the resource's own type supplies the `policy_type` the route resolves the id by.
+func (b *guardrailPolicyAccountBase[C, A, R]) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	if req.ID == "" {
 		resp.Diagnostics.AddError("invalid import ID", "expected a policy id, got an empty string")
 		return
