@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
 // The account (workspace-wide) policy family is hand-written because the route has no
@@ -572,7 +573,7 @@ func runAccountPolicyDefaultSendsNoWorkspaceIDs(t *testing.T, fam accountPolicyF
 // runAccountPolicyRejectsCoverageWithWrongDefault covers the two combinations the route
 // answers with 400, at plan time rather than at apply.
 func runAccountPolicyRejectsCoverageWithWrongDefault(t *testing.T, fam accountPolicyFamily) {
-	srv, _ := newGuardrailPolicyAccountStub(t)
+	srv, stub := newGuardrailPolicyAccountStub(t)
 
 	defaultWithWorkspaces := famConfig(srv.URL, fam, `
   is_default    = true
@@ -599,6 +600,14 @@ func runAccountPolicyRejectsCoverageWithWrongDefault(t *testing.T, fam accountPo
 			},
 		},
 	})
+
+	// Both refusals have to happen before the wire. The stub now answers the two combinations
+	// with the route's own wording, so matching the message alone cannot tell a plan-time
+	// rejection from the server refusing the write: without this, deleting the config
+	// validators and the write-body refusal would still pass every step below.
+	if n := stub.createdCount(t); n != 0 {
+		t.Errorf("%d create(s) reached the stub; both combinations have to be refused before the write, and the stub answers them with the same wording the provider does", n)
+	}
 }
 
 // runAccountPolicyRejectsWorkspaceIDsOnStoredDefault covers the coverage combination the
@@ -789,6 +798,15 @@ func runAccountPolicyCreateTakesStateFromWriteResponse(t *testing.T, fam account
 			{
 				Config:             cfg,
 				ExpectNonEmptyPlan: true,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					// The plan after the post-apply refresh is the assertion: the hidden row makes
+					// the resource absent, so the only action that can be planned is a create.
+					// ExpectNonEmptyPlan alone would accept attribute drift here, and a create
+					// count cannot tell the two apart because neither is applied.
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(fam.addr(), plancheck.ResourceActionCreate),
+					},
+				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(fam.addr(), "id", "stub-account-1"),
 					resource.TestCheckResourceAttr(fam.addr(), "name", "engineering policy"),
@@ -807,18 +825,14 @@ func runAccountPolicyCreateTakesStateFromWriteResponse(t *testing.T, fam account
 
 	// The reads are counted rather than assumed: a create reads the list zero times, so the
 	// only read this case sees is the one Terraform issues after the apply. A create that
-	// still read would either fail on the hidden row or add a second read here. The create
-	// count bounds ExpectNonEmptyPlan, which the framework offers as the only way to allow a
-	// non-empty plan: the hidden row makes the plan a recreate, and this asserts the recreate
-	// was planned rather than applied, so the flag is not standing in for drift.
+	// still read would either fail on the hidden row or add a second read here. What the
+	// non-empty plan is allowed to be is asserted above by the plan check, not here: a count
+	// of applied creates cannot distinguish a recreate from drift, because neither is applied.
 	stub.mu.Lock()
 	reads := len(stub.listQueries)
 	stub.mu.Unlock()
 	if reads != 1 {
 		t.Errorf("the account policy list was read %d time(s); want 1, the read Terraform issues after the apply, because a create reads it zero times", reads)
-	}
-	if n := stub.createdCount(t); n != 1 {
-		t.Errorf("%d create(s) reached the stub; the empty-plan flag was added to allow the recreate the hidden row causes, not to let a second apply through", n)
 	}
 }
 
@@ -853,6 +867,11 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 				},
 				Config:             second,
 				ExpectNonEmptyPlan: true,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(fam.addr(), plancheck.ResourceActionCreate),
+					},
+				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(fam.addr(), "name", "renamed policy"),
 					resource.TestCheckResourceAttr(fam.addr(), "workspace_ids.#", "1"),
@@ -863,25 +882,22 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 	})
 
 	// Three reads: one after step 1's apply, one to refresh before step 2's plan and one
-	// after step 2's apply. The update reads none; while it still read, this counted four.
-	// As in the create case, the create count bounds the empty-plan flag: the hidden row makes
-	// the plan a recreate, and only one create may ever have been applied.
+	// after step 2's apply. The update reads none; while it still read, this counted four. The
+	// plan check above is what bounds the empty-plan flag, as in the create case.
 	stub.mu.Lock()
 	reads := len(stub.listQueries)
 	stub.mu.Unlock()
 	if reads != 3 {
 		t.Errorf("the account policy list was read %d time(s); want 3, the reads Terraform issues around the two applies, because an update reads it zero times", reads)
 	}
-	if n := stub.createdCount(t); n != 1 {
-		t.Errorf("%d create(s) reached the stub; the empty-plan flag was added to allow the recreate the hidden row causes, not to let a second apply through", n)
-	}
 }
 
 // runAccountPolicyImportByBareID covers the importer's contract: the bare policy id is the
 // identifier, because an account policy is not scoped to a workspace, so a workspace-qualified
-// id is refused rather than silently accepted. Terraform's own verify pass checks that the
-// imported state equals the state the create produced, which is the one place the read model
-// and the write model are compared field for field.
+// id is refused rather than silently accepted. Terraform's verify pass compares the imported
+// state against the state the create left, and that state was already read back once after the
+// apply, so this proves the importer round-trips a policy rather than comparing the write model
+// with the read model. The empty-id refusal is not asserted here.
 func runAccountPolicyImportByBareID(t *testing.T, fam accountPolicyFamily) {
 	srv, _ := newGuardrailPolicyAccountStub(t)
 
@@ -916,11 +932,10 @@ func runAccountPolicyImportByBareID(t *testing.T, fam accountPolicyFamily) {
 // runAccountPolicyMissingFromTheListPlansARecreate covers the absence path. The list route is
 // the only absence signal these routes give, so a full list without the id means the policy is
 // gone, and the provider's read has to remove it from state rather than keep enforcing a
-// resource nobody manages. What a test can assert here is bounded by Terraform: a refresh that
-// finds the object gone is recorded in the plan and only lands in state when that plan is
-// applied, so a plan-only step can show the recreate but not the state removal. The step below
-// therefore asserts the recreate, and the create count asserts it was planned rather than
-// applied.
+// resource nobody manages. Two things make the assertion specific rather than merely
+// non-empty: the post-apply-refresh plan has to be a create rather than an in-place update,
+// which is what separates an absence from attribute drift, and the resource that comes back
+// carries the next id the stub issues, which only happens if state had let the old one go.
 func runAccountPolicyMissingFromTheListPlansARecreate(t *testing.T, fam accountPolicyFamily) {
 	srv, stub := newGuardrailPolicyAccountStub(t)
 
@@ -943,21 +958,28 @@ func runAccountPolicyMissingFromTheListPlansARecreate(t *testing.T, fam accountP
 					stub.hideAlways = true
 				},
 				Config:             cfg,
-				PlanOnly:           true,
 				ExpectNonEmptyPlan: true,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					// The plan after the post-apply refresh must be a create, not an in-place
+					// update: that is what distinguishes an absence from attribute drift, and the
+					// framework offers no plan check at all for a plan-only step.
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(fam.addr(), plancheck.ResourceActionCreate),
+					},
+				},
+				// The recreate is applied, so the resource carries the next id the stub issues.
+				Check: resource.TestCheckResourceAttr(fam.addr(), "id", "stub-account-2"),
 			},
 		},
 	})
 
-	if n := stub.createdCount(t); n != 1 {
-		t.Errorf("%d create(s) reached the stub, want 1: the recreate is planned, not applied, because the step plans only", n)
-	}
 }
 
 // runAccountPolicyDeleteAlreadyGone covers the destroy of a policy the route no longer has.
 // There is no undelete and no get-by-id, so a 404 on DELETE is the only answer that can mean
-// "already gone": treating it as a failure would leave a resource pinned in state forever,
-// and treating a non-404 failure the same way would hide a real fault.
+// "already gone": treating it as a failure would leave a resource pinned in state forever.
+// Only that branch is asserted here; that a non-404 failure is still an error is not tested,
+// and the negative case is the one thing this scenario could gain.
 func runAccountPolicyDeleteAlreadyGone(t *testing.T, fam accountPolicyFamily) {
 	srv, stub := newGuardrailPolicyAccountStub(t)
 

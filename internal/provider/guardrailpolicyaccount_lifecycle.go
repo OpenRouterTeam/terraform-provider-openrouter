@@ -508,10 +508,10 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Update(ctx context.Context, req re
 	// The lookup this replaced selected the row by id, so it could not return a different
 	// policy; a write response has to be checked instead of trusted. Without this the
 	// resource would keep its own id while carrying another policy's fields.
-	if got := guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data); got != "" && got != data.ID.ValueString() {
+	if got := guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data); got != data.ID.ValueString() {
 		resp.Diagnostics.AddError(
 			"unexpected response from API",
-			fmt.Sprintf("the update answered for policy %s, which is not the policy this resource manages (%s)", got, data.ID.ValueString()),
+			fmt.Sprintf("the update answered for policy %q, and this resource manages policy %s. An empty id fails here too: the create path rejects one, and a response that cannot name the policy it answered for cannot be trusted to fill it in.", got, data.ID.ValueString()),
 		)
 		return
 	}
@@ -522,7 +522,7 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Update(ctx context.Context, req re
 		// rule applies: a failure here has to name the policy it is about.
 		resp.Diagnostics.AddError(
 			"the policy was updated but could not be read back into state",
-			fmt.Sprintf("Policy %s exists in the account with the update applied. Once the error above is resolved, import it by that id.", data.ID.ValueString()),
+			fmt.Sprintf("Policy %s is already tracked in state, so its next refresh will read it again once the error above is resolved. The update itself did reach the API.", data.ID.ValueString()),
 		)
 		return
 	}
