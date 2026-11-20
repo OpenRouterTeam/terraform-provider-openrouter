@@ -138,10 +138,17 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 		if s.hideAfterNextWrite {
 			s.hideOnce[body["id"].(string)] = true
 		}
+		// Recorded as received, before the default is backfilled below. Recording the same
+		// map the backfill writes to would make the "an explicit false travels" assertion
+		// pass on the stub's own default, and the create scenario would stop binding.
+		recorded := map[string]any{}
+		for k, v := range body {
+			recorded[k] = v
+		}
+		s.createBodies = append(s.createBodies, recorded)
 		if body["is_default"] == nil {
 			body["is_default"] = false
 		}
-		s.createBodies = append(s.createBodies, body)
 		s.policies[body["id"].(string)] = body
 		writeJSON(w, http.StatusCreated, map[string]any{"data": full(body)})
 	})

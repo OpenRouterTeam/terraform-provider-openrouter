@@ -257,10 +257,10 @@ func guardrailPolicyAccountWriteBody[C any, A any, R any](model *guardrailPolicy
 	// dropped: it is the same combination the route answers with "Only the account default can
 	// have default assignment fields", and dropping them would leave a configuration
 	// describing coverage no apply can store, because the read returns the empty list the
-	// route actually holds. An unresolved list counts as configured here: this path cannot
-	// tell it from a non-empty one, and dropping it would be the same silence. A list carried
-	// from state never arrives, because the plan modifier pins it to empty when the
-	// configuration does not write it.
+	// route actually holds. The check sees a known list or nothing: this path decodes the plan
+	// with UnhandledUnknownAsEmpty, so a list that is still unresolved arrives as empty and is
+	// not refused here. A list carried from state never arrives, because the plan modifier pins
+	// it to empty when the configuration does not write it.
 	if len(model.OptedOutWorkspaceIDs) > 0 {
 		diags.AddAttributeError(
 			path.Root("opted_out_workspace_ids"),
@@ -507,6 +507,12 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Update(ctx context.Context, req re
 	// is already the one state holds.
 	resp.Diagnostics.Append(guardrailPolicyAccountHydrate(data, res.AccountGuardrailPolicyResponse.Data, b.ops)...)
 	if resp.Diagnostics.HasError() {
+		// Lower stakes than the create path, because state already holds the id, but the same
+		// rule applies: a failure here has to name the policy it is about.
+		resp.Diagnostics.AddError(
+			"the policy was updated but could not be read back into state",
+			fmt.Sprintf("Policy %s exists in the account with the update applied. Once the error above is resolved, import it by that id.", data.ID.ValueString()),
+		)
 		return
 	}
 
