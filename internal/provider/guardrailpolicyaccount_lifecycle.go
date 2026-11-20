@@ -505,6 +505,17 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Update(ctx context.Context, req re
 	// the same resolved workspace_ids projection the list gives it, the same four ids and
 	// workspace_count 4 on both sides. So a default policy needs no special case here. The id
 	// is already the one state holds.
+	// The lookup this replaced selected the row by id, so it could not return a different
+	// policy; a write response has to be checked instead of trusted. Without this the
+	// resource would keep its own id while carrying another policy's fields.
+	if got := guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data); got != "" && got != data.ID.ValueString() {
+		resp.Diagnostics.AddError(
+			"unexpected response from API",
+			fmt.Sprintf("the update answered for policy %s, which is not the policy this resource manages (%s)", got, data.ID.ValueString()),
+		)
+		return
+	}
+
 	resp.Diagnostics.Append(guardrailPolicyAccountHydrate(data, res.AccountGuardrailPolicyResponse.Data, b.ops)...)
 	if resp.Diagnostics.HasError() {
 		// Lower stakes than the create path, because state already holds the id, but the same

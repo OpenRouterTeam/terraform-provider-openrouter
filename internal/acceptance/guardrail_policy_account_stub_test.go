@@ -37,6 +37,14 @@ type guardrailPolicyAccountStub struct {
 	// a write that still read the list would find nothing and fail.
 	hideAfterNextWrite bool
 	hideOnce           map[string]bool
+	// hideAlways makes every list read return nothing, which is the shape of a policy removed
+	// outside Terraform: the read that follows has no row to find.
+	hideAlways bool
+	// truncateList makes the list report one more policy than it returns, the clamped page the
+	// route signals through total_count.
+	truncateList bool
+	// notFoundOnDelete makes DELETE answer 404, which the resource has to read as already gone.
+	notFoundOnDelete bool
 }
 
 func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPolicyAccountStub) {
@@ -124,7 +132,15 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			}
 			data = append(data, full(s.policies[ids[i]]))
 		}
-		writeJSON(w, http.StatusOK, map[string]any{"data": data, "total_count": len(data)})
+		total := len(data)
+		if s.hideAlways {
+			data = []any{}
+			total = 0
+		}
+		if s.truncateList {
+			total++
+		}
+		writeJSON(w, http.StatusOK, map[string]any{"data": data, "total_count": total})
 	})
 	mux.HandleFunc("POST /guardrails/policies/account", func(w http.ResponseWriter, r *http.Request) {
 		var body map[string]any
@@ -146,6 +162,17 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			recorded[k] = v
 		}
 		s.createBodies = append(s.createBodies, recorded)
+		// The same two combinations PUT refuses, refused here too: the route enforces them on
+		// both writes, and a create the stub accepted would go unexercised against them.
+		isDefaultCreate, _ := body["is_default"].(bool)
+		if isDefaultCreate && len(asList(body["workspace_ids"])) > 0 {
+			badRequest(w, "The account default covers workspaces through opt-outs")
+			return
+		}
+		if !isDefaultCreate && len(asList(body["opted_out_workspace_ids"])) > 0 {
+			badRequest(w, "Only the account default can have default assignment fields")
+			return
+		}
 		if body["is_default"] == nil {
 			body["is_default"] = false
 		}
@@ -197,6 +224,10 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 		s.mu.Lock()
 		defer s.mu.Unlock()
 		s.deleteCalls++
+		if s.notFoundOnDelete {
+			writeJSON(w, http.StatusNotFound, map[string]any{"error": map[string]any{"code": 404, "message": "Account policy not found"}})
+			return
+		}
 		delete(s.policies, r.PathValue("id"))
 		writeJSON(w, http.StatusOK, map[string]any{"data": true})
 	})
@@ -373,6 +404,10 @@ var accountPolicyScenarios = []accountPolicyScenario{
 	{"demotion turns the projection into assignments", runAccountPolicyDemotionTurnsProjectionIntoAssignments},
 	{"create takes state from the write response", runAccountPolicyCreateTakesStateFromWriteResponse},
 	{"update takes state from the write response", runAccountPolicyUpdateTakesStateFromWriteResponse},
+	{"import by bare id, and refuse a workspace-qualified one", runAccountPolicyImportByBareID},
+	{"a list that omits the policy plans a recreate", runAccountPolicyMissingFromTheListPlansARecreate},
+	{"delete of an already-gone policy is not an error", runAccountPolicyDeleteAlreadyGone},
+	{"a truncated list is an error, never a miss", runAccountPolicyTruncatedListIsAnError},
 }
 
 // TestStubGuardrailPolicyAccountRules runs every account policy scenario against every
@@ -396,7 +431,7 @@ func TestStubGuardrailPolicyAccountRules(t *testing.T) {
 // this number deliberately. Before this sweep the two generated families had no stub
 // coverage of their own, which is the whole reason the sweep exists.
 func TestStubGuardrailPolicyAccountRuleCoverage(t *testing.T) {
-	if got, want := len(accountPolicyFamilies)*len(accountPolicyScenarios), 30; got != want {
+	if got, want := len(accountPolicyFamilies)*len(accountPolicyScenarios), 42; got != want {
 		t.Errorf("%d family/scenario pairs in the table, want %d", got, want)
 	}
 }
@@ -772,12 +807,18 @@ func runAccountPolicyCreateTakesStateFromWriteResponse(t *testing.T, fam account
 
 	// The reads are counted rather than assumed: a create reads the list zero times, so the
 	// only read this case sees is the one Terraform issues after the apply. A create that
-	// still read would either fail on the hidden row or add a second read here.
+	// still read would either fail on the hidden row or add a second read here. The create
+	// count bounds ExpectNonEmptyPlan, which the framework offers as the only way to allow a
+	// non-empty plan: the hidden row makes the plan a recreate, and this asserts the recreate
+	// was planned rather than applied, so the flag is not standing in for drift.
 	stub.mu.Lock()
 	reads := len(stub.listQueries)
 	stub.mu.Unlock()
 	if reads != 1 {
 		t.Errorf("the account policy list was read %d time(s); want 1, the read Terraform issues after the apply, because a create reads it zero times", reads)
+	}
+	if n := stub.createdCount(t); n != 1 {
+		t.Errorf("%d create(s) reached the stub; the empty-plan flag was added to allow the recreate the hidden row causes, not to let a second apply through", n)
 	}
 }
 
@@ -823,10 +864,160 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 
 	// Three reads: one after step 1's apply, one to refresh before step 2's plan and one
 	// after step 2's apply. The update reads none; while it still read, this counted four.
+	// As in the create case, the create count bounds the empty-plan flag: the hidden row makes
+	// the plan a recreate, and only one create may ever have been applied.
 	stub.mu.Lock()
 	reads := len(stub.listQueries)
 	stub.mu.Unlock()
 	if reads != 3 {
 		t.Errorf("the account policy list was read %d time(s); want 3, the reads Terraform issues around the two applies, because an update reads it zero times", reads)
 	}
+	if n := stub.createdCount(t); n != 1 {
+		t.Errorf("%d create(s) reached the stub; the empty-plan flag was added to allow the recreate the hidden row causes, not to let a second apply through", n)
+	}
+}
+
+// runAccountPolicyImportByBareID covers the importer's contract: the bare policy id is the
+// identifier, because an account policy is not scoped to a workspace, so a workspace-qualified
+// id is refused rather than silently accepted. Terraform's own verify pass checks that the
+// imported state equals the state the create produced, which is the one place the read model
+// and the write model are compared field for field.
+func runAccountPolicyImportByBareID(t *testing.T, fam accountPolicyFamily) {
+	srv, _ := newGuardrailPolicyAccountStub(t)
+
+	cfg := famConfig(srv.URL, fam, `
+  name          = "imported"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: cfg,
+				Check:  resource.TestCheckResourceAttr(fam.addr(), "id", "stub-account-1"),
+			},
+			{
+				ResourceName:      fam.addr(),
+				ImportState:       true,
+				ImportStateId:     "stub-account-1",
+				ImportStateVerify: true,
+			},
+			{
+				ResourceName:  fam.addr(),
+				ImportState:   true,
+				ImportStateId: "stub-workspace-a/stub-account-1",
+				ExpectError:   regexp.MustCompile("expected a bare policy id"),
+			},
+		},
+	})
+}
+
+// runAccountPolicyMissingFromTheListPlansARecreate covers the absence path. The list route is
+// the only absence signal these routes give, so a full list without the id means the policy is
+// gone, and the provider's read has to remove it from state rather than keep enforcing a
+// resource nobody manages. What a test can assert here is bounded by Terraform: a refresh that
+// finds the object gone is recorded in the plan and only lands in state when that plan is
+// applied, so a plan-only step can show the recreate but not the state removal. The step below
+// therefore asserts the recreate, and the create count asserts it was planned rather than
+// applied.
+func runAccountPolicyMissingFromTheListPlansARecreate(t *testing.T, fam accountPolicyFamily) {
+	srv, stub := newGuardrailPolicyAccountStub(t)
+
+	cfg := famConfig(srv.URL, fam, `
+  name          = "removed outside terraform"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config: cfg,
+				Check:  resource.TestCheckResourceAttr(fam.addr(), "id", "stub-account-1"),
+			},
+			{
+				PreConfig: func() {
+					stub.mu.Lock()
+					defer stub.mu.Unlock()
+					stub.hideAlways = true
+				},
+				Config:             cfg,
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+			},
+		},
+	})
+
+	if n := stub.createdCount(t); n != 1 {
+		t.Errorf("%d create(s) reached the stub, want 1: the recreate is planned, not applied, because the step plans only", n)
+	}
+}
+
+// runAccountPolicyDeleteAlreadyGone covers the destroy of a policy the route no longer has.
+// There is no undelete and no get-by-id, so a 404 on DELETE is the only answer that can mean
+// "already gone": treating it as a failure would leave a resource pinned in state forever,
+// and treating a non-404 failure the same way would hide a real fault.
+func runAccountPolicyDeleteAlreadyGone(t *testing.T, fam accountPolicyFamily) {
+	srv, stub := newGuardrailPolicyAccountStub(t)
+
+	cfg := famConfig(srv.URL, fam, `
+  name          = "gone before the destroy"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: cfg},
+			{
+				PreConfig: func() {
+					stub.mu.Lock()
+					defer stub.mu.Unlock()
+					stub.notFoundOnDelete = true
+				},
+				Config:  cfg,
+				Destroy: true,
+			},
+		},
+	})
+
+	if n := stub.deleteCount(t); n != 1 {
+		t.Errorf("%d DELETE(s) reached the stub, want exactly the one the destroy sends", n)
+	}
+}
+
+// runAccountPolicyTruncatedListIsAnError covers the clamped page. The read sends neither
+// `offset` nor `limit` because the route returns the whole list only then, so a response
+// shorter than its own `total_count` is a clamped page rather than proof the policy is gone.
+// Reporting absence instead would plan a recreate against a policy that still exists, so it
+// has to be an error, and this asserts the operator sees that error rather than a recreate.
+// Both knobs are armed because the check sits after the lookup loop: a page that still
+// contains the policy returns before the count is compared, so truncation is only reachable
+// when the policy is missing from the page, which is exactly the case that would otherwise be
+// mistaken for absence.
+func runAccountPolicyTruncatedListIsAnError(t *testing.T, fam accountPolicyFamily) {
+	srv, stub := newGuardrailPolicyAccountStub(t)
+
+	cfg := famConfig(srv.URL, fam, `
+  name          = "behind a clamped page"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: cfg},
+			{
+				PreConfig: func() {
+					stub.mu.Lock()
+					defer stub.mu.Unlock()
+					stub.truncateList = true
+					stub.hideAlways = true
+				},
+				Config:      cfg,
+				ExpectError: regexp.MustCompile("the account policy list was truncated"),
+			},
+		},
+	})
 }
