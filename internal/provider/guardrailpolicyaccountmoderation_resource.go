@@ -3,21 +3,14 @@ package provider
 import (
 	"context"
 	"fmt"
-	"strings"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
-	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/operations"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/models/shared"
 )
 
@@ -31,17 +24,21 @@ var _ resource.ResourceWithConfigValidators = &GuardrailPolicyAccountModerationR
 // including members and API keys that hold a policy of their own.
 //
 // Hand-written rather than generated because the route has no get-by-id, so the read is
-// a list filtered on the policy id. `guardrailpolicyaccount.go` carries the shared
-// route contract, and `docs/resources/guardrail_policy_account_moderation.md` the user-facing
-// behaviour.
+// a list filtered on the policy id. `guardrailpolicyaccount.go` carries the shared route
+// contract, `guardrailpolicyaccount_lifecycle.go` the lifecycle all three account policy
+// resources share, and `docs/resources/guardrail_policy_account_moderation.md` the
+// user-facing behaviour.
 func NewGuardrailPolicyAccountModerationResource() resource.Resource {
-	return &GuardrailPolicyAccountModerationResource{}
+	return &GuardrailPolicyAccountModerationResource{ops: guardrailPolicyAccountModerationOps()}
 }
 
 // GuardrailPolicyAccountModerationResource defines the resource implementation.
 type GuardrailPolicyAccountModerationResource struct {
 	// Provider configured SDK client.
 	client *sdk.OpenRouter
+
+	// The family's half of the shared lifecycle.
+	ops guardrailPolicyAccountOps[GuardrailPolicyAccountModerationResourceModel]
 }
 
 // GuardrailPolicyAccountModerationResourceModel describes the resource data model.
@@ -62,57 +59,10 @@ func (r *GuardrailPolicyAccountModerationResource) Metadata(ctx context.Context,
 }
 
 func (r *GuardrailPolicyAccountModerationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
-		MarkdownDescription: "An account (workspace-wide) moderation policy: the content-filtering surface the covered workspaces' traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists.\n\nA policy that is not the default covers exactly `workspace_ids`. The default covers every workspace except `opted_out_workspace_ids`, in which case `workspace_ids` must be left unset. Only one policy of a type can be the account default.\n\nImport takes the bare policy id.",
-		Attributes: map[string]schema.Attribute{
-			"config": generatedGuardrailPolicyConfigSchemaAttribute(ctx, NewGuardrailPolicyModerationResource()),
-			"id": schema.StringAttribute{
-				Computed:    true,
-				Description: `Policy ID`,
-			},
-			"is_default": schema.BoolAttribute{
-				Computed:    true,
-				Optional:    true,
-				Description: `Cover every workspace in the account except ` + "`" + `opted_out_workspace_ids` + "`" + `. Set it to ` + "`" + `false` + "`" + ` to unset that status. Only one policy of a type can be the account default: declaring it on a second policy of the same type unsets it on the first and clears its coverage, so two policies that both declare it change on every run. Destroying a policy that holds this status is refused: the route deletes the account default with no complaint and cannot restore it, so a destroy fails and names the two ways forward.`,
-			},
-			"is_synced": schema.BoolAttribute{
-				Computed:    true,
-				Description: `Kept in sync with a v1 guardrail; saving changes creates an account copy`,
-			},
-			"is_workspace_default_synced": schema.BoolAttribute{
-				Computed:    true,
-				Description: `Synced from a v1 workspace default guardrail`,
-			},
-			"name": schema.StringAttribute{
-				Required:    true,
-				Description: `Policy name`,
-				Validators: []validator.String{
-					stringvalidator.UTF8LengthBetween(1, 255),
-				},
-			},
-			"opted_out_workspace_ids": schema.ListAttribute{
-				Computed: true,
-				PlanModifiers: []planmodifier.List{
-					guardrailPolicyAccountOptOutsModifier{},
-				},
-				Optional:    true,
-				ElementType: types.StringType,
-				Description: `Workspaces left out of a default policy. Only the account default accepts these, and the API answers a policy that is not the default with 400 when it carries them, so flipping ` + "`" + `is_default` + "`" + ` off drops them: these require an effective ` + "`" + `is_default = true` + "`" + `, and a write that carries them while the flag is false or unset is refused.`,
-			},
-			"updated_at": schema.StringAttribute{
-				Computed: true,
-			},
-			"workspace_ids": schema.ListAttribute{
-				Computed:    true,
-				Optional:    true,
-				ElementType: types.StringType,
-				PlanModifiers: []planmodifier.List{
-					guardrailPolicyAccountWorkspaceIDsModifier{},
-				},
-				Description: `Workspaces a policy covers when it is not the default. For the account default this attribute reads back the workspaces currently resolving to it, which is more than what was configured, and the provider does not send it while ` + "`" + `is_default` + "`" + ` is true.`,
-			},
-		},
-	}
+	resp.Schema = guardrailPolicyAccountSchema(
+		generatedGuardrailPolicyConfigSchemaAttribute(ctx, NewGuardrailPolicyModerationResource()),
+		"An account (workspace-wide) moderation policy: the content-filtering surface the covered workspaces' traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists.\n\nA policy that is not the default covers exactly `workspace_ids`. The default covers every workspace except `opted_out_workspace_ids`, in which case `workspace_ids` must be left unset. Only one policy of a type can be the account default.\n\nImport takes the bare policy id.",
+	)
 }
 
 // ConfigValidators refuses the two coverage combinations the route answers with 400, at
@@ -144,302 +94,23 @@ func (r *GuardrailPolicyAccountModerationResource) Configure(ctx context.Context
 }
 
 func (r *GuardrailPolicyAccountModerationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data *GuardrailPolicyAccountModerationResourceModel
-	var plan types.Object
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(plan.As(ctx, &data, basetypes.ObjectAsOptions{
-		UnhandledNullAsEmpty:    true,
-		UnhandledUnknownAsEmpty: true,
-	})...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	body, bodyDiags := data.toSharedAccountGuardrailPolicyRequest()
-	resp.Diagnostics.Append(bodyDiags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	res, err := r.client.GuardrailPolicies.CreateAccountPolicy(ctx, shared.CreateAccountGuardrailPolicyRequestModeration(*body))
-	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
-		if res != nil && res.RawResponse != nil {
-			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
-		}
-		return
-	}
-	if res == nil {
-		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
-		return
-	}
-	if res.StatusCode == 409 {
-		resp.Diagnostics.AddError(
-			"Resource Already Exists",
-			"When creating this resource, the API indicated that this resource already exists. You can bring the existing resource under management using Terraform import functionality or retry with a unique configuration.",
-		)
-		return
-	}
-	if res.StatusCode != 201 {
-		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode),
-			guardrailPolicyAccountResponseMessage(res.BadRequestResponse, res.ConflictResponse, res.NotFoundResponse, res.RawResponse))
-		return
-	}
-	if res.AccountGuardrailPolicyResponse == nil {
-		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
-		return
-	}
-
-	// The write response carries the new id and not the read model, so take the id from
-	// it and read the policy back the way every other operation does.
-	data.ID = types.StringValue(guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data))
-	if data.ID.ValueString() == "" {
-		resp.Diagnostics.AddError("unexpected response from API", "the created policy carried no id")
-		return
-	}
-
-	policy, found, lookupDiags := guardrailPolicyAccountLookup(ctx, r.client, guardrailPolicyAccountTypeModeration, data.ID.ValueString())
-	resp.Diagnostics.Append(lookupDiags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	if !found {
-		resp.Diagnostics.AddError(
-			"the policy is not in the account policy list after it was created",
-			"The API answered the create with a policy id that the account policy list does not return. The policy exists; re-running the plan should read it.",
-		)
-		return
-	}
-
-	row := data.accountPolicyVariant(*policy)
-	if row == nil {
-		resp.Diagnostics.AddError("unexpected response from API", "the account policy list returned a policy of a type this resource cannot read")
-		return
-	}
-
-	resp.Diagnostics.Append(data.refreshFromRow(ctx, row)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Save updated data into Terraform state
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	guardrailPolicyAccountCreate(ctx, r.client, r.ops, req, resp)
 }
 
 func (r *GuardrailPolicyAccountModerationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data *GuardrailPolicyAccountModerationResourceModel
-	var item types.Object
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &item)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(item.As(ctx, &data, basetypes.ObjectAsOptions{
-		UnhandledNullAsEmpty:    true,
-		UnhandledUnknownAsEmpty: true,
-	})...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	policy, found, lookupDiags := guardrailPolicyAccountLookup(ctx, r.client, guardrailPolicyAccountTypeModeration, data.ID.ValueString())
-	resp.Diagnostics.Append(lookupDiags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	if !found {
-		// An account policy list that returns in full without the id is the only
-		// absence signal these routes give: there is no get-by-id to answer 404 for
-		// a single policy. A route that is unavailable answers non-200 above and
-		// reaches this as an error rather than as absence.
-		resp.State.RemoveResource(ctx)
-		return
-	}
-
-	row := data.accountPolicyVariant(*policy)
-	if row == nil {
-		resp.Diagnostics.AddError("unexpected response from API", "the account policy list returned a policy of a type this resource cannot read")
-		return
-	}
-
-	resp.Diagnostics.Append(data.refreshFromRow(ctx, row)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Save updated data into Terraform state
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	guardrailPolicyAccountRead(ctx, r.client, r.ops, req, resp)
 }
 
 func (r *GuardrailPolicyAccountModerationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data *GuardrailPolicyAccountModerationResourceModel
-	var plan types.Object
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	merge(ctx, req, resp, &data)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	body, bodyDiags := data.toSharedAccountGuardrailPolicyRequest()
-	resp.Diagnostics.Append(bodyDiags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	res, err := r.client.GuardrailPolicies.UpdateAccountPolicy(ctx, operations.UpdateAccountPolicyRequest{
-		ID:   data.ID.ValueString(),
-		Body: shared.CreateAccountGuardrailPolicyRequestModeration(*body),
-	})
-	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
-		if res != nil && res.RawResponse != nil {
-			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
-		}
-		return
-	}
-	if res == nil {
-		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
-		return
-	}
-	if res.StatusCode != 200 {
-		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode),
-			guardrailPolicyAccountResponseMessage(res.BadRequestResponse, res.ConflictResponse, res.NotFoundResponse, res.RawResponse))
-		return
-	}
-	if res.AccountGuardrailPolicyResponse == nil {
-		resp.Diagnostics.AddError("unexpected response from API. Got an unexpected response body", debugResponse(res.RawResponse))
-		return
-	}
-
-	// See Create: the write response is not the read model, and for an update the id is
-	// already the one state holds.
-	policy, found, lookupDiags := guardrailPolicyAccountLookup(ctx, r.client, guardrailPolicyAccountTypeModeration, data.ID.ValueString())
-	resp.Diagnostics.Append(lookupDiags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	if !found {
-		resp.Diagnostics.AddError(
-			"the policy is not in the account policy list after it was updated",
-			"The API answered the update with a policy id that the account policy list does not return. Re-running the plan should read it.",
-		)
-		return
-	}
-
-	row := data.accountPolicyVariant(*policy)
-	if row == nil {
-		resp.Diagnostics.AddError("unexpected response from API", "the account policy list returned a policy of a type this resource cannot read")
-		return
-	}
-
-	resp.Diagnostics.Append(data.refreshFromRow(ctx, row)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(refreshPlan(ctx, plan, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Save updated data into Terraform state
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	guardrailPolicyAccountUpdate(ctx, r.client, r.ops, req, resp)
 }
 
 func (r *GuardrailPolicyAccountModerationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data *GuardrailPolicyAccountModerationResourceModel
-	var item types.Object
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &item)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(item.As(ctx, &data, basetypes.ObjectAsOptions{
-		UnhandledNullAsEmpty:    true,
-		UnhandledUnknownAsEmpty: true,
-	})...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// The destroy of the account default is refused, not sent and not silently skipped.
-	// Measured 2026-11-18: DELETE answers 200 for a policy that holds the default flag,
-	// with no refusal, and there is no undelete, so sending it would release the baseline
-	// for every workspace that resolves to the policy with no way back. Skipping it is
-	// the other failure: a destroy that reports success while the policy still enforces
-	// hands back a resource nobody manages, and writing the configuration again creates a
-	// second policy rather than adopting that one. An error keeps the resource in state
-	// and lets the operator choose, and the two paths are named in the message.
-	if data.IsDefault.ValueBool() {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("is_default"),
-			"refusing to destroy the account default",
-			"This policy is the account default for its type. The API deletes it with no complaint and cannot restore it, and every workspace that resolves to it would lose this policy, so the provider refuses. To remove it: set `is_default = false`, apply, then destroy. To leave it enforcing and stop managing it here: `terraform state rm` on this resource address.",
-		)
-		return
-	}
-
-	res, err := r.client.GuardrailPolicies.DeleteAccountPolicy(ctx, operations.DeleteAccountPolicyRequest{
-		ID: data.ID.ValueString(),
-	})
-	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", redactSensitiveValues(ctx, err.Error()))
-		if res != nil && res.RawResponse != nil {
-			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
-		}
-		return
-	}
-	if res == nil {
-		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
-		return
-	}
-	switch res.StatusCode {
-	case 200, 404:
-		break
-	default:
-		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode),
-			guardrailPolicyAccountResponseMessage(res.BadRequestResponse, res.ConflictResponse, res.NotFoundResponse, res.RawResponse))
-		return
-	}
+	guardrailPolicyAccountDelete(ctx, r.client, r.ops, req, resp)
 }
 
-// ImportState takes the bare policy id. The list read is account-wide, so unlike the
-// workspace-scoped policy resources this family needs no workspace prefix, and the
-// resource's own type supplies the `policy_type` the route resolves the id by.
 func (r *GuardrailPolicyAccountModerationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	if req.ID == "" {
-		resp.Diagnostics.AddError("invalid import ID", "expected a policy id, got an empty string")
-		return
-	}
-	if strings.Contains(req.ID, "/") {
-		resp.Diagnostics.AddError(
-			"invalid import ID",
-			fmt.Sprintf("expected a bare policy id, got %q. An account policy is not scoped to a workspace, so this resource's import identifier carries no workspace prefix.", req.ID),
-		)
-		return
-	}
-
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
+	guardrailPolicyAccountImportState(ctx, req, resp)
 }
 
 // accountPolicyVariant unwraps the union the list read returns. A nil result means the
@@ -555,4 +226,30 @@ func (r *GuardrailPolicyAccountModerationResourceModel) toSharedAccountGuardrail
 	body.WorkspaceIds = guardrailPolicyAccountValueStrings(r.WorkspaceIDs)
 
 	return body, diags
+}
+
+// guardrailPolicyAccountModerationOps wires the mappings this family owns into the shared
+// lifecycle: the policy type the routes resolve an id by, the model's accessors, and the
+// two generated shapes only this file can name.
+func guardrailPolicyAccountModerationOps() guardrailPolicyAccountOps[GuardrailPolicyAccountModerationResourceModel] {
+	return guardrailPolicyAccountOps[GuardrailPolicyAccountModerationResourceModel]{
+		policyType: guardrailPolicyAccountTypeModeration,
+		id:         func(m *GuardrailPolicyAccountModerationResourceModel) string { return m.ID.ValueString() },
+		setID:      func(m *GuardrailPolicyAccountModerationResourceModel, id string) { m.ID = types.StringValue(id) },
+		isDefault:  func(m *GuardrailPolicyAccountModerationResourceModel) bool { return m.IsDefault.ValueBool() },
+		refreshFromRow: func(ctx context.Context, m *GuardrailPolicyAccountModerationResourceModel, policy shared.AccountGuardrailPolicy) diag.Diagnostics {
+			row := m.accountPolicyVariant(policy)
+			if row == nil {
+				return guardrailPolicyAccountUnexpectedRow()
+			}
+			return m.refreshFromRow(ctx, row)
+		},
+		writeBody: func(ctx context.Context, m *GuardrailPolicyAccountModerationResourceModel) (shared.AccountGuardrailPolicyRequest, diag.Diagnostics) {
+			body, diags := m.toSharedAccountGuardrailPolicyRequest()
+			if diags.HasError() {
+				return shared.AccountGuardrailPolicyRequest{}, diags
+			}
+			return shared.CreateAccountGuardrailPolicyRequestModeration(*body), diags
+		},
+	}
 }
