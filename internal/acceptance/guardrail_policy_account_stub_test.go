@@ -43,6 +43,7 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 	t.Helper()
 	s := &guardrailPolicyAccountStub{
 		policies: map[string]map[string]any{},
+		hideOnce: map[string]bool{},
 	}
 	writeJSON := func(w http.ResponseWriter, code int, body any) {
 		w.Header().Set("Content-Type", "application/json")
@@ -65,13 +66,20 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			}
 			return []any{}
 		}
+		// updatedAt moves on a PUT, so a test can tell state taken from the write response
+		// from state taken from a read: a read sees the same row either way, and only the
+		// response to the write that just happened carries the new value first.
+		updatedAt := any("2026-11-18T00:00:00Z")
+		if v, ok := p["updated_at"]; ok {
+			updatedAt = v
+		}
 		out := map[string]any{
 			"id":                          p["id"],
 			"name":                        p["name"],
 			"policy_type":                 p["policy_type"],
 			"config":                      p["config"],
 			"created_at":                  "2026-11-18T00:00:00Z",
-			"updated_at":                  "2026-11-18T00:00:00Z",
+			"updated_at":                  updatedAt,
 			"is_default":                  p["is_default"],
 			"is_synced":                   false,
 			"is_workspace_default_synced": false,
@@ -128,9 +136,6 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 		defer s.mu.Unlock()
 		body["id"] = fmt.Sprintf("stub-account-%d", len(s.policies)+1)
 		if s.hideAfterNextWrite {
-			if s.hideOnce == nil {
-				s.hideOnce = map[string]bool{}
-			}
 			s.hideOnce[body["id"].(string)] = true
 		}
 		if body["is_default"] == nil {
@@ -172,6 +177,7 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			"is_default":              isDefault,
 			"workspace_ids":           asList(body["workspace_ids"]),
 			"opted_out_workspace_ids": asList(body["opted_out_workspace_ids"]),
+			"updated_at":              "2026-11-18T00:05:00Z",
 		}
 		s.policies[id] = store
 		if s.hideAfterNextWrite {
@@ -241,9 +247,9 @@ resource %q "test" {
 `, tfName, attrs)
 }
 
-// TestStubGuardrailPolicyAccountCreateAndRead covers the whole happy path: a create
-// whose body carries the type, an unpaginated list read that finds the row, and state
-// hydrated from the list rather than from the write response.
+// TestStubGuardrailPolicyAccountCreateAndRead covers the whole happy path: a create whose
+// body carries the type and whose state comes from the write response, and the read
+// Terraform issues once the resource exists, which must stay unpaginated.
 func TestStubGuardrailPolicyAccountCreateAndRead(t *testing.T) {
 	t.Setenv("TF_ACC", "1")
 
@@ -712,6 +718,16 @@ func TestStubGuardrailPolicyAccountCreateTakesStateFromTheWriteResponse(t *testi
 			},
 		},
 	})
+
+	// The reads are counted rather than assumed: a create reads the list zero times, so the
+	// only read this case sees is the one Terraform issues after the apply. A create that
+	// still read would either fail on the hidden row or add a second read here.
+	stub.mu.Lock()
+	reads := len(stub.listQueries)
+	stub.mu.Unlock()
+	if reads != 1 {
+		t.Errorf("the account policy list was read %d time(s); want 1, the read Terraform issues after the apply, because a create reads it zero times", reads)
+	}
 }
 
 // TestStubGuardrailPolicyAccountUpdateTakesStateFromTheWriteResponse is the update half of
@@ -760,8 +776,18 @@ func TestStubGuardrailPolicyAccountUpdateTakesStateFromTheWriteResponse(t *testi
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "config.limit_usd", "75"),
 					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "workspace_ids.#", "1"),
+					resource.TestCheckResourceAttr("openrouter_guardrail_policy_account_budget.test", "updated_at", "2026-11-18T00:05:00Z"),
 				),
 			},
 		},
 	})
+
+	// Three reads: one after step 1's apply, one to refresh before step 2's plan and one
+	// after step 2's apply. The update reads none; while it still read, this counted four.
+	stub.mu.Lock()
+	reads := len(stub.listQueries)
+	stub.mu.Unlock()
+	if reads != 3 {
+		t.Errorf("the account policy list was read %d time(s); want 3, the reads Terraform issues around the two applies, because an update reads it zero times", reads)
+	}
 }

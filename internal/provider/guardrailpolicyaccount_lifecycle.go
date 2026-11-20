@@ -371,11 +371,13 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Create(ctx context.Context, req re
 		return
 	}
 
-	// The write response carries the whole row, not only the id. Measured on the live route
-	// 2026-11-20: the 201 answer's field set is identical to the same policy's row in the
-	// list, and its config came back byte-equal to what was sent. So state comes from the
-	// response and no list read follows a write, which removes the window in which a read
-	// issued milliseconds after a write could miss the row just created.
+	// The write response carries the whole row, not only the id, so state comes from the
+	// response and no list read follows a write. That removes the window in which a read
+	// issued milliseconds after a write could miss the row just created. Measured on the live
+	// route 2026-11-20 with a non-default budget policy: the 201 answer's field set is
+	// identical to that policy's row in the list, twelve keys on both sides, and its config
+	// came back byte-equal to what was sent. The default case is measured on the update path,
+	// where the response carries the resolved workspace projection.
 	data.ID = types.StringValue(guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data))
 	if data.ID.ValueString() == "" {
 		resp.Diagnostics.AddError("unexpected response from API", "the created policy carried no id")
@@ -384,6 +386,12 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Create(ctx context.Context, req re
 
 	resp.Diagnostics.Append(guardrailPolicyAccountHydrate(data, res.AccountGuardrailPolicyResponse.Data, b.ops)...)
 	if resp.Diagnostics.HasError() {
+		// The policy exists remotely by now, so a failure here has to name it: without the id
+		// in the error nobody can import the policy that was just created.
+		resp.Diagnostics.AddError(
+			"the policy was created but could not be read back into state",
+			fmt.Sprintf("Policy %s exists in the account and is not in state. Once the error above is resolved, import it by that id.", data.ID.ValueString()),
+		)
 		return
 	}
 
@@ -491,9 +499,12 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Update(ctx context.Context, req re
 	}
 
 	// See Create: the write response carries the whole row, so an update takes its state from
-	// it rather than re-reading the list. Measured on the live route 2026-11-20, the PUT's 200
-	// carries the same field set the list does, and its updated_at is the post-update value
-	// that the list would return. The id is already the one state holds.
+	// it rather than re-reading the list. Measured on the live route 2026-11-20: a non-default
+	// budget policy's PUT answered with the same field set the list returns and an updated_at
+	// that had advanced while created_at held, and the account's budget default answered with
+	// the same resolved workspace_ids projection the list gives it, the same four ids and
+	// workspace_count 4 on both sides. So a default policy needs no special case here. The id
+	// is already the one state holds.
 	resp.Diagnostics.Append(guardrailPolicyAccountHydrate(data, res.AccountGuardrailPolicyResponse.Data, b.ops)...)
 	if resp.Diagnostics.HasError() {
 		return
