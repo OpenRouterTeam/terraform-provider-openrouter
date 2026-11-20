@@ -247,6 +247,40 @@ func (s *guardrailPolicyAccountStub) listWasUnpaginated(t *testing.T) {
 	}
 }
 
+// createdCount, firstCreate, deleteCount and armHide keep every stub read behind the same
+// mutex the rest of these helpers use. resource.Test runs its steps synchronously, so the
+// unsynchronized reads this replaced were safe in practice and inconsistent under -race.
+func (s *guardrailPolicyAccountStub) createdCount(t *testing.T) int {
+	t.Helper()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return len(s.createBodies)
+}
+
+func (s *guardrailPolicyAccountStub) firstCreate(t *testing.T) map[string]any {
+	t.Helper()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if len(s.createBodies) == 0 {
+		t.Fatal("no create reached the stub")
+	}
+	return s.createBodies[0]
+}
+
+func (s *guardrailPolicyAccountStub) deleteCount(t *testing.T) int {
+	t.Helper()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.deleteCalls
+}
+
+func (s *guardrailPolicyAccountStub) armHide(t *testing.T) {
+	t.Helper()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.hideAfterNextWrite = true
+}
+
 func accountStubConfig(serverURL, tfName, attrs string) string {
 	return stubProviderBlock(serverURL) + fmt.Sprintf(`
 resource %q "test" {
@@ -608,8 +642,8 @@ func runAccountPolicyRefusesToDestroyDefault(t *testing.T, fam accountPolicyFami
 		},
 	})
 
-	if stub.deleteCalls != 1 {
-		t.Errorf("%d DELETE(s) reached the stub, want exactly the demoted policy's destroy", stub.deleteCalls)
+	if n := stub.deleteCount(t); n != 1 {
+		t.Errorf("%d DELETE(s) reached the stub, want exactly the demoted policy's destroy", n)
 	}
 }
 
@@ -636,8 +670,8 @@ func runAccountPolicyRefusesOptOutsWithoutFlag(t *testing.T, fam accountPolicyFa
 		},
 	})
 
-	if len(stub.createBodies) != 0 {
-		t.Errorf("a create reached the stub with opt-outs and no effective default flag: %v", stub.createBodies[0])
+	if n := stub.createdCount(t); n != 0 {
+		t.Errorf("%d create(s) reached the stub with opt-outs and no effective default flag: %v", n, stub.firstCreate(t))
 	}
 }
 
@@ -707,7 +741,7 @@ func runAccountPolicyDemotionTurnsProjectionIntoAssignments(t *testing.T, fam ac
 // the plan wants to recreate it. That is the world this test builds, not a provider defect.
 func runAccountPolicyCreateTakesStateFromWriteResponse(t *testing.T, fam accountPolicyFamily) {
 	srv, stub := newGuardrailPolicyAccountStub(t)
-	stub.hideAfterNextWrite = true
+	stub.armHide(t)
 
 	cfg := famConfig(srv.URL, fam, `
   name          = "engineering policy"
@@ -725,6 +759,12 @@ func runAccountPolicyCreateTakesStateFromWriteResponse(t *testing.T, fam account
 					resource.TestCheckResourceAttr(fam.addr(), "name", "engineering policy"),
 					resource.TestCheckResourceAttr(fam.addr(), fam.configKey, fam.configWant),
 					resource.TestCheckResourceAttr(fam.addr(), "workspace_ids.#", "1"),
+					// is_synced and updated_at are computed: the configuration never sets them
+					// and the plan cannot supply them, so they can only have arrived with the
+					// 201 body. Without them this case proved only that no list read happened,
+					// because refreshPlan overlays the configured values either way.
+					resource.TestCheckResourceAttr(fam.addr(), "is_synced", "false"),
+					resource.TestCheckResourceAttr(fam.addr(), "updated_at", "2026-11-18T00:00:00Z"),
 				),
 			},
 		},
