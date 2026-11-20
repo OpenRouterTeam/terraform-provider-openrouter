@@ -818,6 +818,12 @@ func runAccountPolicyCreateTakesStateFromWriteResponse(t *testing.T, fam account
 					// because refreshPlan overlays the configured values either way.
 					resource.TestCheckResourceAttr(fam.addr(), "is_synced", "false"),
 					resource.TestCheckResourceAttr(fam.addr(), "updated_at", "2026-11-18T00:00:00Z"),
+					// Every remaining attribute of the row, so a response that dropped one of them
+					// cannot pass by being unchecked rather than by being right.
+					resource.TestCheckResourceAttr(fam.addr(), "is_default", "false"),
+					resource.TestCheckResourceAttr(fam.addr(), "is_workspace_default_synced", "false"),
+					resource.TestCheckResourceAttr(fam.addr(), "opted_out_workspace_ids.#", "0"),
+					resource.TestCheckResourceAttr(fam.addr(), "workspace_ids.0", "stub-workspace-a"),
 				),
 			},
 		},
@@ -875,7 +881,13 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(fam.addr(), "name", "renamed policy"),
 					resource.TestCheckResourceAttr(fam.addr(), "workspace_ids.#", "1"),
+					resource.TestCheckResourceAttr(fam.addr(), "workspace_ids.0", "stub-workspace-a"),
 					resource.TestCheckResourceAttr(fam.addr(), "updated_at", "2026-11-18T00:05:00Z"),
+					// The fields the update response carries that the plan cannot supply either.
+					resource.TestCheckResourceAttr(fam.addr(), "is_default", "false"),
+					resource.TestCheckResourceAttr(fam.addr(), "is_synced", "false"),
+					resource.TestCheckResourceAttr(fam.addr(), "is_workspace_default_synced", "false"),
+					resource.TestCheckResourceAttr(fam.addr(), "opted_out_workspace_ids.#", "0"),
 				),
 			},
 		},
@@ -897,7 +909,10 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 // id is refused rather than silently accepted. Terraform's verify pass compares the imported
 // state against the state the create left, and that state was already read back once after the
 // apply, so this proves the importer round-trips a policy rather than comparing the write model
-// with the read model. The empty-id refusal is not asserted here.
+// with the read model. The slash-qualified refusal is asserted here; the empty-id refusal cannot
+// be, because this hook reads an empty ImportStateId as "not set" and falls back to the id in
+// state, so it never reaches the provider's check. That branch needs a direct call to ImportState
+// with an empty id, which is a unit test rather than a step.
 func runAccountPolicyImportByBareID(t *testing.T, fam accountPolicyFamily) {
 	srv, _ := newGuardrailPolicyAccountStub(t)
 
