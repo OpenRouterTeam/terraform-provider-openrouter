@@ -2,29 +2,111 @@ components:
   parameters: {}
   schemas:
     AABenchmarkEntry:
-      description: 'Artificial Analysis benchmark index scores.'
+      description: 'Benchmark index scores published by Artificial Analysis (artificialanalysis.ai), one field per index. Each score is the model''s best on that index across the configurations Artificial Analysis evaluated (for example reasoning levels), so two indexes of one model can come from different configurations. The deprecated Coding Index and Agentic Index fields are null for every model: Artificial Analysis has retired those indexes. Attribute Artificial Analysis when you republish them. Omitted when Artificial Analysis has scored the model on none of them.'
       example:
-        agentic_index: 55.8
-        coding_index: 63.2
+        agentic_index: null
+        coding_index: null
+        cyber_index: 36.4
+        decision_index: 75.7
+        economics_index: 57.2
+        engineering_index: 60.4
+        finance_and_accounting_index: 58.1
+        healthcare_and_medical_index: 56.9
         intelligence_index: 71.4
+        legal_index: 52.3
+        multilingual_index: 0.82
+        openness_index: 33.3
+        strategy_and_ops_index: 61.7
       properties:
         agentic_index:
-          description: 'Artificial Analysis Agentic Index score'
-          example: 55.8
+          deprecated: true
+          description: 'Deprecated: Artificial Analysis has retired its Agentic Index and no longer publishes it. Always null.'
+          example: null
           format: 'double'
           type:
             - 'number'
             - 'null'
         coding_index:
-          description: 'Artificial Analysis Coding Index score'
-          example: 63.2
+          deprecated: true
+          description: 'Deprecated: Artificial Analysis has retired its Coding Index and no longer publishes it. Always null.'
+          example: null
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        cyber_index:
+          description: 'Artificial Analysis Cyber Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.'
+          example: 36.4
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        decision_index:
+          description: 'Artificial Analysis Decision Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Published for decision models and for the language models Artificial Analysis evaluates on decision tasks. Null when Artificial Analysis has not published a score for the model.'
+          example: 75.7
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        economics_index:
+          description: 'Artificial Analysis Economics Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 57.2
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        engineering_index:
+          description: 'Artificial Analysis Engineering Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 60.4
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        finance_and_accounting_index:
+          description: 'Artificial Analysis Finance & Accounting Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 58.1
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        healthcare_and_medical_index:
+          description: 'Artificial Analysis Healthcare & Medical Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 56.9
           format: 'double'
           type:
             - 'number'
             - 'null'
         intelligence_index:
-          description: 'Artificial Analysis Intelligence Index score'
+          description: 'Artificial Analysis Intelligence Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.'
           example: 71.4
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        legal_index:
+          description: 'Artificial Analysis Legal Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 52.3
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        multilingual_index:
+          description: 'Artificial Analysis Multilingual Index score, as a fraction from 0 to 1: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.'
+          example: 0.82
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        openness_index:
+          description: 'Artificial Analysis Openness Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.'
+          example: 33.3
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        strategy_and_ops_index:
+          description: 'Artificial Analysis Strategy & Ops Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 61.7
           format: 'double'
           type:
             - 'number'
@@ -33,6 +115,16 @@ components:
         - 'intelligence_index'
         - 'coding_index'
         - 'agentic_index'
+        - 'finance_and_accounting_index'
+        - 'strategy_and_ops_index'
+        - 'legal_index'
+        - 'healthcare_and_medical_index'
+        - 'engineering_index'
+        - 'economics_index'
+        - 'cyber_index'
+        - 'openness_index'
+        - 'multilingual_index'
+        - 'decision_index'
       type: 'object'
     AccountGuardrailPolicy:
       discriminator:
@@ -11194,7 +11286,7 @@ components:
             - 'seed'
           items:
             $ref: '#/components/schemas/PrivateEndpointDeclaredParameter'
-          maxItems: 25
+          maxItems: 26
           type: 'array'
         declared_region:
           description: 'Attest where this deployment processes data.'
@@ -11389,7 +11481,7 @@ components:
             - 'array'
             - 'null'
         io_logging_api_key_ids:
-          description: 'Optional array of API key IDs to filter I/O logging'
+          description: 'Optional array of API key IDs to filter I/O logging. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.'
           example: null
           items:
             type: 'integer'
@@ -11397,20 +11489,20 @@ components:
             - 'array'
             - 'null'
         io_logging_sampling_rate:
-          description: 'Sampling rate for I/O logging (0.0001-1)'
+          description: 'Sampling rate for I/O logging (0.0001-1). Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.'
           example: 1
           format: 'double'
           type: 'number'
         is_data_discount_logging_enabled:
-          description: 'Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.'
-          example: true
+          description: 'Whether data discount logging is enabled. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.'
+          example: false
           type: 'boolean'
         is_observability_broadcast_enabled:
           description: 'Whether broadcast is enabled'
           example: false
           type: 'boolean'
         is_observability_io_logging_enabled:
-          description: 'Whether private logging is enabled'
+          description: 'Whether private logging is enabled. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.'
           example: false
           type: 'boolean'
         name:
@@ -17026,6 +17118,13 @@ components:
             - '4K'
           example: '2K'
           type: 'string'
+        response_format:
+          description: '`b64_json` (default) returns the image bytes inline. `url` stores each output in OpenRouter storage and returns a signed download URL in place of the bytes. The URL is a bearer link: anyone holding it can download the image until it expires, up to 24 hours after the image was stored (use `expires_at`); the stored copy is deleted by the storage lifecycle within the following day. The response falls back to `b64_json` when a URL cannot be issued: streaming responses, zero-data-retention requests (account settings, guardrails or `provider.zdr`) or endpoints, or storage being unavailable.'
+          enum:
+            - 'b64_json'
+            - 'url'
+          example: 'b64_json'
+          type: 'string'
         seed:
           description: 'If specified, the generation will sample deterministically, such that repeated requests with the same seed and parameters should return the same result. Determinism is not guaranteed for all providers.'
           type: 'integer'
@@ -17073,7 +17172,7 @@ components:
           items:
             properties:
               b64_json:
-                description: 'Base64-encoded image bytes'
+                description: 'Base64-encoded image bytes. Present unless the request asked for `response_format: "url"` and `url` was issued.'
                 type: 'string'
               layer:
                 $ref: '#/components/schemas/ImageGenerationLayer'
@@ -17081,10 +17180,16 @@ components:
                 description: 'Media type (MIME type) of the image, e.g. `image/png`, `image/jpeg`, `image/webp`, `image/svg+xml`. May be omitted if the format could not be determined.'
                 example: 'image/png'
                 type: 'string'
-            required:
-              - 'b64_json'
+              url:
+                description: 'Signed download URL for the image bytes, issued for `response_format: "url"` requests. Valid until `expires_at`. Absent when the response fell back to `b64_json`.'
+                example: 'https://storage.googleapis.com/openrouter-generated-media-us/v1/...'
+                type: 'string'
             type: 'object'
           type: 'array'
+        expires_at:
+          description: 'Unix timestamp (seconds) of the earliest expiry among the `url`s in `data`; treat every URL as expired after it. Present only when URLs were issued.'
+          example: 1748458800
+          type: 'integer'
         usage:
           $ref: '#/components/schemas/ImageGenerationUsage'
       required:
@@ -22007,9 +22112,19 @@ components:
       description: 'Third-party benchmark rankings for this model. Omitted when no benchmark data is available.'
       example:
         artificial_analysis:
-          agentic_index: 55.8
-          coding_index: 63.2
+          agentic_index: null
+          coding_index: null
+          cyber_index: 36.4
+          decision_index: 75.7
+          economics_index: 57.2
+          engineering_index: 60.4
+          finance_and_accounting_index: 58.1
+          healthcare_and_medical_index: 56.9
           intelligence_index: 71.4
+          legal_index: 52.3
+          multilingual_index: 0.82
+          openness_index: 33.3
+          strategy_and_ops_index: 61.7
         design_arena:
           - arena: 'models'
             category: 'website'
@@ -26426,6 +26541,12 @@ components:
               $ref: '#/components/schemas/OpenResponsesErrorField'
             error_type:
               $ref: '#/components/schemas/ApiErrorType'
+            input_transformations:
+              description: 'Input items the upstream provider changed before inference (OpenAI `input_transformations`). Present only when the provider reported the field; empty when it changed nothing.'
+              example: []
+              items:
+                $ref: '#/components/schemas/ResponsesInputTransformation'
+              type: 'array'
             openrouter_metadata:
               $ref: '#/components/schemas/OpenRouterMetadata'
             output:
@@ -29073,6 +29194,7 @@ components:
         - 'seed'
         - 'response_format'
         - 'structured_outputs'
+        - 'strict_tool_schemas'
         - 'stop'
         - 'tools'
         - 'tool_choice'
@@ -29105,8 +29227,8 @@ components:
           minimum: 0
           type: 'number'
         min_coding_score:
-          description: 'Minimum coding quality score between 0 and 1. Maps to internal quality tiers: >= 0.66 → high (top coding models), >= 0.33 → medium (strong modern flagships), < 0.33 → low (capable coders above the median). Omit to default to the highest tier (equivalent to >= 0.66). Not used when max_price is set (price-based selection takes over).'
-          example: 0.8
+          description: 'Selects one of three tiers of coding models with a number between 0 and 1. It is not a threshold on a model score: the tiers are groups of the current shortlist of top coding models. >= 0.66 → high (the strongest group), >= 0.33 → medium (the two strongest groups), < 0.33 → low (the whole shortlist). Omit to use the high tier. Not used when max_price is set (price-based selection takes over).'
+          example: 0.4
           format: 'double'
           maximum: 1
           minimum: 0
@@ -29853,6 +29975,9 @@ components:
             image_urls: true
           max_completion_tokens: 16384
           max_prompt_tokens: null
+          prompt_caching:
+            cache_control: false
+            prompt_cache_key: false
           quantization: 'bf16'
           reasoning:
             return_mechanism: 'reasoning'
@@ -30051,6 +30176,7 @@ components:
         - 'seed'
         - 'response_format'
         - 'structured_outputs'
+        - 'strict_tool_schemas'
         - 'stop'
         - 'tools'
         - 'tool_choice'
@@ -30118,6 +30244,24 @@ components:
         - 'prompt'
         - 'completion'
       type: 'object'
+    PrivateEndpointPromptCaching:
+      description: 'Prompt-caching controls for an OpenAI-compatible private endpoint. Accepted fields default on after validation; explicit owner settings override the defaults.'
+      example:
+        cache_control: false
+        prompt_cache_key: false
+      properties:
+        cache_control:
+          description: 'Forward top-level, message, and tool cache_control markers. Defaults on after endpoint validation accepts these fields; otherwise off. Set false to opt out, or true to declare support explicitly.'
+          example: false
+          type: 'boolean'
+        prompt_cache_key:
+          description: 'Send an OpenRouter-derived, customer-isolated prompt_cache_key, not the caller-supplied key. Defaults on after endpoint validation accepts the field; otherwise off. Set false to opt out, or true to declare support explicitly. HIPAA and unknown workspace posture withhold OpenRouter caching directives and the derived key; this does not control upstream retention.'
+          example: false
+          type: 'boolean'
+      required:
+        - 'cache_control'
+        - 'prompt_cache_key'
+      type: 'object'
     PrivateEndpointQuantization:
       description: 'Weight precision the deployment runs at; `unknown` when not stated.'
       enum:
@@ -30171,6 +30315,9 @@ components:
           image_urls: true
         max_completion_tokens: 16384
         max_prompt_tokens: null
+        prompt_caching:
+          cache_control: false
+          prompt_cache_key: false
         quantization: 'bf16'
         reasoning:
           return_mechanism: 'reasoning'
@@ -30227,6 +30374,7 @@ components:
               - 'seed'
               - 'response_format'
               - 'structured_outputs'
+              - 'strict_tool_schemas'
               - 'stop'
               - 'tools'
               - 'tool_choice'
@@ -30286,6 +30434,8 @@ components:
           type:
             - 'integer'
             - 'null'
+        prompt_caching:
+          $ref: '#/components/schemas/PrivateEndpointPromptCaching'
         quantization:
           $ref: '#/components/schemas/PrivateEndpointQuantization'
         reasoning:
@@ -32145,7 +32295,8 @@ components:
         - 'bedrock-xai-responses-v1'
         - 'xai-responses-v1'
         - 'meta-responses-v1'
-        - 'google-vertex-responses-v1'
+        - 'google-vertex-meta-responses-v1'
+        - 'google-vertex-xai-responses-v1'
         - 'openrouter-stealth-v1'
         - 'anthropic-claude-v1'
         - 'google-gemini-v1'
@@ -32566,6 +32717,28 @@ components:
       type:
         - 'object'
         - 'null'
+    ResponsesInputTransformation:
+      description: 'One input item the upstream provider changed before inference, e.g. a replayed reasoning item removed because the conversation before it was edited.'
+      example:
+        action: 'removed'
+        id: 'rs_0ca73592c5f68037016afcc009779887'
+        reason: 'prefix_mismatch'
+        type: 'reasoning'
+      properties:
+        action:
+          type: 'string'
+        id:
+          type: 'string'
+        reason:
+          type: 'string'
+        type:
+          type: 'string'
+      required:
+        - 'id'
+        - 'type'
+        - 'action'
+        - 'reason'
+      type: 'object'
     ResponsesRequest:
       description: 'Request schema for Responses endpoint'
       example:
@@ -32937,7 +33110,7 @@ components:
             - type: 'string'
             - format: 'double'
               type: 'number'
-          description: 'Several dimensions are enriched in responses (returned as human-readable labels), but filters must use the underlying ID: `api_key_id` — numeric ID (from generation metadata) or key hash (64-char hex from GET /api/v1/keys, resolved server-side); `user` — Clerk user ID (e.g. "user_abc123"), not the display name; `workspace` — workspace UUID, not the workspace name (filtering or grouping by the account default workspace also covers activity recorded before workspace resolution existed, which is attributed to that default workspace); `app` — numeric app ID, not the app title; `model` — permaslug (e.g. "openai/gpt-4o"), not the display name. Other dimensions (provider, origin, country, etc.) are not enriched and accept the value as returned.'
+          description: 'Several dimensions are enriched in responses (returned as human-readable labels), but filters must use the underlying ID: `api_key_id` — numeric ID (from generation metadata) or key hash (64-char hex from GET /api/v1/keys, resolved server-side); `user` — Clerk user ID (e.g. "user_abc123"), not the display name; `workspace` — workspace UUID, not the workspace name (filtering or grouping by the account default workspace also covers activity recorded before workspace resolution existed, which is attributed to that default workspace); `app` — numeric app ID, not the app title; `model` — permaslug (e.g. "openai/gpt-4o"), not the display name; `endpoint` — endpoint UUID, returned as is (the same `endpoint_id` /activity reports). Other dimensions (provider, origin, country, etc.) are not enriched and accept the value as returned.'
       required:
         - 'field'
         - 'operator'
@@ -33582,7 +33755,7 @@ components:
               - type: 'string'
               - format: 'double'
                 type: 'number'
-            description: 'Several dimensions are enriched in responses (returned as human-readable labels), but filters must use the underlying ID: `api_key_id` — numeric ID (from generation metadata) or key hash (64-char hex from GET /api/v1/keys, resolved server-side); `user` — Clerk user ID (e.g. "user_abc123"), not the display name; `workspace` — workspace UUID, not the workspace name (filtering or grouping by the account default workspace also covers activity recorded before workspace resolution existed, which is attributed to that default workspace); `app` — numeric app ID, not the app title; `model` — permaslug (e.g. "openai/gpt-4o"), not the display name. Other dimensions (provider, origin, country, etc.) are not enriched and accept the value as returned.'
+            description: 'Several dimensions are enriched in responses (returned as human-readable labels), but filters must use the underlying ID: `api_key_id` — numeric ID (from generation metadata) or key hash (64-char hex from GET /api/v1/keys, resolved server-side); `user` — Clerk user ID (e.g. "user_abc123"), not the display name; `workspace` — workspace UUID, not the workspace name (filtering or grouping by the account default workspace also covers activity recorded before workspace resolution existed, which is attributed to that default workspace); `app` — numeric app ID, not the app title; `model` — permaslug (e.g. "openai/gpt-4o"), not the display name; `endpoint` — endpoint UUID, returned as is (the same `endpoint_id` /activity reports). Other dimensions (provider, origin, country, etc.) are not enriched and accept the value as returned.'
           type: 'array'
       required:
         - 'field'
@@ -33834,6 +34007,25 @@ components:
       oneOf:
         - $ref: '#/components/schemas/ContainerAutoEnvironment'
         - $ref: '#/components/schemas/ContainerReferenceEnvironment'
+    SpeechEnumParameter:
+      example:
+        type: 'enum'
+        values:
+          - 'alloy'
+          - 'coral'
+      properties:
+        type:
+          enum:
+            - 'enum'
+          type: 'string'
+        values:
+          items:
+            type: 'string'
+          type: 'array'
+      required:
+        - 'type'
+        - 'values'
+      type: 'object'
     SpeechInput:
       anyOf:
         - type: 'string'
@@ -33843,6 +34035,65 @@ components:
           type: 'array'
       description: 'Text to synthesize, or a list of turns for multi-speaker input. Each turn has its own text, voice, and instructions. Multi-speaker input is supported by Gemini TTS models, by Fish Audio models other than S1, and by Speechify dialogue models.'
       example: 'Hello world'
+    SpeechInputModality:
+      description: 'An input the model accepts. `audio` and `image` are `input_references` for voice cloning and voice design.'
+      example:
+        type: 'text'
+      oneOf:
+        - description: 'The `input` text.'
+          properties:
+            turns:
+              description: '`optional`: `input` may also be a multi-speaker turn array, which cannot be combined with `input_references`. `required`: `input` must be a turn array with at least two distinct voices. Absent: `input` is a string.'
+              enum:
+                - 'required'
+                - 'optional'
+              type: 'string'
+            type:
+              enum:
+                - 'text'
+              type: 'string'
+          required:
+            - 'type'
+          type: 'object'
+        - properties:
+            supported_inputs:
+              description: '`references` is how many audio clips a request may send. With more than one, some providers require the text to address every clip with an `@AudioN` placeholder.'
+              properties:
+                references:
+                  $ref: '#/components/schemas/SpeechReferenceCount'
+              required:
+                - 'references'
+              type: 'object'
+            type:
+              enum:
+                - 'audio'
+              type: 'string'
+          required:
+            - 'type'
+            - 'supported_inputs'
+          type: 'object'
+        - properties:
+            supported_inputs:
+              properties:
+                audio:
+                  description: '`required`: an image reference is accepted only together with an audio reference. `excluded`: only without one. Absent: either.'
+                  enum:
+                    - 'required'
+                    - 'excluded'
+                  type: 'string'
+                references:
+                  $ref: '#/components/schemas/SpeechReferenceCount'
+              required:
+                - 'references'
+              type: 'object'
+            type:
+              enum:
+                - 'image'
+              type: 'string'
+          required:
+            - 'type'
+            - 'supported_inputs'
+          type: 'object'
     SpeechInputReference:
       description: 'Reference content part for stateless voice cloning or voice design'
       discriminator:
@@ -33947,6 +34198,263 @@ components:
       required:
         - 'type'
         - 'text'
+      type: 'object'
+    SpeechModelEndpoint:
+      description: 'One endpoint serving a speech model, with the inputs and parameters it accepts.'
+      example:
+        input_modalities:
+          - type: 'text'
+        output_modalities:
+          - supported_parameters:
+              instructions:
+                type: 'unknown'
+              response_format:
+                type: 'enum'
+                values:
+                  - 'mp3'
+                  - 'pcm'
+              speed:
+                max: 4
+                min: 0.25
+                type: 'range'
+              voice:
+                type: 'enum'
+                values:
+                  - 'alloy'
+                  - 'coral'
+            type: 'speech'
+        provider_name: 'OpenAI'
+        provider_slug: 'openai'
+      properties:
+        input_modalities:
+          items:
+            $ref: '#/components/schemas/SpeechInputModality'
+          type: 'array'
+        output_modalities:
+          items:
+            $ref: '#/components/schemas/SpeechOutputModality'
+          type: 'array'
+        provider_name:
+          description: 'Provider display name'
+          example: 'OpenAI'
+          type: 'string'
+        provider_slug:
+          description: 'Provider slug'
+          example: 'openai'
+          type: 'string'
+      required:
+        - 'provider_name'
+        - 'provider_slug'
+        - 'input_modalities'
+        - 'output_modalities'
+      type: 'object'
+    SpeechModelResponse:
+      description: 'A text-to-speech model. Its members are the envelope of its endpoints'': enums are unioned and ranges widened, so a value inside a range may be accepted by no single endpoint. Each record in `endpoints` lists exactly what that endpoint accepts.'
+      example:
+        created: 1742428800
+        description: 'Text-to-speech model with steerable delivery.'
+        endpoints:
+          - input_modalities:
+              - type: 'text'
+            output_modalities:
+              - supported_parameters:
+                  instructions:
+                    type: 'unknown'
+                  response_format:
+                    type: 'enum'
+                    values:
+                      - 'mp3'
+                      - 'pcm'
+                  speed:
+                    max: 4
+                    min: 0.25
+                    type: 'range'
+                  voice:
+                    type: 'enum'
+                    values:
+                      - 'alloy'
+                      - 'coral'
+                type: 'speech'
+            provider_name: 'OpenAI'
+            provider_slug: 'openai'
+        id: 'openai/gpt-4o-mini-tts'
+        input_modalities:
+          - type: 'text'
+        name: 'OpenAI: GPT-4o mini TTS'
+        output_modalities:
+          - supported_parameters:
+              instructions:
+                type: 'unknown'
+              response_format:
+                type: 'enum'
+                values:
+                  - 'mp3'
+                  - 'pcm'
+              speed:
+                max: 4
+                min: 0.25
+                type: 'range'
+              voice:
+                type: 'enum'
+                values:
+                  - 'alloy'
+                  - 'coral'
+            type: 'speech'
+      properties:
+        created:
+          description: 'Unix timestamp (seconds) of when the model was created'
+          type: 'integer'
+        description:
+          type: 'string'
+        endpoints:
+          description: 'Each endpoint serving the model, with exactly the inputs and parameters it accepts. Some endpoints route only after the caller accepts a provider requirement such as a self-attestation; until then, a request to them is rejected with a 403 that names the requirement.'
+          items:
+            $ref: '#/components/schemas/SpeechModelEndpoint'
+          type: 'array'
+        id:
+          description: 'Model slug'
+          example: 'openai/gpt-4o-mini-tts'
+          type: 'string'
+        input_modalities:
+          items:
+            $ref: '#/components/schemas/SpeechInputModality'
+          type: 'array'
+        name:
+          example: 'OpenAI: GPT-4o mini TTS'
+          type: 'string'
+        output_modalities:
+          items:
+            $ref: '#/components/schemas/SpeechOutputModality'
+          type: 'array'
+      required:
+        - 'id'
+        - 'name'
+        - 'description'
+        - 'created'
+        - 'input_modalities'
+        - 'output_modalities'
+        - 'endpoints'
+      type: 'object'
+    SpeechModelsListResponse:
+      description: 'List of text-to-speech models, each with its endpoints.'
+      example:
+        data:
+          - created: 1742428800
+            description: 'Text-to-speech model with steerable delivery.'
+            endpoints:
+              - input_modalities:
+                  - type: 'text'
+                output_modalities:
+                  - supported_parameters:
+                      instructions:
+                        type: 'unknown'
+                      response_format:
+                        type: 'enum'
+                        values:
+                          - 'mp3'
+                          - 'pcm'
+                      speed:
+                        max: 4
+                        min: 0.25
+                        type: 'range'
+                      voice:
+                        type: 'enum'
+                        values:
+                          - 'alloy'
+                          - 'coral'
+                    type: 'speech'
+                provider_name: 'OpenAI'
+                provider_slug: 'openai'
+            id: 'openai/gpt-4o-mini-tts'
+            input_modalities:
+              - type: 'text'
+            name: 'OpenAI: GPT-4o mini TTS'
+            output_modalities:
+              - supported_parameters:
+                  instructions:
+                    type: 'unknown'
+                  response_format:
+                    type: 'enum'
+                    values:
+                      - 'mp3'
+                      - 'pcm'
+                  speed:
+                    max: 4
+                    min: 0.25
+                    type: 'range'
+                  voice:
+                    type: 'enum'
+                    values:
+                      - 'alloy'
+                      - 'coral'
+                type: 'speech'
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SpeechModelResponse'
+          type: 'array'
+      required:
+        - 'data'
+      type: 'object'
+    SpeechOutputModality:
+      example:
+        supported_parameters:
+          voice:
+            type: 'enum'
+            values:
+              - 'alloy'
+              - 'coral'
+        type: 'speech'
+      properties:
+        supported_parameters:
+          $ref: '#/components/schemas/SpeechSupportedParameters'
+        type:
+          enum:
+            - 'speech'
+          type: 'string'
+      required:
+        - 'type'
+        - 'supported_parameters'
+      type: 'object'
+    SpeechRangeParameter:
+      description: 'The accepted `speed` range. Absent: the provider documents no range; some providers still forward `speed`.'
+      example:
+        max: 4
+        min: 0.25
+        type: 'range'
+      properties:
+        max:
+          format: 'double'
+          type: 'number'
+        min:
+          format: 'double'
+          type: 'number'
+        type:
+          enum:
+            - 'range'
+          type: 'string'
+      required:
+        - 'type'
+        - 'min'
+        - 'max'
+      type: 'object'
+    SpeechReferenceCount:
+      example:
+        max: 1
+        min: 1
+        type: 'integer'
+      properties:
+        max:
+          type: 'integer'
+        min:
+          type: 'integer'
+        type:
+          enum:
+            - 'integer'
+          type: 'string'
+      required:
+        - 'type'
+        - 'min'
       type: 'object'
     SpeechRequest:
       description: 'Text-to-speech request input'
@@ -34076,6 +34584,34 @@ components:
         - 'model'
         - 'input'
       type: 'object'
+    SpeechSupportedParameters:
+      example:
+        instructions:
+          type: 'unknown'
+        response_format:
+          type: 'enum'
+          values:
+            - 'mp3'
+            - 'pcm'
+        speed:
+          max: 4
+          min: 0.25
+          type: 'range'
+        voice:
+          type: 'enum'
+          values:
+            - 'alloy'
+            - 'coral'
+      properties:
+        instructions:
+          $ref: '#/components/schemas/SpeechUnknownParameter'
+        response_format:
+          $ref: '#/components/schemas/SpeechEnumParameter'
+        speed:
+          $ref: '#/components/schemas/SpeechRangeParameter'
+        voice:
+          $ref: '#/components/schemas/SpeechVoiceParameter'
+      type: 'object'
     SpeechTurn:
       properties:
         instructions:
@@ -34093,6 +34629,42 @@ components:
           type: 'string'
       required:
         - 'text'
+      type: 'object'
+    SpeechUnknownParameter:
+      example:
+        type: 'unknown'
+      properties:
+        type:
+          enum:
+            - 'unknown'
+          type: 'string'
+      required:
+        - 'type'
+      type: 'object'
+    SpeechVoiceParameter:
+      description: '`enum` lists the documented voices in `values`; some providers also accept voice IDs not listed there (custom or cloned voices). `unknown` means the field is accepted but no voices are listed.'
+      example:
+        type: 'enum'
+        values:
+          - 'alloy'
+          - 'coral'
+      properties:
+        references:
+          description: '`excluded`: `voice` is rejected when the request also sends a nonempty `input_references`. Absent: they can be combined.'
+          enum:
+            - 'excluded'
+          type: 'string'
+        type:
+          enum:
+            - 'enum'
+            - 'unknown'
+          type: 'string'
+        values:
+          items:
+            type: 'string'
+          type: 'array'
+      required:
+        - 'type'
       type: 'object'
     StopServerToolsWhen:
       description: 'Stop conditions for the server-tool agent loop. Any condition firing halts the loop (OR logic). When set, this overrides `max_tool_calls`. When a condition fires while the model is still emitting tool calls, the pending tool calls are executed and one final turn is made with tool calls disabled so the response ends with a natural-language answer instead of an unfinished tool call.'
@@ -34645,6 +35217,10 @@ components:
         model:
           description: 'STT model identifier'
           example: 'openai/whisper-large-v3'
+          type: 'string'
+        prompt:
+          description: 'Context to guide transcription, such as domain vocabulary or a previous segment. Honored by OpenAI (except gpt-4o-transcribe-diarize), Azure OpenAI, Groq, Together, Alibaba, and AssemblyAI endpoints with prompted pricing configured. Other providers ignore it; use keyterms for supported keyword boosting. Takes precedence over provider-specific prompt options, including when empty.'
+          example: 'A discussion about OpenRouter and speech recognition.'
           type: 'string'
         provider:
           description: 'Provider configuration: provider routing preferences (`order`, `only`, `ignore`, `allow_fallbacks`), data policy routing preferences (`zdr`, `data_collection`) and provider-specific passthrough options'
@@ -36004,27 +36580,54 @@ components:
         - 'object'
         - 'null'
     UnifiedBenchmarksAAItem:
+      description: 'One model''s Artificial Analysis index scores. Each score is the model''s best on that index across the configurations Artificial Analysis evaluated (for example reasoning levels), so two indexes of one model can come from different configurations. The deprecated Coding Index and Agentic Index fields are null for every model: Artificial Analysis has retired those indexes.'
       example:
-        agentic_index: 58.3
-        coding_index: 65.8
+        agentic_index: null
+        coding_index: null
+        cyber_index: 36.4
+        decision_index: 75.7
         display_name: 'GPT-4o'
-        intelligence_index: 71.2
+        economics_index: 57.2
+        engineering_index: 60.4
+        finance_and_accounting_index: 58.1
+        healthcare_and_medical_index: 56.9
+        intelligence_index: 71.4
+        legal_index: 52.3
         model_permaslug: 'openai/gpt-4o'
+        multilingual_index: 0.82
+        openness_index: 33.3
         pricing:
           completion: '0.00001'
           prompt: '0.0000025'
         source: 'artificial-analysis'
+        strategy_and_ops_index: 61.7
       properties:
         agentic_index:
-          description: 'Artificial Analysis Agentic Index composite score. Higher is better.'
-          example: 58.3
+          deprecated: true
+          description: 'Deprecated: Artificial Analysis has retired its Agentic Index and no longer publishes it. Always null.'
+          example: null
           format: 'double'
           type:
             - 'number'
             - 'null'
         coding_index:
-          description: 'Artificial Analysis Coding Index composite score. Higher is better.'
-          example: 65.8
+          deprecated: true
+          description: 'Deprecated: Artificial Analysis has retired its Coding Index and no longer publishes it. Always null.'
+          example: null
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        cyber_index:
+          description: 'Artificial Analysis Cyber Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.'
+          example: 36.4
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        decision_index:
+          description: 'Artificial Analysis Decision Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Published for decision models and for the language models Artificial Analysis evaluates on decision tasks. Null when Artificial Analysis has not published a score for the model.'
+          example: 75.7
           format: 'double'
           type:
             - 'number'
@@ -36033,9 +36636,44 @@ components:
           description: 'Model name as listed on Artificial Analysis.'
           example: 'GPT-4o'
           type: 'string'
+        economics_index:
+          description: 'Artificial Analysis Economics Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 57.2
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        engineering_index:
+          description: 'Artificial Analysis Engineering Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 60.4
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        finance_and_accounting_index:
+          description: 'Artificial Analysis Finance & Accounting Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 58.1
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        healthcare_and_medical_index:
+          description: 'Artificial Analysis Healthcare & Medical Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 56.9
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
         intelligence_index:
-          description: 'Artificial Analysis Intelligence Index composite score. Higher is better.'
-          example: 71.2
+          description: 'Artificial Analysis Intelligence Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.'
+          example: 71.4
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        legal_index:
+          description: 'Artificial Analysis Legal Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 52.3
           format: 'double'
           type:
             - 'number'
@@ -36044,6 +36682,20 @@ components:
           description: 'Stable OpenRouter model identifier.'
           example: 'openai/gpt-4o'
           type: 'string'
+        multilingual_index:
+          description: 'Artificial Analysis Multilingual Index score, as a fraction from 0 to 1: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.'
+          example: 0.82
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
+        openness_index:
+          description: 'Artificial Analysis Openness Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.'
+          example: 33.3
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
         pricing:
           $ref: '#/components/schemas/UnifiedBenchmarkPricing'
         source:
@@ -36051,6 +36703,13 @@ components:
           enum:
             - 'artificial-analysis'
           type: 'string'
+        strategy_and_ops_index:
+          description: 'Artificial Analysis Strategy & Ops Index score, on a 0-100 scale: the model''s best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.'
+          example: 61.7
+          format: 'double'
+          type:
+            - 'number'
+            - 'null'
       required:
         - 'source'
         - 'model_permaslug'
@@ -36058,6 +36717,16 @@ components:
         - 'intelligence_index'
         - 'coding_index'
         - 'agentic_index'
+        - 'finance_and_accounting_index'
+        - 'strategy_and_ops_index'
+        - 'legal_index'
+        - 'healthcare_and_medical_index'
+        - 'engineering_index'
+        - 'economics_index'
+        - 'cyber_index'
+        - 'openness_index'
+        - 'multilingual_index'
+        - 'decision_index'
         - 'pricing'
       type: 'object'
     UnifiedBenchmarksDAItem:
@@ -36177,7 +36846,7 @@ components:
           example: '2026-06-03T12:00:00Z'
           type: 'string'
         citation:
-          description: 'Required attribution when republishing this data, or null when results span multiple sources (attribute each item individually by its `source` discriminator).'
+          description: 'Required attribution when republishing this data. Always set when `source` is set. When `source` is null, set if every returned item comes from one source, and null if the items span sources (attribute each item by its `source` discriminator) or there are none.'
           example: 'Source: Artificial Analysis (artificialanalysis.ai) via OpenRouter (openrouter.ai/rankings).'
           type:
             - 'string'
@@ -36186,7 +36855,7 @@ components:
           description: 'Number of unique models in the response.'
           type: 'integer'
         source:
-          description: 'The source filter applied, or null when all sources are returned.'
+          description: 'The one source the response is limited to: the `source` filter, or Artificial Analysis for a `task_type` only it answers. Null when the response draws on every source.'
           enum:
             - 'artificial-analysis'
             - 'design-arena'
@@ -36197,7 +36866,7 @@ components:
             - 'string'
             - 'null'
         source_url:
-          description: 'URL of the upstream data source, or null when results span multiple sources.'
+          description: 'URL of the upstream data source. Always set when `source` is set. When `source` is null, set if every returned item comes from one source, and null if the items span sources or there are none.'
           example: 'https://artificialanalysis.ai'
           type:
             - 'string'
@@ -36294,15 +36963,25 @@ components:
     UnifiedBenchmarksResponse:
       example:
         data:
-          - agentic_index: 58.3
-            coding_index: 65.8
+          - agentic_index: null
+            coding_index: null
+            cyber_index: 36.4
+            decision_index: 75.7
             display_name: 'GPT-4o'
-            intelligence_index: 71.2
+            economics_index: 57.2
+            engineering_index: 60.4
+            finance_and_accounting_index: 58.1
+            healthcare_and_medical_index: 56.9
+            intelligence_index: 71.4
+            legal_index: 52.3
             model_permaslug: 'openai/gpt-4o'
+            multilingual_index: 0.82
+            openness_index: 33.3
             pricing:
               completion: '0.00001'
               prompt: '0.0000025'
             source: 'artificial-analysis'
+            strategy_and_ops_index: 61.7
           - accuracy: 0.72
             accuracy_stddev: 0.03
             avg_cost_per_task: 0.002
@@ -37127,6 +37806,20 @@ components:
       required:
         - 'is_filtered_model_catalog_enabled'
       type: 'object'
+    UpdatePrivateEndpointPromptCaching:
+      description: 'Change only the named prompt-caching flags; omitted flags keep their stored value.'
+      example:
+        cache_control: true
+      properties:
+        cache_control:
+          description: 'Forward top-level, message, and tool cache_control markers. Defaults on after endpoint validation accepts these fields; otherwise off. Set false to opt out, or true to declare support explicitly.'
+          example: false
+          type: 'boolean'
+        prompt_cache_key:
+          description: 'Send an OpenRouter-derived, customer-isolated prompt_cache_key, not the caller-supplied key. Defaults on after endpoint validation accepts the field; otherwise off. Set false to opt out, or true to declare support explicitly. HIPAA and unknown workspace posture withhold OpenRouter caching directives and the derived key; this does not control upstream retention.'
+          example: false
+          type: 'boolean'
+      type: 'object'
     UpdatePrivateEndpointRequest:
       description: 'Only the fields present change. `base_url` and `upstream_model_id` are accepted on a draft only; `declared_zdr` and `declared_region` on drafts and active endpoints; `pricing` and `declared_parameters` replace their value; `settings` is itself a partial update where `null` clears a limit or restores the provider default.'
       example:
@@ -37147,7 +37840,7 @@ components:
             - 'seed'
           items:
             $ref: '#/components/schemas/PrivateEndpointDeclaredParameter'
-          maxItems: 25
+          maxItems: 26
           type: 'array'
         declared_region:
           description: 'Attest where this deployment processes data.'
@@ -37229,6 +37922,7 @@ components:
               - 'seed'
               - 'response_format'
               - 'structured_outputs'
+              - 'strict_tool_schemas'
               - 'stop'
               - 'tools'
               - 'tool_choice'
@@ -37282,6 +37976,8 @@ components:
           type:
             - 'integer'
             - 'null'
+        prompt_caching:
+          $ref: '#/components/schemas/UpdatePrivateEndpointPromptCaching'
         quantization:
           $ref: '#/components/schemas/PrivateEndpointQuantization'
         reasoning:
@@ -37394,7 +38090,7 @@ components:
             - 'array'
             - 'null'
         io_logging_api_key_ids:
-          description: 'Optional array of API key IDs to filter I/O logging'
+          description: 'Optional array of API key IDs to filter I/O logging. Read-only for management keys: any value other than the stored one returns 403. Change it in the OpenRouter dashboard.'
           example: null
           items:
             type: 'integer'
@@ -37402,20 +38098,20 @@ components:
             - 'array'
             - 'null'
         io_logging_sampling_rate:
-          description: 'Sampling rate for I/O logging (0.0001-1)'
+          description: 'Sampling rate for I/O logging (0.0001-1). Read-only for management keys: any value other than the stored one returns 403. Change it in the OpenRouter dashboard.'
           example: 1
           format: 'double'
           type: 'number'
         is_data_discount_logging_enabled:
-          description: 'Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.'
-          example: true
+          description: 'Whether data discount logging is enabled. Read-only for management keys: any value other than the stored one returns 403. Change it in the OpenRouter dashboard.'
+          example: false
           type: 'boolean'
         is_observability_broadcast_enabled:
           description: 'Whether broadcast is enabled'
           example: false
           type: 'boolean'
         is_observability_io_logging_enabled:
-          description: 'Whether private logging is enabled'
+          description: 'Whether private logging is enabled. Read-only for management keys: any value other than the stored one returns 403. Change it in the OpenRouter dashboard.'
           example: false
           type: 'boolean'
         name:
@@ -38373,6 +39069,7 @@ components:
         id: 'gen-vid-1789480874-Ab3dEf9hIjKlMnOpQrSt'
         polling_url: '/api/v1/videos/gen-vid-1789480874-Ab3dEf9hIjKlMnOpQrSt'
         status: 'pending'
+        status_detail: 'queued_at_provider'
       properties:
         error:
           type: 'string'
@@ -38387,6 +39084,12 @@ components:
           type: 'string'
         polling_url:
           type: 'string'
+        progress:
+          description: 'Percent complete, from 0 to 100 and possibly fractional, reported by the provider while `status_detail` is `generating`. Present only for providers that report it, and absent once the job moves to `finalizing`.'
+          format: 'double'
+          maximum: 100
+          minimum: 0
+          type: 'number'
         status:
           enum:
             - 'pending'
@@ -38395,6 +39098,14 @@ components:
             - 'failed'
             - 'cancelled'
             - 'expired'
+          type: 'string'
+        status_detail:
+          description: 'The step within `status` for a job that is not finished: `submitting` and `queued_at_provider` under `pending`, `generating` and `finalizing` under `in_progress`. When present, it only moves forward, and steps may be skipped between polls. It is absent once the job is finished and can also be absent mid-job when the step is unknown, so use `status` to tell whether the job is finished.'
+          enum:
+            - 'submitting'
+            - 'queued_at_provider'
+            - 'generating'
+            - 'finalizing'
           type: 'string'
         unsigned_urls:
           description: 'OpenRouter content URLs for each output. They need your API key in the `Authorization` header and keep working for as long as the output is available.'
@@ -39810,10 +40521,10 @@ paths:
                   type: 'object'
                 dimensions:
                   items:
-                    description: 'Dimension to group by (up to 2). Use the /meta endpoint for available dimensions.'
+                    description: 'Dimension to group by (up to 3). More than 2 requires every metric, dimension and filter to be available from the activity rollups, or for token-kind metrics from their daily rollup; otherwise the request fails with 400. Use the /meta endpoint for available dimensions.'
                     example: 'model'
                     type: 'string'
-                  maxItems: 2
+                  maxItems: 3
                   type: 'array'
                 filters:
                   items:
@@ -40548,6 +41259,226 @@ paths:
         - 'TTS'
       x-speakeasy-max-method-params: 1
       x-speakeasy-name-override: 'createSpeech'
+  /audio/speech/models:
+    get:
+      description: 'Lists every text-to-speech model with the inputs it accepts and its speech output parameters, merged across its endpoints, plus each endpoint with its own.'
+      operationId: 'listSpeechModels'
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                data:
+                  - created: 1742428800
+                    description: 'Text-to-speech model with steerable delivery.'
+                    endpoints:
+                      - input_modalities:
+                          - type: 'text'
+                        output_modalities:
+                          - supported_parameters:
+                              instructions:
+                                type: 'unknown'
+                              response_format:
+                                type: 'enum'
+                                values:
+                                  - 'mp3'
+                                  - 'pcm'
+                              speed:
+                                max: 4
+                                min: 0.25
+                                type: 'range'
+                              voice:
+                                type: 'enum'
+                                values:
+                                  - 'alloy'
+                                  - 'coral'
+                            type: 'speech'
+                        provider_name: 'OpenAI'
+                        provider_slug: 'openai'
+                    id: 'openai/gpt-4o-mini-tts'
+                    input_modalities:
+                      - type: 'text'
+                    name: 'OpenAI: GPT-4o mini TTS'
+                    output_modalities:
+                      - supported_parameters:
+                          instructions:
+                            type: 'unknown'
+                          response_format:
+                            type: 'enum'
+                            values:
+                              - 'mp3'
+                              - 'pcm'
+                          speed:
+                            max: 4
+                            min: 0.25
+                            type: 'range'
+                          voice:
+                            type: 'enum'
+                            values:
+                              - 'alloy'
+                              - 'coral'
+                        type: 'speech'
+              schema:
+                $ref: '#/components/schemas/SpeechModelsListResponse'
+          description: 'List of text-to-speech models'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
+        '500':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 500
+                  message: 'Internal Server Error'
+              schema:
+                $ref: '#/components/schemas/InternalServerResponse'
+          description: 'Internal Server Error - Unexpected server error'
+        '503':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 503
+                  message: 'Service temporarily unavailable'
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableResponse'
+          description: 'Service Unavailable - Service temporarily unavailable'
+      security: []
+      summary: 'List text-to-speech models'
+      tags:
+        - 'TTS'
+      x-speakeasy-name-override: 'listModels'
+  /audio/speech/models/{author}/{slug}:
+    get:
+      description: 'Returns a text-to-speech model with each endpoint''s own inputs and speech output parameters.'
+      operationId: 'getSpeechModel'
+      parameters:
+        - description: 'Model author/organization'
+          in: 'path'
+          name: 'author'
+          required: true
+          schema:
+            description: 'Model author/organization'
+            example: 'openai'
+            type: 'string'
+        - description: 'Model slug'
+          in: 'path'
+          name: 'slug'
+          required: true
+          schema:
+            description: 'Model slug'
+            example: 'gpt-4o-mini-tts'
+            type: 'string'
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                created: 1742428800
+                description: 'Text-to-speech model with steerable delivery.'
+                endpoints:
+                  - input_modalities:
+                      - type: 'text'
+                    output_modalities:
+                      - supported_parameters:
+                          instructions:
+                            type: 'unknown'
+                          response_format:
+                            type: 'enum'
+                            values:
+                              - 'mp3'
+                              - 'pcm'
+                          speed:
+                            max: 4
+                            min: 0.25
+                            type: 'range'
+                          voice:
+                            type: 'enum'
+                            values:
+                              - 'alloy'
+                              - 'coral'
+                        type: 'speech'
+                    provider_name: 'OpenAI'
+                    provider_slug: 'openai'
+                id: 'openai/gpt-4o-mini-tts'
+                input_modalities:
+                  - type: 'text'
+                name: 'OpenAI: GPT-4o mini TTS'
+                output_modalities:
+                  - supported_parameters:
+                      instructions:
+                        type: 'unknown'
+                      response_format:
+                        type: 'enum'
+                        values:
+                          - 'mp3'
+                          - 'pcm'
+                      speed:
+                        max: 4
+                        min: 0.25
+                        type: 'range'
+                      voice:
+                        type: 'enum'
+                        values:
+                          - 'alloy'
+                          - 'coral'
+                    type: 'speech'
+              schema:
+                $ref: '#/components/schemas/SpeechModelResponse'
+          description: 'A text-to-speech model and its endpoints'
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: 'Only management keys can perform this operation'
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: 'Forbidden - Authentication successful but insufficient permissions'
+        '404':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 404
+                  message: 'Resource not found'
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: 'Not Found - Resource does not exist'
+        '500':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 500
+                  message: 'Internal Server Error'
+              schema:
+                $ref: '#/components/schemas/InternalServerResponse'
+          description: 'Internal Server Error - Unexpected server error'
+        '503':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 503
+                  message: 'Service temporarily unavailable'
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableResponse'
+          description: 'Service Unavailable - Service temporarily unavailable'
+      security: []
+      summary: 'Get a text-to-speech model'
+      tags:
+        - 'TTS'
+      x-speakeasy-name-override: 'getModel'
   /audio/transcriptions:
     post:
       description: 'Transcribes audio into text. Accepts base64-encoded audio input as JSON, an OpenAI-style multipart/form-data file upload, or a URL the provider downloads directly, and returns the transcribed text.'
@@ -40589,6 +41520,9 @@ paths:
                   type: 'string'
                 model:
                   description: 'The model to use for transcription.'
+                  type: 'string'
+                prompt:
+                  description: 'Context to guide transcription on providers that support contextual prompting. Takes precedence over provider-specific prompt options, including when empty.'
                   type: 'string'
                 provider:
                   description: 'JSON-encoded provider preferences object, the same shape as the JSON body field: { "zdr": true, "data_collection": "deny", "options": { "<provider-slug>": { ... } } }. Only options for the matched provider are forwarded. Must decode to a JSON object.'
@@ -41533,7 +42467,7 @@ paths:
         - 'Batch'
   /benchmarks:
     get:
-      description: 'Unified benchmark endpoint that aggregates scores from multiple benchmark sources (Artificial Analysis, Design Arena, and OpenRouter''s own tau-bench, GPQA, and web-search evals). Filter by source to reproduce the exact shapes from the legacy per-source endpoints, or use task_type to find models suited for specific workloads. Use task_type=search (or a search_* benchmark_type) for OpenRouter''s search benchmarks, which publish each model''s highest-scoring eligible evaluation configuration with same-configuration runs combined by task-weighted mean. Authenticate with any valid OpenRouter API key. Rate-limited to 30 requests/minute per key and 500 requests/day per account.'
+      description: 'Unified benchmark endpoint that aggregates scores from multiple benchmark sources (Artificial Analysis, Design Arena, and OpenRouter''s own tau-bench, GPQA, and web-search evals). Filter by source to reproduce the exact shapes from the legacy per-source endpoints, or use task_type to find models suited for specific workloads. Artificial Analysis items carry one score per Artificial Analysis index (Intelligence Index, Finance & Accounting Index, Strategy & Ops Index, Legal Index, Healthcare & Medical Index, Engineering Index, Economics Index, Cyber Index, Openness Index, Multilingual Index, Decision Index); attribute Artificial Analysis when you republish them. A response whose items all come from one source carries that source''s citation in meta; in a mixed response, attribute each item by its source. Use task_type=search (or a search_* benchmark_type) for OpenRouter''s search benchmarks, which publish each model''s highest-scoring eligible evaluation configuration with same-configuration runs combined by task-weighted mean. Authenticate with any valid OpenRouter API key. Rate-limited to 30 requests/minute per key and 500 requests/day per account.'
       operationId: 'getBenchmarks'
       parameters:
         - description: 'Benchmark source to query. Determines the shape of the returned items. When omitted, returns results from all sources.'
@@ -41548,18 +42482,27 @@ paths:
               - 'openrouter'
             example: 'artificial-analysis'
             type: 'string'
-        - description: 'Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category. `search` returns OpenRouter search benchmark results only.'
+        - description: 'Filter results by task type. Every value except `search` names the Artificial Analysis index of the same name and returns only models scored on it, best first (`coding` and `agentic` are deprecated: Artificial Analysis has retired those indexes and returns no item for them). Design Arena answers only `coding`, `intelligence` and `agentic`, and OpenRouter''s own evals only `intelligence` and `agentic`. `search` returns OpenRouter search benchmark results only.'
           in: 'query'
           name: 'task_type'
           required: false
           schema:
-            description: 'Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category. `search` returns OpenRouter search benchmark results only.'
+            description: 'Filter results by task type. Every value except `search` names the Artificial Analysis index of the same name and returns only models scored on it, best first (`coding` and `agentic` are deprecated: Artificial Analysis has retired those indexes and returns no item for them). Design Arena answers only `coding`, `intelligence` and `agentic`, and OpenRouter''s own evals only `intelligence` and `agentic`. `search` returns OpenRouter search benchmark results only.'
             enum:
-              - 'coding'
               - 'intelligence'
+              - 'coding'
               - 'agentic'
+              - 'finance-and-accounting'
+              - 'strategy-and-ops'
+              - 'legal'
+              - 'healthcare-and-medical'
+              - 'engineering'
+              - 'economics'
+              - 'cyber'
+              - 'multilingual'
+              - 'decision'
               - 'search'
-            example: 'coding'
+            example: 'intelligence'
             type: 'string'
         - description: 'Return results for one exact OpenRouter benchmark. A `search_*` value narrows the response to search results only; a classic value narrows the OpenRouter items and leaves other sources'' items as they are.'
           in: 'query'
@@ -41639,15 +42582,25 @@ paths:
             application/json:
               example:
                 data:
-                  - agentic_index: 58.3
-                    coding_index: 65.8
+                  - agentic_index: null
+                    coding_index: null
+                    cyber_index: 36.4
+                    decision_index: 75.7
                     display_name: 'GPT-4o'
-                    intelligence_index: 71.2
+                    economics_index: 57.2
+                    engineering_index: 60.4
+                    finance_and_accounting_index: 58.1
+                    healthcare_and_medical_index: 56.9
+                    intelligence_index: 71.4
+                    legal_index: 52.3
                     model_permaslug: 'openai/gpt-4o'
+                    multilingual_index: 0.82
+                    openness_index: 33.3
                     pricing:
                       completion: '0.00001'
                       prompt: '0.0000025'
                     source: 'artificial-analysis'
+                    strategy_and_ops_index: 61.7
                   - accuracy: 0.72
                     accuracy_stddev: 0.03
                     avg_cost_per_task: 0.002
@@ -43219,7 +44172,7 @@ paths:
       x-hidden: true
       x-speakeasy-ignore: true
     post:
-      description: 'Starts an agent credit purchase paid with a Machine Payments Protocol (MPP) credential: USDC on Tempo, or a card when one is offered. The first call answers `402` with one `WWW-Authenticate: Payment ...` challenge per payment option; pay one of them and retry the same request, same `Idempotency-Key`, with the signed credential in `Payment-Authorization: Payment ...` (or in `Authorization: Payment ...` when the management key is sent as `X-Api-Key`). A paid request answers `202`: the transfer was broadcast or the card was charged, and the payment is still being confirmed, so credits arrive asynchronously. Poll the URL in the `Location` header, `GET /api/v1/credits/purchases/{id}`, until `status` is `credited` or `failed`.'
+      description: 'Starts an agent credit purchase paid with a Machine Payments Protocol (MPP) credential: Bridged USDC (USDC.e) or Open USD (OUSD) on Tempo, with USDC.e offered first, or a card when one is offered. Discover currencies in `x-payment-info.offers`; select a runtime challenge by its `request.currency` contract address, not a purchase-body field. Production currently refuses OUSD selections. The first call answers `402` with one `WWW-Authenticate: Payment ...` challenge per payment option; pay one of them and retry the same request, same `Idempotency-Key`, with the signed credential in `Payment-Authorization: Payment ...` (or in `Authorization: Payment ...` when the management key is sent as `X-Api-Key`). A paid request answers `202`: the transfer was broadcast or the card was charged, and the payment is still being confirmed, so credits arrive asynchronously. Poll the URL in the `Location` header, `GET /api/v1/credits/purchases/{id}`, until `status` is `credited` or `failed`.'
       operationId: 'createCreditsPurchases'
       parameters:
         - description: 'Identifies the purchase. Send the same value on the unpaid request and on the paid retry; use a new value for a new purchase.'
@@ -43254,10 +44207,10 @@ paths:
                 example: '/api/v1/credits/purchases/pi_3PqXyZ2eZvKYlo2C0abc1234'
                 type: 'string'
             Payment-Receipt:
-              description: 'The payment reference, on the request that paid: the Tempo transaction hash for USDC, or the PaymentIntent ID for a card. Absent when an earlier request already paid this purchase.'
+              description: 'The payment reference, on the request that paid: the transaction hash for a Tempo payment, or the PaymentIntent ID for a card. Absent when an earlier request already paid this purchase.'
               required: false
               schema:
-                description: 'The payment reference, on the request that paid: the Tempo transaction hash for USDC, or the PaymentIntent ID for a card. Absent when an earlier request already paid this purchase.'
+                description: 'The payment reference, on the request that paid: the transaction hash for a Tempo payment, or the PaymentIntent ID for a card. Absent when an earlier request already paid this purchase.'
                 example: '0x8f3c2b1a9e7d6c5b4a39281706f5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3'
                 type: 'string'
         '400':
@@ -43295,10 +44248,10 @@ paths:
                 example: '<https://openrouter.ai/api/v1/credits/purchases/setup>; rel="help"'
                 type: 'string'
             WWW-Authenticate:
-              description: 'The MPP challenges, one per way to pay: `Payment id="...", method="tempo", intent="charge", ...` for USDC on Tempo and, when cards are offered, `Payment id="...", method="stripe", intent="charge", ...` for a card. Pay one of them.'
+              description: 'The MPP challenges, one per way to pay: `Payment id="...", method="tempo", intent="charge", ...` for the selected stablecoin on Tempo and, when cards are offered, `Payment id="...", method="stripe", intent="charge", ...` for a card. Pay one of them.'
               required: true
               schema:
-                description: 'The MPP challenges, one per way to pay: `Payment id="...", method="tempo", intent="charge", ...` for USDC on Tempo and, when cards are offered, `Payment id="...", method="stripe", intent="charge", ...` for a card. Pay one of them.'
+                description: 'The MPP challenges, one per way to pay: `Payment id="...", method="tempo", intent="charge", ...` for the selected stablecoin on Tempo and, when cards are offered, `Payment id="...", method="stripe", intent="charge", ...` for a card. Pay one of them.'
                 type: 'string'
         '403':
           content:
@@ -43371,6 +44324,20 @@ paths:
         - 'Credits'
       x-fern-ignore: true
       x-hidden: true
+      x-payment-info:
+        offers:
+          - amount: null
+            currency: '0x20c000000000000000000000b9537d11c60e8b50'
+            intent: 'charge'
+            method: 'tempo'
+          - amount: null
+            currency: '0x20c0000000000000000000006a37DA5C996874BE'
+            intent: 'charge'
+            method: 'tempo'
+          - amount: null
+            currency: 'usd'
+            intent: 'charge'
+            method: 'stripe'
       x-speakeasy-ignore: true
   /credits/purchases/{id}:
     get:
@@ -50521,6 +51488,7 @@ paths:
       summary: 'List API keys'
       tags:
         - 'API Keys'
+      x-speakeasy-max-method-params: 5
       x-speakeasy-name-override: 'list'
       x-speakeasy-pagination:
         inputs:
@@ -52028,12 +52996,12 @@ paths:
             description: 'Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, decisions, speech, transcription) or "all" to include all models. Defaults to "text".'
             example: 'text'
             type: 'string'
-        - description: 'Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved.'
+        - description: 'Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), <index>-high-to-low for each Artificial Analysis index (the coding and agentic sorts are deprecated: Artificial Analysis has retired those indexes, so they order by canonical slug and variant alone), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. The decision sort ranks decision models, so pass output_modalities=decisions or all with it. When omitted, the existing default ordering is preserved.'
           in: 'query'
           name: 'sort'
           required: false
           schema:
-            description: 'Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved.'
+            description: 'Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), <index>-high-to-low for each Artificial Analysis index (the coding and agentic sorts are deprecated: Artificial Analysis has retired those indexes, so they order by canonical slug and variant alone), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. The decision sort ranks decision models, so pass output_modalities=decisions or all with it. When omitted, the existing default ordering is preserved.'
             enum:
               - 'most-popular'
               - 'newest'
@@ -52046,6 +53014,16 @@ paths:
               - 'intelligence-high-to-low'
               - 'coding-high-to-low'
               - 'agentic-high-to-low'
+              - 'finance-and-accounting-high-to-low'
+              - 'strategy-and-ops-high-to-low'
+              - 'legal-high-to-low'
+              - 'healthcare-and-medical-high-to-low'
+              - 'engineering-high-to-low'
+              - 'economics-high-to-low'
+              - 'cyber-high-to-low'
+              - 'openness-high-to-low'
+              - 'multilingual-high-to-low'
+              - 'decision-high-to-low'
               - 'design-arena-elo-high-to-low'
             example: 'newest'
             type: 'string'
@@ -52220,67 +53198,293 @@ paths:
             type:
               - 'integer'
               - 'null'
-        - description: 'Minimum Artificial Analysis intelligence index.'
+        - description: 'Minimum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.'
           in: 'query'
           name: 'min_intelligence_index'
           required: false
           schema:
-            description: 'Minimum Artificial Analysis intelligence index.'
+            description: 'Minimum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.'
             example: 50
             minimum: 0
             type:
               - 'number'
               - 'null'
-        - description: 'Maximum Artificial Analysis intelligence index.'
+        - description: 'Maximum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.'
           in: 'query'
           name: 'max_intelligence_index'
           required: false
           schema:
-            description: 'Maximum Artificial Analysis intelligence index.'
+            description: 'Maximum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.'
             example: 100
             minimum: 0
             type:
               - 'number'
               - 'null'
-        - description: 'Minimum Artificial Analysis coding index.'
+        - deprecated: true
+          description: 'Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.'
           in: 'query'
           name: 'min_coding_index'
           required: false
           schema:
-            description: 'Minimum Artificial Analysis coding index.'
+            description: 'Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.'
             example: 50
             minimum: 0
             type:
               - 'number'
               - 'null'
-        - description: 'Maximum Artificial Analysis coding index.'
+        - deprecated: true
+          description: 'Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.'
           in: 'query'
           name: 'max_coding_index'
           required: false
           schema:
-            description: 'Maximum Artificial Analysis coding index.'
+            description: 'Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.'
             example: 100
             minimum: 0
             type:
               - 'number'
               - 'null'
-        - description: 'Minimum Artificial Analysis agentic index.'
+        - deprecated: true
+          description: 'Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.'
           in: 'query'
           name: 'min_agentic_index'
           required: false
           schema:
-            description: 'Minimum Artificial Analysis agentic index.'
+            description: 'Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.'
             example: 50
             minimum: 0
             type:
               - 'number'
               - 'null'
-        - description: 'Maximum Artificial Analysis agentic index.'
+        - deprecated: true
+          description: 'Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.'
           in: 'query'
           name: 'max_agentic_index'
           required: false
           schema:
-            description: 'Maximum Artificial Analysis agentic index.'
+            description: 'Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_finance_and_accounting_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_finance_and_accounting_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_strategy_and_ops_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_strategy_and_ops_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Legal Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_legal_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Legal Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Legal Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_legal_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Legal Index score (0-100); unscored models are excluded.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_healthcare_and_medical_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_healthcare_and_medical_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_engineering_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_engineering_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Economics Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_economics_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Economics Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Economics Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_economics_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Economics Index score (0-100); unscored models are excluded.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_cyber_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_cyber_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Openness Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_openness_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Openness Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Openness Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_openness_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Openness Index score (0-100); unscored models are excluded.'
+            example: 100
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.'
+          in: 'query'
+          name: 'min_multilingual_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.'
+            example: 0.5
+            maximum: 1
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.'
+          in: 'query'
+          name: 'max_multilingual_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.'
+            example: 1
+            maximum: 1
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Minimum Artificial Analysis Decision Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'min_decision_index'
+          required: false
+          schema:
+            description: 'Minimum Artificial Analysis Decision Index score (0-100); unscored models are excluded.'
+            example: 50
+            minimum: 0
+            type:
+              - 'number'
+              - 'null'
+        - description: 'Maximum Artificial Analysis Decision Index score (0-100); unscored models are excluded.'
+          in: 'query'
+          name: 'max_decision_index'
+          required: false
+          schema:
+            description: 'Maximum Artificial Analysis Decision Index score (0-100); unscored models are excluded.'
             example: 100
             minimum: 0
             type:
@@ -52711,12 +53915,12 @@ paths:
             description: 'Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, decisions, speech, transcription) or "all" to include all models. Defaults to "text".'
             example: 'text'
             type: 'string'
-        - description: 'Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved.'
+        - description: 'Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), <index>-high-to-low for each Artificial Analysis index (the coding and agentic sorts are deprecated: Artificial Analysis has retired those indexes, so they order by canonical slug and variant alone), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. The decision sort ranks decision models, so pass output_modalities=decisions or all with it. When omitted, the existing default ordering is preserved.'
           in: 'query'
           name: 'sort'
           required: false
           schema:
-            description: 'Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved.'
+            description: 'Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), <index>-high-to-low for each Artificial Analysis index (the coding and agentic sorts are deprecated: Artificial Analysis has retired those indexes, so they order by canonical slug and variant alone), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. The decision sort ranks decision models, so pass output_modalities=decisions or all with it. When omitted, the existing default ordering is preserved.'
             enum:
               - 'most-popular'
               - 'newest'
@@ -52729,6 +53933,16 @@ paths:
               - 'intelligence-high-to-low'
               - 'coding-high-to-low'
               - 'agentic-high-to-low'
+              - 'finance-and-accounting-high-to-low'
+              - 'strategy-and-ops-high-to-low'
+              - 'legal-high-to-low'
+              - 'healthcare-and-medical-high-to-low'
+              - 'engineering-high-to-low'
+              - 'economics-high-to-low'
+              - 'cyber-high-to-low'
+              - 'openness-high-to-low'
+              - 'multilingual-high-to-low'
+              - 'decision-high-to-low'
               - 'design-arena-elo-high-to-low'
             example: 'newest'
             type: 'string'
@@ -57570,7 +58784,8 @@ paths:
           results: '$.data'
         type: 'offsetLimit'
     post:
-      description: 'Create a SCIM group-to-workspace role mapping. Creating a mapping that already exists with the same role succeeds and re-applies the mapping to the group members. Requesting a different role for an existing mapping returns 409. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      deprecated: true
+      description: 'Create a SCIM group-to-workspace role mapping. Disabled: no API key can perform this write, including management keys. Use the organization settings in the dashboard, which require step-up verification. A valid management key for an organization with SCIM access receives 403; an invalid key still receives 401 and an organization without SCIM access receives 404.'
       operationId: 'createScimGroupMapping'
       requestBody:
         content:
@@ -57584,7 +58799,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateScimGroupMappingResponse'
-          description: 'SCIM group mapping created'
+          description: 'SCIM group mapping created. Not returned: this operation is disabled. The schema is kept for SDK compatibility.'
         '400':
           content:
             application/json:
@@ -57611,10 +58826,10 @@ paths:
               example:
                 error:
                   code: 403
-                  message: 'Only management keys can perform this operation'
+                  message: 'Management keys cannot change SCIM group mappings or start syncs. Use the organization settings in the dashboard.'
               schema:
                 $ref: '#/components/schemas/ForbiddenResponse'
-          description: 'Forbidden - Authentication successful but insufficient permissions'
+          description: 'Forbidden - SCIM writes are dashboard-only'
         '404':
           content:
             application/json:
@@ -57651,7 +58866,8 @@ paths:
       x-speakeasy-name-override: 'create'
   /scim/group-mappings/{id}:
     delete:
-      description: 'Delete a SCIM group-to-workspace mapping. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      deprecated: true
+      description: 'Delete a SCIM group-to-workspace mapping. Disabled: no API key can perform this write, including management keys. Use the organization settings in the dashboard, which require step-up verification. A valid management key for an organization with SCIM access receives 403; an invalid key still receives 401 and an organization without SCIM access receives 404.'
       operationId: 'deleteScimGroupMapping'
       parameters:
         - in: 'path'
@@ -57679,7 +58895,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteScimGroupMappingResponse'
-          description: 'SCIM group mapping deleted'
+          description: 'SCIM group mapping deleted. Not returned: this operation is disabled. The schema is kept for SDK compatibility.'
         '400':
           content:
             application/json:
@@ -57706,10 +58922,10 @@ paths:
               example:
                 error:
                   code: 403
-                  message: 'Only management keys can perform this operation'
+                  message: 'Management keys cannot change SCIM group mappings or start syncs. Use the organization settings in the dashboard.'
               schema:
                 $ref: '#/components/schemas/ForbiddenResponse'
-          description: 'Forbidden - Authentication successful but insufficient permissions'
+          description: 'Forbidden - SCIM writes are dashboard-only'
         '404':
           content:
             application/json:
@@ -57796,7 +59012,8 @@ paths:
         - 'SCIM'
       x-speakeasy-name-override: 'read'
     patch:
-      description: 'Update a SCIM group mapping role. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      deprecated: true
+      description: 'Update a SCIM group mapping role. Disabled: no API key can perform this write, including management keys. Use the organization settings in the dashboard, which require step-up verification. A valid management key for an organization with SCIM access receives 403; an invalid key still receives 401 and an organization without SCIM access receives 404.'
       operationId: 'updateScimGroupMapping'
       parameters:
         - in: 'path'
@@ -57817,7 +59034,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UpdateScimGroupMappingResponse'
-          description: 'SCIM group mapping updated'
+          description: 'SCIM group mapping updated. Not returned: this operation is disabled. The schema is kept for SDK compatibility.'
         '400':
           content:
             application/json:
@@ -57844,10 +59061,10 @@ paths:
               example:
                 error:
                   code: 403
-                  message: 'Only management keys can perform this operation'
+                  message: 'Management keys cannot change SCIM group mappings or start syncs. Use the organization settings in the dashboard.'
               schema:
                 $ref: '#/components/schemas/ForbiddenResponse'
-          description: 'Forbidden - Authentication successful but insufficient permissions'
+          description: 'Forbidden - SCIM writes are dashboard-only'
         '404':
           content:
             application/json:
@@ -57980,7 +59197,8 @@ paths:
         type: 'offsetLimit'
   /scim/sync-jobs:
     post:
-      description: 'Start a SCIM directory sync. [Management key](/docs/guides/overview/auth/management-api-keys) required.'
+      deprecated: true
+      description: 'Start a SCIM directory sync. Disabled: no API key can perform this write, including management keys. Use the organization settings in the dashboard, which require step-up verification. A valid management key for an organization with SCIM access receives 403; an invalid key still receives 401 and an organization without SCIM access receives 404.'
       operationId: 'createScimSyncJob'
       responses:
         '202':
@@ -57988,7 +59206,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateScimSyncJobResponse'
-          description: 'SCIM directory sync job queued'
+          description: 'SCIM directory sync job queued. Not returned: this operation is disabled. The schema is kept for SDK compatibility.'
           headers:
             Location:
               description: 'Poll URL for the created sync job.'
@@ -58012,10 +59230,10 @@ paths:
               example:
                 error:
                   code: 403
-                  message: 'Only management keys can perform this operation'
+                  message: 'Management keys cannot change SCIM group mappings or start syncs. Use the organization settings in the dashboard.'
               schema:
                 $ref: '#/components/schemas/ForbiddenResponse'
-          description: 'Forbidden - Authentication successful but insufficient permissions'
+          description: 'Forbidden - SCIM writes are dashboard-only'
         '404':
           content:
             application/json:
