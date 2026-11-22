@@ -378,6 +378,19 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Create(ctx context.Context, req re
 	// identical to that policy's row in the list, twelve keys on both sides, and its config
 	// came back byte-equal to what was sent. The default case is measured on the update path,
 	// where the response carries the resolved workspace projection.
+	// The id helper returns the id of whichever family the row carries, so a response naming
+	// another family's policy still yields a non-empty id. Refuse it here, before the id is
+	// adopted or named: hydrate would fail next, and its message tells the operator to import
+	// an id that this resource refuses.
+	if string(res.AccountGuardrailPolicyResponse.Data.Type) != b.ops.policyType {
+		resp.Diagnostics.AddError(
+			"unexpected response from API",
+			fmt.Sprintf("the write answered with a %q policy, and this resource manages %q",
+				string(res.AccountGuardrailPolicyResponse.Data.Type), b.ops.policyType),
+		)
+		return
+	}
+
 	data.ID = types.StringValue(guardrailPolicyAccountID(res.AccountGuardrailPolicyResponse.Data))
 	if data.ID.ValueString() == "" {
 		resp.Diagnostics.AddError("unexpected response from API", "the created policy carried no id")

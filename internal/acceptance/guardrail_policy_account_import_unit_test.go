@@ -37,6 +37,12 @@ func TestGuardrailPolicyAccountImportRefusals(t *testing.T) {
 			if !resp.Diagnostics.HasError() {
 				t.Fatalf("import id %q was accepted", tc.id)
 			}
+			// A message alone is not the contract: an importer that set the id and then
+			// errored would store a policy id that no read can resolve, so state has to stay
+			// empty as well.
+			if resp.State.Raw.Type() != nil && !resp.State.Raw.IsNull() {
+				t.Errorf("a refused import still wrote state")
+			}
 			for _, d := range resp.Diagnostics {
 				if strings.Contains(d.Detail(), tc.want) {
 					return

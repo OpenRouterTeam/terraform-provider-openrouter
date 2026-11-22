@@ -27,9 +27,13 @@ import (
 // no read to build. Everything below is measured against that route on 2026-11-18; the
 // probe transcripts are in the pull request that added these resources.
 const (
-	guardrailPolicyAccountTypeBudget            = "budget"
-	guardrailPolicyAccountTypeModelAvailability = "model_availability"
-	guardrailPolicyAccountTypeModeration        = "moderation"
+	// Derived from the generated enum rather than written a second time. The lookup compares
+	// these against the row's wire value while each variant compares against the generated
+	// constant, so two literals for one wire value would drift silently into a "policy type
+	// does not match this resource" error on every read instead of a compile failure.
+	guardrailPolicyAccountTypeBudget            = string(shared.AccountGuardrailPolicyTypeBudget)
+	guardrailPolicyAccountTypeModelAvailability = string(shared.AccountGuardrailPolicyTypeModelAvailability)
+	guardrailPolicyAccountTypeModeration        = string(shared.AccountGuardrailPolicyTypeModeration)
 )
 
 // guardrailPolicyAccountLookup lists every account policy and returns the one whose id
