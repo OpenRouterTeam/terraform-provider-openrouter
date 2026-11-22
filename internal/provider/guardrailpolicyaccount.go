@@ -78,23 +78,6 @@ func guardrailPolicyAccountLookup(ctx context.Context, client *sdk.OpenRouter, p
 		return nil, false, diags
 	}
 
-	// A page that outnumbers its own total is a response that cannot be interpreted: the
-	// account either has these policies or it does not, so completeness cannot be inferred
-	// from it and absence must not be declared. This covers a total of zero beside a
-	// non-empty page and the wider contradiction of any total smaller than the page; only
-	// one of the two directions is visible to the shorter-page check below, which runs after
-	// the loop because a page that still contains the policy returns before it.
-	if body := res.ListAccountGuardrailPoliciesResponse; len(body.Data) > 0 && int64(len(body.Data)) > body.TotalCount {
-		diags.AddError(
-			"the account policy list could not be interpreted",
-			fmt.Sprintf(
-				"The list returned %d account policies and reported a total of %d, so policy %s could not be looked up. A page larger than its own total cannot be reconciled with it, so the provider will not report the policy as absent.",
-				len(body.Data), body.TotalCount, id,
-			),
-		)
-		return nil, false, diags
-	}
-
 	for i := range res.ListAccountGuardrailPoliciesResponse.Data {
 		policy := res.ListAccountGuardrailPoliciesResponse.Data[i]
 		if guardrailPolicyAccountID(policy) != id {
@@ -111,6 +94,29 @@ func guardrailPolicyAccountLookup(ctx context.Context, client *sdk.OpenRouter, p
 			return nil, false, diags
 		}
 		return &policy, true, diags
+	}
+
+	// The two checks below answer only the question the loop could not: is this page complete
+	// enough to conclude that the policy is gone? They run after the loop on purpose. A page
+	// and a total that disagree are evidence about completeness, not about the rows the page
+	// carries, and a row whose id and type match is the policy this resource manages however
+	// much of the rest of the page is missing. Refusing a matched row would be worse than
+	// trusting it: a destroy's own pre-DELETE read of a contradicted page would lose the row
+	// it needs to refuse deleting the account default.
+	//
+	// A page larger than the total it reports is a response that cannot be interpreted at all
+	// (a total of zero beside a non-empty page is the same defect), and a page shorter than
+	// its total is a clamped one. Neither is proof that the policy is absent, and reporting
+	// absence would plan a recreate against a policy that still exists, so both are errors.
+	if body := res.ListAccountGuardrailPoliciesResponse; len(body.Data) > 0 && int64(len(body.Data)) > body.TotalCount {
+		diags.AddError(
+			"the account policy list could not be interpreted",
+			fmt.Sprintf(
+				"The list returned %d account policies and reported a total of %d, so policy %s could not be looked up. A page larger than its own total cannot be reconciled with it, so the provider will not report the policy as absent.",
+				len(body.Data), body.TotalCount, id,
+			),
+		)
+		return nil, false, diags
 	}
 
 	// The list carries `total_count`, so a page shorter than it is a clamped response rather

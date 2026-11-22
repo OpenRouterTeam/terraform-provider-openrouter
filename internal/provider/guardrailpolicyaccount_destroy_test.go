@@ -53,6 +53,10 @@ type accountPolicyDestroyStub struct {
 	listStatus    int
 	deleteStatus  int
 	deleteMessage string
+	// totalOverride is what the list reports as its total; zero means "the number of rows
+	// served", which is the honest case. A non-zero value that differs from the page is how a
+	// case builds a response whose completeness cannot be trusted.
+	totalOverride int
 
 	listReads  int
 	deletedIDs []string
@@ -78,7 +82,7 @@ func newAccountPolicyDestroyServer(t *testing.T, stub *accountPolicyDestroyStub)
 	mux.HandleFunc("GET /guardrails/policies/account", func(w http.ResponseWriter, r *http.Request) {
 		stub.mu.Lock()
 		stub.listReads++
-		status, rows := stub.listStatus, stub.rows
+		status, rows, total := stub.listStatus, stub.rows, stub.totalOverride
 		stub.mu.Unlock()
 
 		w.Header().Set("Content-Type", "application/json")
@@ -89,7 +93,10 @@ func newAccountPolicyDestroyServer(t *testing.T, stub *accountPolicyDestroyStub)
 			})
 			return
 		}
-		_ = json.NewEncoder(w).Encode(map[string]any{"data": rows, "total_count": len(rows)})
+		if total == 0 {
+			total = len(rows)
+		}
+		_ = json.NewEncoder(w).Encode(map[string]any{"data": rows, "total_count": total})
 	})
 	mux.HandleFunc("DELETE /guardrails/policies/account/{id}", func(w http.ResponseWriter, r *http.Request) {
 		stub.mu.Lock()
@@ -119,6 +126,17 @@ func accountPolicyDestroyRow(id, policyType string, isDefault bool) map[string]a
 	row := accountPolicyRow(id, policyType, "an account policy")
 	row["is_default"] = isDefault
 	return row
+}
+
+// otherPolicyType is a wire policy type that is not the named family's, for the case where the
+// id state holds resolves to a policy this resource does not manage.
+func otherPolicyType(family string) string {
+	for _, fam := range accountPolicyDestroyFamilies {
+		if fam.name != family {
+			return fam.name
+		}
+	}
+	return family
 }
 
 // runAccountPolicyDestroy calls Delete on the named family's resource with a state whose
@@ -281,38 +299,104 @@ func TestGuardrailPolicyAccountDestroyReportsAFailedDelete(t *testing.T) {
 	}
 }
 
-// TestGuardrailPolicyAccountDestroyWarnsWhenTheListCannotBeRead covers the branch that keeps
-// the guard from becoming a wall. The list route answers 404 for an organization whose
-// guardrails backend was withdrawn, and a list that cannot be read can show neither that the
-// policy is the default nor that removing it is safe, so the destroy warns and goes: the state
-// check is the primary protection and a 404 from the DELETE itself is already success. The
-// warning is the assertion, and it is the reason these cases call Delete rather than run a
-// Terraform step, because a step does not fail on a warning and the framework offers no check
-// for one. `rows` is deliberately unset: the failing status returns before any is served.
-func TestGuardrailPolicyAccountDestroyWarnsWhenTheListCannotBeRead(t *testing.T) {
+// TestGuardrailPolicyAccountDestroyWarnsAndProceedsWhenTheCheckCannotBeMade covers the branch
+// that keeps the guard from becoming a wall. A list the path cannot use leaves it unable to say
+// whether the policy is the default, and the state check in front of it is the primary
+// protection, so the destroy warns with the reason and goes. The warning is the assertion, and
+// it is why these cases call Delete rather than run a Terraform step: a step does not fail on a
+// warning and the framework offers no check for one.
+//
+// Three shapes reach that arm and they are not the same failure, which is what the assertion on
+// the reason is for: the route refusing the read, a page whose contents cannot be trusted at
+// all, and a page that answers for the id with a policy of another family. A message that named
+// only one of those causes would be wrong for the other two, so each case requires its own
+// reason to arrive.
+func TestGuardrailPolicyAccountDestroyWarnsAndProceedsWhenTheCheckCannotBeMade(t *testing.T) {
+	for _, fam := range accountPolicyDestroyFamilies {
+		for _, tc := range []struct {
+			name   string
+			reason string
+			rows   []map[string]any
+			total  int
+			status int
+		}{
+			{
+				name:   "the list route refuses the read",
+				reason: "404",
+				status: http.StatusNotFound,
+			},
+			{
+				name:   "the page contradicts its own total and does not carry the policy",
+				reason: "could not be interpreted",
+				rows: []map[string]any{
+					accountPolicyDestroyRow("stub-account-2", fam.name, false),
+					accountPolicyDestroyRow("stub-account-3", fam.name, false),
+				},
+				total: 1,
+			},
+			{
+				name:   "the id resolves to another family's policy",
+				reason: "policy type does not match",
+				rows: []map[string]any{
+					accountPolicyDestroyRow("stub-account-1", otherPolicyType(fam.name), false),
+				},
+			},
+		} {
+			t.Run(fam.name+"/"+tc.name, func(t *testing.T) {
+				stub := &accountPolicyDestroyStub{rows: tc.rows, listStatus: tc.status, totalOverride: tc.total}
+				srv := newAccountPolicyDestroyServer(t, stub)
+				client := accountPolicyTestClient(t, srv.URL)
+
+				diags := runAccountPolicyDestroy(t, fam.make, client, "stub-account-1", false)
+				if diags.HasError() {
+					t.Fatalf("a check that could not be made blocked the destroy: %v. It is a second opinion, and the destroy has to proceed on state", diags)
+				}
+				if len(diags) != 1 {
+					t.Fatalf("the destroy reported %d diagnostic(s), want the one warning: %v", len(diags), diags)
+				}
+				if diags[0].Severity() != diag.SeverityWarning {
+					t.Errorf("the destroy reported %v, want a warning: a check this path cannot make must not fail a destroy", diags[0])
+				}
+				if got := diags[0].Summary(); !strings.Contains(got, "could not verify the account default") {
+					t.Errorf("diagnostic summary is %q, want it to name what could not be checked", got)
+				}
+				if got := diags[0].Detail(); !strings.Contains(got, tc.reason) {
+					t.Errorf("diagnostic detail is %q, want it to carry the reason the check did not complete (%q); a fixed sentence would be wrong for the other shapes this arm serves", got, tc.reason)
+				}
+				requireDeletedOnly(t, stub, "stub-account-1")
+			})
+		}
+	}
+}
+
+// TestGuardrailPolicyAccountDestroyRefusesAContradictoryPageThatNamesTheDefault is the case that
+// separates the two jobs the lookup does. A page and its total can disagree while the page still
+// carries the managed policy marked as its type's default, and the destroy's guard has to reach
+// that row: the contradiction is evidence about completeness, not about the row. Measured
+// 2026-11-22: with the consistency check in front of the row loop the destroy errored, the error
+// became the warning above, and the DELETE went, deleting a policy the same response had called
+// the default. This is why the checks sit after the loop.
+func TestGuardrailPolicyAccountDestroyRefusesAContradictoryPageThatNamesTheDefault(t *testing.T) {
 	for _, fam := range accountPolicyDestroyFamilies {
 		t.Run(fam.name, func(t *testing.T) {
-			stub := &accountPolicyDestroyStub{listStatus: http.StatusNotFound}
+			stub := &accountPolicyDestroyStub{
+				rows: []map[string]any{
+					accountPolicyDestroyRow("stub-account-1", fam.name, true),
+					accountPolicyDestroyRow("stub-account-2", fam.name, false),
+				},
+				totalOverride: 1,
+			}
 			srv := newAccountPolicyDestroyServer(t, stub)
 			client := accountPolicyTestClient(t, srv.URL)
 
 			diags := runAccountPolicyDestroy(t, fam.make, client, "stub-account-1", false)
-			if diags.HasError() {
-				t.Fatalf("an unreadable list blocked the destroy: %v. The check it guards is a second opinion, and the destroy has to proceed on state", diags)
+			if !diags.HasError() {
+				t.Fatal("a page that carries the managed policy as its type's default was treated as unreadable, and the destroy went: the contradiction is about the page, not about the row")
 			}
-			if len(diags) != 1 {
-				t.Fatalf("the destroy reported %d diagnostic(s), want the one warning: %v", len(diags), diags)
+			if got := diags[0].Summary(); !strings.Contains(got, "refusing to destroy the account default") {
+				t.Errorf("diagnostic summary is %q, want the destroy refusal", got)
 			}
-			if diags[0].Severity() != diag.SeverityWarning {
-				t.Errorf("the destroy reported %v, want a warning: a list this path cannot read must not fail a destroy", diags[0])
-			}
-			if got := diags[0].Summary(); !strings.Contains(got, "could not verify the account default") {
-				t.Errorf("diagnostic summary is %q, want it to name what could not be checked", got)
-			}
-			if got := diags[0].Detail(); !strings.Contains(got, "404") {
-				t.Errorf("diagnostic detail is %q, want it to carry the reason the check could not be made", got)
-			}
-			requireDeletedOnly(t, stub, "stub-account-1")
+			requireDeletedOnly(t, stub)
 		})
 	}
 }

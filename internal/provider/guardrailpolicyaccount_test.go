@@ -181,10 +181,10 @@ func TestGuardrailPolicyAccountLookupRefusesATruncatedList(t *testing.T) {
 // completeness cannot be inferred from them and absence must not be declared. That is the
 // recreate-against-a-live-policy failure the truncation guard covers from the other direction.
 //
-// The id under lookup is the one the page carries on purpose. That is the case the guard has
-// to catch and the loop cannot: the guard reads the whole page before any row is matched, so a
-// contradictory response that happens to contain the policy is refused rather than hydrated.
-// Placed after the loop, the same page would resolve and every case here would fail.
+// The policy under lookup is absent from every page here, which is the only case these two
+// completeness checks are asked about: a page that carries the policy returns from the loop
+// above whatever its total claims, and
+// TestGuardrailPolicyAccountLookupUsesARowFromAContradictoryPage pins that half deliberately.
 //
 // The two shapes are here because only one of them is a special case: a total of zero beside a
 // non-empty page is the obvious contradiction, and two rows beside a total of one is the same
@@ -213,9 +213,9 @@ func TestGuardrailPolicyAccountLookupRefusesAContradictoryTotal(t *testing.T) {
 			srv := accountPolicyListServerWithTotal(t, tc.rows, tc.total, http.StatusOK)
 			client := accountPolicyTestClient(t, srv.URL)
 
-			_, found, diags := guardrailPolicyAccountLookup(context.Background(), client, "budget", "stub-a")
+			_, found, diags := guardrailPolicyAccountLookup(context.Background(), client, "budget", "stub-missing")
 			if !diags.HasError() {
-				t.Fatal("a page that outnumbers its own total resolved without an error; neither completeness nor absence can be read from it")
+				t.Fatal("a page that outnumbers its own total reported an absent policy as gone; neither completeness nor absence can be read from it")
 			}
 			if found {
 				t.Error("a contradictory page was reported as found")
@@ -224,5 +224,33 @@ func TestGuardrailPolicyAccountLookupRefusesAContradictoryTotal(t *testing.T) {
 				t.Errorf("diagnostic summary is %q, want it to name the uninterpretable page", got)
 			}
 		})
+	}
+}
+
+// TestGuardrailPolicyAccountLookupUsesARowFromAContradictoryPage is the other half, and it is
+// the half a destroy depends on. The page and its total disagree, but the row the lookup is
+// after is present with the right id and type, and that row is the policy this resource manages
+// however much of the rest of the page is missing: the contradiction is evidence about
+// completeness, not about the rows that arrived. Refusing it would be worse than trusting it,
+// because the destroy path reads through this same function before its DELETE to learn whether
+// the policy is the account default, and a refusal becomes a warning there and lets the delete
+// go. Measured 2026-11-22: with the consistency check in front of the loop, a destroy deleted a
+// policy that the same response had marked as its type's default.
+func TestGuardrailPolicyAccountLookupUsesARowFromAContradictoryPage(t *testing.T) {
+	srv := accountPolicyListServerWithTotal(t, []map[string]any{
+		accountPolicyRow("stub-a", "budget", "the managed policy"),
+		accountPolicyRow("stub-b", "budget", "another budget policy"),
+	}, 1, http.StatusOK)
+	client := accountPolicyTestClient(t, srv.URL)
+
+	policy, found, diags := guardrailPolicyAccountLookup(context.Background(), client, "budget", "stub-a")
+	if diags.HasError() {
+		t.Fatalf("a matched row was refused because the page contradicted its own total: %v", diags)
+	}
+	if !found || policy == nil {
+		t.Fatal("the row the lookup was after was not returned")
+	}
+	if got := guardrailPolicyAccountID(*policy); got != "stub-a" {
+		t.Errorf("lookup resolved id %q, want stub-a", got)
 	}
 }
