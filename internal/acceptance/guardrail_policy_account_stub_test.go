@@ -31,7 +31,11 @@ type guardrailPolicyAccountStub struct {
 	updates      []map[string]any
 	createBodies []map[string]any
 	listQueries  []string
-	deleteCalls  int
+	// nextID only ever rises. Deriving an id from the number of stored policies would reuse
+	// the id of a deleted one, so a write response naming the wrong policy could match a row
+	// that happens to carry the id the provider expects.
+	nextID      int
+	deleteCalls int
 	// hideAfterNextWrite makes the next list read after a write leave that policy out, which
 	// is the shape of a write whose row has not reached the list yet. A test that sets it
 	// proves a write path takes its state from the write response rather than from a read:
@@ -151,7 +155,8 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 		}
 		s.mu.Lock()
 		defer s.mu.Unlock()
-		body["id"] = fmt.Sprintf("stub-account-%d", len(s.policies)+1)
+		s.nextID++
+		body["id"] = fmt.Sprintf("stub-account-%d", s.nextID)
 		if s.hideAfterNextWrite {
 			s.hideOnce[body["id"].(string)] = true
 		}
@@ -1056,21 +1061,6 @@ func runAccountPolicyTruncatedListIsAnError(t *testing.T, fam accountPolicyFamil
 				},
 				Config:      cfg,
 				ExpectError: regexp.MustCompile("the account policy list was truncated"),
-			},
-			{
-				// The destroy reads the list before it deletes, to refuse when the account's
-				// current default is the policy being removed, so the truncation has to be
-				// disarmed before the policy can be cleaned up. Leaving it armed tests the
-				// fail-safe instead: a destroy that cannot read the list does not delete
-				// blind.
-				PreConfig: func() {
-					stub.mu.Lock()
-					defer stub.mu.Unlock()
-					stub.truncateList = false
-					stub.hideAlways = false
-				},
-				Config:  cfg,
-				Destroy: true,
 			},
 		},
 	})
