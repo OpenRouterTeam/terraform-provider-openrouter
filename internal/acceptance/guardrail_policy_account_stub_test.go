@@ -830,15 +830,16 @@ func runAccountPolicyCreateTakesStateFromWriteResponse(t *testing.T, fam account
 	})
 
 	// The reads are counted rather than assumed: a create reads the list zero times, so the
-	// only read this case sees is the one Terraform issues after the apply. A create that
-	// still read would either fail on the hidden row or add a second read here. What the
+	// only reads this case sees are the one Terraform issues after the apply and the one the
+	// destroy makes to check the account's current default before it deletes. A create that
+	// still read would either fail on the hidden row or add another read here. What the
 	// non-empty plan is allowed to be is asserted above by the plan check, not here: a count
 	// of applied creates cannot distinguish a recreate from drift, because neither is applied.
 	stub.mu.Lock()
 	reads := len(stub.listQueries)
 	stub.mu.Unlock()
-	if reads != 1 {
-		t.Errorf("the account policy list was read %d time(s); want 1, the read Terraform issues after the apply, because a create reads it zero times", reads)
+	if reads != 2 {
+		t.Errorf("the account policy list was read %d time(s); want 2, the read Terraform issues after the apply plus the one the destroy makes to check the account default, because a create reads it zero times", reads)
 	}
 }
 
@@ -893,14 +894,15 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 		},
 	})
 
-	// Three reads: one after step 1's apply, one to refresh before step 2's plan and one
-	// after step 2's apply. The update reads none; while it still read, this counted four. The
-	// plan check above is what bounds the empty-plan flag, as in the create case.
+	// Four reads: one after step 1's apply, one to refresh before step 2's plan, one after
+	// step 2's apply and one the destroy makes to check the account default before deleting.
+	// The update reads none; while it still read, this counted five. The plan check above is
+	// what bounds the empty-plan flag, as in the create case.
 	stub.mu.Lock()
 	reads := len(stub.listQueries)
 	stub.mu.Unlock()
-	if reads != 3 {
-		t.Errorf("the account policy list was read %d time(s); want 3, the reads Terraform issues around the two applies, because an update reads it zero times", reads)
+	if reads != 4 {
+		t.Errorf("the account policy list was read %d time(s); want 4, those three plus the destroy's own read before it deletes, because an update reads it zero times", reads)
 	}
 }
 
@@ -1054,6 +1056,21 @@ func runAccountPolicyTruncatedListIsAnError(t *testing.T, fam accountPolicyFamil
 				},
 				Config:      cfg,
 				ExpectError: regexp.MustCompile("the account policy list was truncated"),
+			},
+			{
+				// The destroy reads the list before it deletes, to refuse when the account's
+				// current default is the policy being removed, so the truncation has to be
+				// disarmed before the policy can be cleaned up. Leaving it armed tests the
+				// fail-safe instead: a destroy that cannot read the list does not delete
+				// blind.
+				PreConfig: func() {
+					stub.mu.Lock()
+					defer stub.mu.Unlock()
+					stub.truncateList = false
+					stub.hideAlways = false
+				},
+				Config:  cfg,
+				Destroy: true,
 			},
 		},
 	})

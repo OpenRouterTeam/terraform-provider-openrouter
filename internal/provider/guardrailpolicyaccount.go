@@ -100,6 +100,21 @@ func guardrailPolicyAccountLookup(ctx context.Context, client *sdk.OpenRouter, p
 	// than proof that the policy is gone. Reporting absence would plan a recreate against a
 	// policy that still exists, which is the failure the non-200 rule above exists to
 	// prevent, so a short list is an error and never a miss.
+	// A reported total of zero alongside a non-empty page is a response that cannot be
+	// interpreted: the account either has policies or it does not, so completeness cannot be
+	// inferred from it and absence must not be declared. This is the one shape of the clamped
+	// page that is detectable from here; a route that clamps while reporting an honest-looking
+	// total is indistinguishable, which is why the read asks for the whole list instead.
+	if body := res.ListAccountGuardrailPoliciesResponse; len(body.Data) > 0 && body.TotalCount == 0 {
+		diags.AddError(
+			"the account policy list could not be interpreted",
+			fmt.Sprintf(
+				"The list returned %d account policies and reported a total of %d, so policy %s could not be looked up. A total of zero cannot be reconciled with a non-empty page, so the provider will not report the policy as absent.",
+				len(body.Data), body.TotalCount, id,
+			),
+		)
+		return nil, false, diags
+	}
 	if body := res.ListAccountGuardrailPoliciesResponse; int64(len(body.Data)) < body.TotalCount {
 		diags.AddError(
 			"the account policy list was truncated",

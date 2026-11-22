@@ -571,7 +571,8 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Delete(ctx context.Context, req re
 		return
 	}
 
-	// The destroy of the account default is refused, not sent and not silently skipped.
+	// The destroy of the account default is refused in both places it can be seen: here, from
+	// state, before any request is made, and again below from the server's own row.
 	// Measured 2026-11-18: DELETE answers 200 for a policy that holds the default flag, with
 	// no refusal, and there is no undelete, so sending it would release the baseline for every
 	// workspace that resolves to the policy with no way back. Skipping it is the other
@@ -586,6 +587,27 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Delete(ctx context.Context, req re
 			"This policy is the account default for its type. The API deletes it with no complaint and cannot restore it, and every workspace that resolves to it would lose this policy, so the provider refuses. To remove it: set `is_default = false`, apply, then destroy. To leave it enforcing and stop managing it here: `terraform state rm` on this resource address.",
 		)
 		return
+	}
+
+	// State is the weaker of the two sources here. A policy promoted to the default outside
+	// Terraform leaves is_default = false in state, and a destroy running with refresh
+	// disabled never reads the row, so the flag that protects an unrecoverable baseline would
+	// be the stale one. The list is read before the DELETE and the remote flag is the one
+	// that decides. Measured 2026-11-18: the route deletes a default with no complaint.
+	remote, found, lookupDiags := guardrailPolicyAccountLookup(ctx, b.client, b.ops.policyType, data.ID.ValueString())
+	resp.Diagnostics.Append(lookupDiags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	if found {
+		if row := b.ops.variant(*remote); row != nil && b.ops.fields(row).IsDefault {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("is_default"),
+				"refusing to destroy the account default",
+				"The account's current default for this type is this policy. The API deletes it with no complaint and cannot restore it, and every workspace that resolves to it would lose this policy, so the provider refuses. Refresh and apply with `is_default = false` first, or remove the resource from state with `terraform state rm` to stop managing it while it keeps enforcing.",
+			)
+			return
+		}
 	}
 
 	res, err := b.client.GuardrailPolicies.DeleteAccountPolicy(ctx, operations.DeleteAccountPolicyRequest{
