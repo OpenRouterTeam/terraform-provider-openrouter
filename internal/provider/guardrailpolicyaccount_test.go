@@ -129,6 +129,11 @@ func TestGuardrailPolicyAccountLookupReportsAnAbsentIDAsNotFound(t *testing.T) {
 // which is unavailable (the route answers 404 for an organization without the guardrails
 // backend) from reading as a deleted policy: a read that treated it as absence would drop
 // the resource from state and plan a recreate against a policy that still exists.
+//
+// The summary is asserted as well as the error, because the branch below it also reports an
+// error when the route answers without a parseable body: a check for an error alone passes
+// with the non-200 branch deleted, which is how this case could have gone on looking like
+// coverage of the status rule while covering only the nil-body one.
 func TestGuardrailPolicyAccountLookupTreatsANon200AsAnError(t *testing.T) {
 	srv := accountPolicyListServer(t, nil, http.StatusNotFound)
 	client := accountPolicyTestClient(t, srv.URL)
@@ -139,6 +144,12 @@ func TestGuardrailPolicyAccountLookupTreatsANon200AsAnError(t *testing.T) {
 	}
 	if found {
 		t.Error("a failed read was reported as found")
+	}
+	if got := diags[0].Summary(); !strings.Contains(got, "404") {
+		t.Errorf("diagnostic summary is %q, want it to name the status the route answered", got)
+	}
+	if got := diags[0].Detail(); got == "" {
+		t.Error("the diagnostic carried no detail; an operator who sees a status alone cannot tell what the route did")
 	}
 }
 
@@ -165,30 +176,53 @@ func TestGuardrailPolicyAccountLookupRefusesATruncatedList(t *testing.T) {
 	}
 }
 
-// TestGuardrailPolicyAccountLookupRefusesAContradictoryTotal covers the other uninterpretable
-// page: rows at the top level reported alongside `total_count: 0`. A total of zero cannot be
-// reconciled with a non-empty page, so completeness cannot be inferred from it and absence
-// must not be declared, which is the recreate-against-a-live-policy failure the truncation
-// guard covers from the other direction.
+// TestGuardrailPolicyAccountLookupRefusesAContradictoryTotal covers the pages that report a
+// total smaller than themselves, which cannot be reconciled with their own contents, so
+// completeness cannot be inferred from them and absence must not be declared. That is the
+// recreate-against-a-live-policy failure the truncation guard covers from the other direction.
 //
 // The id under lookup is the one the page carries on purpose. That is the case the guard has
-// to catch and the loop cannot: the guard reads the whole page before any row is matched, so
-// a response that happens to contain the policy is refused rather than hydrated. Placed after
-// the loop, the same page would resolve and this test would fail.
+// to catch and the loop cannot: the guard reads the whole page before any row is matched, so a
+// contradictory response that happens to contain the policy is refused rather than hydrated.
+// Placed after the loop, the same page would resolve and every case here would fail.
+//
+// The two shapes are here because only one of them is a special case: a total of zero beside a
+// non-empty page is the obvious contradiction, and two rows beside a total of one is the same
+// defect one step less obvious, which a check for zero alone would pass silently.
 func TestGuardrailPolicyAccountLookupRefusesAContradictoryTotal(t *testing.T) {
-	srv := accountPolicyListServerWithTotal(t, []map[string]any{
-		accountPolicyRow("stub-a", "budget", "a budget policy"),
-	}, 0, http.StatusOK)
-	client := accountPolicyTestClient(t, srv.URL)
+	for _, tc := range []struct {
+		name  string
+		rows  []map[string]any
+		total int
+	}{
+		{
+			name:  "rows reported beside a total of zero",
+			rows:  []map[string]any{accountPolicyRow("stub-a", "budget", "a budget policy")},
+			total: 0,
+		},
+		{
+			name: "a page longer than its own total",
+			rows: []map[string]any{
+				accountPolicyRow("stub-a", "budget", "a budget policy"),
+				accountPolicyRow("stub-b", "budget", "another budget policy"),
+			},
+			total: 1,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			srv := accountPolicyListServerWithTotal(t, tc.rows, tc.total, http.StatusOK)
+			client := accountPolicyTestClient(t, srv.URL)
 
-	_, found, diags := guardrailPolicyAccountLookup(context.Background(), client, "budget", "stub-a")
-	if !diags.HasError() {
-		t.Fatal("a page carrying rows and reporting a total of zero resolved without an error; neither completeness nor absence can be read from it")
-	}
-	if found {
-		t.Error("a contradictory page was reported as found")
-	}
-	if got := diags[0].Summary(); !strings.Contains(got, "could not be interpreted") {
-		t.Errorf("diagnostic summary is %q, want it to name the uninterpretable page", got)
+			_, found, diags := guardrailPolicyAccountLookup(context.Background(), client, "budget", "stub-a")
+			if !diags.HasError() {
+				t.Fatal("a page that outnumbers its own total resolved without an error; neither completeness nor absence can be read from it")
+			}
+			if found {
+				t.Error("a contradictory page was reported as found")
+			}
+			if got := diags[0].Summary(); !strings.Contains(got, "could not be interpreted") {
+				t.Errorf("diagnostic summary is %q, want it to name the uninterpretable page", got)
+			}
+		})
 	}
 }

@@ -78,16 +78,17 @@ func guardrailPolicyAccountLookup(ctx context.Context, client *sdk.OpenRouter, p
 		return nil, false, diags
 	}
 
-	// A reported total of zero alongside a non-empty page is a response that cannot be
-	// interpreted: the account either has policies or it does not, so completeness cannot be
-	// inferred from it and absence must not be declared. This is the one shape of the clamped
-	// page that is detectable from here; a route that clamps while reporting an honest-looking
-	// total is indistinguishable, which is why the read asks for the whole list instead.
-	if body := res.ListAccountGuardrailPoliciesResponse; len(body.Data) > 0 && body.TotalCount == 0 {
+	// A page that outnumbers its own total is a response that cannot be interpreted: the
+	// account either has these policies or it does not, so completeness cannot be inferred
+	// from it and absence must not be declared. This covers a total of zero beside a
+	// non-empty page and the wider contradiction of any total smaller than the page; only
+	// one of the two directions is visible to the shorter-page check below, which runs after
+	// the loop because a page that still contains the policy returns before it.
+	if body := res.ListAccountGuardrailPoliciesResponse; len(body.Data) > 0 && int64(len(body.Data)) > body.TotalCount {
 		diags.AddError(
 			"the account policy list could not be interpreted",
 			fmt.Sprintf(
-				"The list returned %d account policies and reported a total of %d, so policy %s could not be looked up. A total of zero cannot be reconciled with a non-empty page, so the provider will not report the policy as absent.",
+				"The list returned %d account policies and reported a total of %d, so policy %s could not be looked up. A page larger than its own total cannot be reconciled with it, so the provider will not report the policy as absent.",
 				len(body.Data), body.TotalCount, id,
 			),
 		)

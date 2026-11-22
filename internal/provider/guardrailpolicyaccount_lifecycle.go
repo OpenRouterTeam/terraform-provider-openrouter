@@ -596,14 +596,15 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Delete(ctx context.Context, req re
 	// that decides. Measured 2026-11-18: the route deletes a default with no complaint.
 	remote, found, lookupDiags := guardrailPolicyAccountLookup(ctx, b.client, b.ops.policyType, data.ID.ValueString())
 	if lookupDiags.HasError() {
-		// A read this path cannot make must not block the destroy. The list route answers 404
-		// for an organization whose guardrails backend was withdrawn, and a clamped page can
-		// show neither that the policy is the default nor that it is safe to remove, so an
-		// unreadable list warns and the DELETE goes: the state check above is the primary
-		// protection, and the DELETE below already treats a 404 as success.
+		// A read this path cannot use must not block the destroy. The list route answers 404
+		// for an organization whose guardrails backend was withdrawn, a clamped or contradicted
+		// page cannot show whether the policy is the default, and the id in state can resolve to
+		// a row of another family, which the read refuses by type. In every one of those the
+		// state check above is the primary protection and the DELETE below already treats a 404
+		// as success, so the destroy warns with the reason the check did not complete and goes.
 		resp.Diagnostics.AddWarning(
 			"could not verify the account default before the destroy",
-			fmt.Sprintf("Policy %s is being destroyed without checking whether it is currently its type's default, because the account policy list could not be read: %s", data.ID.ValueString(), lookupDiags[0].Summary()),
+			fmt.Sprintf("Policy %s is being destroyed without confirming whether it is currently its type's default, because the check did not complete: %s", data.ID.ValueString(), lookupDiags[0].Summary()),
 		)
 	} else if found {
 		if row := b.ops.variant(*remote); row != nil && b.ops.fields(row).IsDefault {

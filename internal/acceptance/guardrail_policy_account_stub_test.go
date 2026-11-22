@@ -50,6 +50,18 @@ type guardrailPolicyAccountStub struct {
 	truncateList bool
 	// notFoundOnDelete makes DELETE answer 404, which the resource has to read as already gone.
 	notFoundOnDelete bool
+	// deleteIDs records the id of every DELETE in order. A count alone cannot tell a destroy of
+	// the policy the resource manages from one aimed at another, and the id a destroy deletes
+	// comes from state, so the target is what an assertion has to name.
+	deleteIDs []string
+	// The three write-response overrides change only what a write answers with, leaving the
+	// stored row as the request wrote it. They exist because the provider checks what a write
+	// answers for before it takes an id from it, and a stub that always answers with the row it
+	// was sent cannot exercise those checks: the guards could be deleted with every test in
+	// this file still green.
+	createResponsePolicyType string
+	createResponseBlankID    bool
+	updateResponseID         string
 }
 
 func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPolicyAccountStub) {
@@ -86,6 +98,13 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 		if v, ok := p["updated_at"]; ok {
 			updatedAt = v
 		}
+		// is_synced is read from the row rather than pinned to false so a PUT can change it:
+		// an assertion that a computed field was refreshed is satisfied by step one's value
+		// unless the value itself moves.
+		isSynced := any(false)
+		if v, ok := p["is_synced"]; ok {
+			isSynced = v
+		}
 		out := map[string]any{
 			"id":                          p["id"],
 			"name":                        p["name"],
@@ -94,7 +113,7 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			"created_at":                  "2026-11-18T00:00:00Z",
 			"updated_at":                  updatedAt,
 			"is_default":                  p["is_default"],
-			"is_synced":                   false,
+			"is_synced":                   isSynced,
 			"is_workspace_default_synced": false,
 			"workspace_ids":               list("workspace_ids"),
 			"opted_out_workspace_ids":     list("opted_out_workspace_ids"),
@@ -183,7 +202,20 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			body["is_default"] = false
 		}
 		s.policies[body["id"].(string)] = body
-		writeJSON(w, http.StatusCreated, map[string]any{"data": full(body)})
+		out := full(body)
+		// The response overrides, applied after the row is stored so the write itself is
+		// unaffected: the guard under test is about what a response may claim.
+		if s.createResponsePolicyType != "" {
+			out["policy_type"] = s.createResponsePolicyType
+			// Blanked because the row now claims another family: the union only has to be
+			// readable for the provider's check, and a config of one family's shape under
+			// another family's discriminator is not a body the route could send.
+			out["config"] = map[string]any{}
+		}
+		if s.createResponseBlankID {
+			out["id"] = ""
+		}
+		writeJSON(w, http.StatusCreated, map[string]any{"data": out})
 	})
 	mux.HandleFunc("PUT /guardrails/policies/account/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
@@ -215,6 +247,7 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			"policy_type":             existing["policy_type"],
 			"config":                  body["config"],
 			"is_default":              isDefault,
+			"is_synced":               true,
 			"workspace_ids":           asList(body["workspace_ids"]),
 			"opted_out_workspace_ids": asList(body["opted_out_workspace_ids"]),
 			"updated_at":              "2026-11-18T00:05:00Z",
@@ -224,12 +257,17 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 			s.hideOnce[id] = true
 		}
 		s.updates = append(s.updates, body)
-		writeJSON(w, http.StatusOK, map[string]any{"data": full(store)})
+		out := full(store)
+		if s.updateResponseID != "" {
+			out["id"] = s.updateResponseID
+		}
+		writeJSON(w, http.StatusOK, map[string]any{"data": out})
 	})
 	mux.HandleFunc("DELETE /guardrails/policies/account/{id}", func(w http.ResponseWriter, r *http.Request) {
 		s.mu.Lock()
 		defer s.mu.Unlock()
 		s.deleteCalls++
+		s.deleteIDs = append(s.deleteIDs, r.PathValue("id"))
 		if s.notFoundOnDelete {
 			writeJSON(w, http.StatusNotFound, map[string]any{"error": map[string]any{"code": 404, "message": "Account policy not found"}})
 			return
@@ -309,6 +347,19 @@ func (s *guardrailPolicyAccountStub) deleteCount(t *testing.T) int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.deleteCalls
+}
+
+// deleteTargets returns the ids the route was asked to delete, in order. A count alone cannot
+// tell a destroy of the policy the resource manages from one aimed at another: the id a
+// destroy deletes comes from state, so a state this stub never issued would look identical in
+// a count.
+func (s *guardrailPolicyAccountStub) deleteTargets(t *testing.T) []string {
+	t.Helper()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	out := make([]string, len(s.deleteIDs))
+	copy(out, s.deleteIDs)
+	return out
 }
 
 func (s *guardrailPolicyAccountStub) armHide(t *testing.T) {
@@ -391,6 +442,18 @@ func famConfig(srv string, fam accountPolicyFamily, tail string) string {
 	return accountStubConfig(srv, fam.resource, fam.config+tail)
 }
 
+// anotherFamily is a family other than the one under test, for the response overrides: the
+// provider has to refuse a write response naming another family, and the value only has to
+// differ from the resource's own to be that response.
+func anotherFamily(fam accountPolicyFamily) string {
+	for _, other := range accountPolicyFamilies {
+		if other.name != fam.name {
+			return other.name
+		}
+	}
+	return fam.name
+}
+
 // accountPolicyScenario is one behaviour every account policy family has to exhibit. The
 // runner takes the family rather than a prepared configuration, because what differs
 // between families is the mapping inside each resource file.
@@ -414,6 +477,9 @@ var accountPolicyScenarios = []accountPolicyScenario{
 	{"a list that omits the policy plans a recreate", runAccountPolicyMissingFromTheListPlansARecreate},
 	{"delete of an already-gone policy is not an error", runAccountPolicyDeleteAlreadyGone},
 	{"a truncated list is an error, never a miss", runAccountPolicyTruncatedListIsAnError},
+	{"create refuses a write response naming another family", runAccountPolicyCreateRefusesAResponseFromAnotherFamily},
+	{"create refuses a write response with no id", runAccountPolicyCreateRefusesAResponseWithNoID},
+	{"update refuses a write response for another policy", runAccountPolicyUpdateRefusesAResponseForAnotherPolicy},
 }
 
 // TestStubGuardrailPolicyAccountRules runs every account policy scenario against every
@@ -437,7 +503,7 @@ func TestStubGuardrailPolicyAccountRules(t *testing.T) {
 // this number deliberately. Before this sweep the two generated families had no stub
 // coverage of their own, which is the whole reason the sweep exists.
 func TestStubGuardrailPolicyAccountRuleCoverage(t *testing.T) {
-	if got, want := len(accountPolicyFamilies)*len(accountPolicyScenarios), 42; got != want {
+	if got, want := len(accountPolicyFamilies)*len(accountPolicyScenarios), 51; got != want {
 		t.Errorf("%d family/scenario pairs in the table, want %d", got, want)
 	}
 }
@@ -694,6 +760,9 @@ func runAccountPolicyRefusesToDestroyDefault(t *testing.T, fam accountPolicyFami
 	if n := stub.deleteCount(t); n != 1 {
 		t.Errorf("%d DELETE(s) reached the stub, want exactly the demoted policy's destroy", n)
 	}
+	if targets := stub.deleteTargets(t); len(targets) != 1 || targets[0] != "stub-account-1" {
+		t.Errorf("the DELETEs that reached the stub were %v, want only the demoted policy's own id", targets)
+	}
 }
 
 // runAccountPolicyRefusesOptOutsWithoutFlag covers the combination the route rejects but a
@@ -891,7 +960,10 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 					resource.TestCheckResourceAttr(fam.addr(), "updated_at", "2026-11-18T00:05:00Z"),
 					// The fields the update response carries that the plan cannot supply either.
 					resource.TestCheckResourceAttr(fam.addr(), "is_default", "false"),
-					resource.TestCheckResourceAttr(fam.addr(), "is_synced", "false"),
+					// is_synced is false after the create and true after the update, so this
+					// assertion cannot be satisfied by the value step one already stored: a
+					// stale field would keep the old one and fail here.
+					resource.TestCheckResourceAttr(fam.addr(), "is_synced", "true"),
 					resource.TestCheckResourceAttr(fam.addr(), "is_workspace_default_synced", "false"),
 					resource.TestCheckResourceAttr(fam.addr(), "opted_out_workspace_ids.#", "0"),
 				),
@@ -918,8 +990,8 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 // apply, so this proves the importer round-trips a policy rather than comparing the write model
 // with the read model. The slash-qualified refusal is asserted here; the empty-id refusal cannot
 // be, because this hook reads an empty ImportStateId as "not set" and falls back to the id in
-// state, so it never reaches the provider's check. That branch needs a direct call to ImportState
-// with an empty id, which is a unit test rather than a step.
+// state, so it never reaches the provider's check. That branch is covered by a direct call to
+// ImportState with an empty id, in `internal/acceptance/guardrail_policy_account_import_unit_test.go`.
 func runAccountPolicyImportByBareID(t *testing.T, fam accountPolicyFamily) {
 	srv, _ := newGuardrailPolicyAccountStub(t)
 
@@ -1000,8 +1072,9 @@ func runAccountPolicyMissingFromTheListPlansARecreate(t *testing.T, fam accountP
 // runAccountPolicyDeleteAlreadyGone covers the destroy of a policy the route no longer has.
 // There is no undelete and no get-by-id, so a 404 on DELETE is the only answer that can mean
 // "already gone": treating it as a failure would leave a resource pinned in state forever.
-// Only that branch is asserted here; that a non-404 failure is still an error is not tested,
-// and the negative case is the one thing this scenario could gain.
+// Only that branch is asserted here. That a non-404 failure is an error is asserted by a direct
+// test rather than a step, because the harness cannot separate the destroy's branches by their
+// messages: `internal/provider/guardrailpolicyaccount_destroy_test.go`.
 func runAccountPolicyDeleteAlreadyGone(t *testing.T, fam accountPolicyFamily) {
 	srv, stub := newGuardrailPolicyAccountStub(t)
 
@@ -1064,4 +1137,111 @@ func runAccountPolicyTruncatedListIsAnError(t *testing.T, fam accountPolicyFamil
 			},
 		},
 	})
+}
+
+// runAccountPolicyCreateRefusesAResponseFromAnotherFamily covers the create path's check on
+// what the write answers for. The id helper reads the id of whichever family the row carries,
+// so a response naming another family still yields a non-empty id: without the check the
+// resource adopts an id belonging to a policy it does not manage, hydrate then fails, and the
+// error tells the operator to import an id this resource refuses. The stub stores what the
+// request sent and answers with another family's type, and the write is asserted to have
+// reached the route, so what is refused is the response rather than the request.
+func runAccountPolicyCreateRefusesAResponseFromAnotherFamily(t *testing.T, fam accountPolicyFamily) {
+	srv, stub := newGuardrailPolicyAccountStub(t)
+	stub.mu.Lock()
+	stub.createResponsePolicyType = anotherFamily(fam)
+	stub.mu.Unlock()
+
+	cfg := famConfig(srv.URL, fam, `
+  name          = "engineering policy"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:      cfg,
+				ExpectError: regexp.MustCompile("the write answered with a"),
+			},
+		},
+	})
+
+	if n := stub.createdCount(t); n != 1 {
+		t.Errorf("%d create(s) reached the stub, want the one whose response was refused", n)
+	}
+}
+
+// runAccountPolicyCreateRefusesAResponseWithNoID covers the other half of the same check: a
+// response whose type is right and whose id cannot be read. The id is what state and every
+// later request are keyed by, so a create that stored an empty one would leave a resource no
+// read could resolve, and the failure has to happen here rather than at the next plan.
+func runAccountPolicyCreateRefusesAResponseWithNoID(t *testing.T, fam accountPolicyFamily) {
+	srv, stub := newGuardrailPolicyAccountStub(t)
+	stub.mu.Lock()
+	stub.createResponseBlankID = true
+	stub.mu.Unlock()
+
+	cfg := famConfig(srv.URL, fam, `
+  name          = "engineering policy"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				Config:      cfg,
+				ExpectError: regexp.MustCompile("the created policy carried no id"),
+			},
+		},
+	})
+
+	if n := stub.createdCount(t); n != 1 {
+		t.Errorf("%d create(s) reached the stub, want the one whose response was refused", n)
+	}
+}
+
+// runAccountPolicyUpdateRefusesAResponseForAnotherPolicy covers the update path's check. The
+// lookup this replaced selected its row by id, so it could not answer for a different policy;
+// a write response can, and without the check the resource would keep its own id while
+// carrying another policy's fields. The stub answers the PUT for a second id while storing the
+// first, so both halves are separable: the update reached the route, and what came back is
+// named as the reason it failed.
+func runAccountPolicyUpdateRefusesAResponseForAnotherPolicy(t *testing.T, fam accountPolicyFamily) {
+	srv, stub := newGuardrailPolicyAccountStub(t)
+
+	first := famConfig(srv.URL, fam, `
+  name          = "engineering policy"
+  workspace_ids = ["stub-workspace-a"]
+`)
+	second := famConfig(srv.URL, fam, `
+  name          = "renamed policy"
+  workspace_ids = ["stub-workspace-a"]
+`)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: first},
+			{
+				PreConfig: func() {
+					stub.mu.Lock()
+					defer stub.mu.Unlock()
+					stub.updateResponseID = "stub-account-2"
+				},
+				Config:      second,
+				ExpectError: regexp.MustCompile("the update answered for policy"),
+			},
+		},
+	})
+
+	if n := stub.createdCount(t); n != 1 {
+		t.Errorf("%d create(s) reached the stub, want only the one before the refused update", n)
+	}
+	// The teardown destroy still runs, and it has to have removed the policy the resource
+	// manages rather than the id the refused response named.
+	if targets := stub.deleteTargets(t); len(targets) != 1 || targets[0] != "stub-account-1" {
+		t.Errorf("the DELETEs that reached the route were %v, want only the destroy of the policy the resource manages", targets)
+	}
 }

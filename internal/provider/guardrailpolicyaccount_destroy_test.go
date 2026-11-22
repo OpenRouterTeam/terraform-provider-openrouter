@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -19,46 +20,88 @@ import (
 )
 
 // The destroy path is the one operation that cannot be driven through the Terraform-level
-// stub suite: it has three branches a step cannot distinguish (the remote row is the default,
-// the row cannot be read, the DELETE fails with a status other than 200 or 404) and one of
-// them ends in a warning, which the acceptance framework does not surface at all. These tests
-// call Delete directly with a client pointed at a stub, so each branch is asserted on the
-// diagnostics it produces and on the DELETEs that reached the route.
+// stub suite: it has four branches a step cannot distinguish (state says the policy is the
+// default, the remote row says so, the row cannot be read, and the DELETE answers a status
+// other than 200 or 404) and one of them ends in a warning, which the acceptance framework
+// does not surface. These tests call Delete directly with a client pointed at a stub, so each
+// branch is asserted on the diagnostics it produces and on the DELETEs that reached the route,
+// including which policy each DELETE named.
+
+// accountPolicyDestroyFamilies is every resource in the family. Delete's pre-read goes through
+// the family's own `variant` and `fields` functions, so a broken default-flag read on one
+// family passes a sweep of the others; a single-family sweep here would repeat the gap the
+// family-wide import sweep was added to close.
+var accountPolicyDestroyFamilies = []struct {
+	name string
+	make func() resource.Resource
+}{
+	{"budget", NewGuardrailPolicyAccountBudgetResource},
+	{"moderation", NewGuardrailPolicyAccountModerationResource},
+	{"model_availability", NewGuardrailPolicyAccountModelAvailabilityResource},
+}
 
 // accountPolicyDestroyStub serves the two routes a destroy uses: the list the guard reads
-// before the DELETE, and the DELETE itself. `rows` is what the list answers with,
-// `listStatus` is the status it answers with instead of 200, `deleteMessage` is the sentence a
-// failed DELETE carries as the route's own explanation, and `deletes` counts every DELETE that
-// reached the route, which is what separates a refused destroy from one that was sent.
+// before the DELETE, and the DELETE itself. `rows` is what the list answers with, `listStatus`
+// is the status it answers with instead of 200, `deleteMessage` is the sentence a failed
+// DELETE carries as the route's own explanation, and the counters record what reached the
+// route. Every field is read and written behind the mutex: the handlers run on the server's
+// goroutines and the assertions on the test's, which is the shape that reads clean in a single
+// run and fails under -race.
 type accountPolicyDestroyStub struct {
+	mu            sync.Mutex
 	rows          []map[string]any
 	listStatus    int
 	deleteStatus  int
 	deleteMessage string
-	deletes       int
+
+	listReads  int
+	deletedIDs []string
+}
+
+func (s *accountPolicyDestroyStub) listReadCount() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.listReads
+}
+
+func (s *accountPolicyDestroyStub) deleteTargets() []string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	out := make([]string, len(s.deletedIDs))
+	copy(out, s.deletedIDs)
+	return out
 }
 
 func newAccountPolicyDestroyServer(t *testing.T, stub *accountPolicyDestroyStub) *httptest.Server {
 	t.Helper()
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /guardrails/policies/account", func(w http.ResponseWriter, r *http.Request) {
+		stub.mu.Lock()
+		stub.listReads++
+		status, rows := stub.listStatus, stub.rows
+		stub.mu.Unlock()
+
 		w.Header().Set("Content-Type", "application/json")
-		if stub.listStatus != 0 && stub.listStatus != http.StatusOK {
-			w.WriteHeader(stub.listStatus)
+		if status != 0 && status != http.StatusOK {
+			w.WriteHeader(status)
 			_ = json.NewEncoder(w).Encode(map[string]any{
-				"error": map[string]any{"code": stub.listStatus, "message": "Not Found - Resource does not exist"},
+				"error": map[string]any{"code": status, "message": "Not Found - Resource does not exist"},
 			})
 			return
 		}
-		_ = json.NewEncoder(w).Encode(map[string]any{"data": stub.rows, "total_count": len(stub.rows)})
+		_ = json.NewEncoder(w).Encode(map[string]any{"data": rows, "total_count": len(rows)})
 	})
 	mux.HandleFunc("DELETE /guardrails/policies/account/{id}", func(w http.ResponseWriter, r *http.Request) {
-		stub.deletes++
+		stub.mu.Lock()
+		stub.deletedIDs = append(stub.deletedIDs, r.PathValue("id"))
+		status, message := stub.deleteStatus, stub.deleteMessage
+		stub.mu.Unlock()
+
 		w.Header().Set("Content-Type", "application/json")
-		if stub.deleteStatus != 0 && stub.deleteStatus != http.StatusOK {
-			w.WriteHeader(stub.deleteStatus)
+		if status != 0 && status != http.StatusOK {
+			w.WriteHeader(status)
 			_ = json.NewEncoder(w).Encode(map[string]any{
-				"error": map[string]any{"code": stub.deleteStatus, "message": stub.deleteMessage},
+				"error": map[string]any{"code": status, "message": message},
 			})
 			return
 		}
@@ -69,22 +112,22 @@ func newAccountPolicyDestroyServer(t *testing.T, stub *accountPolicyDestroyStub)
 	return srv
 }
 
-// accountPolicyDestroyRow is a budget row whose `is_default` the route reports. It is the same
-// shape the list returns, because that is what the guard reads.
-func accountPolicyDestroyRow(id string, isDefault bool) map[string]any {
-	row := accountPolicyRow(id, "budget", "a budget policy")
+// accountPolicyDestroyRow is a row of the family the resource manages, carrying the
+// `is_default` the route reports for it. It is the shape the list returns, because that is what
+// the guard reads.
+func accountPolicyDestroyRow(id, policyType string, isDefault bool) map[string]any {
+	row := accountPolicyRow(id, policyType, "an account policy")
 	row["is_default"] = isDefault
 	return row
 }
 
-// runAccountPolicyDestroy calls Delete on the budget resource with a state that says the
-// policy is not the default, which is the state a policy promoted outside Terraform leaves
-// behind. The resource is the budget member of the family; the destroy path is shared, so a
-// case here covers all three.
-func runAccountPolicyDestroy(t *testing.T, client *sdk.OpenRouter, id string) diag.Diagnostics {
+// runAccountPolicyDestroy calls Delete on the named family's resource with a state whose
+// `is_default` the caller sets. Passing false is the state a policy promoted outside Terraform
+// leaves behind; passing true is the state the provider's own first refusal reads.
+func runAccountPolicyDestroy(t *testing.T, fam func() resource.Resource, client *sdk.OpenRouter, id string, stateIsDefault bool) diag.Diagnostics {
 	t.Helper()
 	ctx := context.Background()
-	r := NewGuardrailPolicyAccountBudgetResource()
+	r := fam()
 
 	var configureResp resource.ConfigureResponse
 	r.(resource.ResourceWithConfigure).Configure(ctx, resource.ConfigureRequest{ProviderData: client}, &configureResp)
@@ -110,7 +153,7 @@ func runAccountPolicyDestroy(t *testing.T, client *sdk.OpenRouter, id string) di
 	if diags := state.SetAttribute(ctx, path.Root("id"), types.StringValue(id)); diags.HasError() {
 		t.Fatalf("setting the state id reported %v", diags)
 	}
-	if diags := state.SetAttribute(ctx, path.Root("is_default"), types.BoolValue(false)); diags.HasError() {
+	if diags := state.SetAttribute(ctx, path.Root("is_default"), types.BoolValue(stateIsDefault)); diags.HasError() {
 		t.Fatalf("setting the state flag reported %v", diags)
 	}
 
@@ -118,6 +161,23 @@ func runAccountPolicyDestroy(t *testing.T, client *sdk.OpenRouter, id string) di
 	resp.State = state
 	r.Delete(ctx, resource.DeleteRequest{State: state}, &resp)
 	return resp.Diagnostics
+}
+
+// requireDeletedOnly checks that the DELETEs that reached the route named exactly the policies
+// the caller expects. A count alone cannot tell a destroy of the managed policy from one aimed
+// at another: the id the provider deletes comes from state, so a state the stub never handed
+// out would look identical in a count.
+func requireDeletedOnly(t *testing.T, stub *accountPolicyDestroyStub, want ...string) {
+	t.Helper()
+	got := stub.deleteTargets()
+	if len(got) != len(want) {
+		t.Fatalf("%d DELETE(s) reached the route, want %d: %v", len(got), len(want), got)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("DELETE %d named %q, want %q", i+1, got[i], want[i])
+		}
+	}
 }
 
 // TestGuardrailPolicyAccountDestroyRefusesAPolicyTheServerCallsDefault is the guard the state
@@ -129,19 +189,56 @@ func runAccountPolicyDestroy(t *testing.T, client *sdk.OpenRouter, id string) di
 // 2026-11-18: that DELETE answers 200. This case asserts both halves: the refusal reaches the
 // operator, and no DELETE is sent.
 func TestGuardrailPolicyAccountDestroyRefusesAPolicyTheServerCallsDefault(t *testing.T) {
-	stub := &accountPolicyDestroyStub{rows: []map[string]any{accountPolicyDestroyRow("stub-account-1", true)}}
-	srv := newAccountPolicyDestroyServer(t, stub)
-	client := accountPolicyTestClient(t, srv.URL)
+	for _, fam := range accountPolicyDestroyFamilies {
+		t.Run(fam.name, func(t *testing.T) {
+			stub := &accountPolicyDestroyStub{
+				rows: []map[string]any{accountPolicyDestroyRow("stub-account-1", fam.name, true)},
+			}
+			srv := newAccountPolicyDestroyServer(t, stub)
+			client := accountPolicyTestClient(t, srv.URL)
 
-	diags := runAccountPolicyDestroy(t, client, "stub-account-1")
-	if !diags.HasError() {
-		t.Fatal("a destroy of a policy the server reports as the default resolved without an error; the DELETE releases the account baseline and cannot be undone")
+			diags := runAccountPolicyDestroy(t, fam.make, client, "stub-account-1", false)
+			if !diags.HasError() {
+				t.Fatal("a destroy of a policy the server reports as the default resolved without an error; the DELETE releases the account baseline and cannot be undone")
+			}
+			if got := diags[0].Summary(); !strings.Contains(got, "refusing to destroy the account default") {
+				t.Errorf("diagnostic summary is %q, want the destroy refusal", got)
+			}
+			requireDeletedOnly(t, stub)
+			if n := stub.listReadCount(); n != 1 {
+				t.Errorf("the list was read %d time(s), want the one the guard makes before the DELETE", n)
+			}
+		})
 	}
-	if got := diags[0].Summary(); !strings.Contains(got, "refusing to destroy the account default") {
-		t.Errorf("diagnostic summary is %q, want the destroy refusal", got)
-	}
-	if stub.deletes != 0 {
-		t.Errorf("%d DELETE(s) reached the route, want none: the refusal has to stand in front of the request", stub.deletes)
+}
+
+// TestGuardrailPolicyAccountDestroyRefusesAStateDefaultBeforeReadingTheList isolates the
+// state-side refusal from the server-side one. Both refusals carry the same message, and the
+// acceptance scenario for this path has state and server agreeing, so deleting the state check
+// would leave every other test green while a destroy with refresh disabled sent a DELETE for a
+// policy the state itself calls the default. The list here says the opposite, so the refusal
+// can only have come from state, and the read count proves it came before the read.
+func TestGuardrailPolicyAccountDestroyRefusesAStateDefaultBeforeReadingTheList(t *testing.T) {
+	for _, fam := range accountPolicyDestroyFamilies {
+		t.Run(fam.name, func(t *testing.T) {
+			stub := &accountPolicyDestroyStub{
+				rows: []map[string]any{accountPolicyDestroyRow("stub-account-1", fam.name, false)},
+			}
+			srv := newAccountPolicyDestroyServer(t, stub)
+			client := accountPolicyTestClient(t, srv.URL)
+
+			diags := runAccountPolicyDestroy(t, fam.make, client, "stub-account-1", true)
+			if !diags.HasError() {
+				t.Fatal("a destroy of a policy state calls the account default resolved without an error")
+			}
+			if got := diags[0].Summary(); !strings.Contains(got, "refusing to destroy the account default") {
+				t.Errorf("diagnostic summary is %q, want the destroy refusal", got)
+			}
+			if n := stub.listReadCount(); n != 0 {
+				t.Errorf("the list was read %d time(s); the state check is the primary protection and stands in front of the read", n)
+			}
+			requireDeletedOnly(t, stub)
+		})
 	}
 }
 
@@ -159,26 +256,28 @@ func TestGuardrailPolicyAccountDestroyRefusesAPolicyTheServerCallsDefault(t *tes
 // held three deletes and no error. The arm is reachable in production exactly where a documented
 // status is not retried, which is what this uses.
 func TestGuardrailPolicyAccountDestroyReportsAFailedDelete(t *testing.T) {
-	stub := &accountPolicyDestroyStub{
-		rows:          []map[string]any{accountPolicyDestroyRow("stub-account-1", false)},
-		deleteStatus:  http.StatusBadRequest,
-		deleteMessage: "the account policy could not be deleted",
-	}
-	srv := newAccountPolicyDestroyServer(t, stub)
-	client := accountPolicyTestClient(t, srv.URL)
+	for _, fam := range accountPolicyDestroyFamilies {
+		t.Run(fam.name, func(t *testing.T) {
+			stub := &accountPolicyDestroyStub{
+				rows:          []map[string]any{accountPolicyDestroyRow("stub-account-1", fam.name, false)},
+				deleteStatus:  http.StatusBadRequest,
+				deleteMessage: "the account policy could not be deleted",
+			}
+			srv := newAccountPolicyDestroyServer(t, stub)
+			client := accountPolicyTestClient(t, srv.URL)
 
-	diags := runAccountPolicyDestroy(t, client, "stub-account-1")
-	if !diags.HasError() {
-		t.Fatal("a DELETE answered 400 and the destroy reported success; the policy is still enforced remotely")
-	}
-	if got := diags[0].Summary(); !strings.Contains(got, "unexpected response code 400") {
-		t.Errorf("diagnostic summary is %q, want it to name the status the route answered", got)
-	}
-	if got := diags[0].Detail(); !strings.Contains(got, stub.deleteMessage) {
-		t.Errorf("diagnostic detail is %q, want the route's own sentence: an operator who sees only a status code cannot tell what the route refused", got)
-	}
-	if stub.deletes != 1 {
-		t.Errorf("%d DELETE(s) reached the route, want exactly the one the path sends", stub.deletes)
+			diags := runAccountPolicyDestroy(t, fam.make, client, "stub-account-1", false)
+			if !diags.HasError() {
+				t.Fatal("a DELETE answered 400 and the destroy reported success; the policy is still enforced remotely")
+			}
+			if got := diags[0].Summary(); !strings.Contains(got, "unexpected response code 400") {
+				t.Errorf("diagnostic summary is %q, want it to name the status the route answered", got)
+			}
+			if got := diags[0].Detail(); !strings.Contains(got, stub.deleteMessage) {
+				t.Errorf("diagnostic detail is %q, want the route's own sentence: an operator who sees only a status code cannot tell what the route refused", got)
+			}
+			requireDeletedOnly(t, stub, "stub-account-1")
+		})
 	}
 }
 
@@ -189,29 +288,31 @@ func TestGuardrailPolicyAccountDestroyReportsAFailedDelete(t *testing.T) {
 // check is the primary protection and a 404 from the DELETE itself is already success. The
 // warning is the assertion, and it is the reason these cases call Delete rather than run a
 // Terraform step, because a step does not fail on a warning and the framework offers no check
-// for one.
+// for one. `rows` is deliberately unset: the failing status returns before any is served.
 func TestGuardrailPolicyAccountDestroyWarnsWhenTheListCannotBeRead(t *testing.T) {
-	stub := &accountPolicyDestroyStub{
-		rows:       []map[string]any{accountPolicyDestroyRow("stub-account-1", false)},
-		listStatus: http.StatusNotFound,
-	}
-	srv := newAccountPolicyDestroyServer(t, stub)
-	client := accountPolicyTestClient(t, srv.URL)
+	for _, fam := range accountPolicyDestroyFamilies {
+		t.Run(fam.name, func(t *testing.T) {
+			stub := &accountPolicyDestroyStub{listStatus: http.StatusNotFound}
+			srv := newAccountPolicyDestroyServer(t, stub)
+			client := accountPolicyTestClient(t, srv.URL)
 
-	diags := runAccountPolicyDestroy(t, client, "stub-account-1")
-	if diags.HasError() {
-		t.Fatalf("an unreadable list blocked the destroy: %v. The check it guards is a second opinion, and the destroy has to proceed on state", diags)
-	}
-	if len(diags) != 1 {
-		t.Fatalf("the destroy reported %d diagnostic(s), want the one warning: %v", len(diags), diags)
-	}
-	if diags[0].Severity() != diag.SeverityWarning {
-		t.Errorf("the destroy reported %v, want a warning: a list this path cannot read must not fail a destroy", diags[0])
-	}
-	if got := diags[0].Summary(); !strings.Contains(got, "could not verify the account default") {
-		t.Errorf("diagnostic summary is %q, want it to name what could not be checked", got)
-	}
-	if stub.deletes != 1 {
-		t.Errorf("%d DELETE(s) reached the route, want exactly the one the path sends", stub.deletes)
+			diags := runAccountPolicyDestroy(t, fam.make, client, "stub-account-1", false)
+			if diags.HasError() {
+				t.Fatalf("an unreadable list blocked the destroy: %v. The check it guards is a second opinion, and the destroy has to proceed on state", diags)
+			}
+			if len(diags) != 1 {
+				t.Fatalf("the destroy reported %d diagnostic(s), want the one warning: %v", len(diags), diags)
+			}
+			if diags[0].Severity() != diag.SeverityWarning {
+				t.Errorf("the destroy reported %v, want a warning: a list this path cannot read must not fail a destroy", diags[0])
+			}
+			if got := diags[0].Summary(); !strings.Contains(got, "could not verify the account default") {
+				t.Errorf("diagnostic summary is %q, want it to name what could not be checked", got)
+			}
+			if got := diags[0].Detail(); !strings.Contains(got, "404") {
+				t.Errorf("diagnostic detail is %q, want it to carry the reason the check could not be made", got)
+			}
+			requireDeletedOnly(t, stub, "stub-account-1")
+		})
 	}
 }
