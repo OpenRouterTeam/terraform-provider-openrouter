@@ -276,10 +276,14 @@ func TestGuardrailPolicyAccountDestroyRefusesAStateDefaultBeforeReadingTheList(t
 func TestGuardrailPolicyAccountDestroyReportsAFailedDelete(t *testing.T) {
 	for _, fam := range accountPolicyDestroyFamilies {
 		t.Run(fam.name, func(t *testing.T) {
+			// The sentence is held here rather than read back off the stub: the stub's fields
+			// are behind its mutex and this assertion runs on the test's goroutine, so reading
+			// one directly is the unsynchronized access the mutex exists to prevent.
+			const wantMessage = "the account policy could not be deleted"
 			stub := &accountPolicyDestroyStub{
 				rows:          []map[string]any{accountPolicyDestroyRow("stub-account-1", fam.name, false)},
 				deleteStatus:  http.StatusBadRequest,
-				deleteMessage: "the account policy could not be deleted",
+				deleteMessage: wantMessage,
 			}
 			srv := newAccountPolicyDestroyServer(t, stub)
 			client := accountPolicyTestClient(t, srv.URL)
@@ -291,7 +295,7 @@ func TestGuardrailPolicyAccountDestroyReportsAFailedDelete(t *testing.T) {
 			if got := diags[0].Summary(); !strings.Contains(got, "unexpected response code 400") {
 				t.Errorf("diagnostic summary is %q, want it to name the status the route answered", got)
 			}
-			if got := diags[0].Detail(); !strings.Contains(got, stub.deleteMessage) {
+			if got := diags[0].Detail(); !strings.Contains(got, wantMessage) {
 				t.Errorf("diagnostic detail is %q, want the route's own sentence: an operator who sees only a status code cannot tell what the route refused", got)
 			}
 			requireDeletedOnly(t, stub, "stub-account-1")

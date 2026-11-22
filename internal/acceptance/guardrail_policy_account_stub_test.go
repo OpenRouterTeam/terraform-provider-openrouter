@@ -34,8 +34,7 @@ type guardrailPolicyAccountStub struct {
 	// nextID only ever rises. Deriving an id from the number of stored policies would reuse
 	// the id of a deleted one, so a write response naming the wrong policy could match a row
 	// that happens to carry the id the provider expects.
-	nextID      int
-	deleteCalls int
+	nextID int
 	// hideAfterNextWrite makes the next list read after a write leave that policy out, which
 	// is the shape of a write whose row has not reached the list yet. A test that sets it
 	// proves a write path takes its state from the write response rather than from a read:
@@ -266,7 +265,6 @@ func newGuardrailPolicyAccountStub(t *testing.T) (*httptest.Server, *guardrailPo
 	mux.HandleFunc("DELETE /guardrails/policies/account/{id}", func(w http.ResponseWriter, r *http.Request) {
 		s.mu.Lock()
 		defer s.mu.Unlock()
-		s.deleteCalls++
 		s.deleteIDs = append(s.deleteIDs, r.PathValue("id"))
 		if s.notFoundOnDelete {
 			writeJSON(w, http.StatusNotFound, map[string]any{"error": map[string]any{"code": 404, "message": "Account policy not found"}})
@@ -322,7 +320,7 @@ func (s *guardrailPolicyAccountStub) listWasUnpaginated(t *testing.T) {
 	}
 }
 
-// createdCount, firstCreate, deleteCount and armHide keep every stub read behind the same
+// createdCount, firstCreate and armHide keep every stub read behind the same
 // mutex the rest of these helpers use. resource.Test runs its steps synchronously, so the
 // unsynchronized reads this replaced were safe in practice and inconsistent under -race.
 func (s *guardrailPolicyAccountStub) createdCount(t *testing.T) int {
@@ -340,13 +338,6 @@ func (s *guardrailPolicyAccountStub) firstCreate(t *testing.T) map[string]any {
 		t.Fatal("no create reached the stub")
 	}
 	return s.createBodies[0]
-}
-
-func (s *guardrailPolicyAccountStub) deleteCount(t *testing.T) int {
-	t.Helper()
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	return s.deleteCalls
 }
 
 // deleteTargets returns the ids the route was asked to delete, in order. A count alone cannot
@@ -757,9 +748,9 @@ func runAccountPolicyRefusesToDestroyDefault(t *testing.T, fam accountPolicyFami
 		},
 	})
 
-	if n := stub.deleteCount(t); n != 1 {
-		t.Errorf("%d DELETE(s) reached the stub, want exactly the demoted policy's destroy", n)
-	}
+	// The target is asserted rather than a count: the ids a destroy sends come from state, so a
+	// count cannot tell the destroy of the policy this resource manages from one aimed at
+	// another, and the refused destroy in step two has to have sent nothing.
 	if targets := stub.deleteTargets(t); len(targets) != 1 || targets[0] != "stub-account-1" {
 		t.Errorf("the DELETEs that reached the stub were %v, want only the demoted policy's own id", targets)
 	}
@@ -958,7 +949,13 @@ func runAccountPolicyUpdateTakesStateFromWriteResponse(t *testing.T, fam account
 					resource.TestCheckResourceAttr(fam.addr(), "workspace_ids.#", "1"),
 					resource.TestCheckResourceAttr(fam.addr(), "workspace_ids.0", "stub-workspace-a"),
 					resource.TestCheckResourceAttr(fam.addr(), "updated_at", "2026-11-18T00:05:00Z"),
-					// The fields the update response carries that the plan cannot supply either.
+					// The fields the update response carries that the plan cannot supply
+					// either. updated_at and is_synced are the two whose values differ from
+					// what step one stored, so those assertions are what binds the update to
+					// the write response: an update that stopped hydrating them would keep the
+					// create's values and fail there. is_default and
+					// is_workspace_default_synced are carried unchanged by both responses and
+					// are asserted as such, not as evidence that the refresh ran.
 					resource.TestCheckResourceAttr(fam.addr(), "is_default", "false"),
 					// is_synced is false after the create and true after the update, so this
 					// assertion cannot be satisfied by the value step one already stored: a
@@ -1099,8 +1096,8 @@ func runAccountPolicyDeleteAlreadyGone(t *testing.T, fam accountPolicyFamily) {
 		},
 	})
 
-	if n := stub.deleteCount(t); n != 1 {
-		t.Errorf("%d DELETE(s) reached the stub, want exactly the one the destroy sends", n)
+	if targets := stub.deleteTargets(t); len(targets) != 1 || targets[0] != "stub-account-1" {
+		t.Errorf("the DELETEs that reached the stub were %v, want the destroy's own policy id: a count cannot tell a delete of another policy from this one", targets)
 	}
 }
 

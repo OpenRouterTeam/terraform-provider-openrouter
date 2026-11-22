@@ -105,10 +105,16 @@ func guardrailPolicyAccountLookup(ctx context.Context, client *sdk.OpenRouter, p
 	// it needs to refuse deleting the account default.
 	//
 	// A page larger than the total it reports is a response that cannot be interpreted at all
-	// (a total of zero beside a non-empty page is the same defect), and a page shorter than
-	// its total is a clamped one. Neither is proof that the policy is absent, and reporting
-	// absence would plan a recreate against a policy that still exists, so both are errors.
-	if body := res.ListAccountGuardrailPoliciesResponse; len(body.Data) > 0 && int64(len(body.Data)) > body.TotalCount {
+	// (a total of zero beside a non-empty page is the same defect, and so is a negative total
+	// beside an empty one), and a page shorter than its total is a clamped one. Neither is
+	// proof that the policy is absent, and reporting absence would plan a recreate against a
+	// policy that still exists, so both are errors.
+	//
+	// The comparison is unconditional: a `len(data) > 0 &&` clause in front of it is redundant
+	// for every total the route can honestly report, and it would skip both checks on an empty
+	// page reporting a negative total, which is a page whose completeness cannot be trusted
+	// either.
+	if body := res.ListAccountGuardrailPoliciesResponse; int64(len(body.Data)) > body.TotalCount {
 		diags.AddError(
 			"the account policy list could not be interpreted",
 			fmt.Sprintf(

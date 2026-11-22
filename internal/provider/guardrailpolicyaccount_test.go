@@ -148,8 +148,11 @@ func TestGuardrailPolicyAccountLookupTreatsANon200AsAnError(t *testing.T) {
 	if got := diags[0].Summary(); !strings.Contains(got, "404") {
 		t.Errorf("diagnostic summary is %q, want it to name the status the route answered", got)
 	}
-	if got := diags[0].Detail(); got == "" {
-		t.Error("the diagnostic carried no detail; an operator who sees a status alone cannot tell what the route did")
+	// The detail is asserted as the route's own sentence rather than for being non-empty: the
+	// fallback below the parsed message renders the whole exchange, which also contains that
+	// sentence, so a containment check would pass with the parsed message removed.
+	if got := diags[0].Detail(); got != "Not Found - Resource does not exist" {
+		t.Errorf("diagnostic detail is %q, want the route's own sentence: a status alone does not tell an operator what the route refused, and a dump of the exchange is not the route's explanation", got)
 	}
 }
 
@@ -186,9 +189,12 @@ func TestGuardrailPolicyAccountLookupRefusesATruncatedList(t *testing.T) {
 // above whatever its total claims, and
 // TestGuardrailPolicyAccountLookupUsesARowFromAContradictoryPage pins that half deliberately.
 //
-// The two shapes are here because only one of them is a special case: a total of zero beside a
-// non-empty page is the obvious contradiction, and two rows beside a total of one is the same
-// defect one step less obvious, which a check for zero alone would pass silently.
+// The shapes are here because only one of them is the obvious case: a total of zero beside a
+// non-empty page, with two rows beside a total of one being the same defect one step less
+// obvious, which a check for zero alone would pass silently. The third pins the comparison
+// itself: an empty page reporting a negative total is refused because the guard is
+// unconditional, where a `len(data) > 0` clause in front of it would skip both checks and
+// report the policy as gone.
 func TestGuardrailPolicyAccountLookupRefusesAContradictoryTotal(t *testing.T) {
 	for _, tc := range []struct {
 		name  string
@@ -207,6 +213,11 @@ func TestGuardrailPolicyAccountLookupRefusesAContradictoryTotal(t *testing.T) {
 				accountPolicyRow("stub-b", "budget", "another budget policy"),
 			},
 			total: 1,
+		},
+		{
+			name:  "an empty page reporting a negative total",
+			rows:  nil,
+			total: -1,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
