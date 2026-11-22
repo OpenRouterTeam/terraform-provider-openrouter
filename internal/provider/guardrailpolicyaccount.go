@@ -36,6 +36,25 @@ const (
 	guardrailPolicyAccountTypeModeration        = string(shared.AccountGuardrailPolicyTypeModeration)
 )
 
+// guardrailPolicyAccountTypeMismatch is the summary the lookup reports when the id it was given
+// resolves to a policy of another type. It is named because two callers branch on it and they do
+// not want the same thing from it: Read treats it as an error like any other failed read, while
+// Delete has to tell it apart from a read that could not be made at all. That difference is not
+// cosmetic, because a mismatch is the read saying the id belongs to a different policy, and the
+// delete would remove it: Delete refuses on this one rather than warning and proceeding.
+const guardrailPolicyAccountTypeMismatch = "policy type does not match this resource"
+
+// guardrailPolicyAccountTypeMismatchDiagnostic returns the mismatch diagnostic when a lookup
+// refused the type, so a caller does not have to assume which position it landed in.
+func guardrailPolicyAccountTypeMismatchDiagnostic(diags diag.Diagnostics) (diag.Diagnostic, bool) {
+	for _, d := range diags {
+		if d.Severity() == diag.SeverityError && d.Summary() == guardrailPolicyAccountTypeMismatch {
+			return d, true
+		}
+	}
+	return nil, false
+}
+
 // guardrailPolicyAccountLookup lists every account policy and returns the one whose id
 // matches, as the union row the list carries. It is the whole read path for this family.
 //
@@ -85,7 +104,7 @@ func guardrailPolicyAccountLookup(ctx context.Context, client *sdk.OpenRouter, p
 		}
 		if string(policy.Type) != policyType {
 			diags.AddError(
-				"policy type does not match this resource",
+				guardrailPolicyAccountTypeMismatch,
 				fmt.Sprintf(
 					"Policy %s is a %q policy, and this resource manages %q. Import it into the resource for its type.",
 					id, string(policy.Type), policyType,

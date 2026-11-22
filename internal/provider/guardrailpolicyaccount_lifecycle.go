@@ -595,18 +595,33 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Delete(ctx context.Context, req re
 	// be the stale one. The list is read before the DELETE and the remote flag is the one
 	// that decides. Measured 2026-11-18: the route deletes a default with no complaint.
 	remote, found, lookupDiags := guardrailPolicyAccountLookup(ctx, b.client, b.ops.policyType, data.ID.ValueString())
-	if lookupDiags.HasError() {
+	mismatch, refusedTheType := guardrailPolicyAccountTypeMismatchDiagnostic(lookupDiags)
+	switch {
+	case refusedTheType:
+		// This is not a read that could not be made: it answered, and the answer is that the id in
+		// state belongs to a policy of another type. Sending the delete would remove that policy,
+		// and if it is its own type's account default the API performs the delete with no
+		// complaint and cannot restore it, which is the same unrecoverable outcome the state
+		// check above exists to prevent. A mismatch is therefore the one lookup failure this path
+		// does not downgrade to a warning.
+		resp.Diagnostics.AddAttributeError(
+			path.Root("id"),
+			"refusing to destroy a policy of another type",
+			fmt.Sprintf("The id in state, %s, resolves to a policy this resource does not manage. %s Deleting it could remove another type's policy, including an account default, which the API deletes with no complaint and cannot restore, so the provider will not send it. To stop managing this resource without deleting anything: `terraform state rm` on this resource address. If the policy this resource should manage lives under another id, import it before destroying.", data.ID.ValueString(), mismatch.Detail()),
+		)
+		return
+	case lookupDiags.HasError():
 		// A read this path cannot use must not block the destroy. The list route answers 404
-		// for an organization whose guardrails backend was withdrawn, a clamped or contradicted
-		// page cannot show whether the policy is the default, and the id in state can resolve to
-		// a row of another family, which the read refuses by type. In every one of those the
-		// state check above is the primary protection and the DELETE below already treats a 404
-		// as success, so the destroy warns with the reason the check did not complete and goes.
+		// for an organization whose guardrails backend was withdrawn, and a clamped or
+		// contradicted page cannot show whether the policy is the default. In those the state
+		// check above is the primary protection and the DELETE below already treats a 404 as
+		// success, so the destroy warns with the reason the check did not complete and goes. A
+		// mismatch is not one of them and is handled above.
 		resp.Diagnostics.AddWarning(
 			"could not verify the account default before the destroy",
 			fmt.Sprintf("Policy %s is being destroyed without confirming whether it is currently its type's default, because the check did not complete: %s", data.ID.ValueString(), lookupDiags[0].Summary()),
 		)
-	} else if found {
+	case found:
 		if row := b.ops.variant(*remote); row != nil && b.ops.fields(row).IsDefault {
 			resp.Diagnostics.AddAttributeError(
 				path.Root("is_default"),

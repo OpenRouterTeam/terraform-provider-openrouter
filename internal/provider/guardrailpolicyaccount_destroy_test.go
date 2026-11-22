@@ -310,11 +310,12 @@ func TestGuardrailPolicyAccountDestroyReportsAFailedDelete(t *testing.T) {
 // it is why these cases call Delete rather than run a Terraform step: a step does not fail on a
 // warning and the framework offers no check for one.
 //
-// Three shapes reach that arm and they are not the same failure, which is what the assertion on
-// the reason is for: the route refusing the read, a page whose contents cannot be trusted at
-// all, and a page that answers for the id with a policy of another family. A message that named
-// only one of those causes would be wrong for the other two, so each case requires its own
-// reason to arrive.
+// Two shapes reach this arm and they are not the same failure, which is what the assertion on the
+// reason is for: the route refusing the read, and a page whose contents cannot be trusted at all.
+// A message that named only one of those causes would be wrong for the other, so each case
+// requires its own reason to arrive. A third shape used to be here, an id that resolves to another
+// family's policy, and it no longer warns: that read answered about a different policy, so the
+// destroy refuses on it, which TestGuardrailPolicyAccountDestroyRefusesAPolicyOfAnotherType covers.
 func TestGuardrailPolicyAccountDestroyWarnsAndProceedsWhenTheCheckCannotBeMade(t *testing.T) {
 	for _, fam := range accountPolicyDestroyFamilies {
 		for _, tc := range []struct {
@@ -337,13 +338,6 @@ func TestGuardrailPolicyAccountDestroyWarnsAndProceedsWhenTheCheckCannotBeMade(t
 					accountPolicyDestroyRow("stub-account-3", fam.name, false),
 				},
 				total: 1,
-			},
-			{
-				name:   "the id resolves to another family's policy",
-				reason: "policy type does not match",
-				rows: []map[string]any{
-					accountPolicyDestroyRow("stub-account-1", otherPolicyType(fam.name), false),
-				},
 			},
 		} {
 			t.Run(fam.name+"/"+tc.name, func(t *testing.T) {
@@ -370,6 +364,44 @@ func TestGuardrailPolicyAccountDestroyWarnsAndProceedsWhenTheCheckCannotBeMade(t
 				requireDeletedOnly(t, stub, "stub-account-1")
 			})
 		}
+	}
+}
+
+// TestGuardrailPolicyAccountDestroyRefusesAPolicyOfAnotherType is the one lookup failure this
+// path does not downgrade to a warning. The read answered, and its answer is that the id in state
+// belongs to a policy of another type, so the DELETE would be aimed at a policy this resource does
+// not manage: if that policy is its own type's account default, the API performs the delete with
+// no complaint and cannot restore it, which is exactly the outcome the check in front of it exists
+// to prevent. A read that could not be made leaves that question open, which is why that one warns;
+// this one closes it against the delete, which is why it refuses.
+func TestGuardrailPolicyAccountDestroyRefusesAPolicyOfAnotherType(t *testing.T) {
+	for _, fam := range accountPolicyDestroyFamilies {
+		t.Run(fam.name, func(t *testing.T) {
+			otherType := otherPolicyType(fam.name)
+			stub := &accountPolicyDestroyStub{
+				rows: []map[string]any{accountPolicyDestroyRow("stub-account-1", otherType, false)},
+			}
+			srv := newAccountPolicyDestroyServer(t, stub)
+			client := accountPolicyTestClient(t, srv.URL)
+
+			diags := runAccountPolicyDestroy(t, fam.make, client, "stub-account-1", false)
+			if !diags.HasError() {
+				t.Fatal("the id in state resolved to another type's policy and the destroy did not fail; the DELETE this path sends would remove a policy this resource does not manage")
+			}
+			if got := diags[0].Summary(); !strings.Contains(got, "refusing to destroy a policy of another type") {
+				t.Errorf("diagnostic summary is %q, want the refusal that names the mismatch", got)
+			}
+			// The reason is the lookup's own detail, so the operator can see which policy the id
+			// actually belongs to and what to do about it.
+			for _, want := range []string{otherType, fam.name} {
+				if got := diags[0].Detail(); !strings.Contains(got, want) {
+					t.Errorf("diagnostic detail is %q, want it to name %q; the operator has to be able to tell which policy the id belongs to", got, want)
+				}
+			}
+			// The refusal sits in front of the DELETE rather than beside it, so nothing reached
+			// the route: a warning here would have deleted that policy.
+			requireDeletedOnly(t, stub)
+		})
 	}
 }
 
