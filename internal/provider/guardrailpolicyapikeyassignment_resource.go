@@ -49,7 +49,7 @@ func (r *GuardrailPolicyAPIKeyAssignmentResource) Schema(ctx context.Context, re
 	identity := []planmodifier.String{stringplanmodifier.RequiresReplace()}
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Assigns one typed guardrail policy to one API key, and removes the assignment when the resource is destroyed.\n\n" +
-			"A policy that is not the workspace default does nothing until it is assigned. `openrouter_guardrail_policy_budget`, `openrouter_guardrail_policy_moderation` and `openrouter_guardrail_policy_model_availability` create the policies; this resource attaches one of them to a key. A key holds at most one policy of each type: the route sets the assignment for a policy type rather than adding to it, so assigning a second policy of the same type to the same key displaces the first. Different types are independent, so a key can hold one of each and that is one resource each; two resources of one type on one key would displace each other on every apply. A policy's own member_ids and api_key_hashes attributes name the same membership from the policy side, so declare one side or the other for a given subject and policy: two declarations of one assignment displace each other on alternate applies.\n\n" +
+			"A policy that is not the workspace default does nothing until it is assigned. `openrouter_guardrail_policy_budget`, `openrouter_guardrail_policy_moderation` and `openrouter_guardrail_policy_model_availability` create the policies; this resource attaches one of them to a key. A key holds at most one policy of each type: the route sets the assignment for a policy type rather than adding to it, so assigning a second policy of the same type to the same key displaces the first. Different types are independent, so a key can hold one of each and that is one resource each; two resources of one type on one key would displace each other on every apply. A policy's own member_ids and api_key_hashes attributes name the same membership from the policy side, so declare one side or the other for a given subject and policy: competing declarations of one membership overwrite each other on alternate applies.\n\n" +
 			"A policy a key inherits from the workspace default is not an assignment and is not managed here. The read returns the directly assigned policies and the inherited ones separately, and only the directly assigned list is compared, so a key that inherits a policy without holding it does not read as drift.\n\n" +
 			"The API changes assignments one policy at a time and requires the state the caller last read, answering 409 once that state has moved. The provider reads before every write and reads again after the first conflict, so an assignment attached or removed elsewhere between two applies is reconciled rather than fought over, and a second conflict in a row is reported with the API's own message instead of retried indefinitely. A destroy of an assignment that is already gone is a no-op rather than a failure. Creating a resource for an assignment that is already in place adopts it without writing, and destroying it removes the assignment whoever put it there, so an assignment is not owned by the configuration that declares it.\n\n" +
 			"Changing `key_hash`, `policy_id` or `policy_type` replaces the resource: the destroy removes the old assignment and the create makes the new one. A policy cannot be moved between workspaces; where state records a workspace_id, changing it plans a replacement instead, and removing `workspace_id` from configuration is refused at plan time because the read that follows needs that scope. `workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. It is a UUID in every case: the routes that take a scope validate the field as one, so a workspace slug is refused with 400 `Invalid guardrail policy request`, the same answer an omitted scope gets, rather than being looked up. This resource's own update path never reaches the API, because a change to the scope plans a replacement.\n\n" +
@@ -60,7 +60,7 @@ func (r *GuardrailPolicyAPIKeyAssignmentResource) Schema(ctx context.Context, re
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-				Description: "Import identifier of the assignment, `<key_hash>/<policy_type>/<policy_id>`.",
+				Description: "Import identifier of the assignment, `<key_hash>/<policy_type>/<policy_id>`. Importing under an organization management key needs the workspace prefix, which this stored identifier does not include.",
 			},
 			"key_hash": schema.StringAttribute{
 				Required:      true,
@@ -256,9 +256,9 @@ func guardrailPolicyAPIKeyAssignmentAPI(client *sdk.OpenRouter) guardrailPolicyA
 			if res.StatusCode != 200 || res.GuardrailPolicyAssignmentResponse == nil {
 				message := apiErrorMessage(res.RawResponse, res.BadRequestResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)
 				if res.ForbiddenResponse != nil && res.ForbiddenResponse.Error.Message != "" {
-					// A workspace-scoped key addressing another workspace is answered
-					// with 403 and a sentence naming that, which the raw exchange does
-					// not render as well as the route's own words.
+					// A key that cannot reach this workspace is answered with 403 and a
+					// sentence naming that, which the raw exchange does not render as
+					// well as the route's own words.
 					message = res.ForbiddenResponse.Error.Message
 				}
 				diags.AddError(
@@ -330,9 +330,9 @@ func guardrailPolicyAPIKeyAssignmentAPI(client *sdk.OpenRouter) guardrailPolicyA
 			if res.StatusCode != 200 || res.ChangeGuardrailPolicyAssignmentResponse == nil {
 				message := apiErrorMessage(res.RawResponse, res.BadRequestResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)
 				if res.ForbiddenResponse != nil && res.ForbiddenResponse.Error.Message != "" {
-					// A workspace-scoped key addressing another workspace is answered
-					// with 403 and a sentence naming that, which the raw exchange does
-					// not render as well as the route's own words.
+					// A key that cannot reach this workspace is answered with 403 and a
+					// sentence naming that, which the raw exchange does not render as
+					// well as the route's own words.
 					message = res.ForbiddenResponse.Error.Message
 				}
 				diags.AddError(
