@@ -64,15 +64,12 @@ Optional:
 
 - `armor` (Attributes) (see [below for nested schema](#nestedatt--config--armor))
 - `broadcast_model_armor_flagged_requests` (Boolean)
-- `content_filter_blocks_requests` (Boolean)
 - `content_filter_builtins` (Attributes List) (see [below for nested schema](#nestedatt--config--content_filter_builtins))
-- `content_filter_patterns` (List of String)
 - `content_filters` (Attributes List) (see [below for nested schema](#nestedatt--config--content_filters))
 - `enable_model_armor_injection_protection` (Boolean)
 - `lakera_injection_protection_mode` (String) must be one of ["block", "flag"]
 - `model_armor_injection_confidence_level` (String) must be one of ["low", "medium", "high"]
 - `model_armor_injection_protection_mode` (String) must be one of ["block", "flag"]
-- `pii_filters` (Attributes List) (see [below for nested schema](#nestedatt--config--pii_filters))
 - `platform_image_moderated_providers` (List of String)
 - `platform_moderated_providers` (List of String)
 
@@ -205,16 +202,6 @@ Optional:
 - `action` (String) Not Null; must be one of ["redact", "block", "flag"]
 - `label` (String)
 - `pattern` (String) Not Null
-
-
-<a id="nestedatt--config--pii_filters"></a>
-### Nested Schema for `config.pii_filters`
-
-Optional:
-
-- `action` (String) Not Null; must be one of ["redact", "block", "flag"]
-- `entity_type` (String) Not Null
-- `score_threshold` (Number)
 
 ## Import
 
