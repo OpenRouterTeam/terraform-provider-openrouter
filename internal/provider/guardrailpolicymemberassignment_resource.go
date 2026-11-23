@@ -49,10 +49,10 @@ func (r *GuardrailPolicyMemberAssignmentResource) Schema(ctx context.Context, re
 	identity := []planmodifier.String{stringplanmodifier.RequiresReplace()}
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Assigns one typed guardrail policy to one organization member, and removes the assignment when the resource is destroyed.\n\n" +
-			"A policy that is not the workspace default does nothing until it is assigned. `openrouter_guardrail_policy_budget`, `openrouter_guardrail_policy_moderation` and `openrouter_guardrail_policy_model_availability` create the policies; this resource attaches one of them to a member. A member holds at most one policy of each type: the route sets the assignment for a policy type rather than adding to it, so assigning a second policy of the same type to the same member displaces the first. Different types are independent, so a member can hold one of each and that is one resource each; two resources of one type on one member would displace each other on every apply. A policy's own member_ids and api_key_hashes attributes name the same membership from the policy side, so declare one side or the other for a given subject and policy: competing declarations of one membership overwrite each other on alternate applies.\n\n" +
+			"A policy that is not the workspace default does nothing until it is assigned. `openrouter_guardrail_policy_budget`, `openrouter_guardrail_policy_moderation` and `openrouter_guardrail_policy_model_availability` create the policies; this resource attaches one of them to a member. A member holds at most one policy of each type: the route sets the assignment for a policy type rather than adding to it, so assigning a second policy of the same type to the same member displaces the first. Different types are independent, so a member can hold one of each and that is one resource each; two resources of one type on one member would displace each other on every apply. A policy's own `member_ids` and `api_key_hashes` attributes name the same membership from the policy side, so declare one side or the other for a given subject and policy: competing declarations of one membership overwrite each other on alternate applies.\n\n" +
 			"A policy a member inherits from the workspace default is not an assignment and is not managed here. The read returns the directly assigned policies and the inherited ones separately, and only the directly assigned list is compared, so a member that inherits a policy without holding it does not read as drift.\n\n" +
 			"The API changes assignments one policy at a time and requires the state the caller last read, answering 409 once that state has moved. The provider reads before every write and reads again after the first conflict, so an assignment attached or removed elsewhere between two applies is reconciled rather than fought over, and a second conflict in a row is reported with the API's own message instead of retried indefinitely. A destroy of an assignment that is already gone is a no-op rather than a failure. Creating a resource for an assignment that is already in place adopts it without writing, and destroying it removes the assignment whoever put it there, so an assignment is not owned by the configuration that declares it.\n\n" +
-			"Changing `member_id`, `policy_id` or `policy_type` replaces the resource: the destroy removes the old assignment and the create makes the new one. A policy cannot be moved between workspaces; where state records a workspace_id, changing it plans a replacement instead, and removing `workspace_id` from configuration is refused at plan time because the read that follows needs that scope. `workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. It is a UUID in every case: the routes that take a scope validate the field as one, so a workspace slug is refused with 400 `Invalid guardrail policy request`, the same answer an omitted scope gets, rather than being looked up. This resource's own update path never reaches the API, because a change to the scope plans a replacement.\n\n" +
+			"Changing `member_id`, `policy_id` or `policy_type` replaces the resource: the destroy removes the old assignment and the create makes the new one. A policy cannot be moved between workspaces; where state records a `workspace_id`, changing it plans a replacement instead, and removing `workspace_id` from configuration is refused at plan time because the read that follows needs that scope. `workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. It is a UUID in every case: the routes that take a scope validate the field as one, so a workspace slug is refused with 400 `Invalid guardrail policy request`, the same answer an omitted scope gets, rather than being looked up. This resource's own update path never reaches the API, because a change to the scope plans a replacement.\n\n" +
 			"Import takes `<member_id>/<policy_type>/<policy_id>`, or `<workspace_id>/<member_id>/<policy_type>/<policy_id>` for an organization management key. The stored `id` is the bare form, so importing it under an organization management key means adding the workspace prefix; the API never returns the workspace, and a read that reaches the route without one is refused rather than scoped to a default.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -254,16 +254,9 @@ func guardrailPolicyMemberAssignmentAPI(client *sdk.OpenRouter) guardrailPolicyA
 				return guardrailPolicyAssignmentRead{NotFound: true}, diags
 			}
 			if res.StatusCode != 200 || res.GuardrailPolicyAssignmentResponse == nil {
-				message := apiErrorMessage(res.RawResponse, res.BadRequestResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)
-				if res.ForbiddenResponse != nil && res.ForbiddenResponse.Error.Message != "" {
-					// A key that cannot reach this workspace is answered with 403 and a
-					// sentence naming that, which the raw exchange does not render as
-					// well as the route's own words.
-					message = res.ForbiddenResponse.Error.Message
-				}
 				diags.AddError(
 					fmt.Sprintf("failed to read the %s assignment of member %q", a.PolicyType, a.SubjectID),
-					fmt.Sprintf("API returned status %d: %s", res.StatusCode, message),
+					fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessageWithForbidden(res.RawResponse, res.BadRequestResponse, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
 				)
 				return guardrailPolicyAssignmentRead{}, diags
 			}
@@ -328,16 +321,9 @@ func guardrailPolicyMemberAssignmentAPI(client *sdk.OpenRouter) guardrailPolicyA
 				}
 			}
 			if res.StatusCode != 200 || res.ChangeGuardrailPolicyAssignmentResponse == nil {
-				message := apiErrorMessage(res.RawResponse, res.BadRequestResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)
-				if res.ForbiddenResponse != nil && res.ForbiddenResponse.Error.Message != "" {
-					// A key that cannot reach this workspace is answered with 403 and a
-					// sentence naming that, which the raw exchange does not render as
-					// well as the route's own words.
-					message = res.ForbiddenResponse.Error.Message
-				}
 				diags.AddError(
 					fmt.Sprintf("failed to change the %s assignment of member %q", a.PolicyType, a.SubjectID),
-					fmt.Sprintf("API returned status %d: %s", res.StatusCode, message),
+					fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessageWithForbidden(res.RawResponse, res.BadRequestResponse, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
 				)
 				return false, "", diags
 			}

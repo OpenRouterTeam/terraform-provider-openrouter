@@ -23,8 +23,8 @@ locals {
   ])
 }
 
-# The assignment is what makes the policy apply to the member: a policy on its
-# own constrains nothing.
+# The assignment is what makes the policy apply to the member: a policy that is not the workspace default
+# constrains nothing on its own.
 resource "openrouter_guardrail_policy_member_assignment" "example" {
   member_id    = local.engineering_lead
   policy_id    = openrouter_guardrail_policy_budget.engineering.id

@@ -15,8 +15,8 @@ resource "openrouter_api_key" "ci" {
   workspace_id = openrouter_guardrail_policy_budget.engineering.workspace_id
 }
 
-# The assignment is what makes the policy apply to the key: a policy on its own
-# constrains nothing.
+# The assignment is what makes the policy apply to the key: a policy that is not the workspace default
+# constrains nothing on its own.
 resource "openrouter_guardrail_policy_api_key_assignment" "example" {
   key_hash     = openrouter_api_key.ci.hash
   policy_id    = openrouter_guardrail_policy_budget.engineering.id

@@ -138,7 +138,7 @@ func (r *WorkspaceMemberResource) Create(ctx context.Context, req resource.Creat
 	if res.StatusCode != 200 || res.BulkAddWorkspaceMembersResponse == nil {
 		resp.Diagnostics.AddError(
 			fmt.Sprintf("failed to add member %q to workspace %q", userID, workspaceID),
-			fmt.Sprintf("API returned status %d: %s", res.StatusCode, workspaceMemberAPIErrorMessage(res.RawResponse, res.BadRequestResponse, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
+			fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessageWithForbidden(res.RawResponse, res.BadRequestResponse, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
 		)
 		return
 	}
@@ -224,7 +224,7 @@ func (r *WorkspaceMemberResource) Delete(ctx context.Context, req resource.Delet
 	if res.StatusCode != 200 || res.BulkRemoveWorkspaceMembersResponse == nil {
 		resp.Diagnostics.AddError(
 			fmt.Sprintf("failed to remove member %q from workspace %q", userID, workspaceID),
-			fmt.Sprintf("API returned status %d: %s", res.StatusCode, workspaceMemberAPIErrorMessage(res.RawResponse, res.BadRequestResponse, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
+			fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessageWithForbidden(res.RawResponse, res.BadRequestResponse, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)),
 		)
 		return
 	}
@@ -301,7 +301,7 @@ func (r *WorkspaceMemberResource) findMember(ctx context.Context, workspaceID, u
 			return nil, diags
 		}
 		if res.StatusCode != 200 || res.ListWorkspaceMembersResponse == nil {
-			diags.AddError(fmt.Sprintf("failed to list members of workspace %q", workspaceID), fmt.Sprintf("API returned status %d: %s", res.StatusCode, workspaceMemberAPIErrorMessage(res.RawResponse, nil, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)))
+			diags.AddError(fmt.Sprintf("failed to list members of workspace %q", workspaceID), fmt.Sprintf("API returned status %d: %s", res.StatusCode, apiErrorMessageWithForbidden(res.RawResponse, nil, res.ForbiddenResponse, res.NotFoundResponse, res.UnauthorizedResponse, res.InternalServerResponse)))
 			return nil, diags
 		}
 
@@ -343,7 +343,7 @@ func parseWorkspaceMemberID(id string) (workspaceID, userID string, err error) {
 	return parts[0], parts[1], nil
 }
 
-func workspaceMemberAPIErrorMessage(raw *http.Response, badRequest *shared.BadRequestResponse, forbidden *shared.ForbiddenResponse, notFound *shared.NotFoundResponse, unauthorized *shared.UnauthorizedResponse, internalServer *shared.InternalServerResponse) string {
+func apiErrorMessageWithForbidden(raw *http.Response, badRequest *shared.BadRequestResponse, forbidden *shared.ForbiddenResponse, notFound *shared.NotFoundResponse, unauthorized *shared.UnauthorizedResponse, internalServer *shared.InternalServerResponse) string {
 	if forbidden != nil && forbidden.Error.Message != "" {
 		return forbidden.Error.Message
 	}

@@ -66,7 +66,7 @@ func (v StringGuardrailPolicyWorkspaceImmutablePlanModifier) PlanModifyString(ct
 		// resource that belongs to another workspace.
 		detail := "A guardrail policy stays in the workspace it was created in. The API answers an update that omits workspace_id by keeping the policy where it is, so removing the attribute would leave something else in charge of where the policy lives while Terraform recorded no workspace, and the read that follows needs that workspace as its scope. Keep the configured value, or declare a separate policy in the destination workspace and remove this one deliberately."
 		if v.assignment {
-			detail = "An assignment is addressed with a workspace scope, and no response carries that scope back, so state is the only place it is recorded: removing the attribute would leave the next read resolving the caller's default workspace, or none. Keep the configured value, or destroy this assignment and declare the one you mean."
+			detail = "An assignment is addressed with a workspace scope, and no response carries that scope back, so state is the only place it is recorded: removing the attribute would leave a later read resolving the scope from the credential instead of from the assignment. Keep the configured value, or destroy this assignment and declare the one you mean."
 		}
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
