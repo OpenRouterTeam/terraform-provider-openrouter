@@ -58,6 +58,9 @@ terraform:
     - resource: NewWorkspaceDefaultGuardrailResource
     - resource: NewWorkspaceMemberResource
     - resource: NewGuardrailKeyAssignmentResource
+    - resource: NewGuardrailPolicyAccountBudgetResource
+    - resource: NewGuardrailPolicyAccountModelAvailabilityResource
+    - resource: NewGuardrailPolicyAccountModerationResource
     - resource: NewGuardrailPolicyAPIKeyAssignmentResource
     - resource: NewGuardrailPolicyMemberAssignmentResource
   author: OpenRouterTeam
