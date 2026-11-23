@@ -21,5 +21,5 @@ resource "openrouter_workspace_default_guardrail" "production" {
   reset_interval        = "monthly"
   enforce_zdr_openai    = true
   enforce_zdr_anthropic = true
-  allowed_models        = ["openai/gpt-4o", "anthropic/claude-sonnet-4"]
+  allowed_models        = ["openai/gpt-4o", "anthropic/claude-sonnet-4.5"]
 }
