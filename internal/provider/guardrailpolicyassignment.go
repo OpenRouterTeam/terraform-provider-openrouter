@@ -156,7 +156,7 @@ func reconcileGuardrailPolicyAssignment(ctx context.Context, api guardrailPolicy
 			}
 			diags.AddError(
 				fmt.Sprintf("assignments changed while %s policy %q", assignmentVerb(want), a.PolicyID),
-				fmt.Sprintf("The API answered 409 for the state read immediately before the write, %d times, so this apply never observed a stable state to write against. The route also answers 409 for a removal that was never an assignment; the read in front of each write rules that case out for the state it observed, but a writer that removed the membership after that read produces the same status, so the API's message above is carried rather than interpreted. %s Re-run once whatever else is writing this assignment stops.", maxGuardrailPolicyAssignmentAttempts, detail),
+				fmt.Sprintf("The API answered 409 for the state read immediately before the write, %d times, so this apply never observed a stable state to write against. The route also answers 409 for a removal that was never an assignment; the read in front of each write rules that case out for the state it observed, but a writer that removed the membership after that read produces the same status, so the API's own words are reported alongside this one rather than interpreted. %s Re-run once whatever else is writing this assignment stops.", maxGuardrailPolicyAssignmentAttempts, detail),
 			)
 			return diags
 		}

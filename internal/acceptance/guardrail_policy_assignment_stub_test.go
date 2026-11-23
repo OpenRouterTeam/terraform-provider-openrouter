@@ -1073,3 +1073,90 @@ func TestStubGuardrailPolicyAssignmentRemovalWrite404IsNotCompletion(t *testing.
 		})
 	}
 }
+
+// A removal whose write answers 404 naming the policy as absent completes, which
+// is the branch the exact-body match exists for. The negative half of the same
+// guard, a 404 that does not name the policy, is covered by
+// RemovalWrite404IsNotCompletion, and the create path asserts the body through
+// PolicyNotInTheWorkspace.
+func TestStubGuardrailPolicyAssignmentRemovalWrite404PolicyAbsentCompletes(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	for _, kind := range assignmentSubjectKinds {
+		t.Run(kind.name, func(t *testing.T) {
+			srv, stub := newGuardrailPolicyAssignmentStub(t)
+			cfg := kind.config(srv.URL, fmt.Sprintf(kind.attrs, kind.subject, stubAssignmentPolicyID, stubWorkspaceID))
+
+			resource.Test(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{Config: cfg},
+					{
+						// Dropping the resource from the configuration destroys it,
+						// so the write answered here is the delete path's.
+						PreConfig: func() {
+							stub.rejectNextWriteWith(http.StatusNotFound, "Policy not found in this workspace")
+						},
+						Config: stubProviderBlock(srv.URL),
+					},
+				},
+			})
+
+			if _, removed := assignmentWrites(stub); len(removed) == 0 {
+				t.Error("want the completed removal attempt on the record")
+			}
+		})
+	}
+}
+
+// The subject can go away between the pre-read and the write. The removal the
+// pre-read confirmed is complete in that case, so the destroy must not fail; an
+// assign in the same window must still fail, because nothing was assigned.
+func TestStubGuardrailPolicyAssignmentSubjectGoneBetweenReadAndWrite(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	subjectGone := map[string]string{
+		"api key": "One or more API keys were not found",
+		"member":  "The policy assignment subject is unavailable in this workspace",
+	}
+
+	for _, kind := range assignmentSubjectKinds {
+		t.Run(kind.name+" removal completes", func(t *testing.T) {
+			srv, stub := newGuardrailPolicyAssignmentStub(t)
+			cfg := kind.config(srv.URL, fmt.Sprintf(kind.attrs, kind.subject, stubAssignmentPolicyID, stubWorkspaceID))
+
+			resource.Test(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{Config: cfg},
+					{
+						// The read before this write found the assignment, so the
+						// refusal here is the race rather than an absent subject.
+						PreConfig: func() {
+							stub.rejectNextWriteWith(http.StatusBadRequest, subjectGone[kind.name])
+						},
+						Config: stubProviderBlock(srv.URL),
+					},
+				},
+			})
+		})
+
+		t.Run(kind.name+" assign still fails", func(t *testing.T) {
+			srv, stub := newGuardrailPolicyAssignmentStub(t)
+			cfg := kind.config(srv.URL, fmt.Sprintf(kind.attrs, kind.subject, stubAssignmentPolicyID, stubWorkspaceID))
+
+			resource.Test(t, resource.TestCase{
+				ProtoV6ProviderFactories: protoV6ProviderFactories(),
+				Steps: []resource.TestStep{
+					{
+						PreConfig: func() {
+							stub.rejectNextWriteWith(http.StatusBadRequest, subjectGone[kind.name])
+						},
+						Config:      cfg,
+						ExpectError: regexp.MustCompile(`API returned status 400`),
+					},
+				},
+			})
+		})
+	}
+}

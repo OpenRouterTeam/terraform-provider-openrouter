@@ -12,10 +12,21 @@ resource "openrouter_guardrail_policy_budget" "engineering" {
 
 data "openrouter_organization_members" "all" {}
 
+locals {
+  # Name the member the assignment is for. The member list is not ordered, so an
+  # index would attach the policy to whoever happens to come first; matching the
+  # address and taking one result fails when the member is absent or the address
+  # matches more than one, rather than assigning the policy to the wrong person.
+  engineering_lead = one([
+    for member in data.openrouter_organization_members.all.data :
+    member.id if member.email == "lead@example.com"
+  ])
+}
+
 # The assignment is what makes the policy apply to the member: a policy on its
 # own constrains nothing.
 resource "openrouter_guardrail_policy_member_assignment" "example" {
-  member_id    = data.openrouter_organization_members.all.data[0].id
+  member_id    = local.engineering_lead
   policy_id    = openrouter_guardrail_policy_budget.engineering.id
   policy_type  = openrouter_guardrail_policy_budget.engineering.policy_type
   workspace_id = openrouter_guardrail_policy_budget.engineering.workspace_id
