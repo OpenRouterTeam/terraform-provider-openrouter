@@ -22,7 +22,7 @@ Import takes the bare policy id.
 resource "openrouter_guardrail_policy_account_model_availability" "my_account_baseline" {
   config = {
     allowed_models = [
-      "anthropic/claude-sonnet-4",
+      "anthropic/claude-sonnet-4.5",
       "openai/gpt-4o",
     ]
     enforce_zdr = true
