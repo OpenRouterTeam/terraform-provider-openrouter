@@ -6,6 +6,7 @@ description: |-
   An account (workspace-wide) moderation policy: the content-filtering surface the covered workspaces' traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists.
   A policy that is not the default covers exactly workspace_ids. The default covers every workspace except opted_out_workspace_ids, in which case workspace_ids must be left unset. Only one policy of a type can be the account default.
   Import takes the bare policy id.
+  The retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource either: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable.
 ---
 
 # openrouter_guardrail_policy_account_moderation (Resource)
@@ -15,6 +16,8 @@ An account (workspace-wide) moderation policy: the content-filtering surface the
 A policy that is not the default covers exactly `workspace_ids`. The default covers every workspace except `opted_out_workspace_ids`, in which case `workspace_ids` must be left unset. Only one policy of a type can be the account default.
 
 Import takes the bare policy id.
+
+The retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource either: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable.
 
 ## Example Usage
 
