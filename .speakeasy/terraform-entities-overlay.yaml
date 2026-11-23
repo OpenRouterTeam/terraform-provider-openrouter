@@ -151,7 +151,7 @@ actions:
   - target: $["components"]["schemas"]["CreateModerationGuardrailPolicyRequest"]
     update:
       x-speakeasy-entity: GuardrailPolicyModeration
-      x-speakeasy-entity-description: "A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation`, and is fixed for this resource: the corresponding resource manages another policy family.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
+      x-speakeasy-entity-description: "A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation`, and is fixed for this resource: the corresponding resource manages another policy family.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.\n\nThe retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable."
   - target: $["components"]["schemas"]["UpdateModerationGuardrailPolicyRequest"]
     update:
       x-speakeasy-entity: GuardrailPolicyModeration
@@ -173,6 +173,35 @@ actions:
   - target: $["paths"]["/guardrails/policies/moderation/{id}"]["delete"]
     update:
       x-speakeasy-entity-operation: GuardrailPolicyModeration#delete
+
+  # ---------------------------------------------------------------------------
+  # Retired moderation config fields, ignored for every entity that references
+  # GuardrailModerationPolicyConfig: the workspace moderation resource and its
+  # data source, and the account moderation resource, since all seven references
+  # are $refs to this one component.
+  #
+  # The route rejects all three on both write paths:
+  #   400 "content_filter_patterns, content_filter_blocks_requests and pii_filters
+  #   are legacy fields that inference does not enforce. Use content_filters or
+  #   content_filter_builtins instead."
+  # measured on the account route 2026-11-20 and on the workspace route 2026-11-23.
+  #
+  # The read still returns them for a policy created before the retirement, so a
+  # schema that keeps them writable fails on every apply that sets one and on every
+  # update of a policy that already holds them, because an update starts from state
+  # and sends every field the policy holds. Ignoring them takes the attributes out
+  # of the generated schema and out of the write body at once. content_filters and
+  # content_filter_builtins are the supported names.
+  # ---------------------------------------------------------------------------
+  - target: $["components"]["schemas"]["GuardrailModerationPolicyConfig"]["properties"]["content_filter_blocks_requests"]
+    update:
+      x-speakeasy-terraform-ignore: true
+  - target: $["components"]["schemas"]["GuardrailModerationPolicyConfig"]["properties"]["content_filter_patterns"]
+    update:
+      x-speakeasy-terraform-ignore: true
+  - target: $["components"]["schemas"]["GuardrailModerationPolicyConfig"]["properties"]["pii_filters"]
+    update:
+      x-speakeasy-terraform-ignore: true
 
   # ---------------------------------------------------------------------------
   # GuardrailPolicyModelAvailability
