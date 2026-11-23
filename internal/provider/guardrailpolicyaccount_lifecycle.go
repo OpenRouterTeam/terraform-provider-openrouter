@@ -607,7 +607,7 @@ func (b *guardrailPolicyAccountBase[C, A, R]) Delete(ctx context.Context, req re
 		resp.Diagnostics.AddAttributeError(
 			path.Root("id"),
 			"refusing to destroy a policy of another type",
-			fmt.Sprintf("The id in state, %s, resolves to a policy this resource does not manage. %s Deleting it could remove another type's policy, including an account default, which the API deletes with no complaint and cannot restore, so the provider will not send it. To stop managing this resource without deleting anything: `terraform state rm` on this resource address. If the policy this resource should manage lives under another id, import it before destroying.", data.ID.ValueString(), mismatch.Detail()),
+			fmt.Sprintf("The id in state, %s, resolves to a policy this resource does not manage. The lookup answered: %s Deleting that policy could remove another type's policy, including an account default, which the API deletes with no complaint and cannot restore, so the provider will not send the delete. To stop managing this resource without deleting anything, remove it from state with `terraform state rm` on this resource address.", data.ID.ValueString(), mismatch.Detail()),
 		)
 		return
 	case lookupDiags.HasError():

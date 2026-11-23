@@ -388,8 +388,22 @@ func TestGuardrailPolicyAccountDestroyRefusesAPolicyOfAnotherType(t *testing.T) 
 			if !diags.HasError() {
 				t.Fatal("the id in state resolved to another type's policy and the destroy did not fail; the DELETE this path sends would remove a policy this resource does not manage")
 			}
+			// One diagnostic, and it has to be the refusal: a second one emitted beside it would
+			// let the framework's own summary take diags[0] and the assertions below would pass
+			// against the wrong message.
+			if len(diags) != 1 {
+				t.Errorf("the refusal reported %d diagnostic(s), want exactly the one: %v", len(diags), diags)
+			}
 			if got := diags[0].Summary(); !strings.Contains(got, "refusing to destroy a policy of another type") {
 				t.Errorf("diagnostic summary is %q, want the refusal that names the mismatch", got)
+			}
+			// The refusal is attached to the id, not free-floating: the field that is wrong is the
+			// one an operator has to look at, and an attribute-less error would read as a general
+			// destroy failure.
+			if got, ok := diags[0].(diag.DiagnosticWithPath); !ok {
+				t.Errorf("the refusal is not attached to an attribute (%T), so it does not name the field that is wrong", diags[0])
+			} else if want := path.Root("id"); !got.Path().Equal(want) {
+				t.Errorf("the refusal is attached to %v, want %v", got.Path(), want)
 			}
 			// The reason is the lookup's own detail, so the operator can see which policy the id
 			// actually belongs to and what to do about it.
