@@ -70,13 +70,13 @@ func TestGuardrailPolicyWorkspaceImmutablePlanModifyString(t *testing.T) {
 	}{
 		"policy": {
 			modifier: GuardrailPolicyWorkspaceImmutable(),
-			wantDesc: "Replaces the policy when the workspace changes, and refuses a plan that removes the workspace.",
+			wantDesc: "Replaces the policy when the workspace changes or is added, and refuses a plan that removes the workspace.",
 			wantWord: "A guardrail policy stays in the workspace it was created in",
 			other:    "An assignment is addressed with a workspace scope",
 		},
 		"assignment": {
 			modifier: GuardrailPolicyAssignmentWorkspaceImmutable(),
-			wantDesc: "Replaces the assignment when the workspace changes, and refuses a plan that removes the workspace.",
+			wantDesc: "Replaces the assignment when the workspace changes or is added, and refuses a plan that removes the workspace.",
 			wantWord: "An assignment is addressed with a workspace scope",
 			other:    "A guardrail policy stays in the workspace it was created in",
 		},
@@ -89,15 +89,29 @@ func TestGuardrailPolicyWorkspaceImmutablePlanModifyString(t *testing.T) {
 			Path:       path.Root("workspace_id"),
 		}
 
-		// Creating and destroying have nothing stored to compare against.
-		for _, empty := range []planmodifier.StringRequest{
-			{Plan: req.Plan, StateValue: req.StateValue, PlanValue: req.PlanValue, Path: req.Path},
-			{State: req.State, StateValue: req.StateValue, PlanValue: req.PlanValue, Path: req.Path},
+		// Creating and destroying have nothing stored to compare against. A create
+		// carries a null state value and a resolved plan value; a destroy carries a
+		// stored value and no plan at all.
+		for caseName, empty := range map[string]planmodifier.StringRequest{
+			"create": {
+				State:      tfsdk.State{},
+				Plan:       tfsdk.Plan{Raw: raw("ws-b")},
+				StateValue: types.StringNull(),
+				PlanValue:  types.StringValue("ws-b"),
+				Path:       path.Root("workspace_id"),
+			},
+			"destroy": {
+				State:      tfsdk.State{Raw: raw("ws-a")},
+				Plan:       tfsdk.Plan{},
+				StateValue: types.StringValue("ws-a"),
+				PlanValue:  types.StringNull(),
+				Path:       path.Root("workspace_id"),
+			},
 		} {
 			var resp planmodifier.StringResponse
 			tc.modifier.PlanModifyString(context.Background(), empty, &resp)
 			if resp.Diagnostics.HasError() || resp.RequiresReplace {
-				t.Errorf("%s: a create or a destroy must pass through: errors=%v replace=%v", name, resp.Diagnostics.Errors(), resp.RequiresReplace)
+				t.Errorf("%s/%s: a create or a destroy must pass through: errors=%v replace=%v", name, caseName, resp.Diagnostics.Errors(), resp.RequiresReplace)
 			}
 		}
 

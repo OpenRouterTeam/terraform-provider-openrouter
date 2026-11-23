@@ -52,7 +52,7 @@ func (r *GuardrailPolicyAPIKeyAssignmentResource) Schema(ctx context.Context, re
 			"A policy that is not the workspace default does nothing until it is assigned. `openrouter_guardrail_policy_budget`, `openrouter_guardrail_policy_moderation` and `openrouter_guardrail_policy_model_availability` create the policies; this resource attaches one of them to a key. A key holds at most one policy of each type: the route sets the assignment for a policy type rather than adding to it, so assigning a second policy of the same type to the same key displaces the first. Different types are independent, so a key can hold one of each and that is one resource each; two resources of one type on one key would displace each other on every apply. A policy's own `member_ids` and `api_key_hashes` attributes name the same membership from the policy side, so declare one side or the other for a given subject and policy: competing declarations of one membership overwrite each other on alternate applies.\n\n" +
 			"A policy a key inherits from the workspace default is not an assignment and is not managed here. The read returns the directly assigned policies and the inherited ones separately, and only the directly assigned list is compared, so a key that inherits a policy without holding it does not read as drift.\n\n" +
 			"The API changes assignments one policy at a time and requires the state the caller last read, answering 409 once that state has moved. The provider reads before every write and reads again after the first conflict, so an assignment attached or removed elsewhere between two applies is reconciled rather than fought over, and a second conflict in a row is reported with the API's own message instead of retried indefinitely. A destroy of an assignment that is already gone is a no-op rather than a failure. Creating a resource for an assignment that is already in place adopts it without writing, and destroying it removes the assignment whoever put it there, so an assignment is not owned by the configuration that declares it.\n\n" +
-			"Changing `key_hash`, `policy_id` or `policy_type` replaces the resource: the destroy removes the old assignment and the create makes the new one. A policy cannot be moved between workspaces; where state records a `workspace_id`, changing it plans a replacement instead, and removing `workspace_id` from configuration is refused at plan time because the read that follows needs that scope. `workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. It is a UUID in every case: the routes that take a scope validate the field as one, so a workspace slug is refused with 400 `Invalid guardrail policy request`, the same answer an omitted scope gets, rather than being looked up. This resource's own update path never reaches the API, because a change to the scope plans a replacement.\n\n" +
+			"Changing `key_hash`, `policy_id` or `policy_type` replaces the resource: the destroy removes the old assignment and the create makes the new one. A policy cannot be moved between workspaces; changing or adding `workspace_id` plans a replacement, and removing it from configuration is refused at plan time because the read that follows needs that scope. `workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. It is a UUID in every case: the routes that take a scope validate the field as one, so a workspace slug is refused with 400 `Invalid guardrail policy request`, the same answer an omitted scope gets, rather than being looked up. This resource's own update path never reaches the API, because a change to the scope plans a replacement.\n\n" +
 			"Import takes `<key_hash>/<policy_type>/<policy_id>`, or `<workspace_id>/<key_hash>/<policy_type>/<policy_id>` for an organization management key. The stored `id` is the bare form, so importing it under an organization management key means adding the workspace prefix; the API never returns the workspace, and a read that reaches the route without one is refused rather than scoped to a default.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -78,7 +78,7 @@ func (r *GuardrailPolicyAPIKeyAssignmentResource) Schema(ctx context.Context, re
 				Required:      true,
 				PlanModifiers: identity,
 				Validators:    []validator.String{guardrailPolicyAssignmentTypeValidator()},
-				Description:   "Type of the policy being assigned: `budget`, `model_availability`, `moderation` or `rate_limit`. Must match the policy's own type. Requires replacement if changed.",
+				Description:   "Type of the policy being assigned: `budget`, `model_availability`, `moderation` or `rate_limit`. Must match the policy's own type. This provider creates `budget`, `model_availability` and `moderation` policies; a `rate_limit` policy is created elsewhere. Requires replacement if changed.",
 			},
 			"workspace_id": schema.StringAttribute{
 				Optional:    true,
@@ -94,8 +94,7 @@ func (r *GuardrailPolicyAPIKeyAssignmentResource) Schema(ctx context.Context, re
 					// which a bare three-part import and a workspace-scoped
 					// create both produce, would record the value unchecked.
 					// Replacing instead routes it through create, where the API
-					// refuses a bad scope, matching
-					// guardrailmemberassignment_resource.go.
+					// refuses a bad scope.
 					stringplanmodifier.RequiresReplaceIfConfigured(),
 				},
 			},
@@ -285,10 +284,7 @@ func guardrailPolicyAPIKeyAssignmentAPI(client *sdk.OpenRouter) guardrailPolicyA
 				diags.AddError("unexpected response from API", "nil response")
 				return false, "", diags
 			}
-			if res.StatusCode == 400 && !assigned && guardrailPolicyAssignmentSubjectGone(res.BadRequestResponse) {
-				// The subject went away between the pre-read and this write, so the
-				// removal the pre-read confirmed is already complete. The same 400
-				// on an assign stays an error below, because nothing was assigned.
+			if guardrailPolicyAssignmentRemovalAlreadyDone(res.StatusCode, assigned, res.BadRequestResponse) {
 				return false, "", diags
 			}
 			if res.StatusCode == 409 {

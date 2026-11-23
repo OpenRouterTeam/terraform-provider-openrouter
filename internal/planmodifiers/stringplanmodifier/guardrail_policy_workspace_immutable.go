@@ -44,9 +44,9 @@ type StringGuardrailPolicyWorkspaceImmutablePlanModifier struct {
 // Description describes the plan modification in plain text formatting.
 func (v StringGuardrailPolicyWorkspaceImmutablePlanModifier) Description(_ context.Context) string {
 	if v.assignment {
-		return "Replaces the assignment when the workspace changes, and refuses a plan that removes the workspace."
+		return "Replaces the assignment when the workspace changes or is added, and refuses a plan that removes the workspace."
 	}
-	return "Replaces the policy when the workspace changes, and refuses a plan that removes the workspace."
+	return "Replaces the policy when the workspace changes or is added, and refuses a plan that removes the workspace."
 }
 
 // MarkdownDescription describes the plan modification in Markdown formatting.

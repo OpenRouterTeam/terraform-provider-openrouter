@@ -156,11 +156,19 @@ func reconcileGuardrailPolicyAssignment(ctx context.Context, api guardrailPolicy
 			}
 			diags.AddError(
 				fmt.Sprintf("assignments changed while %s policy %q", assignmentVerb(want), a.PolicyID),
-				fmt.Sprintf("The API answered 409 for the state read immediately before the write, %d times, so this apply never observed a stable state to write against. The route also answers 409 for a removal that was never an assignment; the read in front of each write rules that case out for the state it observed, but a writer that removed the membership after that read produces the same status, so the API's own words are reported alongside this one rather than interpreted. %s Re-run once whatever else is writing this assignment stops.", maxGuardrailPolicyAssignmentAttempts, detail),
+				fmt.Sprintf("The API answered 409 for the state read immediately before the write, %d times, so this apply never observed a stable state to write against. The route also answers 409 for a removal that was never an assignment; the read in front of each write rules that case out for the state it observed, but a writer that removed the membership after that read produces the same status, so the API's own words are reported alongside this message rather than interpreted. %s Re-run once whatever else is writing this assignment stops.", maxGuardrailPolicyAssignmentAttempts, detail),
 			)
 			return diags
 		}
 	}
+}
+
+// guardrailPolicyAssignmentRemovalAlreadyDone reports whether a write that
+// answered 400 is the removal the pre-read confirmed rather than a failure. A
+// subject can go away between the pre-read and the write, and the same 400 on
+// an assign stays an error because nothing was assigned.
+func guardrailPolicyAssignmentRemovalAlreadyDone(statusCode int, assigned bool, badRequest *shared.BadRequestResponse) bool {
+	return statusCode == 400 && !assigned && guardrailPolicyAssignmentSubjectGone(badRequest)
 }
 
 func assignmentVerb(assigned bool) string {

@@ -14,9 +14,10 @@ data "openrouter_organization_members" "all" {}
 
 locals {
   # Name the member the assignment is for. The member list is not ordered, so an
-  # index would attach the policy to whoever happens to come first; matching the
-  # address and taking one result fails when the member is absent or the address
-  # matches more than one, rather than assigning the policy to the wrong person.
+  # index would attach the policy to whoever happens to come first. Matching the
+  # address and taking the single result gives an error when several members
+  # match, and null when none does, which `member_id` then refuses, so the policy
+  # is never attached to the wrong person.
   engineering_lead = one([
     for member in data.openrouter_organization_members.all.data :
     member.id if member.email == "lead@example.com"

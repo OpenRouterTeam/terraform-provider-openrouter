@@ -1116,8 +1116,8 @@ func TestStubGuardrailPolicyAssignmentSubjectGoneBetweenReadAndWrite(t *testing.
 	t.Setenv("TF_ACC", "1")
 
 	subjectGone := map[string]string{
-		"api key": "One or more API keys were not found",
-		"member":  "The policy assignment subject is unavailable in this workspace",
+		"api key": subjectGoneMessage("api-keys"),
+		"member":  subjectGoneMessage("members"),
 	}
 
 	for _, kind := range assignmentSubjectKinds {
