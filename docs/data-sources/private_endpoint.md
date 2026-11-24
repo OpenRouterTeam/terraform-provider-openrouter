@@ -65,6 +65,7 @@ Read-Only:
 - `inputs` (Attributes) (see [below for nested schema](#nestedatt--settings--inputs))
 - `max_completion_tokens` (Number) Longest completion the upstream returns, in tokens, or `null` to keep the model default.
 - `max_prompt_tokens` (Number) Longest prompt, in tokens, or `null` for no cap below the context length. Cannot exceed `context_length`, or the model context length while `context_length` is `null`.
+- `prompt_caching` (Attributes) Prompt-caching controls for an OpenAI-compatible private endpoint. Accepted fields default on after validation; explicit owner settings override the defaults. (see [below for nested schema](#nestedatt--settings--prompt_caching))
 - `quantization` (String) Weight precision the deployment runs at; `unknown` when not stated.
 - `reasoning` (Attributes) (see [below for nested schema](#nestedatt--settings--reasoning))
 - `tool_choice` (Attributes) (see [below for nested schema](#nestedatt--settings--tool_choice))
@@ -88,6 +89,15 @@ Read-Only:
 - `base64_images` (Boolean) Accepts base64 image data. `null` keeps the provider default.
 - `file_urls` (Boolean) Accepts file URLs. `null` keeps the provider default.
 - `image_urls` (Boolean) Accepts image URLs. `null` keeps the provider default.
+
+
+<a id="nestedatt--settings--prompt_caching"></a>
+### Nested Schema for `settings.prompt_caching`
+
+Read-Only:
+
+- `cache_control` (Boolean) Forward top-level, message, and tool cache_control markers. Defaults on after endpoint validation accepts these fields; otherwise off. Set false to opt out, or true to declare support explicitly.
+- `prompt_cache_key` (Boolean) Send an OpenRouter-derived, customer-isolated prompt_cache_key, not the caller-supplied key. Defaults on after endpoint validation accepts the field; otherwise off. Set false to opt out, or true to declare support explicitly. HIPAA and unknown workspace posture withhold OpenRouter caching directives and the derived key; this does not control upstream retention.
 
 
 <a id="nestedatt--settings--reasoning"></a>

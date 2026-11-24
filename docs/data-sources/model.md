@@ -84,7 +84,7 @@ Read-Only:
 
 Read-Only:
 
-- `artificial_analysis` (Attributes) Artificial Analysis benchmark index scores. (see [below for nested schema](#nestedatt--data--benchmarks--artificial_analysis))
+- `artificial_analysis` (Attributes) Benchmark index scores published by Artificial Analysis (artificialanalysis.ai), one field per index. Each score is the model's best on that index across the configurations Artificial Analysis evaluated (for example reasoning levels), so two indexes of one model can come from different configurations. The deprecated Coding Index and Agentic Index fields are null for every model: Artificial Analysis has retired those indexes. Attribute Artificial Analysis when you republish them. Omitted when Artificial Analysis has scored the model on none of them. (see [below for nested schema](#nestedatt--data--benchmarks--artificial_analysis))
 - `design_arena` (Attributes List) Design Arena ELO rankings across arena+category pairs. (see [below for nested schema](#nestedatt--data--benchmarks--design_arena))
 
 <a id="nestedatt--data--benchmarks--artificial_analysis"></a>
@@ -92,9 +92,19 @@ Read-Only:
 
 Read-Only:
 
-- `agentic_index` (Number) Artificial Analysis Agentic Index score
-- `coding_index` (Number) Artificial Analysis Coding Index score
-- `intelligence_index` (Number) Artificial Analysis Intelligence Index score
+- `agentic_index` (Number, Deprecated) Deprecated: Artificial Analysis has retired its Agentic Index and no longer publishes it. Always null.
+- `coding_index` (Number, Deprecated) Deprecated: Artificial Analysis has retired its Coding Index and no longer publishes it. Always null.
+- `cyber_index` (Number) Artificial Analysis Cyber Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.
+- `decision_index` (Number) Artificial Analysis Decision Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Published for decision models and for the language models Artificial Analysis evaluates on decision tasks. Null when Artificial Analysis has not published a score for the model.
+- `economics_index` (Number) Artificial Analysis Economics Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `engineering_index` (Number) Artificial Analysis Engineering Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `finance_and_accounting_index` (Number) Artificial Analysis Finance & Accounting Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `healthcare_and_medical_index` (Number) Artificial Analysis Healthcare & Medical Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `intelligence_index` (Number) Artificial Analysis Intelligence Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.
+- `legal_index` (Number) Artificial Analysis Legal Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `multilingual_index` (Number) Artificial Analysis Multilingual Index score, as a fraction from 0 to 1: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.
+- `openness_index` (Number) Artificial Analysis Openness Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.
+- `strategy_and_ops_index` (Number) Artificial Analysis Strategy & Ops Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
 
 
 <a id="nestedatt--data--benchmarks--design_arena"></a>

@@ -27,7 +27,7 @@ resource "openrouter_workspace" "my_workspace" {
     4
   ]
   io_logging_sampling_rate            = 1
-  is_data_discount_logging_enabled    = true
+  is_data_discount_logging_enabled    = false
   is_observability_broadcast_enabled  = false
   is_observability_io_logging_enabled = false
   name                                = "Production"
@@ -51,11 +51,11 @@ resource "openrouter_workspace" "my_workspace" {
 - `default_text_model` (String) Default text model for this workspace
 - `description` (String) Description of the workspace
 - `disabled_server_tools` (List of String) OpenRouter server tools that requests in this workspace may not invoke. Requests naming a disabled tool are rejected with 403. An empty array or null clears the list.
-- `io_logging_api_key_ids` (List of Number) Optional array of API key IDs to filter I/O logging
-- `io_logging_sampling_rate` (Number) Sampling rate for I/O logging (0.0001-1)
-- `is_data_discount_logging_enabled` (Boolean) Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.
+- `io_logging_api_key_ids` (List of Number) Optional array of API key IDs to filter I/O logging. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.
+- `io_logging_sampling_rate` (Number) Sampling rate for I/O logging (0.0001-1). Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.
+- `is_data_discount_logging_enabled` (Boolean) Whether data discount logging is enabled. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.
 - `is_observability_broadcast_enabled` (Boolean) Whether broadcast is enabled
-- `is_observability_io_logging_enabled` (Boolean) Whether private logging is enabled
+- `is_observability_io_logging_enabled` (Boolean) Whether private logging is enabled. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.
 
 ### Read-Only
 
@@ -63,7 +63,7 @@ resource "openrouter_workspace" "my_workspace" {
 - `created_by` (String) User ID of the workspace creator
 - `default_guardrail_id` (String) Deterministic ID derived from the workspace ID. The default guardrail is materialized when its configuration is first written.
 - `id` (String) The workspace ID (UUID) or slug
-- `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Set it via the workspace budget endpoints.
+- `include_byok_in_budgets` (Boolean) Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Omitted without settings and budget visibility. Set it via the workspace budget endpoints.
 - `updated_at` (String) ISO 8601 timestamp of when the workspace was last updated
 
 ## Import

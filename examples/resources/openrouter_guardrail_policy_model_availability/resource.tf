@@ -3,6 +3,7 @@ resource "openrouter_guardrail_policy_model_availability" "my_guardrailpolicymod
     "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93",
   ]
   config = {
+    allow_provisional_providers   = false
     allow_safety_retention_google = true
     allow_safety_retention_other  = false
     allowed_data_regions = [

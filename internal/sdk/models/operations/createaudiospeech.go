@@ -16,7 +16,7 @@ type CreateAudioSpeechResponse struct {
 	StatusCode int
 	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
-	// Audio bytes stream
+	// Raw audio bytes stream (`audio/*`) by default. When `output_delivery` is `"url"`, returns `application/json` with `{ url, expires_at, media_type }` (a 24-hour signed download URL) unless zero-data-retention or missing workspace causes fallback to raw audio streaming.
 	Bytes []byte
 	// Bad Request - Invalid request parameters or malformed input
 	BadRequestResponse *shared.BadRequestResponse

@@ -102,19 +102,61 @@ func (r *ModelDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 								Computed: true,
 								Attributes: map[string]schema.Attribute{
 									"agentic_index": schema.Float64Attribute{
-										Computed:    true,
-										Description: `Artificial Analysis Agentic Index score`,
+										Computed:           true,
+										DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
+										Description:        `Deprecated: Artificial Analysis has retired its Agentic Index and no longer publishes it. Always null.`,
 									},
 									"coding_index": schema.Float64Attribute{
+										Computed:           true,
+										DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
+										Description:        `Deprecated: Artificial Analysis has retired its Coding Index and no longer publishes it. Always null.`,
+									},
+									"cyber_index": schema.Float64Attribute{
 										Computed:    true,
-										Description: `Artificial Analysis Coding Index score`,
+										Description: `Artificial Analysis Cyber Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"decision_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Decision Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Published for decision models and for the language models Artificial Analysis evaluates on decision tasks. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"economics_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Economics Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"engineering_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Engineering Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"finance_and_accounting_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Finance & Accounting Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"healthcare_and_medical_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Healthcare & Medical Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
 									},
 									"intelligence_index": schema.Float64Attribute{
 										Computed:    true,
-										Description: `Artificial Analysis Intelligence Index score`,
+										Description: `Artificial Analysis Intelligence Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"legal_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Legal Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"multilingual_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Multilingual Index score, as a fraction from 0 to 1: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"openness_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Openness Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.`,
+									},
+									"strategy_and_ops_index": schema.Float64Attribute{
+										Computed:    true,
+										Description: `Artificial Analysis Strategy & Ops Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
 									},
 								},
-								Description: `Artificial Analysis benchmark index scores.`,
+								Description: `Benchmark index scores published by Artificial Analysis (artificialanalysis.ai), one field per index. Each score is the model's best on that index across the configurations Artificial Analysis evaluated (for example reasoning levels), so two indexes of one model can come from different configurations. The deprecated Coding Index and Agentic Index fields are null for every model: Artificial Analysis has retired those indexes. Attribute Artificial Analysis when you republish them. Omitted when Artificial Analysis has scored the model on none of them.`,
 							},
 							"design_arena": schema.ListNestedAttribute{
 								Computed: true,

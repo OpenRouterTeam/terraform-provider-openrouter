@@ -882,8 +882,10 @@ type OpenResponsesResult struct {
 	// Beta. The result of the alignment plugin for this request; the shape may change.
 	Alignment *Alignment `json:"alignment,omitzero"`
 	// Canonical OpenRouter error type, stable across all API formats
-	ErrorType          *APIErrorType       `json:"error_type,omitzero"`
-	OpenrouterMetadata *OpenRouterMetadata `json:"openrouter_metadata,omitzero"`
+	ErrorType *APIErrorType `json:"error_type,omitzero"`
+	// Input items the upstream provider changed before inference (OpenAI `input_transformations`). Present only when the provider reported the field; empty when it changed nothing.
+	InputTransformations []ResponsesInputTransformation `json:"input_transformations,omitzero"`
+	OpenrouterMetadata   *OpenRouterMetadata            `json:"openrouter_metadata,omitzero"`
 	// OpenRouter Armor's verdict for each client tool call of this response, present whenever Armor evaluated the response (even when nothing was flagged). Independent of the `openrouter_metadata` opt-in.
 	SafeguardResults []ArmorSafeguardResult `json:"safeguard_results,omitzero"`
 }
@@ -1163,6 +1165,13 @@ func (o *OpenResponsesResult) GetErrorType() *APIErrorType {
 		return nil
 	}
 	return o.ErrorType
+}
+
+func (o *OpenResponsesResult) GetInputTransformations() []ResponsesInputTransformation {
+	if o == nil {
+		return nil
+	}
+	return o.InputTransformations
 }
 
 func (o *OpenResponsesResult) GetOpenrouterMetadata() *OpenRouterMetadata {

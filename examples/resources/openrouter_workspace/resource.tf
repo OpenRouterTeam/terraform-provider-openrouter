@@ -12,7 +12,7 @@ resource "openrouter_workspace" "my_workspace" {
     4
   ]
   io_logging_sampling_rate            = 1
-  is_data_discount_logging_enabled    = true
+  is_data_discount_logging_enabled    = false
   is_observability_broadcast_enabled  = false
   is_observability_io_logging_enabled = false
   name                                = "Production"

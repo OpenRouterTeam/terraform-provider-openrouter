@@ -29,6 +29,7 @@ const (
 	PrivateEndpointDeclaredParameterSeed                PrivateEndpointDeclaredParameter = "seed"
 	PrivateEndpointDeclaredParameterResponseFormat      PrivateEndpointDeclaredParameter = "response_format"
 	PrivateEndpointDeclaredParameterStructuredOutputs   PrivateEndpointDeclaredParameter = "structured_outputs"
+	PrivateEndpointDeclaredParameterStrictToolSchemas   PrivateEndpointDeclaredParameter = "strict_tool_schemas"
 	PrivateEndpointDeclaredParameterStop                PrivateEndpointDeclaredParameter = "stop"
 	PrivateEndpointDeclaredParameterTools               PrivateEndpointDeclaredParameter = "tools"
 	PrivateEndpointDeclaredParameterToolChoice          PrivateEndpointDeclaredParameter = "tool_choice"
@@ -81,6 +82,8 @@ func (e *PrivateEndpointDeclaredParameter) UnmarshalJSON(data []byte) error {
 	case "response_format":
 		fallthrough
 	case "structured_outputs":
+		fallthrough
+	case "strict_tool_schemas":
 		fallthrough
 	case "stop":
 		fallthrough

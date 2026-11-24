@@ -100,6 +100,11 @@ info:
 # Comparison helpers live in privateendpoint_lifecycle.go; generation must retain
 # their Update(), Create() and Read() call sites rather than restore a
 # pricing-only write gate.
+# The recorded baseline for that file is the generation the current spec produces,
+# which raised the declared_parameters cap to 26 and added the settings.prompt_caching
+# block. The edit keeps its client-side UniqueValues guard and leaves the new block
+# as generated, because the update dispatch compares the settings object recursively
+# and a change to either caching flag marks the group as changed.
 actions:
   - target: $["paths"]["/guardrails/assignments/keys"]["get"]
     update:
@@ -570,3 +575,16 @@ actions:
       before: sdk.Presets.get()
       created_at: 1784214026716
       type: method-name
+
+  # Pin the API-keys list method to the request-object shape. The incoming spec
+  # sync carries `x-speakeasy-max-method-params: 5` on this operation, so
+  # generation emits positional arguments, while this provider's generated
+  # Terraform data source calls the method with a request object; the generator
+  # compiles the module before it rewrites the Terraform target's files, so that
+  # sync's run fails at Compile SDK with "not enough arguments in call to
+  # r.client.APIKeys.List". The value only sets how many parameters may be inlined
+  # before a request object is used: 1 keeps the APIKeys.List signature this
+  # provider already calls, and no Go output changes until that spec lands.
+  - target: $["paths"]["/keys"]["get"]
+    update:
+      x-speakeasy-max-method-params: 1
