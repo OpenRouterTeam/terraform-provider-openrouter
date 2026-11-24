@@ -369,7 +369,7 @@ func (s *Scim) ListMappings(ctx context.Context, request operations.ListScimGrou
 }
 
 // Create a SCIM group mapping
-// Create a SCIM group-to-workspace role mapping. Creating a mapping that already exists with the same role succeeds and re-applies the mapping to the group members. Requesting a different role for an existing mapping returns 409. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Create a SCIM group-to-workspace role mapping. Creating a mapping that already exists with the same role succeeds and re-applies the mapping to the group members. Requesting a different role for an existing mapping returns 409. Assigning the `admin` role is dashboard-only and returns 403 for management keys. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Scim) Create(ctx context.Context, request shared.CreateScimGroupMappingRequest, opts ...operations.Option) (*operations.CreateScimGroupMappingResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -701,7 +701,7 @@ func (s *Scim) Create(ctx context.Context, request shared.CreateScimGroupMapping
 }
 
 // Delete a SCIM group mapping
-// Delete a SCIM group-to-workspace mapping. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Delete a SCIM group-to-workspace mapping. For an `admin` mapping, `keep_members=true` returns `403` and leaves the mapping in place — preserving members as workspace admins is dashboard-only. Deleting a mapping that has guardrail policies attached returns `403`; remove those policies in the dashboard first. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Scim) Delete(ctx context.Context, request operations.DeleteScimGroupMappingRequest, opts ...operations.Option) (*operations.DeleteScimGroupMappingResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{
@@ -1292,7 +1292,7 @@ func (s *Scim) Read(ctx context.Context, request operations.GetScimGroupMappingR
 }
 
 // Update a SCIM group mapping
-// Update a SCIM group mapping role. [Management key](/docs/guides/overview/auth/management-api-keys) required.
+// Update a SCIM group mapping role. Assigning the `admin` role is dashboard-only and returns 403 for management keys. [Management key](/docs/guides/overview/auth/management-api-keys) required.
 func (s *Scim) Update(ctx context.Context, request operations.UpdateScimGroupMappingRequest, opts ...operations.Option) (*operations.UpdateScimGroupMappingResponse, error) {
 	o := operations.Options{}
 	supportedOptions := []string{

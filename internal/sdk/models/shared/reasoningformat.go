@@ -11,17 +11,18 @@ import (
 type ReasoningFormat string
 
 const (
-	ReasoningFormatUnknown                  ReasoningFormat = "unknown"
-	ReasoningFormatOpenaiResponsesV1        ReasoningFormat = "openai-responses-v1"
-	ReasoningFormatAzureOpenaiResponsesV1   ReasoningFormat = "azure-openai-responses-v1"
-	ReasoningFormatBedrockOpenaiResponsesV1 ReasoningFormat = "bedrock-openai-responses-v1"
-	ReasoningFormatBedrockXaiResponsesV1    ReasoningFormat = "bedrock-xai-responses-v1"
-	ReasoningFormatXaiResponsesV1           ReasoningFormat = "xai-responses-v1"
-	ReasoningFormatMetaResponsesV1          ReasoningFormat = "meta-responses-v1"
-	ReasoningFormatGoogleVertexResponsesV1  ReasoningFormat = "google-vertex-responses-v1"
-	ReasoningFormatOpenrouterStealthV1      ReasoningFormat = "openrouter-stealth-v1"
-	ReasoningFormatAnthropicClaudeV1        ReasoningFormat = "anthropic-claude-v1"
-	ReasoningFormatGoogleGeminiV1           ReasoningFormat = "google-gemini-v1"
+	ReasoningFormatUnknown                     ReasoningFormat = "unknown"
+	ReasoningFormatOpenaiResponsesV1           ReasoningFormat = "openai-responses-v1"
+	ReasoningFormatAzureOpenaiResponsesV1      ReasoningFormat = "azure-openai-responses-v1"
+	ReasoningFormatBedrockOpenaiResponsesV1    ReasoningFormat = "bedrock-openai-responses-v1"
+	ReasoningFormatBedrockXaiResponsesV1       ReasoningFormat = "bedrock-xai-responses-v1"
+	ReasoningFormatXaiResponsesV1              ReasoningFormat = "xai-responses-v1"
+	ReasoningFormatMetaResponsesV1             ReasoningFormat = "meta-responses-v1"
+	ReasoningFormatGoogleVertexMetaResponsesV1 ReasoningFormat = "google-vertex-meta-responses-v1"
+	ReasoningFormatGoogleVertexXaiResponsesV1  ReasoningFormat = "google-vertex-xai-responses-v1"
+	ReasoningFormatOpenrouterStealthV1         ReasoningFormat = "openrouter-stealth-v1"
+	ReasoningFormatAnthropicClaudeV1           ReasoningFormat = "anthropic-claude-v1"
+	ReasoningFormatGoogleGeminiV1              ReasoningFormat = "google-gemini-v1"
 )
 
 func (e ReasoningFormat) ToPointer() *ReasoningFormat {
@@ -47,7 +48,9 @@ func (e *ReasoningFormat) UnmarshalJSON(data []byte) error {
 		fallthrough
 	case "meta-responses-v1":
 		fallthrough
-	case "google-vertex-responses-v1":
+	case "google-vertex-meta-responses-v1":
+		fallthrough
+	case "google-vertex-xai-responses-v1":
 		fallthrough
 	case "openrouter-stealth-v1":
 		fallthrough
