@@ -70,7 +70,7 @@ func TestGuardrailPolicyWorkspaceImmutablePlanModifyString(t *testing.T) {
 	}{
 		"policy": {
 			modifier: GuardrailPolicyWorkspaceImmutable(),
-			wantDesc: "Replaces the policy when the workspace changes or is added, and refuses a plan that removes the workspace.",
+			wantDesc: "Replaces the policy when the stored workspace changes, and refuses a plan that removes the workspace.",
 			wantWord: "A guardrail policy stays in the workspace it was created in",
 			other:    "An assignment is addressed with a workspace scope",
 		},

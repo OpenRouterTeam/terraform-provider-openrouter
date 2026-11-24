@@ -46,7 +46,7 @@ func (v StringGuardrailPolicyWorkspaceImmutablePlanModifier) Description(_ conte
 	if v.assignment {
 		return "Replaces the assignment when the workspace changes or is added, and refuses a plan that removes the workspace."
 	}
-	return "Replaces the policy when the workspace changes or is added, and refuses a plan that removes the workspace."
+	return "Replaces the policy when the stored workspace changes, and refuses a plan that removes the workspace."
 }
 
 // MarkdownDescription describes the plan modification in Markdown formatting.
