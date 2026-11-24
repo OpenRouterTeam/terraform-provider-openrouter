@@ -1,21 +1,21 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: c748f20a198b6db30c2ac2ed42758a9a
+  docChecksum: 3d757f33d8173df431085ff2e60160cf
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.287
-  configChecksum: 6f2c365f30b2dcf6ac32d53deb17182c
+  releaseVersion: 0.3.288
+  configChecksum: cd065c1d0594533293355f410af059a5
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: 4918b8ab-6e28-4285-8b61-2d7c9454b475
-  pristine_commit_hash: 03d79d7f72de0382be0f65f854afef46f16f0e59
-  pristine_tree_hash: bcde18096eee213dd5d8fe094995a7375bcdd962
+  generation_id: d77f00e7-8551-46f2-9a6f-d7105109fcd4
+  pristine_commit_hash: 44a292d9ba7705cda9a656f021a928730572bf51
+  pristine_tree_hash: a9ab96456e1690b79e0dec0fcbfd662d2de1e10d
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -165,8 +165,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:9f1b004d1aacc4509a8f5329f0cd091a71580c20
-    pristine_git_object: cb33577dfc3e9abbbda2ba4c9746647497112212
+    last_write_checksum: sha1:312589c2e96c7df6b4c85bd7d811e2798fa6f5c3
+    pristine_git_object: 45d5451c93cea28454090d72a634d998916bfb7d
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -1437,8 +1437,8 @@ trackedFiles:
     pristine_git_object: 68b4a3eb7a02dff73013f69b00dd5acbdf5de9e2
   internal/sdk/batch.go:
     id: 58f39ecc28cc
-    last_write_checksum: sha1:19ab97345419ece05d23a93d0c06c73cc27110aa
-    pristine_git_object: 7e29da960ade2612dd2e76502333b90585984d25
+    last_write_checksum: sha1:c074afe1e05e08b4102ba64b2ec602ab02d02608
+    pristine_git_object: e4ae298c160984ef11c0eb89fa583bdf5042afea
   internal/sdk/benchmarks.go:
     id: 9f6912f01cd6
     last_write_checksum: sha1:428c0902fcb181de238efd45fd383bba7893ecdf
@@ -1847,6 +1847,10 @@ trackedFiles:
     id: 5984a66c6e07
     last_write_checksum: sha1:893bdab528777689f3db20f399468ce6adf2cd57
     pristine_git_object: d0cb8eac9c63efa1e05ddb6a3bc6e21bea417701
+  internal/sdk/models/operations/getbatchresults.go:
+    id: 757efb897481
+    last_write_checksum: sha1:751583ec5cc8779f0d08337ba4f74c7c290454ca
+    pristine_git_object: 9d831e48b1933d3476a8276051cf886eee260fbc
   internal/sdk/models/operations/getbenchmarks.go:
     id: 8dff64cb94cf
     last_write_checksum: sha1:c6c35c28ba54cd9416261635231fcba92481fe94
@@ -2921,8 +2925,8 @@ trackedFiles:
     pristine_git_object: d1e702d70d0e62a87ec400941ab37ece2bb85220
   internal/sdk/models/shared/batchobject.go:
     id: 9a1352ea29c9
-    last_write_checksum: sha1:761a48d1f09e36954b2d8b06ccb5a2ec3aca3f28
-    pristine_git_object: fd04a81e0943bb414bf39490229fc666432708c6
+    last_write_checksum: sha1:523df90f349672d25a88e8037765c7a2c05eaf7b
+    pristine_git_object: 9c43ac0f63f198dd045f622465b1a1400bb919df
   internal/sdk/models/shared/batchoutputreference.go:
     id: bf77e31f9042
     last_write_checksum: sha1:fdc161909623f4fc0419ca5a30ce826e38686333
@@ -2935,6 +2939,14 @@ trackedFiles:
     id: aaa25235182a
     last_write_checksum: sha1:14a9b905f059bbd008b1b51db177ecc4fee2e589
     pristine_git_object: 0387875cad0811f207017bf2b4229116cd569243
+  internal/sdk/models/shared/batchresult.go:
+    id: eca1726412c0
+    last_write_checksum: sha1:745f3559f74b6fc221840c162d3f6af01bd13e45
+    pristine_git_object: 3990b0d48f5f5fcf4a92ca7c4676669b6739bd95
+  internal/sdk/models/shared/batchresultspageresponse.go:
+    id: eb7588fcc3b5
+    last_write_checksum: sha1:f59dc9d522e6c306a60fcd0a34c30b8565079ff6
+    pristine_git_object: 66a478df40ee44c562b09380b53a662155e102a6
   internal/sdk/models/shared/batchsubmitbody.go:
     id: 9cd89788a34d
     last_write_checksum: sha1:0c2c4deebbf6e212ea4cde28cb0eff3de8dbc008
@@ -5845,8 +5857,8 @@ trackedFiles:
     pristine_git_object: d5e110a581a84c107105ec37cc1b9ddbd6a86e5f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:eab7b774d93961027432fd1c4135180d312abced
-    pristine_git_object: 3afe201bc4feaa183ddd3acb76b5d2596616aad9
+    last_write_checksum: sha1:d104bdbb09b3616d2822cb8ead9cc2006e247025
+    pristine_git_object: a507d4aa7013a5f6a6f25b6442332a66efdef15a
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -11116,4 +11128,21 @@ examples:
           application/json: {"error": {"code": 500, "message": "Internal Server Error"}}
         "503":
           application/json: {"error": {"code": 503, "message": "Service temporarily unavailable"}}
+  getBatchResults:
+    speakeasy-default-get-batch-results:
+      parameters:
+        path:
+          id: "batch_abc123"
+        query:
+          limit: 500
+          cursor: "djE6YmF0Y2hfYWJjMTIzOjEwMjQ"
+      responses:
+        "200":
+          application/json: {"data": [], "has_more": false, "next_cursor": null, "object": "list"}
+        "402":
+          application/json: {"completion_window": "24h", "created_at": 408348, "endpoint": "<value>", "error": {"code": 455974, "message": "<value>"}, "expires_at": 419566, "finalized_at": 282040, "id": "<id>", "model": "Model S", "object": "batch", "output": {"uri": "gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"}, "provider": "<value>", "request_counts": {"completed": 944277, "failed": 227610, "total": 745536}, "results": "<value>", "status": "completed", "usage": {"cache_creation": {"ephemeral_1h_input_tokens": 0, "ephemeral_5m_input_tokens": 100}, "completion_tokens": 648763, "cost_details": {"upstream_inference_completions_cost": 0.0004, "upstream_inference_cost": null, "upstream_inference_prompt_cost": 0.0008}, "iterations": [{"cache_creation": null, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "input_tokens": 100, "output_tokens": 50, "type": "message"}], "prompt_tokens": 861032, "speed": "standard", "total_tokens": 712859}}
+        "400":
+          application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
+        "500":
+          application/json: {"error": {"code": 400, "message": "custom_id is required on requests[0]."}}
 examplesVersion: 1.0.2
