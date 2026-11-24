@@ -68,22 +68,32 @@ func (e *GetModelsCategory) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// GetModelsSort - Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved.
+// GetModelsSort - Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), <index>-high-to-low for each Artificial Analysis index (the coding and agentic sorts are deprecated: Artificial Analysis has retired those indexes, so they order by canonical slug and variant alone), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. The decision sort ranks decision models, so pass output_modalities=decisions or all with it. When omitted, the existing default ordering is preserved.
 type GetModelsSort string
 
 const (
-	GetModelsSortMostPopular             GetModelsSort = "most-popular"
-	GetModelsSortNewest                  GetModelsSort = "newest"
-	GetModelsSortTopWeekly               GetModelsSort = "top-weekly"
-	GetModelsSortPricingLowToHigh        GetModelsSort = "pricing-low-to-high"
-	GetModelsSortPricingHighToLow        GetModelsSort = "pricing-high-to-low"
-	GetModelsSortContextHighToLow        GetModelsSort = "context-high-to-low"
-	GetModelsSortThroughputHighToLow     GetModelsSort = "throughput-high-to-low"
-	GetModelsSortLatencyLowToHigh        GetModelsSort = "latency-low-to-high"
-	GetModelsSortIntelligenceHighToLow   GetModelsSort = "intelligence-high-to-low"
-	GetModelsSortCodingHighToLow         GetModelsSort = "coding-high-to-low"
-	GetModelsSortAgenticHighToLow        GetModelsSort = "agentic-high-to-low"
-	GetModelsSortDesignArenaEloHighToLow GetModelsSort = "design-arena-elo-high-to-low"
+	GetModelsSortMostPopular                   GetModelsSort = "most-popular"
+	GetModelsSortNewest                        GetModelsSort = "newest"
+	GetModelsSortTopWeekly                     GetModelsSort = "top-weekly"
+	GetModelsSortPricingLowToHigh              GetModelsSort = "pricing-low-to-high"
+	GetModelsSortPricingHighToLow              GetModelsSort = "pricing-high-to-low"
+	GetModelsSortContextHighToLow              GetModelsSort = "context-high-to-low"
+	GetModelsSortThroughputHighToLow           GetModelsSort = "throughput-high-to-low"
+	GetModelsSortLatencyLowToHigh              GetModelsSort = "latency-low-to-high"
+	GetModelsSortIntelligenceHighToLow         GetModelsSort = "intelligence-high-to-low"
+	GetModelsSortCodingHighToLow               GetModelsSort = "coding-high-to-low"
+	GetModelsSortAgenticHighToLow              GetModelsSort = "agentic-high-to-low"
+	GetModelsSortFinanceAndAccountingHighToLow GetModelsSort = "finance-and-accounting-high-to-low"
+	GetModelsSortStrategyAndOpsHighToLow       GetModelsSort = "strategy-and-ops-high-to-low"
+	GetModelsSortLegalHighToLow                GetModelsSort = "legal-high-to-low"
+	GetModelsSortHealthcareAndMedicalHighToLow GetModelsSort = "healthcare-and-medical-high-to-low"
+	GetModelsSortEngineeringHighToLow          GetModelsSort = "engineering-high-to-low"
+	GetModelsSortEconomicsHighToLow            GetModelsSort = "economics-high-to-low"
+	GetModelsSortCyberHighToLow                GetModelsSort = "cyber-high-to-low"
+	GetModelsSortOpennessHighToLow             GetModelsSort = "openness-high-to-low"
+	GetModelsSortMultilingualHighToLow         GetModelsSort = "multilingual-high-to-low"
+	GetModelsSortDecisionHighToLow             GetModelsSort = "decision-high-to-low"
+	GetModelsSortDesignArenaEloHighToLow       GetModelsSort = "design-arena-elo-high-to-low"
 )
 
 func (e GetModelsSort) ToPointer() *GetModelsSort {
@@ -116,6 +126,26 @@ func (e *GetModelsSort) UnmarshalJSON(data []byte) error {
 	case "coding-high-to-low":
 		fallthrough
 	case "agentic-high-to-low":
+		fallthrough
+	case "finance-and-accounting-high-to-low":
+		fallthrough
+	case "strategy-and-ops-high-to-low":
+		fallthrough
+	case "legal-high-to-low":
+		fallthrough
+	case "healthcare-and-medical-high-to-low":
+		fallthrough
+	case "engineering-high-to-low":
+		fallthrough
+	case "economics-high-to-low":
+		fallthrough
+	case "cyber-high-to-low":
+		fallthrough
+	case "openness-high-to-low":
+		fallthrough
+	case "multilingual-high-to-low":
+		fallthrough
+	case "decision-high-to-low":
 		fallthrough
 	case "design-arena-elo-high-to-low":
 		*e = GetModelsSort(v)
@@ -214,7 +244,7 @@ type GetModelsRequest struct {
 	SupportedParameters *string `queryParam:"style=form,explode=true,name=supported_parameters"`
 	// Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, decisions, speech, transcription) or "all" to include all models. Defaults to "text".
 	OutputModalities *string `queryParam:"style=form,explode=true,name=output_modalities"`
-	// Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved.
+	// Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), <index>-high-to-low for each Artificial Analysis index (the coding and agentic sorts are deprecated: Artificial Analysis has retired those indexes, so they order by canonical slug and variant alone), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. The decision sort ranks decision models, so pass output_modalities=decisions or all with it. When omitted, the existing default ordering is preserved.
 	Sort *GetModelsSort `queryParam:"style=form,explode=true,name=sort"`
 	// Return results as RSS feed
 	UseRss *string `queryParam:"style=form,explode=true,name=use_rss"`
@@ -252,18 +282,66 @@ type GetModelsRequest struct {
 	MinAgeDays *int64 `queryParam:"style=form,explode=true,name=min_age_days"`
 	// Maximum model age in days since its creation date.
 	MaxAgeDays *int64 `queryParam:"style=form,explode=true,name=max_age_days"`
-	// Minimum Artificial Analysis intelligence index.
+	// Minimum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.
 	MinIntelligenceIndex *float64 `queryParam:"style=form,explode=true,name=min_intelligence_index"`
-	// Maximum Artificial Analysis intelligence index.
+	// Maximum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.
 	MaxIntelligenceIndex *float64 `queryParam:"style=form,explode=true,name=max_intelligence_index"`
-	// Minimum Artificial Analysis coding index.
+	// Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.
+	//
+	// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
 	MinCodingIndex *float64 `queryParam:"style=form,explode=true,name=min_coding_index"`
-	// Maximum Artificial Analysis coding index.
+	// Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.
+	//
+	// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
 	MaxCodingIndex *float64 `queryParam:"style=form,explode=true,name=max_coding_index"`
-	// Minimum Artificial Analysis agentic index.
+	// Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.
+	//
+	// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
 	MinAgenticIndex *float64 `queryParam:"style=form,explode=true,name=min_agentic_index"`
-	// Maximum Artificial Analysis agentic index.
+	// Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.
+	//
+	// Deprecated: This will be removed in a future release, please migrate away from it as soon as possible.
 	MaxAgenticIndex *float64 `queryParam:"style=form,explode=true,name=max_agentic_index"`
+	// Minimum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.
+	MinFinanceAndAccountingIndex *float64 `queryParam:"style=form,explode=true,name=min_finance_and_accounting_index"`
+	// Maximum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.
+	MaxFinanceAndAccountingIndex *float64 `queryParam:"style=form,explode=true,name=max_finance_and_accounting_index"`
+	// Minimum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.
+	MinStrategyAndOpsIndex *float64 `queryParam:"style=form,explode=true,name=min_strategy_and_ops_index"`
+	// Maximum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.
+	MaxStrategyAndOpsIndex *float64 `queryParam:"style=form,explode=true,name=max_strategy_and_ops_index"`
+	// Minimum Artificial Analysis Legal Index score (0-100); unscored models are excluded.
+	MinLegalIndex *float64 `queryParam:"style=form,explode=true,name=min_legal_index"`
+	// Maximum Artificial Analysis Legal Index score (0-100); unscored models are excluded.
+	MaxLegalIndex *float64 `queryParam:"style=form,explode=true,name=max_legal_index"`
+	// Minimum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.
+	MinHealthcareAndMedicalIndex *float64 `queryParam:"style=form,explode=true,name=min_healthcare_and_medical_index"`
+	// Maximum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.
+	MaxHealthcareAndMedicalIndex *float64 `queryParam:"style=form,explode=true,name=max_healthcare_and_medical_index"`
+	// Minimum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.
+	MinEngineeringIndex *float64 `queryParam:"style=form,explode=true,name=min_engineering_index"`
+	// Maximum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.
+	MaxEngineeringIndex *float64 `queryParam:"style=form,explode=true,name=max_engineering_index"`
+	// Minimum Artificial Analysis Economics Index score (0-100); unscored models are excluded.
+	MinEconomicsIndex *float64 `queryParam:"style=form,explode=true,name=min_economics_index"`
+	// Maximum Artificial Analysis Economics Index score (0-100); unscored models are excluded.
+	MaxEconomicsIndex *float64 `queryParam:"style=form,explode=true,name=max_economics_index"`
+	// Minimum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.
+	MinCyberIndex *float64 `queryParam:"style=form,explode=true,name=min_cyber_index"`
+	// Maximum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.
+	MaxCyberIndex *float64 `queryParam:"style=form,explode=true,name=max_cyber_index"`
+	// Minimum Artificial Analysis Openness Index score (0-100); unscored models are excluded.
+	MinOpennessIndex *float64 `queryParam:"style=form,explode=true,name=min_openness_index"`
+	// Maximum Artificial Analysis Openness Index score (0-100); unscored models are excluded.
+	MaxOpennessIndex *float64 `queryParam:"style=form,explode=true,name=max_openness_index"`
+	// Minimum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.
+	MinMultilingualIndex *float64 `queryParam:"style=form,explode=true,name=min_multilingual_index"`
+	// Maximum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.
+	MaxMultilingualIndex *float64 `queryParam:"style=form,explode=true,name=max_multilingual_index"`
+	// Minimum Artificial Analysis Decision Index score (0-100); unscored models are excluded.
+	MinDecisionIndex *float64 `queryParam:"style=form,explode=true,name=min_decision_index"`
+	// Maximum Artificial Analysis Decision Index score (0-100); unscored models are excluded.
+	MaxDecisionIndex *float64 `queryParam:"style=form,explode=true,name=max_decision_index"`
 	// Minimum tool-calling success rate, as a fraction in [0, 1] (e.g. 0.9 = 90% of requests finishing with a tool_calls finish reason).
 	MinToolSuccessRate *float64 `queryParam:"style=form,explode=true,name=min_tool_success_rate"`
 	// Maximum tool-calling success rate, as a fraction in [0, 1].
@@ -489,6 +567,146 @@ func (g *GetModelsRequest) GetMaxAgenticIndex() *float64 {
 		return nil
 	}
 	return g.MaxAgenticIndex
+}
+
+func (g *GetModelsRequest) GetMinFinanceAndAccountingIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinFinanceAndAccountingIndex
+}
+
+func (g *GetModelsRequest) GetMaxFinanceAndAccountingIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxFinanceAndAccountingIndex
+}
+
+func (g *GetModelsRequest) GetMinStrategyAndOpsIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinStrategyAndOpsIndex
+}
+
+func (g *GetModelsRequest) GetMaxStrategyAndOpsIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxStrategyAndOpsIndex
+}
+
+func (g *GetModelsRequest) GetMinLegalIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinLegalIndex
+}
+
+func (g *GetModelsRequest) GetMaxLegalIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxLegalIndex
+}
+
+func (g *GetModelsRequest) GetMinHealthcareAndMedicalIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinHealthcareAndMedicalIndex
+}
+
+func (g *GetModelsRequest) GetMaxHealthcareAndMedicalIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxHealthcareAndMedicalIndex
+}
+
+func (g *GetModelsRequest) GetMinEngineeringIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinEngineeringIndex
+}
+
+func (g *GetModelsRequest) GetMaxEngineeringIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxEngineeringIndex
+}
+
+func (g *GetModelsRequest) GetMinEconomicsIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinEconomicsIndex
+}
+
+func (g *GetModelsRequest) GetMaxEconomicsIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxEconomicsIndex
+}
+
+func (g *GetModelsRequest) GetMinCyberIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinCyberIndex
+}
+
+func (g *GetModelsRequest) GetMaxCyberIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxCyberIndex
+}
+
+func (g *GetModelsRequest) GetMinOpennessIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinOpennessIndex
+}
+
+func (g *GetModelsRequest) GetMaxOpennessIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxOpennessIndex
+}
+
+func (g *GetModelsRequest) GetMinMultilingualIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinMultilingualIndex
+}
+
+func (g *GetModelsRequest) GetMaxMultilingualIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxMultilingualIndex
+}
+
+func (g *GetModelsRequest) GetMinDecisionIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MinDecisionIndex
+}
+
+func (g *GetModelsRequest) GetMaxDecisionIndex() *float64 {
+	if g == nil {
+		return nil
+	}
+	return g.MaxDecisionIndex
 }
 
 func (g *GetModelsRequest) GetMinToolSuccessRate() *float64 {

@@ -23,6 +23,7 @@ resource "openrouter_byok_key" "my_byokkey" {
   declared_zdr    = true
   disabled        = false
   is_byok_only    = false
+  is_exclusive    = false
   is_fallback     = false
   is_required     = false
   # `key = "sk-proj-abc123..."` also works, but stores the key in Terraform state.

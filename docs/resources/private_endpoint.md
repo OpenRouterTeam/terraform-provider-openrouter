@@ -66,7 +66,11 @@ resource "openrouter_private_endpoint" "my_privateendpoint" {
     }
     max_completion_tokens = 16384
     max_prompt_tokens     = 9
-    quantization          = "bf16"
+    prompt_caching = {
+      cache_control    = false
+      prompt_cache_key = false
+    }
+    quantization = "bf16"
     reasoning = {
       return_mechanism = "reasoning"
       supported        = true
@@ -142,6 +146,7 @@ Optional:
 - `inputs` (Attributes) (see [below for nested schema](#nestedatt--settings--inputs))
 - `max_completion_tokens` (Number) Longest completion the upstream returns, in tokens. `null` means the model default applies.
 - `max_prompt_tokens` (Number) Longest prompt, in tokens. `null` means no cap below the context length. Cannot exceed `context_length`, or the model context length while `context_length` is `null`.
+- `prompt_caching` (Attributes) Change only the named prompt-caching flags; omitted flags keep their stored value. (see [below for nested schema](#nestedatt--settings--prompt_caching))
 - `quantization` (String) Weight precision the deployment runs at; `unknown` when not stated. must be one of ["int4", "int8", "fp4", "mxfp4", "nvfp4", "fp6", "fp8", "mxfp8", "fp16", "bf16", "fp32", "unknown"]
 - `reasoning` (Attributes) (see [below for nested schema](#nestedatt--settings--reasoning))
 - `tool_choice` (Attributes) (see [below for nested schema](#nestedatt--settings--tool_choice))
@@ -165,6 +170,15 @@ Optional:
 - `base64_images` (Boolean) Accepts base64 image data. `null` means the endpoint uses the provider default.
 - `file_urls` (Boolean) Accepts file URLs. `null` means the endpoint uses the provider default.
 - `image_urls` (Boolean) Accepts image URLs. `null` means the endpoint uses the provider default.
+
+
+<a id="nestedatt--settings--prompt_caching"></a>
+### Nested Schema for `settings.prompt_caching`
+
+Optional:
+
+- `cache_control` (Boolean) Forward top-level, message, and tool cache_control markers. Defaults on after endpoint validation accepts these fields; otherwise off. Set false to opt out, or true to declare support explicitly.
+- `prompt_cache_key` (Boolean) Send an OpenRouter-derived, customer-isolated prompt_cache_key, not the caller-supplied key. Defaults on after endpoint validation accepts the field; otherwise off. Set false to opt out, or true to declare support explicitly. HIPAA and unknown workspace posture withhold OpenRouter caching directives and the derived key; this does not control upstream retention.
 
 
 <a id="nestedatt--settings--reasoning"></a>

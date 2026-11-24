@@ -8,6 +8,7 @@ import (
 )
 
 type GuardrailModelAvailabilityPolicyAuthoringConfig struct {
+	AllowProvisionalProviders      *bool    `json:"allow_provisional_providers,omitzero"`
 	AllowSafetyRetentionGoogle     *bool    `json:"allow_safety_retention_google,omitzero"`
 	AllowSafetyRetentionOther      *bool    `json:"allow_safety_retention_other,omitzero"`
 	AllowedDataRegions             []string `json:"allowed_data_regions,omitzero"`
@@ -40,6 +41,13 @@ func (g *GuardrailModelAvailabilityPolicyAuthoringConfig) UnmarshalJSON(data []b
 		return err
 	}
 	return nil
+}
+
+func (g *GuardrailModelAvailabilityPolicyAuthoringConfig) GetAllowProvisionalProviders() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.AllowProvisionalProviders
 }
 
 func (g *GuardrailModelAvailabilityPolicyAuthoringConfig) GetAllowSafetyRetentionGoogle() *bool {

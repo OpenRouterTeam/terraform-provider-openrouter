@@ -55,6 +55,13 @@ func (r *PrivateEndpointDataSourceModel) RefreshFromSharedPrivateEndpoint(ctx co
 	r.Settings.Inputs.ImageUrls = types.BoolPointerValue(resp.Settings.Inputs.ImageUrls)
 	r.Settings.MaxCompletionTokens = types.Int64PointerValue(resp.Settings.MaxCompletionTokens)
 	r.Settings.MaxPromptTokens = types.Int64PointerValue(resp.Settings.MaxPromptTokens)
+	if resp.Settings.PromptCaching == nil {
+		r.Settings.PromptCaching = nil
+	} else {
+		r.Settings.PromptCaching = &tfTypes.PrivateEndpointPromptCaching{}
+		r.Settings.PromptCaching.CacheControl = types.BoolValue(resp.Settings.PromptCaching.CacheControl)
+		r.Settings.PromptCaching.PromptCacheKey = types.BoolValue(resp.Settings.PromptCaching.PromptCacheKey)
+	}
 	r.Settings.Quantization = types.StringValue(string(resp.Settings.Quantization))
 	r.Settings.Reasoning = &tfTypes.PrivateEndpointSettingsReasoning{}
 	if resp.Settings.Reasoning.ReturnMechanism != nil {
