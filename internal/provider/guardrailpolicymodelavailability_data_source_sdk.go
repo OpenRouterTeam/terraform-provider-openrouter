@@ -22,6 +22,7 @@ func (r *GuardrailPolicyModelAvailabilityDataSourceModel) RefreshFromSharedModel
 	r.Config = &tfTypes.GuardrailModelAvailabilityPolicyConfig{}
 	r.Config.AllowProvisionalProviders = types.BoolPointerValue(resp.Config.AllowProvisionalProviders)
 	r.Config.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.Config.AllowSafetyRetentionGoogle)
+	r.Config.AllowSafetyRetentionOpenai = types.BoolPointerValue(resp.Config.AllowSafetyRetentionOpenai)
 	r.Config.AllowSafetyRetentionOther = types.BoolPointerValue(resp.Config.AllowSafetyRetentionOther)
 	if resp.Config.AllowedDataRegions != nil {
 		r.Config.AllowedDataRegions = make([]types.String, 0, len(resp.Config.AllowedDataRegions))

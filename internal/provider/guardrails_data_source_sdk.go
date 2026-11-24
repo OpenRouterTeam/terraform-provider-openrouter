@@ -25,6 +25,7 @@ func (r *GuardrailsDataSourceModel) RefreshFromSharedListGuardrailsResponse(ctx 
 
 			data.AllowProvisionalProviders = types.BoolPointerValue(dataItem.AllowProvisionalProviders)
 			data.AllowSafetyRetentionGoogle = types.BoolPointerValue(dataItem.AllowSafetyRetentionGoogle)
+			data.AllowSafetyRetentionOpenai = types.BoolPointerValue(dataItem.AllowSafetyRetentionOpenai)
 			data.AllowSafetyRetentionOther = types.BoolPointerValue(dataItem.AllowSafetyRetentionOther)
 			if dataItem.AllowedDataRegions != nil {
 				if data.AllowedDataRegions == nil {

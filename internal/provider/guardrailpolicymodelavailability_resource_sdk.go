@@ -18,6 +18,7 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) RefreshFromSharedModelAv
 	r.Config = &tfTypes.GuardrailModelAvailabilityPolicyAuthoringConfig{}
 	r.Config.AllowProvisionalProviders = types.BoolPointerValue(resp.Config.AllowProvisionalProviders)
 	r.Config.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.Config.AllowSafetyRetentionGoogle)
+	r.Config.AllowSafetyRetentionOpenai = types.BoolPointerValue(resp.Config.AllowSafetyRetentionOpenai)
 	r.Config.AllowSafetyRetentionOther = types.BoolPointerValue(resp.Config.AllowSafetyRetentionOther)
 	if resp.Config.AllowedDataRegions != nil {
 		r.Config.AllowedDataRegions = make([]types.String, 0, len(resp.Config.AllowedDataRegions))
@@ -111,6 +112,7 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) RefreshFromSharedModelAv
 	r.Config = &tfTypes.GuardrailModelAvailabilityPolicyAuthoringConfig{}
 	r.Config.AllowProvisionalProviders = types.BoolPointerValue(resp.Config.AllowProvisionalProviders)
 	r.Config.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.Config.AllowSafetyRetentionGoogle)
+	r.Config.AllowSafetyRetentionOpenai = types.BoolPointerValue(resp.Config.AllowSafetyRetentionOpenai)
 	r.Config.AllowSafetyRetentionOther = types.BoolPointerValue(resp.Config.AllowSafetyRetentionOther)
 	if resp.Config.AllowedDataRegions != nil {
 		r.Config.AllowedDataRegions = make([]types.String, 0, len(resp.Config.AllowedDataRegions))
@@ -332,6 +334,12 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) ToSharedCreateModelAvail
 	} else {
 		allowSafetyRetentionGoogle = nil
 	}
+	allowSafetyRetentionOpenai := new(bool)
+	if !r.Config.AllowSafetyRetentionOpenai.IsUnknown() && !r.Config.AllowSafetyRetentionOpenai.IsNull() {
+		*allowSafetyRetentionOpenai = r.Config.AllowSafetyRetentionOpenai.ValueBool()
+	} else {
+		allowSafetyRetentionOpenai = nil
+	}
 	allowSafetyRetentionOther := new(bool)
 	if !r.Config.AllowSafetyRetentionOther.IsUnknown() && !r.Config.AllowSafetyRetentionOther.IsNull() {
 		*allowSafetyRetentionOther = r.Config.AllowSafetyRetentionOther.ValueBool()
@@ -463,6 +471,7 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) ToSharedCreateModelAvail
 	config := shared.GuardrailModelAvailabilityPolicyAuthoringConfig{
 		AllowProvisionalProviders:      allowProvisionalProviders,
 		AllowSafetyRetentionGoogle:     allowSafetyRetentionGoogle,
+		AllowSafetyRetentionOpenai:     allowSafetyRetentionOpenai,
 		AllowSafetyRetentionOther:      allowSafetyRetentionOther,
 		AllowedDataRegions:             allowedDataRegions,
 		AllowedModels:                  allowedModels,
@@ -546,6 +555,12 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) ToSharedUpdateModelAvail
 	} else {
 		allowSafetyRetentionGoogle = nil
 	}
+	allowSafetyRetentionOpenai := new(bool)
+	if !r.Config.AllowSafetyRetentionOpenai.IsUnknown() && !r.Config.AllowSafetyRetentionOpenai.IsNull() {
+		*allowSafetyRetentionOpenai = r.Config.AllowSafetyRetentionOpenai.ValueBool()
+	} else {
+		allowSafetyRetentionOpenai = nil
+	}
 	allowSafetyRetentionOther := new(bool)
 	if !r.Config.AllowSafetyRetentionOther.IsUnknown() && !r.Config.AllowSafetyRetentionOther.IsNull() {
 		*allowSafetyRetentionOther = r.Config.AllowSafetyRetentionOther.ValueBool()
@@ -677,6 +692,7 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) ToSharedUpdateModelAvail
 	config := shared.GuardrailModelAvailabilityPolicyAuthoringConfig{
 		AllowProvisionalProviders:      allowProvisionalProviders,
 		AllowSafetyRetentionGoogle:     allowSafetyRetentionGoogle,
+		AllowSafetyRetentionOpenai:     allowSafetyRetentionOpenai,
 		AllowSafetyRetentionOther:      allowSafetyRetentionOther,
 		AllowedDataRegions:             allowedDataRegions,
 		AllowedModels:                  allowedModels,
