@@ -50710,6 +50710,7 @@ paths:
           results: '$.data'
         type: 'offsetLimit'
       x-speakeasy-group: apiKeys
+      x-speakeasy-max-method-params: 1
       x-speakeasy-entity-operation: ApiKeys#read
     post:
       description: 'Create a new API key for the authenticated user. The plaintext `key` is returned only in this response. Treat it as a write-only, sensitive value; it cannot be retrieved later. Authenticate with a [management key](/docs/guides/overview/auth/management-api-keys). The optional `external` object associates the key with a partner-defined user and lookup key.'
