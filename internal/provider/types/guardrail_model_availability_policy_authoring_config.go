@@ -10,6 +10,7 @@ import (
 type GuardrailModelAvailabilityPolicyAuthoringConfig struct {
 	AllowProvisionalProviders      types.Bool     `tfsdk:"allow_provisional_providers"`
 	AllowSafetyRetentionGoogle     types.Bool     `tfsdk:"allow_safety_retention_google"`
+	AllowSafetyRetentionOpenai     types.Bool     `tfsdk:"allow_safety_retention_openai"`
 	AllowSafetyRetentionOther      types.Bool     `tfsdk:"allow_safety_retention_other"`
 	AllowedDataRegions             []types.String `tfsdk:"allowed_data_regions"`
 	AllowedModels                  []types.String `tfsdk:"allowed_models"`

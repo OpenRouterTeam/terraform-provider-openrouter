@@ -32,6 +32,7 @@ func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponseData(ctx
 
 	r.AllowProvisionalProviders = types.BoolPointerValue(resp.AllowProvisionalProviders)
 	r.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.AllowSafetyRetentionGoogle)
+	r.AllowSafetyRetentionOpenai = types.BoolPointerValue(resp.AllowSafetyRetentionOpenai)
 	r.AllowSafetyRetentionOther = types.BoolPointerValue(resp.AllowSafetyRetentionOther)
 	if resp.AllowedDataRegions != nil {
 		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))

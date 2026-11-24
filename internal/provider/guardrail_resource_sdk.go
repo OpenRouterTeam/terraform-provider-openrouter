@@ -32,6 +32,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedCreateGuardrailResponseData(ct
 
 	r.AllowProvisionalProviders = types.BoolPointerValue(resp.AllowProvisionalProviders)
 	r.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.AllowSafetyRetentionGoogle)
+	r.AllowSafetyRetentionOpenai = types.BoolPointerValue(resp.AllowSafetyRetentionOpenai)
 	r.AllowSafetyRetentionOther = types.BoolPointerValue(resp.AllowSafetyRetentionOther)
 	if resp.AllowedDataRegions != nil {
 		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
@@ -156,6 +157,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedGetGuardrailResponseData(ctx c
 
 	r.AllowProvisionalProviders = types.BoolPointerValue(resp.AllowProvisionalProviders)
 	r.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.AllowSafetyRetentionGoogle)
+	r.AllowSafetyRetentionOpenai = types.BoolPointerValue(resp.AllowSafetyRetentionOpenai)
 	r.AllowSafetyRetentionOther = types.BoolPointerValue(resp.AllowSafetyRetentionOther)
 	if resp.AllowedDataRegions != nil {
 		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
@@ -280,6 +282,7 @@ func (r *GuardrailResourceModel) RefreshFromSharedUpdateGuardrailResponseData(ct
 
 	r.AllowProvisionalProviders = types.BoolPointerValue(resp.AllowProvisionalProviders)
 	r.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.AllowSafetyRetentionGoogle)
+	r.AllowSafetyRetentionOpenai = types.BoolPointerValue(resp.AllowSafetyRetentionOpenai)
 	r.AllowSafetyRetentionOther = types.BoolPointerValue(resp.AllowSafetyRetentionOther)
 	if resp.AllowedDataRegions != nil {
 		r.AllowedDataRegions = make([]types.String, 0, len(resp.AllowedDataRegions))
@@ -445,6 +448,12 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 		*allowSafetyRetentionGoogle = r.AllowSafetyRetentionGoogle.ValueBool()
 	} else {
 		allowSafetyRetentionGoogle = nil
+	}
+	allowSafetyRetentionOpenai := new(bool)
+	if !r.AllowSafetyRetentionOpenai.IsUnknown() && !r.AllowSafetyRetentionOpenai.IsNull() {
+		*allowSafetyRetentionOpenai = r.AllowSafetyRetentionOpenai.ValueBool()
+	} else {
+		allowSafetyRetentionOpenai = nil
 	}
 	allowSafetyRetentionOther := new(bool)
 	if !r.AllowSafetyRetentionOther.IsUnknown() && !r.AllowSafetyRetentionOther.IsNull() {
@@ -630,6 +639,7 @@ func (r *GuardrailResourceModel) ToSharedCreateGuardrailRequest(ctx context.Cont
 	out := shared.CreateGuardrailRequest{
 		AllowProvisionalProviders:      allowProvisionalProviders,
 		AllowSafetyRetentionGoogle:     allowSafetyRetentionGoogle,
+		AllowSafetyRetentionOpenai:     allowSafetyRetentionOpenai,
 		AllowSafetyRetentionOther:      allowSafetyRetentionOther,
 		AllowedDataRegions:             allowedDataRegions,
 		AllowedModels:                  allowedModels,
@@ -673,6 +683,12 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 		*allowSafetyRetentionGoogle = r.AllowSafetyRetentionGoogle.ValueBool()
 	} else {
 		allowSafetyRetentionGoogle = nil
+	}
+	allowSafetyRetentionOpenai := new(bool)
+	if !r.AllowSafetyRetentionOpenai.IsUnknown() && !r.AllowSafetyRetentionOpenai.IsNull() {
+		*allowSafetyRetentionOpenai = r.AllowSafetyRetentionOpenai.ValueBool()
+	} else {
+		allowSafetyRetentionOpenai = nil
 	}
 	allowSafetyRetentionOther := new(bool)
 	if !r.AllowSafetyRetentionOther.IsUnknown() && !r.AllowSafetyRetentionOther.IsNull() {
@@ -855,6 +871,7 @@ func (r *GuardrailResourceModel) ToSharedUpdateGuardrailRequest(ctx context.Cont
 	out := shared.UpdateGuardrailRequest{
 		AllowProvisionalProviders:      allowProvisionalProviders,
 		AllowSafetyRetentionGoogle:     allowSafetyRetentionGoogle,
+		AllowSafetyRetentionOpenai:     allowSafetyRetentionOpenai,
 		AllowSafetyRetentionOther:      allowSafetyRetentionOther,
 		AllowedDataRegions:             allowedDataRegions,
 		AllowedModels:                  allowedModels,

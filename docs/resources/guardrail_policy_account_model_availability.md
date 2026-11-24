@@ -63,6 +63,7 @@ Optional:
 
 - `allow_provisional_providers` (Boolean)
 - `allow_safety_retention_google` (Boolean)
+- `allow_safety_retention_openai` (Boolean)
 - `allow_safety_retention_other` (Boolean)
 - `allowed_data_regions` (List of String)
 - `allowed_models` (List of String)

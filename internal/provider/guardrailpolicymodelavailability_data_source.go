@@ -72,6 +72,9 @@ func (r *GuardrailPolicyModelAvailabilityDataSource) Schema(ctx context.Context,
 					"allow_safety_retention_google": schema.BoolAttribute{
 						Computed: true,
 					},
+					"allow_safety_retention_openai": schema.BoolAttribute{
+						Computed: true,
+					},
 					"allow_safety_retention_other": schema.BoolAttribute{
 						Computed: true,
 					},

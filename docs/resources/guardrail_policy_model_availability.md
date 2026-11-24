@@ -29,6 +29,7 @@ resource "openrouter_guardrail_policy_model_availability" "my_guardrailpolicymod
   config = {
     allow_provisional_providers   = false
     allow_safety_retention_google = true
+    allow_safety_retention_openai = true
     allow_safety_retention_other  = false
     allowed_data_regions = [
       "..."
@@ -116,6 +117,7 @@ Optional:
 
 - `allow_provisional_providers` (Boolean)
 - `allow_safety_retention_google` (Boolean)
+- `allow_safety_retention_openai` (Boolean)
 - `allow_safety_retention_other` (Boolean)
 - `allowed_data_regions` (List of String)
 - `allowed_models` (List of String)
