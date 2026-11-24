@@ -34,39 +34,59 @@ type ModelsDataSource struct {
 
 // ModelsDataSourceModel describes the data model.
 type ModelsDataSourceModel struct {
-	Arch                 types.String                     `queryParam:"style=form,explode=true,name=arch" tfsdk:"arch"`
-	Category             types.String                     `queryParam:"style=form,explode=true,name=category" tfsdk:"category"`
-	Context              types.Int64                      `queryParam:"style=form,explode=true,name=context" tfsdk:"context"`
-	Data                 []tfTypes.Model                  `tfsdk:"data"`
-	Distillable          types.String                     `queryParam:"style=form,explode=true,name=distillable" tfsdk:"distillable"`
-	Endpoints            types.String                     `queryParam:"style=form,explode=true,name=endpoints" tfsdk:"endpoints"`
-	InputModalities      types.String                     `queryParam:"style=form,explode=true,name=input_modalities" tfsdk:"input_modalities"`
-	Links                *tfTypes.ModelsListResponseLinks `tfsdk:"links"`
-	MaxAgeDays           types.Int64                      `queryParam:"style=form,explode=true,name=max_age_days" tfsdk:"max_age_days"`
-	MaxAgenticIndex      types.Float64                    `queryParam:"style=form,explode=true,name=max_agentic_index" tfsdk:"max_agentic_index"`
-	MaxCodingIndex       types.Float64                    `queryParam:"style=form,explode=true,name=max_coding_index" tfsdk:"max_coding_index"`
-	MaxIntelligenceIndex types.Float64                    `queryParam:"style=form,explode=true,name=max_intelligence_index" tfsdk:"max_intelligence_index"`
-	MaxOutputPrice       types.Float64                    `queryParam:"style=form,explode=true,name=max_output_price" tfsdk:"max_output_price"`
-	MaxPrice             types.Float64                    `queryParam:"style=form,explode=true,name=max_price" tfsdk:"max_price"`
-	MaxToolSuccessRate   types.Float64                    `queryParam:"style=form,explode=true,name=max_tool_success_rate" tfsdk:"max_tool_success_rate"`
-	MinAgeDays           types.Int64                      `queryParam:"style=form,explode=true,name=min_age_days" tfsdk:"min_age_days"`
-	MinAgenticIndex      types.Float64                    `queryParam:"style=form,explode=true,name=min_agentic_index" tfsdk:"min_agentic_index"`
-	MinCodingIndex       types.Float64                    `queryParam:"style=form,explode=true,name=min_coding_index" tfsdk:"min_coding_index"`
-	MinIntelligenceIndex types.Float64                    `queryParam:"style=form,explode=true,name=min_intelligence_index" tfsdk:"min_intelligence_index"`
-	MinOutputPrice       types.Float64                    `queryParam:"style=form,explode=true,name=min_output_price" tfsdk:"min_output_price"`
-	MinPrice             types.Float64                    `queryParam:"style=form,explode=true,name=min_price" tfsdk:"min_price"`
-	MinToolSuccessRate   types.Float64                    `queryParam:"style=form,explode=true,name=min_tool_success_rate" tfsdk:"min_tool_success_rate"`
-	ModelAuthors         types.String                     `queryParam:"style=form,explode=true,name=model_authors" tfsdk:"model_authors"`
-	OutputModalities     types.String                     `queryParam:"style=form,explode=true,name=output_modalities" tfsdk:"output_modalities"`
-	Providers            types.String                     `queryParam:"style=form,explode=true,name=providers" tfsdk:"providers"`
-	Q                    types.String                     `queryParam:"style=form,explode=true,name=q" tfsdk:"q"`
-	Region               types.String                     `queryParam:"style=form,explode=true,name=region" tfsdk:"region"`
-	Sort                 types.String                     `queryParam:"style=form,explode=true,name=sort" tfsdk:"sort"`
-	SupportedParameters  types.String                     `queryParam:"style=form,explode=true,name=supported_parameters" tfsdk:"supported_parameters"`
-	TotalCount           types.Int64                      `tfsdk:"total_count"`
-	UseRss               types.String                     `queryParam:"style=form,explode=true,name=use_rss" tfsdk:"use_rss"`
-	UseRssChatLinks      types.String                     `queryParam:"style=form,explode=true,name=use_rss_chat_links" tfsdk:"use_rss_chat_links"`
-	Zdr                  types.String                     `queryParam:"style=form,explode=true,name=zdr" tfsdk:"zdr"`
+	Arch                         types.String                     `queryParam:"style=form,explode=true,name=arch" tfsdk:"arch"`
+	Category                     types.String                     `queryParam:"style=form,explode=true,name=category" tfsdk:"category"`
+	Context                      types.Int64                      `queryParam:"style=form,explode=true,name=context" tfsdk:"context"`
+	Data                         []tfTypes.Model                  `tfsdk:"data"`
+	Distillable                  types.String                     `queryParam:"style=form,explode=true,name=distillable" tfsdk:"distillable"`
+	Endpoints                    types.String                     `queryParam:"style=form,explode=true,name=endpoints" tfsdk:"endpoints"`
+	InputModalities              types.String                     `queryParam:"style=form,explode=true,name=input_modalities" tfsdk:"input_modalities"`
+	Links                        *tfTypes.ModelsListResponseLinks `tfsdk:"links"`
+	MaxAgeDays                   types.Int64                      `queryParam:"style=form,explode=true,name=max_age_days" tfsdk:"max_age_days"`
+	MaxAgenticIndex              types.Float64                    `queryParam:"style=form,explode=true,name=max_agentic_index" tfsdk:"max_agentic_index"`
+	MaxCodingIndex               types.Float64                    `queryParam:"style=form,explode=true,name=max_coding_index" tfsdk:"max_coding_index"`
+	MaxCyberIndex                types.Float64                    `queryParam:"style=form,explode=true,name=max_cyber_index" tfsdk:"max_cyber_index"`
+	MaxDecisionIndex             types.Float64                    `queryParam:"style=form,explode=true,name=max_decision_index" tfsdk:"max_decision_index"`
+	MaxEconomicsIndex            types.Float64                    `queryParam:"style=form,explode=true,name=max_economics_index" tfsdk:"max_economics_index"`
+	MaxEngineeringIndex          types.Float64                    `queryParam:"style=form,explode=true,name=max_engineering_index" tfsdk:"max_engineering_index"`
+	MaxFinanceAndAccountingIndex types.Float64                    `queryParam:"style=form,explode=true,name=max_finance_and_accounting_index" tfsdk:"max_finance_and_accounting_index"`
+	MaxHealthcareAndMedicalIndex types.Float64                    `queryParam:"style=form,explode=true,name=max_healthcare_and_medical_index" tfsdk:"max_healthcare_and_medical_index"`
+	MaxIntelligenceIndex         types.Float64                    `queryParam:"style=form,explode=true,name=max_intelligence_index" tfsdk:"max_intelligence_index"`
+	MaxLegalIndex                types.Float64                    `queryParam:"style=form,explode=true,name=max_legal_index" tfsdk:"max_legal_index"`
+	MaxMultilingualIndex         types.Float64                    `queryParam:"style=form,explode=true,name=max_multilingual_index" tfsdk:"max_multilingual_index"`
+	MaxOpennessIndex             types.Float64                    `queryParam:"style=form,explode=true,name=max_openness_index" tfsdk:"max_openness_index"`
+	MaxOutputPrice               types.Float64                    `queryParam:"style=form,explode=true,name=max_output_price" tfsdk:"max_output_price"`
+	MaxPrice                     types.Float64                    `queryParam:"style=form,explode=true,name=max_price" tfsdk:"max_price"`
+	MaxStrategyAndOpsIndex       types.Float64                    `queryParam:"style=form,explode=true,name=max_strategy_and_ops_index" tfsdk:"max_strategy_and_ops_index"`
+	MaxToolSuccessRate           types.Float64                    `queryParam:"style=form,explode=true,name=max_tool_success_rate" tfsdk:"max_tool_success_rate"`
+	MinAgeDays                   types.Int64                      `queryParam:"style=form,explode=true,name=min_age_days" tfsdk:"min_age_days"`
+	MinAgenticIndex              types.Float64                    `queryParam:"style=form,explode=true,name=min_agentic_index" tfsdk:"min_agentic_index"`
+	MinCodingIndex               types.Float64                    `queryParam:"style=form,explode=true,name=min_coding_index" tfsdk:"min_coding_index"`
+	MinCyberIndex                types.Float64                    `queryParam:"style=form,explode=true,name=min_cyber_index" tfsdk:"min_cyber_index"`
+	MinDecisionIndex             types.Float64                    `queryParam:"style=form,explode=true,name=min_decision_index" tfsdk:"min_decision_index"`
+	MinEconomicsIndex            types.Float64                    `queryParam:"style=form,explode=true,name=min_economics_index" tfsdk:"min_economics_index"`
+	MinEngineeringIndex          types.Float64                    `queryParam:"style=form,explode=true,name=min_engineering_index" tfsdk:"min_engineering_index"`
+	MinFinanceAndAccountingIndex types.Float64                    `queryParam:"style=form,explode=true,name=min_finance_and_accounting_index" tfsdk:"min_finance_and_accounting_index"`
+	MinHealthcareAndMedicalIndex types.Float64                    `queryParam:"style=form,explode=true,name=min_healthcare_and_medical_index" tfsdk:"min_healthcare_and_medical_index"`
+	MinIntelligenceIndex         types.Float64                    `queryParam:"style=form,explode=true,name=min_intelligence_index" tfsdk:"min_intelligence_index"`
+	MinLegalIndex                types.Float64                    `queryParam:"style=form,explode=true,name=min_legal_index" tfsdk:"min_legal_index"`
+	MinMultilingualIndex         types.Float64                    `queryParam:"style=form,explode=true,name=min_multilingual_index" tfsdk:"min_multilingual_index"`
+	MinOpennessIndex             types.Float64                    `queryParam:"style=form,explode=true,name=min_openness_index" tfsdk:"min_openness_index"`
+	MinOutputPrice               types.Float64                    `queryParam:"style=form,explode=true,name=min_output_price" tfsdk:"min_output_price"`
+	MinPrice                     types.Float64                    `queryParam:"style=form,explode=true,name=min_price" tfsdk:"min_price"`
+	MinStrategyAndOpsIndex       types.Float64                    `queryParam:"style=form,explode=true,name=min_strategy_and_ops_index" tfsdk:"min_strategy_and_ops_index"`
+	MinToolSuccessRate           types.Float64                    `queryParam:"style=form,explode=true,name=min_tool_success_rate" tfsdk:"min_tool_success_rate"`
+	ModelAuthors                 types.String                     `queryParam:"style=form,explode=true,name=model_authors" tfsdk:"model_authors"`
+	OutputModalities             types.String                     `queryParam:"style=form,explode=true,name=output_modalities" tfsdk:"output_modalities"`
+	Providers                    types.String                     `queryParam:"style=form,explode=true,name=providers" tfsdk:"providers"`
+	Q                            types.String                     `queryParam:"style=form,explode=true,name=q" tfsdk:"q"`
+	Region                       types.String                     `queryParam:"style=form,explode=true,name=region" tfsdk:"region"`
+	Sort                         types.String                     `queryParam:"style=form,explode=true,name=sort" tfsdk:"sort"`
+	SupportedParameters          types.String                     `queryParam:"style=form,explode=true,name=supported_parameters" tfsdk:"supported_parameters"`
+	TotalCount                   types.Int64                      `tfsdk:"total_count"`
+	UseRss                       types.String                     `queryParam:"style=form,explode=true,name=use_rss" tfsdk:"use_rss"`
+	UseRssChatLinks              types.String                     `queryParam:"style=form,explode=true,name=use_rss_chat_links" tfsdk:"use_rss_chat_links"`
+	Zdr                          types.String                     `queryParam:"style=form,explode=true,name=zdr" tfsdk:"zdr"`
 }
 
 // Metadata returns the data source type name.
@@ -164,19 +184,61 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 									Computed: true,
 									Attributes: map[string]schema.Attribute{
 										"agentic_index": schema.Float64Attribute{
-											Computed:    true,
-											Description: `Artificial Analysis Agentic Index score`,
+											Computed:           true,
+											DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
+											Description:        `Deprecated: Artificial Analysis has retired its Agentic Index and no longer publishes it. Always null.`,
 										},
 										"coding_index": schema.Float64Attribute{
+											Computed:           true,
+											DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
+											Description:        `Deprecated: Artificial Analysis has retired its Coding Index and no longer publishes it. Always null.`,
+										},
+										"cyber_index": schema.Float64Attribute{
 											Computed:    true,
-											Description: `Artificial Analysis Coding Index score`,
+											Description: `Artificial Analysis Cyber Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"decision_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Decision Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Published for decision models and for the language models Artificial Analysis evaluates on decision tasks. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"economics_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Economics Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"engineering_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Engineering Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"finance_and_accounting_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Finance & Accounting Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"healthcare_and_medical_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Healthcare & Medical Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
 										},
 										"intelligence_index": schema.Float64Attribute{
 											Computed:    true,
-											Description: `Artificial Analysis Intelligence Index score`,
+											Description: `Artificial Analysis Intelligence Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"legal_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Legal Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"multilingual_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Multilingual Index score, as a fraction from 0 to 1: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"openness_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Openness Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.`,
+										},
+										"strategy_and_ops_index": schema.Float64Attribute{
+											Computed:    true,
+											Description: `Artificial Analysis Strategy & Ops Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.`,
 										},
 									},
-									Description: `Artificial Analysis benchmark index scores.`,
+									Description: `Benchmark index scores published by Artificial Analysis (artificialanalysis.ai), one field per index. Each score is the model's best on that index across the configurations Artificial Analysis evaluated (for example reasoning levels), so two indexes of one model can come from different configurations. The deprecated Coding Index and Agentic Index fields are null for every model: Artificial Analysis has retired those indexes. Attribute Artificial Analysis when you republish them. Omitted when Artificial Analysis has scored the model on none of them.`,
 								},
 								"design_arena": schema.ListNestedAttribute{
 									Computed: true,
@@ -511,22 +573,87 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				},
 			},
 			"max_agentic_index": schema.Float64Attribute{
-				Optional:    true,
-				Description: `Maximum Artificial Analysis agentic index.`,
+				Optional:           true,
+				DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
+				Description:        `Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.`,
 				Validators: []validator.Float64{
 					float64validator.AtLeast(0),
 				},
 			},
 			"max_coding_index": schema.Float64Attribute{
+				Optional:           true,
+				DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
+				Description:        `Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_cyber_index": schema.Float64Attribute{
 				Optional:    true,
-				Description: `Maximum Artificial Analysis coding index.`,
+				Description: `Maximum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_decision_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Decision Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_economics_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Economics Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_engineering_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_finance_and_accounting_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_healthcare_and_medical_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.`,
 				Validators: []validator.Float64{
 					float64validator.AtLeast(0),
 				},
 			},
 			"max_intelligence_index": schema.Float64Attribute{
 				Optional:    true,
-				Description: `Maximum Artificial Analysis intelligence index.`,
+				Description: `Maximum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_legal_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Legal Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_multilingual_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.Between(0, 1),
+				},
+			},
+			"max_openness_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Openness Index score (0-100); unscored models are excluded.`,
 				Validators: []validator.Float64{
 					float64validator.AtLeast(0),
 				},
@@ -541,6 +668,13 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			"max_price": schema.Float64Attribute{
 				Optional:    true,
 				Description: `Maximum prompt price in $/M tokens.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"max_strategy_and_ops_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Maximum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.`,
 				Validators: []validator.Float64{
 					float64validator.AtLeast(0),
 				},
@@ -560,22 +694,87 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				},
 			},
 			"min_agentic_index": schema.Float64Attribute{
-				Optional:    true,
-				Description: `Minimum Artificial Analysis agentic index.`,
+				Optional:           true,
+				DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
+				Description:        `Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.`,
 				Validators: []validator.Float64{
 					float64validator.AtLeast(0),
 				},
 			},
 			"min_coding_index": schema.Float64Attribute{
+				Optional:           true,
+				DeprecationMessage: `This will be removed in a future release, please migrate away from it as soon as possible`,
+				Description:        `Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_cyber_index": schema.Float64Attribute{
 				Optional:    true,
-				Description: `Minimum Artificial Analysis coding index.`,
+				Description: `Minimum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_decision_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Decision Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_economics_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Economics Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_engineering_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_finance_and_accounting_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_healthcare_and_medical_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.`,
 				Validators: []validator.Float64{
 					float64validator.AtLeast(0),
 				},
 			},
 			"min_intelligence_index": schema.Float64Attribute{
 				Optional:    true,
-				Description: `Minimum Artificial Analysis intelligence index.`,
+				Description: `Minimum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_legal_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Legal Index score (0-100); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_multilingual_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.`,
+				Validators: []validator.Float64{
+					float64validator.Between(0, 1),
+				},
+			},
+			"min_openness_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Openness Index score (0-100); unscored models are excluded.`,
 				Validators: []validator.Float64{
 					float64validator.AtLeast(0),
 				},
@@ -590,6 +789,13 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			"min_price": schema.Float64Attribute{
 				Optional:    true,
 				Description: `Minimum prompt price in $/M tokens.`,
+				Validators: []validator.Float64{
+					float64validator.AtLeast(0),
+				},
+			},
+			"min_strategy_and_ops_index": schema.Float64Attribute{
+				Optional:    true,
+				Description: `Minimum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.`,
 				Validators: []validator.Float64{
 					float64validator.AtLeast(0),
 				},
@@ -626,7 +832,7 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			},
 			"sort": schema.StringAttribute{
 				Optional:    true,
-				Description: `Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved. must be one of ["most-popular", "newest", "top-weekly", "pricing-low-to-high", "pricing-high-to-low", "context-high-to-low", "throughput-high-to-low", "latency-low-to-high", "intelligence-high-to-low", "coding-high-to-low", "agentic-high-to-low", "design-arena-elo-high-to-low"]`,
+				Description: `Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), <index>-high-to-low for each Artificial Analysis index (the coding and agentic sorts are deprecated: Artificial Analysis has retired those indexes, so they order by canonical slug and variant alone), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. The decision sort ranks decision models, so pass output_modalities=decisions or all with it. When omitted, the existing default ordering is preserved. must be one of ["most-popular", "newest", "top-weekly", "pricing-low-to-high", "pricing-high-to-low", "context-high-to-low", "throughput-high-to-low", "latency-low-to-high", "intelligence-high-to-low", "coding-high-to-low", "agentic-high-to-low", "finance-and-accounting-high-to-low", "strategy-and-ops-high-to-low", "legal-high-to-low", "healthcare-and-medical-high-to-low", "engineering-high-to-low", "economics-high-to-low", "cyber-high-to-low", "openness-high-to-low", "multilingual-high-to-low", "decision-high-to-low", "design-arena-elo-high-to-low"]`,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"most-popular",
@@ -640,6 +846,16 @@ func (r *ModelsDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 						"intelligence-high-to-low",
 						"coding-high-to-low",
 						"agentic-high-to-low",
+						"finance-and-accounting-high-to-low",
+						"strategy-and-ops-high-to-low",
+						"legal-high-to-low",
+						"healthcare-and-medical-high-to-low",
+						"engineering-high-to-low",
+						"economics-high-to-low",
+						"cyber-high-to-low",
+						"openness-high-to-low",
+						"multilingual-high-to-low",
+						"decision-high-to-low",
 						"design-arena-elo-high-to-low",
 					),
 				},

@@ -63,6 +63,7 @@ func (r *ByokKeyDataSourceModel) RefreshFromSharedGetBYOKKeyResponseData(ctx con
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
 	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
+	r.IsExclusive = types.BoolValue(resp.IsExclusive)
 	r.IsFallback = types.BoolValue(resp.IsFallback)
 	r.IsRequired = types.BoolValue(resp.IsRequired)
 	r.Label = types.StringValue(resp.Label)

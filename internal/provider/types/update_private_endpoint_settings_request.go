@@ -14,6 +14,7 @@ type UpdatePrivateEndpointSettingsRequest struct {
 	Inputs              *UpdatePrivateEndpointSettingsRequestInputs      `tfsdk:"inputs"`
 	MaxCompletionTokens types.Int64                                      `tfsdk:"max_completion_tokens"`
 	MaxPromptTokens     types.Int64                                      `tfsdk:"max_prompt_tokens"`
+	PromptCaching       *UpdatePrivateEndpointPromptCaching              `tfsdk:"prompt_caching"`
 	Quantization        types.String                                     `tfsdk:"quantization"`
 	Reasoning           *UpdatePrivateEndpointSettingsRequestReasoning   `tfsdk:"reasoning"`
 	ToolChoice          *UpdatePrivateEndpointSettingsRequestToolChoice  `tfsdk:"tool_choice"`

@@ -63,6 +63,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedCreateBYOKKeyResponseData(ctx co
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
 	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
+	r.IsExclusive = types.BoolValue(resp.IsExclusive)
 	r.IsFallback = types.BoolValue(resp.IsFallback)
 	r.IsRequired = types.BoolValue(resp.IsRequired)
 	r.Label = types.StringValue(resp.Label)
@@ -126,6 +127,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedGetBYOKKeyResponseData(ctx conte
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
 	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
+	r.IsExclusive = types.BoolValue(resp.IsExclusive)
 	r.IsFallback = types.BoolValue(resp.IsFallback)
 	r.IsRequired = types.BoolValue(resp.IsRequired)
 	r.Label = types.StringValue(resp.Label)
@@ -189,6 +191,7 @@ func (r *ByokKeyResourceModel) RefreshFromSharedUpdateBYOKKeyResponseData(ctx co
 	r.Disabled = types.BoolValue(resp.Disabled)
 	r.ID = types.StringValue(resp.ID)
 	r.IsByokOnly = types.BoolValue(resp.IsByokOnly)
+	r.IsExclusive = types.BoolValue(resp.IsExclusive)
 	r.IsFallback = types.BoolValue(resp.IsFallback)
 	r.IsRequired = types.BoolValue(resp.IsRequired)
 	r.Label = types.StringValue(resp.Label)
@@ -295,6 +298,12 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 	} else {
 		isByokOnly = nil
 	}
+	isExclusive := new(bool)
+	if !r.IsExclusive.IsUnknown() && !r.IsExclusive.IsNull() {
+		*isExclusive = r.IsExclusive.ValueBool()
+	} else {
+		isExclusive = nil
+	}
 	isFallback := new(bool)
 	if !r.IsFallback.IsUnknown() && !r.IsFallback.IsNull() {
 		*isFallback = r.IsFallback.ValueBool()
@@ -331,6 +340,7 @@ func (r *ByokKeyResourceModel) ToSharedCreateBYOKKeyRequest(ctx context.Context)
 		DeclaredZdr:         declaredZdr,
 		Disabled:            disabled,
 		IsByokOnly:          isByokOnly,
+		IsExclusive:         isExclusive,
 		IsFallback:          isFallback,
 		IsRequired:          isRequired,
 		Key:                 key,
@@ -390,6 +400,12 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 	} else {
 		isByokOnly = nil
 	}
+	isExclusive := new(bool)
+	if !r.IsExclusive.IsUnknown() && !r.IsExclusive.IsNull() {
+		*isExclusive = r.IsExclusive.ValueBool()
+	} else {
+		isExclusive = nil
+	}
 	isFallback := new(bool)
 	if !r.IsFallback.IsUnknown() && !r.IsFallback.IsNull() {
 		*isFallback = r.IsFallback.ValueBool()
@@ -422,6 +438,7 @@ func (r *ByokKeyResourceModel) ToSharedUpdateBYOKKeyRequest(ctx context.Context)
 		DeclaredZdr:         declaredZdr,
 		Disabled:            disabled,
 		IsByokOnly:          isByokOnly,
+		IsExclusive:         isExclusive,
 		IsFallback:          isFallback,
 		IsRequired:          isRequired,
 		Key:                 key,

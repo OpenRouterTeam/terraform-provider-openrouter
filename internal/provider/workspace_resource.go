@@ -119,23 +119,23 @@ func (r *WorkspaceResource) Schema(ctx context.Context, req resource.SchemaReque
 			},
 			"include_byok_in_budgets": schema.BoolAttribute{
 				Computed:    true,
-				Description: `Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Set it via the workspace budget endpoints.`,
+				Description: `Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Omitted without settings and budget visibility. Set it via the workspace budget endpoints.`,
 			},
 			"io_logging_api_key_ids": schema.ListAttribute{
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.Int64Type,
-				Description: `Optional array of API key IDs to filter I/O logging`,
+				Description: `Optional array of API key IDs to filter I/O logging. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.`,
 			},
 			"io_logging_sampling_rate": schema.Float64Attribute{
 				Computed:    true,
 				Optional:    true,
-				Description: `Sampling rate for I/O logging (0.0001-1)`,
+				Description: `Sampling rate for I/O logging (0.0001-1). Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.`,
 			},
 			"is_data_discount_logging_enabled": schema.BoolAttribute{
 				Computed:    true,
 				Optional:    true,
-				Description: `Whether data discount logging is enabled. Enabling it requires the account to allow workspace data-discount logging; otherwise the request returns 403.`,
+				Description: `Whether data discount logging is enabled. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.`,
 			},
 			"is_observability_broadcast_enabled": schema.BoolAttribute{
 				Computed:    true,
@@ -145,7 +145,7 @@ func (r *WorkspaceResource) Schema(ctx context.Context, req resource.SchemaReque
 			"is_observability_io_logging_enabled": schema.BoolAttribute{
 				Computed:    true,
 				Optional:    true,
-				Description: `Whether private logging is enabled`,
+				Description: `Whether private logging is enabled. Read-only for management keys: any value other than the default returns 403. Change it in the OpenRouter dashboard.`,
 			},
 			"name": schema.StringAttribute{
 				Required:    true,

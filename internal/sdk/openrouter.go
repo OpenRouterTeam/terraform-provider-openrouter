@@ -61,8 +61,9 @@ type OpenRouter struct {
 	// Analytics and usage endpoints
 	Analytics *Analytics
 	Alpha     *Alpha
-	Tts       *Tts
-	Stt       *Stt
+	// Text-to-speech endpoints
+	Tts *Tts
+	Stt *Stt
 	// OAuth authentication endpoints
 	OAuth *OAuth1
 	Oauth *Oauth2
