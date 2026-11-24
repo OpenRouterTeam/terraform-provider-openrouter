@@ -42,7 +42,6 @@ resource "openrouter_guardrail_policy_moderation" "my_guardrailpolicymoderation"
       use_cc_style_default_rules = false
     }
     broadcast_model_armor_flagged_requests = false
-    content_filter_blocks_requests         = true
     content_filter_builtins = [
       {
         action     = "flag"
@@ -50,9 +49,6 @@ resource "openrouter_guardrail_policy_moderation" "my_guardrailpolicymoderation"
         scan_scope = "user_only"
         slug       = "email"
       }
-    ]
-    content_filter_patterns = [
-      "..."
     ]
     content_filters = [
       {
@@ -65,13 +61,6 @@ resource "openrouter_guardrail_policy_moderation" "my_guardrailpolicymoderation"
     lakera_injection_protection_mode        = "flag"
     model_armor_injection_confidence_level  = "high"
     model_armor_injection_protection_mode   = "flag"
-    pii_filters = [
-      {
-        action          = "flag"
-        entity_type     = "...my_entity_type..."
-        score_threshold = 0.9
-      }
-    ]
     platform_image_moderated_providers = [
       "..."
     ]

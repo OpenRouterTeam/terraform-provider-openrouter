@@ -14,7 +14,6 @@ import (
 	speakeasy_objectvalidators "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators/objectvalidators"
 	speakeasy_stringvalidators "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/validators/stringvalidators"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
-	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -69,7 +68,7 @@ func (r *GuardrailPolicyModerationResource) Metadata(ctx context.Context, req re
 
 func (r *GuardrailPolicyModerationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation`, and is fixed for this resource: the corresponding resource manages another policy family.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.",
+		MarkdownDescription: "A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation`, and is fixed for this resource: the corresponding resource manages another policy family.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.\n\nThe retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable.",
 		Attributes: map[string]schema.Attribute{
 			"api_key_hashes": schema.ListAttribute{
 				Computed:    true,
@@ -380,10 +379,6 @@ func (r *GuardrailPolicyModerationResource) Schema(ctx context.Context, req reso
 						Computed: true,
 						Optional: true,
 					},
-					"content_filter_blocks_requests": schema.BoolAttribute{
-						Computed: true,
-						Optional: true,
-					},
 					"content_filter_builtins": schema.ListNestedAttribute{
 						Computed: true,
 						Optional: true,
@@ -444,11 +439,6 @@ func (r *GuardrailPolicyModerationResource) Schema(ctx context.Context, req reso
 								},
 							},
 						},
-					},
-					"content_filter_patterns": schema.ListAttribute{
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.StringType,
 					},
 					"content_filters": schema.ListNestedAttribute{
 						Computed: true,
@@ -526,45 +516,6 @@ func (r *GuardrailPolicyModerationResource) Schema(ctx context.Context, req reso
 								"block",
 								"flag",
 							),
-						},
-					},
-					"pii_filters": schema.ListNestedAttribute{
-						Computed: true,
-						Optional: true,
-						NestedObject: schema.NestedAttributeObject{
-							Validators: []validator.Object{
-								speakeasy_objectvalidators.NotNull(),
-							},
-							Attributes: map[string]schema.Attribute{
-								"action": schema.StringAttribute{
-									Computed:    true,
-									Optional:    true,
-									Description: `Not Null; must be one of ["redact", "block", "flag"]`,
-									Validators: []validator.String{
-										speakeasy_stringvalidators.NotNull(),
-										stringvalidator.OneOf(
-											"redact",
-											"block",
-											"flag",
-										),
-									},
-								},
-								"entity_type": schema.StringAttribute{
-									Computed:    true,
-									Optional:    true,
-									Description: `Not Null`,
-									Validators: []validator.String{
-										speakeasy_stringvalidators.NotNull(),
-									},
-								},
-								"score_threshold": schema.Float64Attribute{
-									Computed: true,
-									Optional: true,
-									Validators: []validator.Float64{
-										float64validator.Between(0, 1),
-									},
-								},
-							},
 						},
 					},
 					"platform_image_moderated_providers": schema.ListAttribute{
