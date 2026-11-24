@@ -682,7 +682,7 @@ trackedFiles:
   internal/provider/privateendpoint_resource.go:
     id: a64a2acbf118
     last_write_checksum: sha1:b9d7522456b6b5bd9e199e7fb5bf85b896c19543
-    pristine_git_object: 1ac0d481bf814aaee7cd5e50f59bd9e16b344470
+    pristine_git_object: 3763e517731a859aa00e78b490e8d382ce16ccea
   internal/provider/privateendpoint_resource_sdk.go:
     id: f78a28b90402
     last_write_checksum: sha1:5cc005fa2af113a56516fec4f87eeb92d7b4fe92
