@@ -98,6 +98,7 @@ const (
 	ProviderParallel                 Provider = "parallel"
 	ProviderParasail                 Provider = "parasail"
 	ProviderParetoAlpha              Provider = "pareto-alpha"
+	ProviderParetoInference          Provider = "pareto-inference"
 	ProviderParticleAi               Provider = "particle-ai"
 	ProviderPearlResearch            Provider = "pearl-research"
 	ProviderPerceptron               Provider = "perceptron"
@@ -317,6 +318,8 @@ func (e *Provider) UnmarshalJSON(data []byte) error {
 	case "parasail":
 		fallthrough
 	case "pareto-alpha":
+		fallthrough
+	case "pareto-inference":
 		fallthrough
 	case "particle-ai":
 		fallthrough

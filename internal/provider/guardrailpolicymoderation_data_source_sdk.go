@@ -127,6 +127,7 @@ func (r *GuardrailPolicyModerationDataSourceModel) RefreshFromSharedModerationGu
 		r.Config.Armor.UseCcStyleDefaultRules = types.BoolPointerValue(resp.Config.Armor.UseCcStyleDefaultRules)
 	}
 	r.Config.BroadcastModelArmorFlaggedRequests = types.BoolPointerValue(resp.Config.BroadcastModelArmorFlaggedRequests)
+	r.Config.ContentFilterBlocksRequests = types.BoolPointerValue(resp.Config.ContentFilterBlocksRequests)
 	if resp.Config.ContentFilterBuiltins != nil {
 		r.Config.ContentFilterBuiltins = []tfTypes.ContentFilterBuiltin{}
 
@@ -146,6 +147,14 @@ func (r *GuardrailPolicyModerationDataSourceModel) RefreshFromSharedModerationGu
 		}
 	} else {
 		r.Config.ContentFilterBuiltins = nil
+	}
+	if resp.Config.ContentFilterPatterns != nil {
+		r.Config.ContentFilterPatterns = make([]types.String, 0, len(resp.Config.ContentFilterPatterns))
+		for _, v := range resp.Config.ContentFilterPatterns {
+			r.Config.ContentFilterPatterns = append(r.Config.ContentFilterPatterns, types.StringValue(v))
+		}
+	} else {
+		r.Config.ContentFilterPatterns = nil
 	}
 	if resp.Config.ContentFilters != nil {
 		r.Config.ContentFilters = []tfTypes.ContentFilter{}
@@ -177,6 +186,21 @@ func (r *GuardrailPolicyModerationDataSourceModel) RefreshFromSharedModerationGu
 		r.Config.ModelArmorInjectionProtectionMode = types.StringValue(string(*resp.Config.ModelArmorInjectionProtectionMode))
 	} else {
 		r.Config.ModelArmorInjectionProtectionMode = types.StringNull()
+	}
+	if resp.Config.PiiFilters != nil {
+		r.Config.PiiFilters = []tfTypes.PiiFilter{}
+
+		for _, piiFiltersItem := range resp.Config.PiiFilters {
+			var piiFilters tfTypes.PiiFilter
+
+			piiFilters.Action = types.StringValue(string(piiFiltersItem.Action))
+			piiFilters.EntityType = types.StringValue(piiFiltersItem.EntityType)
+			piiFilters.ScoreThreshold = types.Float64PointerValue(piiFiltersItem.ScoreThreshold)
+
+			r.Config.PiiFilters = append(r.Config.PiiFilters, piiFilters)
+		}
+	} else {
+		r.Config.PiiFilters = nil
 	}
 	if resp.Config.PlatformImageModeratedProviders != nil {
 		r.Config.PlatformImageModeratedProviders = make([]types.String, 0, len(resp.Config.PlatformImageModeratedProviders))

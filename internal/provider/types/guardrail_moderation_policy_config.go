@@ -10,12 +10,15 @@ import (
 type GuardrailModerationPolicyConfig struct {
 	Armor                               *Armor                 `tfsdk:"armor"`
 	BroadcastModelArmorFlaggedRequests  types.Bool             `tfsdk:"broadcast_model_armor_flagged_requests"`
+	ContentFilterBlocksRequests         types.Bool             `tfsdk:"content_filter_blocks_requests"`
 	ContentFilterBuiltins               []ContentFilterBuiltin `tfsdk:"content_filter_builtins"`
+	ContentFilterPatterns               []types.String         `tfsdk:"content_filter_patterns"`
 	ContentFilters                      []ContentFilter        `tfsdk:"content_filters"`
 	EnableModelArmorInjectionProtection types.Bool             `tfsdk:"enable_model_armor_injection_protection"`
 	LakeraInjectionProtectionMode       types.String           `tfsdk:"lakera_injection_protection_mode"`
 	ModelArmorInjectionConfidenceLevel  types.String           `tfsdk:"model_armor_injection_confidence_level"`
 	ModelArmorInjectionProtectionMode   types.String           `tfsdk:"model_armor_injection_protection_mode"`
+	PiiFilters                          []PiiFilter            `tfsdk:"pii_filters"`
 	PlatformImageModeratedProviders     []types.String         `tfsdk:"platform_image_moderated_providers"`
 	PlatformModeratedProviders          []types.String         `tfsdk:"platform_moderated_providers"`
 }

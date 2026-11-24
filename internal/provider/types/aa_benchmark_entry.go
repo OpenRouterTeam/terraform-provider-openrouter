@@ -8,7 +8,17 @@ import (
 )
 
 type AABenchmarkEntry struct {
-	AgenticIndex      types.Float64 `tfsdk:"agentic_index"`
-	CodingIndex       types.Float64 `tfsdk:"coding_index"`
-	IntelligenceIndex types.Float64 `tfsdk:"intelligence_index"`
+	AgenticIndex              types.Float64 `tfsdk:"agentic_index"`
+	CodingIndex               types.Float64 `tfsdk:"coding_index"`
+	CyberIndex                types.Float64 `tfsdk:"cyber_index"`
+	DecisionIndex             types.Float64 `tfsdk:"decision_index"`
+	EconomicsIndex            types.Float64 `tfsdk:"economics_index"`
+	EngineeringIndex          types.Float64 `tfsdk:"engineering_index"`
+	FinanceAndAccountingIndex types.Float64 `tfsdk:"finance_and_accounting_index"`
+	HealthcareAndMedicalIndex types.Float64 `tfsdk:"healthcare_and_medical_index"`
+	IntelligenceIndex         types.Float64 `tfsdk:"intelligence_index"`
+	LegalIndex                types.Float64 `tfsdk:"legal_index"`
+	MultilingualIndex         types.Float64 `tfsdk:"multilingual_index"`
+	OpennessIndex             types.Float64 `tfsdk:"openness_index"`
+	StrategyAndOpsIndex       types.Float64 `tfsdk:"strategy_and_ops_index"`
 }

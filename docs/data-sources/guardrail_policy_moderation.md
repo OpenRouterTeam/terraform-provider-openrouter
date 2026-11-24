@@ -54,12 +54,15 @@ Read-Only:
 
 - `armor` (Attributes) (see [below for nested schema](#nestedatt--config--armor))
 - `broadcast_model_armor_flagged_requests` (Boolean)
+- `content_filter_blocks_requests` (Boolean)
 - `content_filter_builtins` (Attributes List) (see [below for nested schema](#nestedatt--config--content_filter_builtins))
+- `content_filter_patterns` (List of String)
 - `content_filters` (Attributes List) (see [below for nested schema](#nestedatt--config--content_filters))
 - `enable_model_armor_injection_protection` (Boolean)
 - `lakera_injection_protection_mode` (String)
 - `model_armor_injection_confidence_level` (String)
 - `model_armor_injection_protection_mode` (String)
+- `pii_filters` (Attributes List) (see [below for nested schema](#nestedatt--config--pii_filters))
 - `platform_image_moderated_providers` (List of String)
 - `platform_moderated_providers` (List of String)
 
@@ -192,3 +195,13 @@ Read-Only:
 - `action` (String)
 - `label` (String)
 - `pattern` (String)
+
+
+<a id="nestedatt--config--pii_filters"></a>
+### Nested Schema for `config.pii_filters`
+
+Read-Only:
+
+- `action` (String)
+- `entity_type` (String)
+- `score_threshold` (Number)

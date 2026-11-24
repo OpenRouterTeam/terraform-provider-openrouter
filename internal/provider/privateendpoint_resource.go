@@ -106,7 +106,7 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 				Description: `Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. The order configured here is the order state keeps, and a repeated name is rejected before a request is sent, so the list holds at most as many entries as there are declarable parameters. ` + "`" + `tool_choice` + "`" + ` requires ` + "`" + `tools` + "`" + ` to be tested or declared.`,
 				Validators: []validator.List{
 					listvalidator.UniqueValues(),
-					listvalidator.SizeAtMost(25),
+					listvalidator.SizeAtMost(26),
 				},
 			},
 			"declared_region": schema.StringAttribute{
@@ -373,6 +373,23 @@ func (r *PrivateEndpointResource) Schema(ctx context.Context, req resource.Schem
 						Validators: []validator.Int64{
 							int64validator.AtLeast(1),
 						},
+					},
+					"prompt_caching": schema.SingleNestedAttribute{
+						Computed: true,
+						Optional: true,
+						Attributes: map[string]schema.Attribute{
+							"cache_control": schema.BoolAttribute{
+								Computed:    true,
+								Optional:    true,
+								Description: `Forward top-level, message, and tool cache_control markers. Defaults on after endpoint validation accepts these fields; otherwise off. Set false to opt out, or true to declare support explicitly.`,
+							},
+							"prompt_cache_key": schema.BoolAttribute{
+								Computed:    true,
+								Optional:    true,
+								Description: `Send an OpenRouter-derived, customer-isolated prompt_cache_key, not the caller-supplied key. Defaults on after endpoint validation accepts the field; otherwise off. Set false to opt out, or true to declare support explicitly. HIPAA and unknown workspace posture withhold OpenRouter caching directives and the derived key; this does not control upstream retention.`,
+							},
+						},
+						Description: `Change only the named prompt-caching flags; omitted flags keep their stored value.`,
 					},
 					"quantization": schema.StringAttribute{
 						Computed: true,

@@ -220,6 +220,9 @@ func (r *GuardrailPolicyModerationDataSource) Schema(ctx context.Context, req da
 					"broadcast_model_armor_flagged_requests": schema.BoolAttribute{
 						Computed: true,
 					},
+					"content_filter_blocks_requests": schema.BoolAttribute{
+						Computed: true,
+					},
 					"content_filter_builtins": schema.ListNestedAttribute{
 						Computed: true,
 						NestedObject: schema.NestedAttributeObject{
@@ -238,6 +241,10 @@ func (r *GuardrailPolicyModerationDataSource) Schema(ctx context.Context, req da
 								},
 							},
 						},
+					},
+					"content_filter_patterns": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
 					},
 					"content_filters": schema.ListNestedAttribute{
 						Computed: true,
@@ -266,6 +273,22 @@ func (r *GuardrailPolicyModerationDataSource) Schema(ctx context.Context, req da
 					},
 					"model_armor_injection_protection_mode": schema.StringAttribute{
 						Computed: true,
+					},
+					"pii_filters": schema.ListNestedAttribute{
+						Computed: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"action": schema.StringAttribute{
+									Computed: true,
+								},
+								"entity_type": schema.StringAttribute{
+									Computed: true,
+								},
+								"score_threshold": schema.Float64Attribute{
+									Computed: true,
+								},
+							},
+						},
 					},
 					"platform_image_moderated_providers": schema.ListAttribute{
 						Computed:    true,

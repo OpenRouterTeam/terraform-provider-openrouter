@@ -123,6 +123,7 @@ func (r *GuardrailPolicyModerationResourceModel) RefreshFromSharedModerationGuar
 		r.Config.Armor.UseCcStyleDefaultRules = types.BoolPointerValue(resp.Config.Armor.UseCcStyleDefaultRules)
 	}
 	r.Config.BroadcastModelArmorFlaggedRequests = types.BoolPointerValue(resp.Config.BroadcastModelArmorFlaggedRequests)
+	r.Config.ContentFilterBlocksRequests = types.BoolPointerValue(resp.Config.ContentFilterBlocksRequests)
 	if resp.Config.ContentFilterBuiltins != nil {
 		r.Config.ContentFilterBuiltins = []tfTypes.ContentFilterBuiltin{}
 
@@ -142,6 +143,14 @@ func (r *GuardrailPolicyModerationResourceModel) RefreshFromSharedModerationGuar
 		}
 	} else {
 		r.Config.ContentFilterBuiltins = nil
+	}
+	if resp.Config.ContentFilterPatterns != nil {
+		r.Config.ContentFilterPatterns = make([]types.String, 0, len(resp.Config.ContentFilterPatterns))
+		for _, v := range resp.Config.ContentFilterPatterns {
+			r.Config.ContentFilterPatterns = append(r.Config.ContentFilterPatterns, types.StringValue(v))
+		}
+	} else {
+		r.Config.ContentFilterPatterns = nil
 	}
 	if resp.Config.ContentFilters != nil {
 		r.Config.ContentFilters = []tfTypes.ContentFilter{}
@@ -173,6 +182,21 @@ func (r *GuardrailPolicyModerationResourceModel) RefreshFromSharedModerationGuar
 		r.Config.ModelArmorInjectionProtectionMode = types.StringValue(string(*resp.Config.ModelArmorInjectionProtectionMode))
 	} else {
 		r.Config.ModelArmorInjectionProtectionMode = types.StringNull()
+	}
+	if resp.Config.PiiFilters != nil {
+		r.Config.PiiFilters = []tfTypes.PiiFilter{}
+
+		for _, piiFiltersItem := range resp.Config.PiiFilters {
+			var piiFilters tfTypes.PiiFilter
+
+			piiFilters.Action = types.StringValue(string(piiFiltersItem.Action))
+			piiFilters.EntityType = types.StringValue(piiFiltersItem.EntityType)
+			piiFilters.ScoreThreshold = types.Float64PointerValue(piiFiltersItem.ScoreThreshold)
+
+			r.Config.PiiFilters = append(r.Config.PiiFilters, piiFilters)
+		}
+	} else {
+		r.Config.PiiFilters = nil
 	}
 	if resp.Config.PlatformImageModeratedProviders != nil {
 		r.Config.PlatformImageModeratedProviders = make([]types.String, 0, len(resp.Config.PlatformImageModeratedProviders))
@@ -310,6 +334,7 @@ func (r *GuardrailPolicyModerationResourceModel) RefreshFromSharedModerationGuar
 		r.Config.Armor.UseCcStyleDefaultRules = types.BoolPointerValue(resp.Config.Armor.UseCcStyleDefaultRules)
 	}
 	r.Config.BroadcastModelArmorFlaggedRequests = types.BoolPointerValue(resp.Config.BroadcastModelArmorFlaggedRequests)
+	r.Config.ContentFilterBlocksRequests = types.BoolPointerValue(resp.Config.ContentFilterBlocksRequests)
 	if resp.Config.ContentFilterBuiltins != nil {
 		r.Config.ContentFilterBuiltins = []tfTypes.ContentFilterBuiltin{}
 
@@ -329,6 +354,14 @@ func (r *GuardrailPolicyModerationResourceModel) RefreshFromSharedModerationGuar
 		}
 	} else {
 		r.Config.ContentFilterBuiltins = nil
+	}
+	if resp.Config.ContentFilterPatterns != nil {
+		r.Config.ContentFilterPatterns = make([]types.String, 0, len(resp.Config.ContentFilterPatterns))
+		for _, v := range resp.Config.ContentFilterPatterns {
+			r.Config.ContentFilterPatterns = append(r.Config.ContentFilterPatterns, types.StringValue(v))
+		}
+	} else {
+		r.Config.ContentFilterPatterns = nil
 	}
 	if resp.Config.ContentFilters != nil {
 		r.Config.ContentFilters = []tfTypes.ContentFilter{}
@@ -360,6 +393,21 @@ func (r *GuardrailPolicyModerationResourceModel) RefreshFromSharedModerationGuar
 		r.Config.ModelArmorInjectionProtectionMode = types.StringValue(string(*resp.Config.ModelArmorInjectionProtectionMode))
 	} else {
 		r.Config.ModelArmorInjectionProtectionMode = types.StringNull()
+	}
+	if resp.Config.PiiFilters != nil {
+		r.Config.PiiFilters = []tfTypes.PiiFilter{}
+
+		for _, piiFiltersItem := range resp.Config.PiiFilters {
+			var piiFilters tfTypes.PiiFilter
+
+			piiFilters.Action = types.StringValue(string(piiFiltersItem.Action))
+			piiFilters.EntityType = types.StringValue(piiFiltersItem.EntityType)
+			piiFilters.ScoreThreshold = types.Float64PointerValue(piiFiltersItem.ScoreThreshold)
+
+			r.Config.PiiFilters = append(r.Config.PiiFilters, piiFilters)
+		}
+	} else {
+		r.Config.PiiFilters = nil
 	}
 	if resp.Config.PlatformImageModeratedProviders != nil {
 		r.Config.PlatformImageModeratedProviders = make([]types.String, 0, len(resp.Config.PlatformImageModeratedProviders))
@@ -716,6 +764,12 @@ func (r *GuardrailPolicyModerationResourceModel) ToSharedCreateModerationGuardra
 	} else {
 		broadcastModelArmorFlaggedRequests = nil
 	}
+	contentFilterBlocksRequests := new(bool)
+	if !r.Config.ContentFilterBlocksRequests.IsUnknown() && !r.Config.ContentFilterBlocksRequests.IsNull() {
+		*contentFilterBlocksRequests = r.Config.ContentFilterBlocksRequests.ValueBool()
+	} else {
+		contentFilterBlocksRequests = nil
+	}
 	var contentFilterBuiltins []shared.ContentFilterBuiltin
 	if r.Config.ContentFilterBuiltins != nil {
 		contentFilterBuiltins = make([]shared.ContentFilterBuiltin, 0, len(r.Config.ContentFilterBuiltins))
@@ -740,6 +794,13 @@ func (r *GuardrailPolicyModerationResourceModel) ToSharedCreateModerationGuardra
 				ScanScope: scanScope,
 				Slug:      slug,
 			})
+		}
+	}
+	var contentFilterPatterns []string
+	if r.Config.ContentFilterPatterns != nil {
+		contentFilterPatterns = make([]string, 0, len(r.Config.ContentFilterPatterns))
+		for contentFilterPatternsIndex := range r.Config.ContentFilterPatterns {
+			contentFilterPatterns = append(contentFilterPatterns, r.Config.ContentFilterPatterns[contentFilterPatternsIndex].ValueString())
 		}
 	}
 	var contentFilters []shared.ContentFilter
@@ -787,6 +848,27 @@ func (r *GuardrailPolicyModerationResourceModel) ToSharedCreateModerationGuardra
 	} else {
 		modelArmorInjectionProtectionMode = nil
 	}
+	var piiFilters []shared.PiiFilter
+	if r.Config.PiiFilters != nil {
+		piiFilters = make([]shared.PiiFilter, 0, len(r.Config.PiiFilters))
+		for piiFiltersIndex := range r.Config.PiiFilters {
+			action2 := shared.PiiFilterAction(r.Config.PiiFilters[piiFiltersIndex].Action.ValueString())
+			var entityType string
+			entityType = r.Config.PiiFilters[piiFiltersIndex].EntityType.ValueString()
+
+			scoreThreshold := new(float64)
+			if !r.Config.PiiFilters[piiFiltersIndex].ScoreThreshold.IsUnknown() && !r.Config.PiiFilters[piiFiltersIndex].ScoreThreshold.IsNull() {
+				*scoreThreshold = r.Config.PiiFilters[piiFiltersIndex].ScoreThreshold.ValueFloat64()
+			} else {
+				scoreThreshold = nil
+			}
+			piiFilters = append(piiFilters, shared.PiiFilter{
+				Action:         action2,
+				EntityType:     entityType,
+				ScoreThreshold: scoreThreshold,
+			})
+		}
+	}
 	var platformImageModeratedProviders []string
 	if r.Config.PlatformImageModeratedProviders != nil {
 		platformImageModeratedProviders = make([]string, 0, len(r.Config.PlatformImageModeratedProviders))
@@ -804,12 +886,15 @@ func (r *GuardrailPolicyModerationResourceModel) ToSharedCreateModerationGuardra
 	config := shared.GuardrailModerationPolicyConfig{
 		Armor:                               armor,
 		BroadcastModelArmorFlaggedRequests:  broadcastModelArmorFlaggedRequests,
+		ContentFilterBlocksRequests:         contentFilterBlocksRequests,
 		ContentFilterBuiltins:               contentFilterBuiltins,
+		ContentFilterPatterns:               contentFilterPatterns,
 		ContentFilters:                      contentFilters,
 		EnableModelArmorInjectionProtection: enableModelArmorInjectionProtection,
 		LakeraInjectionProtectionMode:       lakeraInjectionProtectionMode,
 		ModelArmorInjectionConfidenceLevel:  modelArmorInjectionConfidenceLevel,
 		ModelArmorInjectionProtectionMode:   modelArmorInjectionProtectionMode,
+		PiiFilters:                          piiFilters,
 		PlatformImageModeratedProviders:     platformImageModeratedProviders,
 		PlatformModeratedProviders:          platformModeratedProviders,
 	}
@@ -1068,6 +1153,12 @@ func (r *GuardrailPolicyModerationResourceModel) ToSharedUpdateModerationGuardra
 	} else {
 		broadcastModelArmorFlaggedRequests = nil
 	}
+	contentFilterBlocksRequests := new(bool)
+	if !r.Config.ContentFilterBlocksRequests.IsUnknown() && !r.Config.ContentFilterBlocksRequests.IsNull() {
+		*contentFilterBlocksRequests = r.Config.ContentFilterBlocksRequests.ValueBool()
+	} else {
+		contentFilterBlocksRequests = nil
+	}
 	var contentFilterBuiltins []shared.ContentFilterBuiltin
 	if r.Config.ContentFilterBuiltins != nil {
 		contentFilterBuiltins = make([]shared.ContentFilterBuiltin, 0, len(r.Config.ContentFilterBuiltins))
@@ -1092,6 +1183,13 @@ func (r *GuardrailPolicyModerationResourceModel) ToSharedUpdateModerationGuardra
 				ScanScope: scanScope,
 				Slug:      slug,
 			})
+		}
+	}
+	var contentFilterPatterns []string
+	if r.Config.ContentFilterPatterns != nil {
+		contentFilterPatterns = make([]string, 0, len(r.Config.ContentFilterPatterns))
+		for contentFilterPatternsIndex := range r.Config.ContentFilterPatterns {
+			contentFilterPatterns = append(contentFilterPatterns, r.Config.ContentFilterPatterns[contentFilterPatternsIndex].ValueString())
 		}
 	}
 	var contentFilters []shared.ContentFilter
@@ -1139,6 +1237,27 @@ func (r *GuardrailPolicyModerationResourceModel) ToSharedUpdateModerationGuardra
 	} else {
 		modelArmorInjectionProtectionMode = nil
 	}
+	var piiFilters []shared.PiiFilter
+	if r.Config.PiiFilters != nil {
+		piiFilters = make([]shared.PiiFilter, 0, len(r.Config.PiiFilters))
+		for piiFiltersIndex := range r.Config.PiiFilters {
+			action2 := shared.PiiFilterAction(r.Config.PiiFilters[piiFiltersIndex].Action.ValueString())
+			var entityType string
+			entityType = r.Config.PiiFilters[piiFiltersIndex].EntityType.ValueString()
+
+			scoreThreshold := new(float64)
+			if !r.Config.PiiFilters[piiFiltersIndex].ScoreThreshold.IsUnknown() && !r.Config.PiiFilters[piiFiltersIndex].ScoreThreshold.IsNull() {
+				*scoreThreshold = r.Config.PiiFilters[piiFiltersIndex].ScoreThreshold.ValueFloat64()
+			} else {
+				scoreThreshold = nil
+			}
+			piiFilters = append(piiFilters, shared.PiiFilter{
+				Action:         action2,
+				EntityType:     entityType,
+				ScoreThreshold: scoreThreshold,
+			})
+		}
+	}
 	var platformImageModeratedProviders []string
 	if r.Config.PlatformImageModeratedProviders != nil {
 		platformImageModeratedProviders = make([]string, 0, len(r.Config.PlatformImageModeratedProviders))
@@ -1156,12 +1275,15 @@ func (r *GuardrailPolicyModerationResourceModel) ToSharedUpdateModerationGuardra
 	config := shared.GuardrailModerationPolicyConfig{
 		Armor:                               armor,
 		BroadcastModelArmorFlaggedRequests:  broadcastModelArmorFlaggedRequests,
+		ContentFilterBlocksRequests:         contentFilterBlocksRequests,
 		ContentFilterBuiltins:               contentFilterBuiltins,
+		ContentFilterPatterns:               contentFilterPatterns,
 		ContentFilters:                      contentFilters,
 		EnableModelArmorInjectionProtection: enableModelArmorInjectionProtection,
 		LakeraInjectionProtectionMode:       lakeraInjectionProtectionMode,
 		ModelArmorInjectionConfidenceLevel:  modelArmorInjectionConfidenceLevel,
 		ModelArmorInjectionProtectionMode:   modelArmorInjectionProtectionMode,
+		PiiFilters:                          piiFilters,
 		PlatformImageModeratedProviders:     platformImageModeratedProviders,
 		PlatformModeratedProviders:          platformModeratedProviders,
 	}

@@ -28,6 +28,7 @@ const (
 	ParameterSeed                Parameter = "seed"
 	ParameterResponseFormat      Parameter = "response_format"
 	ParameterStructuredOutputs   Parameter = "structured_outputs"
+	ParameterStrictToolSchemas   Parameter = "strict_tool_schemas"
 	ParameterStop                Parameter = "stop"
 	ParameterTools               Parameter = "tools"
 	ParameterToolChoice          Parameter = "tool_choice"
@@ -81,6 +82,8 @@ func (e *Parameter) UnmarshalJSON(data []byte) error {
 	case "response_format":
 		fallthrough
 	case "structured_outputs":
+		fallthrough
+	case "strict_tool_schemas":
 		fallthrough
 	case "stop":
 		fallthrough

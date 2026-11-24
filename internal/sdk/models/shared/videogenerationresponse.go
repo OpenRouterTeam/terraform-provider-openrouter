@@ -47,6 +47,39 @@ func (e *VideoGenerationResponseStatus) UnmarshalJSON(data []byte) error {
 	}
 }
 
+// StatusDetail - The step within `status` for a job that is not finished: `submitting` and `queued_at_provider` under `pending`, `generating` and `finalizing` under `in_progress`. When present, it only moves forward, and steps may be skipped between polls. It is absent once the job is finished and can also be absent mid-job when the step is unknown, so use `status` to tell whether the job is finished.
+type StatusDetail string
+
+const (
+	StatusDetailSubmitting       StatusDetail = "submitting"
+	StatusDetailQueuedAtProvider StatusDetail = "queued_at_provider"
+	StatusDetailGenerating       StatusDetail = "generating"
+	StatusDetailFinalizing       StatusDetail = "finalizing"
+)
+
+func (e StatusDetail) ToPointer() *StatusDetail {
+	return &e
+}
+func (e *StatusDetail) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "submitting":
+		fallthrough
+	case "queued_at_provider":
+		fallthrough
+	case "generating":
+		fallthrough
+	case "finalizing":
+		*e = StatusDetail(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for StatusDetail: %v", v)
+	}
+}
+
 type VideoGenerationResponse struct {
 	Error *string `json:"error,omitzero"`
 	// Unix timestamp in seconds when OpenRouter's stored copy of the outputs stops being available. Present only when that copy exists.
@@ -54,9 +87,13 @@ type VideoGenerationResponse struct {
 	// The generation ID associated with this video generation job. Available once the job has been processed.
 	GenerationID *string `json:"generation_id,omitzero"`
 	// The video job ID, in the `gen-vid-<timestamp>-<20 alphanumerics>` generation ID format. Pass it as `previous_job_id` to continue the generation.
-	ID         string                        `json:"id"`
-	PollingURL string                        `json:"polling_url"`
-	Status     VideoGenerationResponseStatus `json:"status"`
+	ID         string `json:"id"`
+	PollingURL string `json:"polling_url"`
+	// Percent complete, from 0 to 100 and possibly fractional, reported by the provider while `status_detail` is `generating`. Present only for providers that report it, and absent once the job moves to `finalizing`.
+	Progress *float64                      `json:"progress,omitzero"`
+	Status   VideoGenerationResponseStatus `json:"status"`
+	// The step within `status` for a job that is not finished: `submitting` and `queued_at_provider` under `pending`, `generating` and `finalizing` under `in_progress`. When present, it only moves forward, and steps may be skipped between polls. It is absent once the job is finished and can also be absent mid-job when the step is unknown, so use `status` to tell whether the job is finished.
+	StatusDetail *StatusDetail `json:"status_detail,omitzero"`
 	// OpenRouter content URLs for each output. They need your API key in the `Authorization` header and keep working for as long as the output is available.
 	UnsignedUrls []string `json:"unsigned_urls,omitzero"`
 	// Signed download URLs for OpenRouter's stored copy of each output, usable without an API key until `expires_at`. Anyone holding a URL can download that output until it expires, so treat it like a secret. Present only when the stored copy exists.
@@ -111,11 +148,25 @@ func (v *VideoGenerationResponse) GetPollingURL() string {
 	return v.PollingURL
 }
 
+func (v *VideoGenerationResponse) GetProgress() *float64 {
+	if v == nil {
+		return nil
+	}
+	return v.Progress
+}
+
 func (v *VideoGenerationResponse) GetStatus() VideoGenerationResponseStatus {
 	if v == nil {
 		return VideoGenerationResponseStatus("")
 	}
 	return v.Status
+}
+
+func (v *VideoGenerationResponse) GetStatusDetail() *StatusDetail {
+	if v == nil {
+		return nil
+	}
+	return v.StatusDetail
 }
 
 func (v *VideoGenerationResponse) GetUnsignedUrls() []string {

@@ -16,6 +16,7 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) RefreshFromSharedModelAv
 	var diags diag.Diagnostics
 
 	r.Config = &tfTypes.GuardrailModelAvailabilityPolicyAuthoringConfig{}
+	r.Config.AllowProvisionalProviders = types.BoolPointerValue(resp.Config.AllowProvisionalProviders)
 	r.Config.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.Config.AllowSafetyRetentionGoogle)
 	r.Config.AllowSafetyRetentionOther = types.BoolPointerValue(resp.Config.AllowSafetyRetentionOther)
 	if resp.Config.AllowedDataRegions != nil {
@@ -108,6 +109,7 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) RefreshFromSharedModelAv
 		r.APIKeyHashes = append(r.APIKeyHashes, types.StringValue(v))
 	}
 	r.Config = &tfTypes.GuardrailModelAvailabilityPolicyAuthoringConfig{}
+	r.Config.AllowProvisionalProviders = types.BoolPointerValue(resp.Config.AllowProvisionalProviders)
 	r.Config.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.Config.AllowSafetyRetentionGoogle)
 	r.Config.AllowSafetyRetentionOther = types.BoolPointerValue(resp.Config.AllowSafetyRetentionOther)
 	if resp.Config.AllowedDataRegions != nil {
@@ -318,6 +320,12 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) ToSharedCreateModelAvail
 	for apiKeyHashesIndex := range r.APIKeyHashes {
 		apiKeyHashes = append(apiKeyHashes, r.APIKeyHashes[apiKeyHashesIndex].ValueString())
 	}
+	allowProvisionalProviders := new(bool)
+	if !r.Config.AllowProvisionalProviders.IsUnknown() && !r.Config.AllowProvisionalProviders.IsNull() {
+		*allowProvisionalProviders = r.Config.AllowProvisionalProviders.ValueBool()
+	} else {
+		allowProvisionalProviders = nil
+	}
 	allowSafetyRetentionGoogle := new(bool)
 	if !r.Config.AllowSafetyRetentionGoogle.IsUnknown() && !r.Config.AllowSafetyRetentionGoogle.IsNull() {
 		*allowSafetyRetentionGoogle = r.Config.AllowSafetyRetentionGoogle.ValueBool()
@@ -453,6 +461,7 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) ToSharedCreateModelAvail
 		requireEuDataRegion = nil
 	}
 	config := shared.GuardrailModelAvailabilityPolicyAuthoringConfig{
+		AllowProvisionalProviders:      allowProvisionalProviders,
 		AllowSafetyRetentionGoogle:     allowSafetyRetentionGoogle,
 		AllowSafetyRetentionOther:      allowSafetyRetentionOther,
 		AllowedDataRegions:             allowedDataRegions,
@@ -525,6 +534,12 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) ToSharedUpdateModelAvail
 	for apiKeyHashesIndex := range r.APIKeyHashes {
 		apiKeyHashes = append(apiKeyHashes, r.APIKeyHashes[apiKeyHashesIndex].ValueString())
 	}
+	allowProvisionalProviders := new(bool)
+	if !r.Config.AllowProvisionalProviders.IsUnknown() && !r.Config.AllowProvisionalProviders.IsNull() {
+		*allowProvisionalProviders = r.Config.AllowProvisionalProviders.ValueBool()
+	} else {
+		allowProvisionalProviders = nil
+	}
 	allowSafetyRetentionGoogle := new(bool)
 	if !r.Config.AllowSafetyRetentionGoogle.IsUnknown() && !r.Config.AllowSafetyRetentionGoogle.IsNull() {
 		*allowSafetyRetentionGoogle = r.Config.AllowSafetyRetentionGoogle.ValueBool()
@@ -660,6 +675,7 @@ func (r *GuardrailPolicyModelAvailabilityResourceModel) ToSharedUpdateModelAvail
 		requireEuDataRegion = nil
 	}
 	config := shared.GuardrailModelAvailabilityPolicyAuthoringConfig{
+		AllowProvisionalProviders:      allowProvisionalProviders,
 		AllowSafetyRetentionGoogle:     allowSafetyRetentionGoogle,
 		AllowSafetyRetentionOther:      allowSafetyRetentionOther,
 		AllowedDataRegions:             allowedDataRegions,

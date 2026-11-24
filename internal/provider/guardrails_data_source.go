@@ -50,6 +50,10 @@ func (r *GuardrailsDataSource) Schema(ctx context.Context, req datasource.Schema
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
+						"allow_provisional_providers": schema.BoolAttribute{
+							Computed:    true,
+							Description: `Whether requests may use provisional providers, whose security practices have not been reviewed by OpenRouter. false excludes them. true and null never override an account that excludes them. Inherits the account setting when not provided.`,
+						},
 						"allow_safety_retention_google": schema.BoolAttribute{
 							Computed:    true,
 							Description: `Whether ZDR-only requests to google/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.`,

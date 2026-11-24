@@ -14,36 +14,56 @@ Models DataSource
 
 ```terraform
 data "openrouter_models" "my_models" {
-  arch                   = "GPT"
-  category               = "programming"
-  context                = 128000
-  distillable            = "true"
-  endpoints              = "/api/alpha/extractions"
-  input_modalities       = "text,image"
-  max_age_days           = 90
-  max_agentic_index      = 100
-  max_coding_index       = 100
-  max_intelligence_index = 100
-  max_output_price       = 10
-  max_price              = 10
-  max_tool_success_rate  = 1
-  min_age_days           = 0
-  min_agentic_index      = 50
-  min_coding_index       = 50
-  min_intelligence_index = 50
-  min_output_price       = 0
-  min_price              = 0
-  min_tool_success_rate  = 0.9
-  model_authors          = "openai,anthropic"
-  output_modalities      = "text"
-  providers              = "OpenAI,Anthropic"
-  q                      = "gpt-4"
-  region                 = "eu"
-  sort                   = "newest"
-  supported_parameters   = "temperature"
-  use_rss                = "true"
-  use_rss_chat_links     = "true"
-  zdr                    = "true"
+  arch                             = "GPT"
+  category                         = "programming"
+  context                          = 128000
+  distillable                      = "true"
+  endpoints                        = "/api/alpha/extractions"
+  input_modalities                 = "text,image"
+  max_age_days                     = 90
+  max_agentic_index                = 100
+  max_coding_index                 = 100
+  max_cyber_index                  = 100
+  max_decision_index               = 100
+  max_economics_index              = 100
+  max_engineering_index            = 100
+  max_finance_and_accounting_index = 100
+  max_healthcare_and_medical_index = 100
+  max_intelligence_index           = 100
+  max_legal_index                  = 100
+  max_multilingual_index           = 1
+  max_openness_index               = 100
+  max_output_price                 = 10
+  max_price                        = 10
+  max_strategy_and_ops_index       = 100
+  max_tool_success_rate            = 1
+  min_age_days                     = 0
+  min_agentic_index                = 50
+  min_coding_index                 = 50
+  min_cyber_index                  = 50
+  min_decision_index               = 50
+  min_economics_index              = 50
+  min_engineering_index            = 50
+  min_finance_and_accounting_index = 50
+  min_healthcare_and_medical_index = 50
+  min_intelligence_index           = 50
+  min_legal_index                  = 50
+  min_multilingual_index           = 0.5
+  min_openness_index               = 50
+  min_output_price                 = 0
+  min_price                        = 0
+  min_strategy_and_ops_index       = 50
+  min_tool_success_rate            = 0.9
+  model_authors                    = "openai,anthropic"
+  output_modalities                = "text"
+  providers                        = "OpenAI,Anthropic"
+  q                                = "gpt-4"
+  region                           = "eu"
+  sort                             = "newest"
+  supported_parameters             = "temperature"
+  use_rss                          = "true"
+  use_rss_chat_links               = "true"
+  zdr                              = "true"
 }
 ```
 
@@ -59,25 +79,45 @@ data "openrouter_models" "my_models" {
 - `endpoints` (String) Filter models by the request API paths they serve, as listed in each model's `endpoints` field. Comma-separated; a model must serve every listed path. Valid values: /api/v1/chat/completions, /api/v1/completions, /api/v1/messages, /api/v1/responses, /api/v1/embeddings, /api/v1/rerank, /api/alpha/decisions, /api/alpha/extractions, /api/v1/videos, /api/v1/audio/speech, /api/v1/audio/transcriptions, /api/v1/images, /api/v1/batches. When set without `output_modalities`, models of every output modality are considered (the companion `/api/alpha/extractions` route is served by text and decisions models alike).
 - `input_modalities` (String) Filter models by input modality. Comma-separated list of: text, image, audio, file.
 - `max_age_days` (Number) Maximum model age in days since its creation date.
-- `max_agentic_index` (Number) Maximum Artificial Analysis agentic index.
-- `max_coding_index` (Number) Maximum Artificial Analysis coding index.
-- `max_intelligence_index` (Number) Maximum Artificial Analysis intelligence index.
+- `max_agentic_index` (Number, Deprecated) Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.
+- `max_coding_index` (Number, Deprecated) Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.
+- `max_cyber_index` (Number) Maximum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.
+- `max_decision_index` (Number) Maximum Artificial Analysis Decision Index score (0-100); unscored models are excluded.
+- `max_economics_index` (Number) Maximum Artificial Analysis Economics Index score (0-100); unscored models are excluded.
+- `max_engineering_index` (Number) Maximum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.
+- `max_finance_and_accounting_index` (Number) Maximum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.
+- `max_healthcare_and_medical_index` (Number) Maximum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.
+- `max_intelligence_index` (Number) Maximum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.
+- `max_legal_index` (Number) Maximum Artificial Analysis Legal Index score (0-100); unscored models are excluded.
+- `max_multilingual_index` (Number) Maximum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.
+- `max_openness_index` (Number) Maximum Artificial Analysis Openness Index score (0-100); unscored models are excluded.
 - `max_output_price` (Number) Maximum completion (output) price in $/M tokens.
 - `max_price` (Number) Maximum prompt price in $/M tokens.
+- `max_strategy_and_ops_index` (Number) Maximum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.
 - `max_tool_success_rate` (Number) Maximum tool-calling success rate, as a fraction in [0, 1].
 - `min_age_days` (Number) Minimum model age in days since its creation date.
-- `min_agentic_index` (Number) Minimum Artificial Analysis agentic index.
-- `min_coding_index` (Number) Minimum Artificial Analysis coding index.
-- `min_intelligence_index` (Number) Minimum Artificial Analysis intelligence index.
+- `min_agentic_index` (Number, Deprecated) Deprecated: Artificial Analysis has retired its Agentic Index; no model has a score, so this matches no model.
+- `min_coding_index` (Number, Deprecated) Deprecated: Artificial Analysis has retired its Coding Index; no model has a score, so this matches no model.
+- `min_cyber_index` (Number) Minimum Artificial Analysis Cyber Index score (0-100); unscored models are excluded.
+- `min_decision_index` (Number) Minimum Artificial Analysis Decision Index score (0-100); unscored models are excluded.
+- `min_economics_index` (Number) Minimum Artificial Analysis Economics Index score (0-100); unscored models are excluded.
+- `min_engineering_index` (Number) Minimum Artificial Analysis Engineering Index score (0-100); unscored models are excluded.
+- `min_finance_and_accounting_index` (Number) Minimum Artificial Analysis Finance & Accounting Index score (0-100); unscored models are excluded.
+- `min_healthcare_and_medical_index` (Number) Minimum Artificial Analysis Healthcare & Medical Index score (0-100); unscored models are excluded.
+- `min_intelligence_index` (Number) Minimum Artificial Analysis Intelligence Index score (0-100); unscored models are excluded.
+- `min_legal_index` (Number) Minimum Artificial Analysis Legal Index score (0-100); unscored models are excluded.
+- `min_multilingual_index` (Number) Minimum Artificial Analysis Multilingual Index score (0-1); unscored models are excluded.
+- `min_openness_index` (Number) Minimum Artificial Analysis Openness Index score (0-100); unscored models are excluded.
 - `min_output_price` (Number) Minimum completion (output) price in $/M tokens.
 - `min_price` (Number) Minimum prompt price in $/M tokens.
+- `min_strategy_and_ops_index` (Number) Minimum Artificial Analysis Strategy & Ops Index score (0-100); unscored models are excluded.
 - `min_tool_success_rate` (Number) Minimum tool-calling success rate, as a fraction in [0, 1] (e.g. 0.9 = 90% of requests finishing with a tool_calls finish reason).
 - `model_authors` (String) Filter models by the organization that created the model. Comma-separated list of author slugs.
 - `output_modalities` (String) Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, decisions, speech, transcription) or "all" to include all models. Defaults to "text".
 - `providers` (String) Filter models by hosting provider. Comma-separated list of provider names.
 - `q` (String) Free-text search by model name or slug.
 - `region` (String) Filter to models with endpoints in the given data region ("eu" or "us"). must be one of ["eu", "us"]
-- `sort` (String) Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved. must be one of ["most-popular", "newest", "top-weekly", "pricing-low-to-high", "pricing-high-to-low", "context-high-to-low", "throughput-high-to-low", "latency-low-to-high", "intelligence-high-to-low", "coding-high-to-low", "agentic-high-to-low", "design-arena-elo-high-to-low"]
+- `sort` (String) Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), <index>-high-to-low for each Artificial Analysis index (the coding and agentic sorts are deprecated: Artificial Analysis has retired those indexes, so they order by canonical slug and variant alone), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. The decision sort ranks decision models, so pass output_modalities=decisions or all with it. When omitted, the existing default ordering is preserved. must be one of ["most-popular", "newest", "top-weekly", "pricing-low-to-high", "pricing-high-to-low", "context-high-to-low", "throughput-high-to-low", "latency-low-to-high", "intelligence-high-to-low", "coding-high-to-low", "agentic-high-to-low", "finance-and-accounting-high-to-low", "strategy-and-ops-high-to-low", "legal-high-to-low", "healthcare-and-medical-high-to-low", "engineering-high-to-low", "economics-high-to-low", "cyber-high-to-low", "openness-high-to-low", "multilingual-high-to-low", "decision-high-to-low", "design-arena-elo-high-to-low"]
 - `supported_parameters` (String) Filter models by supported parameter (comma-separated)
 - `use_rss` (String) Return results as RSS feed
 - `use_rss_chat_links` (String) Use chat links in RSS feed items
@@ -142,7 +182,7 @@ Read-Only:
 
 Read-Only:
 
-- `artificial_analysis` (Attributes) Artificial Analysis benchmark index scores. (see [below for nested schema](#nestedatt--data--benchmarks--artificial_analysis))
+- `artificial_analysis` (Attributes) Benchmark index scores published by Artificial Analysis (artificialanalysis.ai), one field per index. Each score is the model's best on that index across the configurations Artificial Analysis evaluated (for example reasoning levels), so two indexes of one model can come from different configurations. The deprecated Coding Index and Agentic Index fields are null for every model: Artificial Analysis has retired those indexes. Attribute Artificial Analysis when you republish them. Omitted when Artificial Analysis has scored the model on none of them. (see [below for nested schema](#nestedatt--data--benchmarks--artificial_analysis))
 - `design_arena` (Attributes List) Design Arena ELO rankings across arena+category pairs. (see [below for nested schema](#nestedatt--data--benchmarks--design_arena))
 
 <a id="nestedatt--data--benchmarks--artificial_analysis"></a>
@@ -150,9 +190,19 @@ Read-Only:
 
 Read-Only:
 
-- `agentic_index` (Number) Artificial Analysis Agentic Index score
-- `coding_index` (Number) Artificial Analysis Coding Index score
-- `intelligence_index` (Number) Artificial Analysis Intelligence Index score
+- `agentic_index` (Number, Deprecated) Deprecated: Artificial Analysis has retired its Agentic Index and no longer publishes it. Always null.
+- `coding_index` (Number, Deprecated) Deprecated: Artificial Analysis has retired its Coding Index and no longer publishes it. Always null.
+- `cyber_index` (Number) Artificial Analysis Cyber Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.
+- `decision_index` (Number) Artificial Analysis Decision Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Published for decision models and for the language models Artificial Analysis evaluates on decision tasks. Null when Artificial Analysis has not published a score for the model.
+- `economics_index` (Number) Artificial Analysis Economics Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `engineering_index` (Number) Artificial Analysis Engineering Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `finance_and_accounting_index` (Number) Artificial Analysis Finance & Accounting Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `healthcare_and_medical_index` (Number) Artificial Analysis Healthcare & Medical Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `intelligence_index` (Number) Artificial Analysis Intelligence Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.
+- `legal_index` (Number) Artificial Analysis Legal Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
+- `multilingual_index` (Number) Artificial Analysis Multilingual Index score, as a fraction from 0 to 1: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.
+- `openness_index` (Number) Artificial Analysis Openness Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. Null when Artificial Analysis has not published a score for the model.
+- `strategy_and_ops_index` (Number) Artificial Analysis Strategy & Ops Index score, on a 0-100 scale: the model's best across the configurations Artificial Analysis evaluated. Higher is better. One of the six Artificial Analysis Capability Indexes. Null when Artificial Analysis has not published a score for the model.
 
 
 <a id="nestedatt--data--benchmarks--design_arena"></a>
