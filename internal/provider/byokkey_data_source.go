@@ -38,6 +38,7 @@ type ByokKeyDataSourceModel struct {
 	Disabled            types.Bool     `tfsdk:"disabled"`
 	ID                  types.String   `tfsdk:"id"`
 	IsByokOnly          types.Bool     `tfsdk:"is_byok_only"`
+	IsExclusive         types.Bool     `tfsdk:"is_exclusive"`
 	IsFallback          types.Bool     `tfsdk:"is_fallback"`
 	IsRequired          types.Bool     `tfsdk:"is_required"`
 	Label               types.String   `tfsdk:"label"`
@@ -96,6 +97,10 @@ func (r *ByokKeyDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			"is_byok_only": schema.BoolAttribute{
 				Computed:    true,
 				Description: `Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside ` + "`" + `allowed_models` + "`" + ` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials.`,
+			},
+			"is_exclusive": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether requests for the models this credential covers run only on exclusive credentials covering that model: never on another provider, a non-exclusive key, or OpenRouter's shared capacity. Every exclusive credential that covers the model and is eligible for the request may serve it, so two exclusive credentials with overlapping models share those models. Only credentials eligible for the request (its API key and member restrictions) count, so a request no exclusive credential is eligible for uses normal routing. A request for a model that an eligible exclusive credential covers returns a 404 when none of those credentials can serve it. The covered models are ` + "`" + `allowed_models` + "`" + ` when non-empty; with no or an empty ` + "`" + `allowed_models` + "`" + `, an OpenAI, Anthropic, or Google credential covers every closed-weight model by that lab (for example every ` + "`" + `openai/*` + "`" + ` model except open-weight models such as ` + "`" + `openai/gpt-oss-120b` + "`" + `, which stay on normal routing unless listed), and other providers must set a non-empty ` + "`" + `allowed_models` + "`" + `. Only valid on non-fallback credentials.`,
 			},
 			"is_fallback": schema.BoolAttribute{
 				Computed:    true,

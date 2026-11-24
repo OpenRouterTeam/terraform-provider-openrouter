@@ -54,10 +54,10 @@ func (r *WorkspaceResourceModel) RefreshFromSharedCreateWorkspaceResponseData(ct
 	} else {
 		r.IoLoggingAPIKeyIds = nil
 	}
-	r.IoLoggingSamplingRate = types.Float64Value(resp.IoLoggingSamplingRate)
-	r.IsDataDiscountLoggingEnabled = types.BoolValue(resp.IsDataDiscountLoggingEnabled)
-	r.IsObservabilityBroadcastEnabled = types.BoolValue(resp.IsObservabilityBroadcastEnabled)
-	r.IsObservabilityIoLoggingEnabled = types.BoolValue(resp.IsObservabilityIoLoggingEnabled)
+	r.IoLoggingSamplingRate = types.Float64PointerValue(resp.IoLoggingSamplingRate)
+	r.IsDataDiscountLoggingEnabled = types.BoolPointerValue(resp.IsDataDiscountLoggingEnabled)
+	r.IsObservabilityBroadcastEnabled = types.BoolPointerValue(resp.IsObservabilityBroadcastEnabled)
+	r.IsObservabilityIoLoggingEnabled = types.BoolPointerValue(resp.IsObservabilityIoLoggingEnabled)
 	r.Name = types.StringValue(resp.Name)
 	r.Slug = types.StringValue(resp.Slug)
 	r.UpdatedAt = types.StringPointerValue(resp.UpdatedAt)
@@ -108,10 +108,10 @@ func (r *WorkspaceResourceModel) RefreshFromSharedGetWorkspaceResponseData(ctx c
 	} else {
 		r.IoLoggingAPIKeyIds = nil
 	}
-	r.IoLoggingSamplingRate = types.Float64Value(resp.IoLoggingSamplingRate)
-	r.IsDataDiscountLoggingEnabled = types.BoolValue(resp.IsDataDiscountLoggingEnabled)
-	r.IsObservabilityBroadcastEnabled = types.BoolValue(resp.IsObservabilityBroadcastEnabled)
-	r.IsObservabilityIoLoggingEnabled = types.BoolValue(resp.IsObservabilityIoLoggingEnabled)
+	r.IoLoggingSamplingRate = types.Float64PointerValue(resp.IoLoggingSamplingRate)
+	r.IsDataDiscountLoggingEnabled = types.BoolPointerValue(resp.IsDataDiscountLoggingEnabled)
+	r.IsObservabilityBroadcastEnabled = types.BoolPointerValue(resp.IsObservabilityBroadcastEnabled)
+	r.IsObservabilityIoLoggingEnabled = types.BoolPointerValue(resp.IsObservabilityIoLoggingEnabled)
 	r.Name = types.StringValue(resp.Name)
 	r.Slug = types.StringValue(resp.Slug)
 	r.UpdatedAt = types.StringPointerValue(resp.UpdatedAt)
@@ -162,10 +162,10 @@ func (r *WorkspaceResourceModel) RefreshFromSharedUpdateWorkspaceResponseData(ct
 	} else {
 		r.IoLoggingAPIKeyIds = nil
 	}
-	r.IoLoggingSamplingRate = types.Float64Value(resp.IoLoggingSamplingRate)
-	r.IsDataDiscountLoggingEnabled = types.BoolValue(resp.IsDataDiscountLoggingEnabled)
-	r.IsObservabilityBroadcastEnabled = types.BoolValue(resp.IsObservabilityBroadcastEnabled)
-	r.IsObservabilityIoLoggingEnabled = types.BoolValue(resp.IsObservabilityIoLoggingEnabled)
+	r.IoLoggingSamplingRate = types.Float64PointerValue(resp.IoLoggingSamplingRate)
+	r.IsDataDiscountLoggingEnabled = types.BoolPointerValue(resp.IsDataDiscountLoggingEnabled)
+	r.IsObservabilityBroadcastEnabled = types.BoolPointerValue(resp.IsObservabilityBroadcastEnabled)
+	r.IsObservabilityIoLoggingEnabled = types.BoolPointerValue(resp.IsObservabilityIoLoggingEnabled)
 	r.Name = types.StringValue(resp.Name)
 	r.Slug = types.StringValue(resp.Slug)
 	r.UpdatedAt = types.StringPointerValue(resp.UpdatedAt)

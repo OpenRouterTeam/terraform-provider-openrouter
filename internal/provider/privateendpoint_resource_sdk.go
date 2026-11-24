@@ -98,6 +98,13 @@ func (r *PrivateEndpointResourceModel) RefreshFromSharedPrivateEndpoint(ctx cont
 	r.Settings.Inputs.ImageUrls = types.BoolPointerValue(resp.Settings.Inputs.ImageUrls)
 	r.Settings.MaxCompletionTokens = types.Int64PointerValue(resp.Settings.MaxCompletionTokens)
 	r.Settings.MaxPromptTokens = types.Int64PointerValue(resp.Settings.MaxPromptTokens)
+	if resp.Settings.PromptCaching == nil {
+		r.Settings.PromptCaching = nil
+	} else {
+		r.Settings.PromptCaching = &tfTypes.UpdatePrivateEndpointPromptCaching{}
+		r.Settings.PromptCaching.CacheControl = types.BoolValue(resp.Settings.PromptCaching.CacheControl)
+		r.Settings.PromptCaching.PromptCacheKey = types.BoolValue(resp.Settings.PromptCaching.PromptCacheKey)
+	}
 	r.Settings.Quantization = types.StringValue(string(resp.Settings.Quantization))
 	if r.Settings.Reasoning == nil {
 		r.Settings.Reasoning = &tfTypes.UpdatePrivateEndpointSettingsRequestReasoning{}
@@ -361,6 +368,25 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 		} else {
 			maxPromptTokens = nil
 		}
+		var promptCaching *shared.UpdatePrivateEndpointPromptCaching
+		if r.Settings.PromptCaching != nil {
+			cacheControl := new(bool)
+			if !r.Settings.PromptCaching.CacheControl.IsUnknown() && !r.Settings.PromptCaching.CacheControl.IsNull() {
+				*cacheControl = r.Settings.PromptCaching.CacheControl.ValueBool()
+			} else {
+				cacheControl = nil
+			}
+			promptCacheKey := new(bool)
+			if !r.Settings.PromptCaching.PromptCacheKey.IsUnknown() && !r.Settings.PromptCaching.PromptCacheKey.IsNull() {
+				*promptCacheKey = r.Settings.PromptCaching.PromptCacheKey.ValueBool()
+			} else {
+				promptCacheKey = nil
+			}
+			promptCaching = &shared.UpdatePrivateEndpointPromptCaching{
+				CacheControl:   cacheControl,
+				PromptCacheKey: promptCacheKey,
+			}
+		}
 		quantization := new(shared.PrivateEndpointQuantization)
 		if !r.Settings.Quantization.IsUnknown() && !r.Settings.Quantization.IsNull() {
 			*quantization = shared.PrivateEndpointQuantization(r.Settings.Quantization.ValueString())
@@ -426,6 +452,7 @@ func (r *PrivateEndpointResourceModel) ToSharedCreatePrivateEndpointRequest(ctx 
 			Inputs:              inputs,
 			MaxCompletionTokens: maxCompletionTokens,
 			MaxPromptTokens:     maxPromptTokens,
+			PromptCaching:       promptCaching,
 			Quantization:        quantization,
 			Reasoning:           reasoning,
 			ToolChoice:          toolChoice,
@@ -585,6 +612,25 @@ func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointRequest(ctx 
 		} else {
 			maxPromptTokens = nil
 		}
+		var promptCaching *shared.UpdatePrivateEndpointPromptCaching
+		if r.Settings.PromptCaching != nil {
+			cacheControl := new(bool)
+			if !r.Settings.PromptCaching.CacheControl.IsUnknown() && !r.Settings.PromptCaching.CacheControl.IsNull() {
+				*cacheControl = r.Settings.PromptCaching.CacheControl.ValueBool()
+			} else {
+				cacheControl = nil
+			}
+			promptCacheKey := new(bool)
+			if !r.Settings.PromptCaching.PromptCacheKey.IsUnknown() && !r.Settings.PromptCaching.PromptCacheKey.IsNull() {
+				*promptCacheKey = r.Settings.PromptCaching.PromptCacheKey.ValueBool()
+			} else {
+				promptCacheKey = nil
+			}
+			promptCaching = &shared.UpdatePrivateEndpointPromptCaching{
+				CacheControl:   cacheControl,
+				PromptCacheKey: promptCacheKey,
+			}
+		}
 		quantization := new(shared.PrivateEndpointQuantization)
 		if !r.Settings.Quantization.IsUnknown() && !r.Settings.Quantization.IsNull() {
 			*quantization = shared.PrivateEndpointQuantization(r.Settings.Quantization.ValueString())
@@ -650,6 +696,7 @@ func (r *PrivateEndpointResourceModel) ToSharedUpdatePrivateEndpointRequest(ctx 
 			Inputs:              inputs,
 			MaxCompletionTokens: maxCompletionTokens,
 			MaxPromptTokens:     maxPromptTokens,
+			PromptCaching:       promptCaching,
 			Quantization:        quantization,
 			Reasoning:           reasoning,
 			ToolChoice:          toolChoice,

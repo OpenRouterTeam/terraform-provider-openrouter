@@ -1,4 +1,5 @@
 resource "openrouter_guardrail" "my_guardrail" {
+  allow_provisional_providers   = false
   allow_safety_retention_google = true
   allow_safety_retention_other  = true
   allowed_data_regions = [

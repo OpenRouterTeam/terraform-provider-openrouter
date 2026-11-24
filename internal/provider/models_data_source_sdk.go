@@ -64,7 +64,17 @@ func (r *ModelsDataSourceModel) RefreshFromSharedModelsListResponse(ctx context.
 					data.Benchmarks.ArtificialAnalysis = &tfTypes.AABenchmarkEntry{}
 					data.Benchmarks.ArtificialAnalysis.AgenticIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.AgenticIndex)
 					data.Benchmarks.ArtificialAnalysis.CodingIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.CodingIndex)
+					data.Benchmarks.ArtificialAnalysis.CyberIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.CyberIndex)
+					data.Benchmarks.ArtificialAnalysis.DecisionIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.DecisionIndex)
+					data.Benchmarks.ArtificialAnalysis.EconomicsIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.EconomicsIndex)
+					data.Benchmarks.ArtificialAnalysis.EngineeringIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.EngineeringIndex)
+					data.Benchmarks.ArtificialAnalysis.FinanceAndAccountingIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.FinanceAndAccountingIndex)
+					data.Benchmarks.ArtificialAnalysis.HealthcareAndMedicalIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.HealthcareAndMedicalIndex)
 					data.Benchmarks.ArtificialAnalysis.IntelligenceIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.IntelligenceIndex)
+					data.Benchmarks.ArtificialAnalysis.LegalIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.LegalIndex)
+					data.Benchmarks.ArtificialAnalysis.MultilingualIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.MultilingualIndex)
+					data.Benchmarks.ArtificialAnalysis.OpennessIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.OpennessIndex)
+					data.Benchmarks.ArtificialAnalysis.StrategyAndOpsIndex = types.Float64PointerValue(dataItem.Benchmarks.ArtificialAnalysis.StrategyAndOpsIndex)
 				}
 				if data.Benchmarks.DesignArena == nil {
 					data.Benchmarks.DesignArena = []tfTypes.DABenchmarkEntry{}
@@ -384,6 +394,126 @@ func (r *ModelsDataSourceModel) ToOperationsGetModelsRequest(ctx context.Context
 	} else {
 		maxAgenticIndex = nil
 	}
+	minFinanceAndAccountingIndex := new(float64)
+	if !r.MinFinanceAndAccountingIndex.IsUnknown() && !r.MinFinanceAndAccountingIndex.IsNull() {
+		*minFinanceAndAccountingIndex = r.MinFinanceAndAccountingIndex.ValueFloat64()
+	} else {
+		minFinanceAndAccountingIndex = nil
+	}
+	maxFinanceAndAccountingIndex := new(float64)
+	if !r.MaxFinanceAndAccountingIndex.IsUnknown() && !r.MaxFinanceAndAccountingIndex.IsNull() {
+		*maxFinanceAndAccountingIndex = r.MaxFinanceAndAccountingIndex.ValueFloat64()
+	} else {
+		maxFinanceAndAccountingIndex = nil
+	}
+	minStrategyAndOpsIndex := new(float64)
+	if !r.MinStrategyAndOpsIndex.IsUnknown() && !r.MinStrategyAndOpsIndex.IsNull() {
+		*minStrategyAndOpsIndex = r.MinStrategyAndOpsIndex.ValueFloat64()
+	} else {
+		minStrategyAndOpsIndex = nil
+	}
+	maxStrategyAndOpsIndex := new(float64)
+	if !r.MaxStrategyAndOpsIndex.IsUnknown() && !r.MaxStrategyAndOpsIndex.IsNull() {
+		*maxStrategyAndOpsIndex = r.MaxStrategyAndOpsIndex.ValueFloat64()
+	} else {
+		maxStrategyAndOpsIndex = nil
+	}
+	minLegalIndex := new(float64)
+	if !r.MinLegalIndex.IsUnknown() && !r.MinLegalIndex.IsNull() {
+		*minLegalIndex = r.MinLegalIndex.ValueFloat64()
+	} else {
+		minLegalIndex = nil
+	}
+	maxLegalIndex := new(float64)
+	if !r.MaxLegalIndex.IsUnknown() && !r.MaxLegalIndex.IsNull() {
+		*maxLegalIndex = r.MaxLegalIndex.ValueFloat64()
+	} else {
+		maxLegalIndex = nil
+	}
+	minHealthcareAndMedicalIndex := new(float64)
+	if !r.MinHealthcareAndMedicalIndex.IsUnknown() && !r.MinHealthcareAndMedicalIndex.IsNull() {
+		*minHealthcareAndMedicalIndex = r.MinHealthcareAndMedicalIndex.ValueFloat64()
+	} else {
+		minHealthcareAndMedicalIndex = nil
+	}
+	maxHealthcareAndMedicalIndex := new(float64)
+	if !r.MaxHealthcareAndMedicalIndex.IsUnknown() && !r.MaxHealthcareAndMedicalIndex.IsNull() {
+		*maxHealthcareAndMedicalIndex = r.MaxHealthcareAndMedicalIndex.ValueFloat64()
+	} else {
+		maxHealthcareAndMedicalIndex = nil
+	}
+	minEngineeringIndex := new(float64)
+	if !r.MinEngineeringIndex.IsUnknown() && !r.MinEngineeringIndex.IsNull() {
+		*minEngineeringIndex = r.MinEngineeringIndex.ValueFloat64()
+	} else {
+		minEngineeringIndex = nil
+	}
+	maxEngineeringIndex := new(float64)
+	if !r.MaxEngineeringIndex.IsUnknown() && !r.MaxEngineeringIndex.IsNull() {
+		*maxEngineeringIndex = r.MaxEngineeringIndex.ValueFloat64()
+	} else {
+		maxEngineeringIndex = nil
+	}
+	minEconomicsIndex := new(float64)
+	if !r.MinEconomicsIndex.IsUnknown() && !r.MinEconomicsIndex.IsNull() {
+		*minEconomicsIndex = r.MinEconomicsIndex.ValueFloat64()
+	} else {
+		minEconomicsIndex = nil
+	}
+	maxEconomicsIndex := new(float64)
+	if !r.MaxEconomicsIndex.IsUnknown() && !r.MaxEconomicsIndex.IsNull() {
+		*maxEconomicsIndex = r.MaxEconomicsIndex.ValueFloat64()
+	} else {
+		maxEconomicsIndex = nil
+	}
+	minCyberIndex := new(float64)
+	if !r.MinCyberIndex.IsUnknown() && !r.MinCyberIndex.IsNull() {
+		*minCyberIndex = r.MinCyberIndex.ValueFloat64()
+	} else {
+		minCyberIndex = nil
+	}
+	maxCyberIndex := new(float64)
+	if !r.MaxCyberIndex.IsUnknown() && !r.MaxCyberIndex.IsNull() {
+		*maxCyberIndex = r.MaxCyberIndex.ValueFloat64()
+	} else {
+		maxCyberIndex = nil
+	}
+	minOpennessIndex := new(float64)
+	if !r.MinOpennessIndex.IsUnknown() && !r.MinOpennessIndex.IsNull() {
+		*minOpennessIndex = r.MinOpennessIndex.ValueFloat64()
+	} else {
+		minOpennessIndex = nil
+	}
+	maxOpennessIndex := new(float64)
+	if !r.MaxOpennessIndex.IsUnknown() && !r.MaxOpennessIndex.IsNull() {
+		*maxOpennessIndex = r.MaxOpennessIndex.ValueFloat64()
+	} else {
+		maxOpennessIndex = nil
+	}
+	minMultilingualIndex := new(float64)
+	if !r.MinMultilingualIndex.IsUnknown() && !r.MinMultilingualIndex.IsNull() {
+		*minMultilingualIndex = r.MinMultilingualIndex.ValueFloat64()
+	} else {
+		minMultilingualIndex = nil
+	}
+	maxMultilingualIndex := new(float64)
+	if !r.MaxMultilingualIndex.IsUnknown() && !r.MaxMultilingualIndex.IsNull() {
+		*maxMultilingualIndex = r.MaxMultilingualIndex.ValueFloat64()
+	} else {
+		maxMultilingualIndex = nil
+	}
+	minDecisionIndex := new(float64)
+	if !r.MinDecisionIndex.IsUnknown() && !r.MinDecisionIndex.IsNull() {
+		*minDecisionIndex = r.MinDecisionIndex.ValueFloat64()
+	} else {
+		minDecisionIndex = nil
+	}
+	maxDecisionIndex := new(float64)
+	if !r.MaxDecisionIndex.IsUnknown() && !r.MaxDecisionIndex.IsNull() {
+		*maxDecisionIndex = r.MaxDecisionIndex.ValueFloat64()
+	} else {
+		maxDecisionIndex = nil
+	}
 	minToolSuccessRate := new(float64)
 	if !r.MinToolSuccessRate.IsUnknown() && !r.MinToolSuccessRate.IsNull() {
 		*minToolSuccessRate = r.MinToolSuccessRate.ValueFloat64()
@@ -397,36 +527,56 @@ func (r *ModelsDataSourceModel) ToOperationsGetModelsRequest(ctx context.Context
 		maxToolSuccessRate = nil
 	}
 	out := operations.GetModelsRequest{
-		Category:             category,
-		SupportedParameters:  supportedParameters,
-		OutputModalities:     outputModalities,
-		Sort:                 sort,
-		UseRss:               useRss,
-		UseRssChatLinks:      useRssChatLinks,
-		Q:                    q,
-		InputModalities:      inputModalities,
-		Endpoints:            endpoints,
-		Context:              contextVar,
-		MinPrice:             minPrice,
-		MaxPrice:             maxPrice,
-		Arch:                 arch,
-		ModelAuthors:         modelAuthors,
-		Providers:            providers,
-		Distillable:          distillable,
-		Zdr:                  zdr,
-		Region:               region,
-		MinOutputPrice:       minOutputPrice,
-		MaxOutputPrice:       maxOutputPrice,
-		MinAgeDays:           minAgeDays,
-		MaxAgeDays:           maxAgeDays,
-		MinIntelligenceIndex: minIntelligenceIndex,
-		MaxIntelligenceIndex: maxIntelligenceIndex,
-		MinCodingIndex:       minCodingIndex,
-		MaxCodingIndex:       maxCodingIndex,
-		MinAgenticIndex:      minAgenticIndex,
-		MaxAgenticIndex:      maxAgenticIndex,
-		MinToolSuccessRate:   minToolSuccessRate,
-		MaxToolSuccessRate:   maxToolSuccessRate,
+		Category:                     category,
+		SupportedParameters:          supportedParameters,
+		OutputModalities:             outputModalities,
+		Sort:                         sort,
+		UseRss:                       useRss,
+		UseRssChatLinks:              useRssChatLinks,
+		Q:                            q,
+		InputModalities:              inputModalities,
+		Endpoints:                    endpoints,
+		Context:                      contextVar,
+		MinPrice:                     minPrice,
+		MaxPrice:                     maxPrice,
+		Arch:                         arch,
+		ModelAuthors:                 modelAuthors,
+		Providers:                    providers,
+		Distillable:                  distillable,
+		Zdr:                          zdr,
+		Region:                       region,
+		MinOutputPrice:               minOutputPrice,
+		MaxOutputPrice:               maxOutputPrice,
+		MinAgeDays:                   minAgeDays,
+		MaxAgeDays:                   maxAgeDays,
+		MinIntelligenceIndex:         minIntelligenceIndex,
+		MaxIntelligenceIndex:         maxIntelligenceIndex,
+		MinCodingIndex:               minCodingIndex,
+		MaxCodingIndex:               maxCodingIndex,
+		MinAgenticIndex:              minAgenticIndex,
+		MaxAgenticIndex:              maxAgenticIndex,
+		MinFinanceAndAccountingIndex: minFinanceAndAccountingIndex,
+		MaxFinanceAndAccountingIndex: maxFinanceAndAccountingIndex,
+		MinStrategyAndOpsIndex:       minStrategyAndOpsIndex,
+		MaxStrategyAndOpsIndex:       maxStrategyAndOpsIndex,
+		MinLegalIndex:                minLegalIndex,
+		MaxLegalIndex:                maxLegalIndex,
+		MinHealthcareAndMedicalIndex: minHealthcareAndMedicalIndex,
+		MaxHealthcareAndMedicalIndex: maxHealthcareAndMedicalIndex,
+		MinEngineeringIndex:          minEngineeringIndex,
+		MaxEngineeringIndex:          maxEngineeringIndex,
+		MinEconomicsIndex:            minEconomicsIndex,
+		MaxEconomicsIndex:            maxEconomicsIndex,
+		MinCyberIndex:                minCyberIndex,
+		MaxCyberIndex:                maxCyberIndex,
+		MinOpennessIndex:             minOpennessIndex,
+		MaxOpennessIndex:             maxOpennessIndex,
+		MinMultilingualIndex:         minMultilingualIndex,
+		MaxMultilingualIndex:         maxMultilingualIndex,
+		MinDecisionIndex:             minDecisionIndex,
+		MaxDecisionIndex:             maxDecisionIndex,
+		MinToolSuccessRate:           minToolSuccessRate,
+		MaxToolSuccessRate:           maxToolSuccessRate,
 	}
 
 	return &out, diags

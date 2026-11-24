@@ -41,14 +41,23 @@ func (e *Source) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// TaskType - Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category. `search` returns OpenRouter search benchmark results only.
+// TaskType - Filter results by task type. Every value except `search` names the Artificial Analysis index of the same name and returns only models scored on it, best first (`coding` and `agentic` are deprecated: Artificial Analysis has retired those indexes and returns no item for them). Design Arena answers only `coding`, `intelligence` and `agentic`, and OpenRouter's own evals only `intelligence` and `agentic`. `search` returns OpenRouter search benchmark results only.
 type TaskType string
 
 const (
-	TaskTypeCoding       TaskType = "coding"
-	TaskTypeIntelligence TaskType = "intelligence"
-	TaskTypeAgentic      TaskType = "agentic"
-	TaskTypeSearch       TaskType = "search"
+	TaskTypeIntelligence         TaskType = "intelligence"
+	TaskTypeCoding               TaskType = "coding"
+	TaskTypeAgentic              TaskType = "agentic"
+	TaskTypeFinanceAndAccounting TaskType = "finance-and-accounting"
+	TaskTypeStrategyAndOps       TaskType = "strategy-and-ops"
+	TaskTypeLegal                TaskType = "legal"
+	TaskTypeHealthcareAndMedical TaskType = "healthcare-and-medical"
+	TaskTypeEngineering          TaskType = "engineering"
+	TaskTypeEconomics            TaskType = "economics"
+	TaskTypeCyber                TaskType = "cyber"
+	TaskTypeMultilingual         TaskType = "multilingual"
+	TaskTypeDecision             TaskType = "decision"
+	TaskTypeSearch               TaskType = "search"
 )
 
 func (e TaskType) ToPointer() *TaskType {
@@ -60,11 +69,29 @@ func (e *TaskType) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
-	case "coding":
-		fallthrough
 	case "intelligence":
 		fallthrough
+	case "coding":
+		fallthrough
 	case "agentic":
+		fallthrough
+	case "finance-and-accounting":
+		fallthrough
+	case "strategy-and-ops":
+		fallthrough
+	case "legal":
+		fallthrough
+	case "healthcare-and-medical":
+		fallthrough
+	case "engineering":
+		fallthrough
+	case "economics":
+		fallthrough
+	case "cyber":
+		fallthrough
+	case "multilingual":
+		fallthrough
+	case "decision":
 		fallthrough
 	case "search":
 		*e = TaskType(v)
@@ -173,7 +200,7 @@ func (e *Arena) UnmarshalJSON(data []byte) error {
 type GetBenchmarksRequest struct {
 	// Benchmark source to query. Determines the shape of the returned items. When omitted, returns results from all sources.
 	Source *Source `queryParam:"style=form,explode=true,name=source"`
-	// Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category. `search` returns OpenRouter search benchmark results only.
+	// Filter results by task type. Every value except `search` names the Artificial Analysis index of the same name and returns only models scored on it, best first (`coding` and `agentic` are deprecated: Artificial Analysis has retired those indexes and returns no item for them). Design Arena answers only `coding`, `intelligence` and `agentic`, and OpenRouter's own evals only `intelligence` and `agentic`. `search` returns OpenRouter search benchmark results only.
 	TaskType *TaskType `queryParam:"style=form,explode=true,name=task_type"`
 	// Return results for one exact OpenRouter benchmark. A `search_*` value narrows the response to search results only; a classic value narrows the OpenRouter items and leaves other sources' items as they are.
 	BenchmarkType *BenchmarkType `queryParam:"style=form,explode=true,name=benchmark_type"`

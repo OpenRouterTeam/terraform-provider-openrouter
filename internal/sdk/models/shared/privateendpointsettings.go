@@ -6,6 +6,7 @@ package shared
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
 )
 
 type PrivateEndpointSettingsCompletions struct {
@@ -49,6 +50,7 @@ const (
 	PrivateEndpointSettingsExcludedParameterSeed                PrivateEndpointSettingsExcludedParameter = "seed"
 	PrivateEndpointSettingsExcludedParameterResponseFormat      PrivateEndpointSettingsExcludedParameter = "response_format"
 	PrivateEndpointSettingsExcludedParameterStructuredOutputs   PrivateEndpointSettingsExcludedParameter = "structured_outputs"
+	PrivateEndpointSettingsExcludedParameterStrictToolSchemas   PrivateEndpointSettingsExcludedParameter = "strict_tool_schemas"
 	PrivateEndpointSettingsExcludedParameterStop                PrivateEndpointSettingsExcludedParameter = "stop"
 	PrivateEndpointSettingsExcludedParameterTools               PrivateEndpointSettingsExcludedParameter = "tools"
 	PrivateEndpointSettingsExcludedParameterToolChoice          PrivateEndpointSettingsExcludedParameter = "tool_choice"
@@ -102,6 +104,8 @@ func (e *PrivateEndpointSettingsExcludedParameter) UnmarshalJSON(data []byte) er
 	case "response_format":
 		fallthrough
 	case "structured_outputs":
+		fallthrough
+	case "strict_tool_schemas":
 		fallthrough
 	case "stop":
 		fallthrough
@@ -247,10 +251,23 @@ type PrivateEndpointSettings struct {
 	MaxCompletionTokens *int64 `json:"max_completion_tokens"`
 	// Longest prompt, in tokens, or `null` for no cap below the context length. Cannot exceed `context_length`, or the model context length while `context_length` is `null`.
 	MaxPromptTokens *int64 `json:"max_prompt_tokens"`
+	// Prompt-caching controls for an OpenAI-compatible private endpoint. Accepted fields default on after validation; explicit owner settings override the defaults.
+	PromptCaching *PrivateEndpointPromptCaching `json:"prompt_caching,omitzero"`
 	// Weight precision the deployment runs at; `unknown` when not stated.
 	Quantization PrivateEndpointQuantization       `json:"quantization"`
 	Reasoning    PrivateEndpointSettingsReasoning  `json:"reasoning"`
 	ToolChoice   PrivateEndpointSettingsToolChoice `json:"tool_choice"`
+}
+
+func (p PrivateEndpointSettings) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(p, "", false)
+}
+
+func (p *PrivateEndpointSettings) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &p, "", false, nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (p *PrivateEndpointSettings) GetCompletions() PrivateEndpointSettingsCompletions {
@@ -293,6 +310,13 @@ func (p *PrivateEndpointSettings) GetMaxPromptTokens() *int64 {
 		return nil
 	}
 	return p.MaxPromptTokens
+}
+
+func (p *PrivateEndpointSettings) GetPromptCaching() *PrivateEndpointPromptCaching {
+	if p == nil {
+		return nil
+	}
+	return p.PromptCaching
 }
 
 func (p *PrivateEndpointSettings) GetQuantization() PrivateEndpointQuantization {

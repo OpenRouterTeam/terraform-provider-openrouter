@@ -16,29 +16,29 @@ type UpdateWorkspaceResponseData struct {
 	// Deterministic ID derived from the workspace ID. The default guardrail is materialized when its configuration is first written.
 	DefaultGuardrailID string `json:"default_guardrail_id"`
 	// Default image model for this workspace
-	DefaultImageModel *string `json:"default_image_model"`
+	DefaultImageModel *string `json:"default_image_model,omitzero"`
 	// Default provider sort preference (price, throughput, latency, exacto)
-	DefaultProviderSort *string `json:"default_provider_sort"`
+	DefaultProviderSort *string `json:"default_provider_sort,omitzero"`
 	// Default text model for this workspace
-	DefaultTextModel *string `json:"default_text_model"`
+	DefaultTextModel *string `json:"default_text_model,omitzero"`
 	// Description of the workspace
 	Description *string `json:"description"`
 	// OpenRouter server tools (e.g. openrouter:web_search) that requests in this workspace may not invoke. Null means no tools are disabled.
 	DisabledServerTools []string `json:"disabled_server_tools,omitzero"`
 	// Unique identifier for the workspace
 	ID string `json:"id"`
-	// Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Set it via the workspace budget endpoints.
+	// Whether BYOK (bring-your-own-key) spend counts toward this workspace's budgets. Omitted without settings and budget visibility. Set it via the workspace budget endpoints.
 	IncludeByokInBudgets *bool `json:"include_byok_in_budgets,omitzero"`
-	// Optional array of API key IDs to filter I/O logging. Null means all keys are logged.
-	IoLoggingAPIKeyIds []int64 `json:"io_logging_api_key_ids"`
+	// API key IDs used to filter I/O logging. Null means all keys are logged. Omitted without access to workspace settings and API key identifiers.
+	IoLoggingAPIKeyIds []int64 `json:"io_logging_api_key_ids,omitzero"`
 	// Sampling rate for I/O logging (0.0001-1). 1 means 100% of requests are logged.
-	IoLoggingSamplingRate float64 `json:"io_logging_sampling_rate"`
+	IoLoggingSamplingRate *float64 `json:"io_logging_sampling_rate,omitzero"`
 	// Whether data discount logging is enabled for this workspace
-	IsDataDiscountLoggingEnabled bool `json:"is_data_discount_logging_enabled"`
+	IsDataDiscountLoggingEnabled *bool `json:"is_data_discount_logging_enabled,omitzero"`
 	// Whether broadcast is enabled for this workspace
-	IsObservabilityBroadcastEnabled bool `json:"is_observability_broadcast_enabled"`
+	IsObservabilityBroadcastEnabled *bool `json:"is_observability_broadcast_enabled,omitzero"`
 	// Whether private logging is enabled for this workspace
-	IsObservabilityIoLoggingEnabled bool `json:"is_observability_io_logging_enabled"`
+	IsObservabilityIoLoggingEnabled *bool `json:"is_observability_io_logging_enabled,omitzero"`
 	// Name of the workspace
 	Name string `json:"name"`
 	// URL-friendly slug for the workspace
@@ -135,30 +135,30 @@ func (u *UpdateWorkspaceResponseData) GetIoLoggingAPIKeyIds() []int64 {
 	return u.IoLoggingAPIKeyIds
 }
 
-func (u *UpdateWorkspaceResponseData) GetIoLoggingSamplingRate() float64 {
+func (u *UpdateWorkspaceResponseData) GetIoLoggingSamplingRate() *float64 {
 	if u == nil {
-		return 0.0
+		return nil
 	}
 	return u.IoLoggingSamplingRate
 }
 
-func (u *UpdateWorkspaceResponseData) GetIsDataDiscountLoggingEnabled() bool {
+func (u *UpdateWorkspaceResponseData) GetIsDataDiscountLoggingEnabled() *bool {
 	if u == nil {
-		return false
+		return nil
 	}
 	return u.IsDataDiscountLoggingEnabled
 }
 
-func (u *UpdateWorkspaceResponseData) GetIsObservabilityBroadcastEnabled() bool {
+func (u *UpdateWorkspaceResponseData) GetIsObservabilityBroadcastEnabled() *bool {
 	if u == nil {
-		return false
+		return nil
 	}
 	return u.IsObservabilityBroadcastEnabled
 }
 
-func (u *UpdateWorkspaceResponseData) GetIsObservabilityIoLoggingEnabled() bool {
+func (u *UpdateWorkspaceResponseData) GetIsObservabilityIoLoggingEnabled() *bool {
 	if u == nil {
-		return false
+		return nil
 	}
 	return u.IsObservabilityIoLoggingEnabled
 }
