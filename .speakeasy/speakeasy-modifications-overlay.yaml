@@ -89,6 +89,11 @@ info:
 # Comparison helpers live in privateendpoint_lifecycle.go; generation must retain
 # their Update(), Create() and Read() call sites rather than restore a
 # pricing-only write gate.
+# The recorded baseline for that file is the generation the current spec produces,
+# which raised the declared_parameters cap to 26 and added the settings.prompt_caching
+# block. The edit keeps its client-side UniqueValues guard and leaves the new block
+# as generated, because the update dispatch compares the settings object recursively
+# and a change to either caching flag marks the group as changed.
 actions:
   - target: $["paths"]["/guardrails/assignments/keys"]["get"]
     update:
