@@ -137,6 +137,8 @@ func (p *OpenrouterProvider) Resources(ctx context.Context) []func() resource.Re
 		NewGuardrailPolicyAccountBudgetResource,
 		NewGuardrailPolicyAccountModelAvailabilityResource,
 		NewGuardrailPolicyAccountModerationResource,
+		NewGuardrailPolicyAPIKeyAssignmentResource,
+		NewGuardrailPolicyMemberAssignmentResource,
 	}
 }
 
