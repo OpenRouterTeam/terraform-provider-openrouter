@@ -7,6 +7,7 @@ description: |-
   config is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. false travels explicitly and an empty list is sent as [] to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. armor is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.
   member_ids and api_key_hashes replace the stored assignments and must be sent together: omit both to keep them, or set both to [] to clear them. is_workspace_default is optional, and omitting it keeps the stored status while false unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.
   workspace_id is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes workspace_id with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing workspace_id from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a workspace_id Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes <workspace_id>/<policy_id> for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.
+  The retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable.
 ---
 
 # openrouter_guardrail_policy_moderation (Resource)
@@ -18,6 +19,8 @@ A workspace moderation policy: the content-filtering surface a workspace's traff
 `member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.
 
 `workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.
+
+The retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable.
 
 ## Example Usage
 
@@ -66,7 +69,6 @@ resource "openrouter_guardrail_policy_moderation" "my_guardrailpolicymoderation"
       use_cc_style_default_rules = false
     }
     broadcast_model_armor_flagged_requests = false
-    content_filter_blocks_requests         = true
     content_filter_builtins = [
       {
         action     = "flag"
@@ -74,9 +76,6 @@ resource "openrouter_guardrail_policy_moderation" "my_guardrailpolicymoderation"
         scan_scope = "user_only"
         slug       = "email"
       }
-    ]
-    content_filter_patterns = [
-      "..."
     ]
     content_filters = [
       {
@@ -89,13 +88,6 @@ resource "openrouter_guardrail_policy_moderation" "my_guardrailpolicymoderation"
     lakera_injection_protection_mode        = "flag"
     model_armor_injection_confidence_level  = "high"
     model_armor_injection_protection_mode   = "flag"
-    pii_filters = [
-      {
-        action          = "flag"
-        entity_type     = "...my_entity_type..."
-        score_threshold = 0.9
-      }
-    ]
     platform_image_moderated_providers = [
       "..."
     ]
@@ -154,15 +146,12 @@ Optional:
 
 - `armor` (Attributes) (see [below for nested schema](#nestedatt--config--armor))
 - `broadcast_model_armor_flagged_requests` (Boolean)
-- `content_filter_blocks_requests` (Boolean)
 - `content_filter_builtins` (Attributes List) (see [below for nested schema](#nestedatt--config--content_filter_builtins))
-- `content_filter_patterns` (List of String)
 - `content_filters` (Attributes List) (see [below for nested schema](#nestedatt--config--content_filters))
 - `enable_model_armor_injection_protection` (Boolean)
 - `lakera_injection_protection_mode` (String) must be one of ["block", "flag"]
 - `model_armor_injection_confidence_level` (String) must be one of ["low", "medium", "high"]
 - `model_armor_injection_protection_mode` (String) must be one of ["block", "flag"]
-- `pii_filters` (Attributes List) (see [below for nested schema](#nestedatt--config--pii_filters))
 - `platform_image_moderated_providers` (List of String)
 - `platform_moderated_providers` (List of String)
 
@@ -295,16 +284,6 @@ Optional:
 - `action` (String) Not Null; must be one of ["redact", "block", "flag"]
 - `label` (String)
 - `pattern` (String) Not Null
-
-
-<a id="nestedatt--config--pii_filters"></a>
-### Nested Schema for `config.pii_filters`
-
-Optional:
-
-- `action` (String) Not Null; must be one of ["redact", "block", "flag"]
-- `entity_type` (String) Not Null
-- `score_threshold` (Number)
 
 ## Import
 
