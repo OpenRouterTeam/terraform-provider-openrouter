@@ -42,6 +42,7 @@ type GuardrailResourceModel struct {
 	AllowedDataRegions             []types.String                      `tfsdk:"allowed_data_regions"`
 	AllowedModels                  []types.String                      `tfsdk:"allowed_models"`
 	AllowedProviders               []types.String                      `tfsdk:"allowed_providers"`
+	AllowProvisionalProviders      types.Bool                          `tfsdk:"allow_provisional_providers"`
 	AllowSafetyRetentionGoogle     types.Bool                          `tfsdk:"allow_safety_retention_google"`
 	AllowSafetyRetentionOther      types.Bool                          `tfsdk:"allow_safety_retention_other"`
 	ContentFilterBuiltins          []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
@@ -77,6 +78,11 @@ func (r *GuardrailResource) Schema(ctx context.Context, req resource.SchemaReque
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Guardrail Resource",
 		Attributes: map[string]schema.Attribute{
+			"allow_provisional_providers": schema.BoolAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: `Whether requests may use provisional providers, whose security practices have not been reviewed by OpenRouter. false excludes them. true and null never override an account that excludes them. Inherits the account setting when not provided.`,
+			},
 			"allow_safety_retention_google": schema.BoolAttribute{
 				Computed:    true,
 				Optional:    true,

@@ -33,6 +33,7 @@ type GuardrailDataSourceModel struct {
 	AllowedDataRegions             []types.String                      `tfsdk:"allowed_data_regions"`
 	AllowedModels                  []types.String                      `tfsdk:"allowed_models"`
 	AllowedProviders               []types.String                      `tfsdk:"allowed_providers"`
+	AllowProvisionalProviders      types.Bool                          `tfsdk:"allow_provisional_providers"`
 	AllowSafetyRetentionGoogle     types.Bool                          `tfsdk:"allow_safety_retention_google"`
 	AllowSafetyRetentionOther      types.Bool                          `tfsdk:"allow_safety_retention_other"`
 	ContentFilterBuiltins          []tfTypes.ContentFilterBuiltinEntry `tfsdk:"content_filter_builtins"`
@@ -71,6 +72,10 @@ func (r *GuardrailDataSource) Schema(ctx context.Context, req datasource.SchemaR
 		MarkdownDescription: "Guardrail DataSource",
 
 		Attributes: map[string]schema.Attribute{
+			"allow_provisional_providers": schema.BoolAttribute{
+				Computed:    true,
+				Description: `Whether requests may use provisional providers, whose security practices have not been reviewed by OpenRouter. false excludes them. true and null never override an account that excludes them. Inherits the account setting when not provided.`,
+			},
 			"allow_safety_retention_google": schema.BoolAttribute{
 				Computed:    true,
 				Description: `Whether ZDR-only requests to google/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.`,

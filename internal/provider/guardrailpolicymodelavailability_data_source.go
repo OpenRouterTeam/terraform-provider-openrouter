@@ -66,6 +66,9 @@ func (r *GuardrailPolicyModelAvailabilityDataSource) Schema(ctx context.Context,
 			"config": schema.SingleNestedAttribute{
 				Computed: true,
 				Attributes: map[string]schema.Attribute{
+					"allow_provisional_providers": schema.BoolAttribute{
+						Computed: true,
+					},
 					"allow_safety_retention_google": schema.BoolAttribute{
 						Computed: true,
 					},

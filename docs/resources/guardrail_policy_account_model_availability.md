@@ -61,6 +61,7 @@ resource "openrouter_guardrail_policy_account_model_availability" "my_account_ba
 
 Optional:
 
+- `allow_provisional_providers` (Boolean)
 - `allow_safety_retention_google` (Boolean)
 - `allow_safety_retention_other` (Boolean)
 - `allowed_data_regions` (List of String)

@@ -14,6 +14,7 @@ Guardrail Resource
 
 ```terraform
 resource "openrouter_guardrail" "my_guardrail" {
+  allow_provisional_providers   = false
   allow_safety_retention_google = true
   allow_safety_retention_other  = true
   allowed_data_regions = [
@@ -78,6 +79,7 @@ resource "openrouter_guardrail" "my_guardrail" {
 
 ### Optional
 
+- `allow_provisional_providers` (Boolean) Whether requests may use provisional providers, whose security practices have not been reviewed by OpenRouter. false excludes them. true and null never override an account that excludes them. Inherits the account setting when not provided.
 - `allow_safety_retention_google` (Boolean) Whether ZDR-only requests to google/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.
 - `allow_safety_retention_other` (Boolean) Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.
 - `allowed_data_regions` (List of String) Data regions through which requests governed by this guardrail must arrive. `global` is https://openrouter.ai, `europe` is https://eu.openrouter.ai, and `us` is https://us.openrouter.ai. Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value. An empty array is rejected.

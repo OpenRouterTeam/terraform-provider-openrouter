@@ -54,7 +54,17 @@ func (r *ModelDataSourceModel) RefreshFromSharedModelResponse(ctx context.Contex
 				r.Data.Benchmarks.ArtificialAnalysis = &tfTypes.AABenchmarkEntry{}
 				r.Data.Benchmarks.ArtificialAnalysis.AgenticIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.AgenticIndex)
 				r.Data.Benchmarks.ArtificialAnalysis.CodingIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.CodingIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.CyberIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.CyberIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.DecisionIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.DecisionIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.EconomicsIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.EconomicsIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.EngineeringIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.EngineeringIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.FinanceAndAccountingIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.FinanceAndAccountingIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.HealthcareAndMedicalIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.HealthcareAndMedicalIndex)
 				r.Data.Benchmarks.ArtificialAnalysis.IntelligenceIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.IntelligenceIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.LegalIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.LegalIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.MultilingualIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.MultilingualIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.OpennessIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.OpennessIndex)
+				r.Data.Benchmarks.ArtificialAnalysis.StrategyAndOpsIndex = types.Float64PointerValue(resp.Data.Benchmarks.ArtificialAnalysis.StrategyAndOpsIndex)
 			}
 			r.Data.Benchmarks.DesignArena = []tfTypes.DABenchmarkEntry{}
 
