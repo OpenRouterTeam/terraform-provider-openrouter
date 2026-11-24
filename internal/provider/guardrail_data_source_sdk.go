@@ -30,6 +30,7 @@ func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponse(ctx con
 func (r *GuardrailDataSourceModel) RefreshFromSharedGetGuardrailResponseData(ctx context.Context, resp *shared.GetGuardrailResponseData) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	r.AllowProvisionalProviders = types.BoolPointerValue(resp.AllowProvisionalProviders)
 	r.AllowSafetyRetentionGoogle = types.BoolPointerValue(resp.AllowSafetyRetentionGoogle)
 	r.AllowSafetyRetentionOther = types.BoolPointerValue(resp.AllowSafetyRetentionOther)
 	if resp.AllowedDataRegions != nil {

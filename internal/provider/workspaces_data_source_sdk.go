@@ -52,10 +52,10 @@ func (r *WorkspacesDataSourceModel) RefreshFromSharedListWorkspacesResponse(ctx 
 			} else {
 				data.IoLoggingAPIKeyIds = nil
 			}
-			data.IoLoggingSamplingRate = types.Float64Value(dataItem.IoLoggingSamplingRate)
-			data.IsDataDiscountLoggingEnabled = types.BoolValue(dataItem.IsDataDiscountLoggingEnabled)
-			data.IsObservabilityBroadcastEnabled = types.BoolValue(dataItem.IsObservabilityBroadcastEnabled)
-			data.IsObservabilityIoLoggingEnabled = types.BoolValue(dataItem.IsObservabilityIoLoggingEnabled)
+			data.IoLoggingSamplingRate = types.Float64PointerValue(dataItem.IoLoggingSamplingRate)
+			data.IsDataDiscountLoggingEnabled = types.BoolPointerValue(dataItem.IsDataDiscountLoggingEnabled)
+			data.IsObservabilityBroadcastEnabled = types.BoolPointerValue(dataItem.IsObservabilityBroadcastEnabled)
+			data.IsObservabilityIoLoggingEnabled = types.BoolPointerValue(dataItem.IsObservabilityIoLoggingEnabled)
 			data.Name = types.StringValue(dataItem.Name)
 			data.Slug = types.StringValue(dataItem.Slug)
 			data.UpdatedAt = types.StringPointerValue(dataItem.UpdatedAt)

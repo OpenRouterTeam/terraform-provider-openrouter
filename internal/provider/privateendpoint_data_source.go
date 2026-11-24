@@ -184,6 +184,20 @@ func (r *PrivateEndpointDataSource) Schema(ctx context.Context, req datasource.S
 						Computed:    true,
 						Description: `Longest prompt, in tokens, or ` + "`" + `null` + "`" + ` for no cap below the context length. Cannot exceed ` + "`" + `context_length` + "`" + `, or the model context length while ` + "`" + `context_length` + "`" + ` is ` + "`" + `null` + "`" + `.`,
 					},
+					"prompt_caching": schema.SingleNestedAttribute{
+						Computed: true,
+						Attributes: map[string]schema.Attribute{
+							"cache_control": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Forward top-level, message, and tool cache_control markers. Defaults on after endpoint validation accepts these fields; otherwise off. Set false to opt out, or true to declare support explicitly.`,
+							},
+							"prompt_cache_key": schema.BoolAttribute{
+								Computed:    true,
+								Description: `Send an OpenRouter-derived, customer-isolated prompt_cache_key, not the caller-supplied key. Defaults on after endpoint validation accepts the field; otherwise off. Set false to opt out, or true to declare support explicitly. HIPAA and unknown workspace posture withhold OpenRouter caching directives and the derived key; this does not control upstream retention.`,
+							},
+						},
+						Description: `Prompt-caching controls for an OpenAI-compatible private endpoint. Accepted fields default on after validation; explicit owner settings override the defaults.`,
+					},
 					"quantization": schema.StringAttribute{
 						Computed:    true,
 						Description: `Weight precision the deployment runs at; ` + "`" + `unknown` + "`" + ` when not stated.`,

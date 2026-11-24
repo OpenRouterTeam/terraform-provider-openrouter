@@ -46,6 +46,7 @@ type ByokKeyResourceModel struct {
 	Disabled            types.Bool     `tfsdk:"disabled"`
 	ID                  types.String   `tfsdk:"id"`
 	IsByokOnly          types.Bool     `tfsdk:"is_byok_only"`
+	IsExclusive         types.Bool     `tfsdk:"is_exclusive"`
 	IsFallback          types.Bool     `tfsdk:"is_fallback"`
 	IsRequired          types.Bool     `tfsdk:"is_required"`
 	Key                 types.String   `tfsdk:"key"`
@@ -128,6 +129,11 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Optional:    true,
 				Description: `Whether OpenRouter's shared endpoints on this provider are removed for every model, including models outside ` + "`" + `allowed_models` + "`" + ` and after all of your keys for the provider fail. The provider is skipped instead of spending OpenRouter credits. Only valid on non-fallback credentials. Defaults to ` + "`" + `false` + "`" + `.`,
 			},
+			"is_exclusive": schema.BoolAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: `Whether requests for the models this credential covers run only on exclusive credentials covering that model: never on another provider, a non-exclusive key, or OpenRouter's shared capacity. Every exclusive credential that covers the model and is eligible for the request may serve it, so two exclusive credentials with overlapping models share those models. Only credentials eligible for the request (its API key and member restrictions) count, so a request no exclusive credential is eligible for uses normal routing. A request for a model that an eligible exclusive credential covers returns a 404 when none of those credentials can serve it. The covered models are ` + "`" + `allowed_models` + "`" + ` when non-empty; with no or an empty ` + "`" + `allowed_models` + "`" + `, an OpenAI, Anthropic, or Google credential covers every closed-weight model by that lab (for example every ` + "`" + `openai/*` + "`" + ` model except open-weight models such as ` + "`" + `openai/gpt-oss-120b` + "`" + `, which stay on normal routing unless listed), and other providers must set a non-empty ` + "`" + `allowed_models` + "`" + `. Only valid on non-fallback credentials. Defaults to ` + "`" + `false` + "`" + `.`,
+			},
 			"is_fallback": schema.BoolAttribute{
 				Computed:    true,
 				Optional:    true,
@@ -164,7 +170,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 					stringplanmodifier.RequiresReplaceIfConfigured(),
 					speakeasy_stringplanmodifier.SuppressDiff(speakeasy_stringplanmodifier.ExplicitSuppress),
 				},
-				Description: `The upstream provider this credential authenticates against, as a lowercase slug (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "antdigital", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "doubleword", "elevenlabs", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "kt", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parallel", "parasail", "pareto-alpha", "particle-ai", "pearl-research", "perceptron", "perplexity", "phala", "poolside", "primalabs", "primeintellect", "quiver", "recraft", "recursive", "reka", "relace", "respan", "river", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "scaledown", "seed", "siliconflow", "sourceful", "speechify", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]; Requires replacement if changed.`,
+				Description: `The upstream provider this credential authenticates against, as a lowercase slug (e.g. ` + "`" + `openai` + "`" + `, ` + "`" + `anthropic` + "`" + `, ` + "`" + `amazon-bedrock` + "`" + `). must be one of ["ai21", "aion-labs", "akashml", "alibaba", "amazon-bedrock", "amazon-bedrock/claude-on-aws", "amazon-nova", "ambient", "antdigital", "anthropic", "anthropic/2", "arcee-ai", "assemblyai", "atlas-cloud", "avian", "azure", "baidu", "baseten", "black-forest-labs", "byteplus", "cerebras", "chutes", "cirrascale", "clarifai", "claude-on-aws", "cloudflare", "cohere", "coreweave", "cosine", "crusoe", "darkbloom", "databricks", "decart", "deepgram", "deepinfra", "deepseek", "dekallm", "digitalocean", "doubleword", "elevenlabs", "featherless", "fireworks", "fish-audio", "friendli", "gmicloud", "google-ai-studio", "google-vertex", "groq", "heygen", "inception", "inceptron", "inferact-vllm", "inference-net", "infermatic", "inflection", "io-net", "ionstream", "krea", "kt", "liquid", "makora", "mancer", "mara", "meta", "minimax", "mistral", "modal", "modelrun", "modular", "moonshotai", "morph", "near-ai", "nebius", "nex-agi", "nextbit", "novita", "nvidia", "ollama", "open-inference", "openai", "parallel", "parasail", "pareto-alpha", "pareto-inference", "particle-ai", "pearl-research", "perceptron", "perplexity", "phala", "poolside", "primalabs", "primeintellect", "quiver", "recraft", "recursive", "reka", "relace", "respan", "river", "runway", "sail-research", "sakana", "sakana-ai", "sambanova", "scaledown", "seed", "siliconflow", "sourceful", "speechify", "stepfun", "streamlake", "switchpoint", "tencent", "tenstorrent", "thinkingmachines", "together", "typesafe", "unbiased", "upstage", "venice", "voyageai", "wafer", "wandb", "wandb-legacy", "xai", "xiaomi", "z-ai"]; Requires replacement if changed.`,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"ai21",
@@ -250,6 +256,7 @@ func (r *ByokKeyResource) Schema(ctx context.Context, req resource.SchemaRequest
 						"parallel",
 						"parasail",
 						"pareto-alpha",
+						"pareto-inference",
 						"particle-ai",
 						"pearl-research",
 						"perceptron",

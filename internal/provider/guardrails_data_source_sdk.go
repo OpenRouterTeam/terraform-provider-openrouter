@@ -23,6 +23,7 @@ func (r *GuardrailsDataSourceModel) RefreshFromSharedListGuardrailsResponse(ctx 
 		for _, dataItem := range resp.Data {
 			var data tfTypes.Guardrail
 
+			data.AllowProvisionalProviders = types.BoolPointerValue(dataItem.AllowProvisionalProviders)
 			data.AllowSafetyRetentionGoogle = types.BoolPointerValue(dataItem.AllowSafetyRetentionGoogle)
 			data.AllowSafetyRetentionOther = types.BoolPointerValue(dataItem.AllowSafetyRetentionOther)
 			if dataItem.AllowedDataRegions != nil {
