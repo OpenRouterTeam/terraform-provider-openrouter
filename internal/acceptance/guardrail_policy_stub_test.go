@@ -73,6 +73,29 @@ const (
 // guardrailPolicyStub answers like the Management API's policy routes: policies
 // are stored per type, reads answer with the detail shape, and a read after a
 // delete is a 404.
+// retiredModerationConfigMessage is what the live route answers for the three
+// moderation config fields it retired, measured on the account route 2026-11-20
+// and on the workspace route 2026-11-23. The stub encodes it so a provider that
+// sends one is caught here rather than in a customer's apply. Presence is the
+// rule the stub applies; the live route's answer for a body that carries one of
+// them with its default value was not probed.
+const retiredModerationConfigMessage = "content_filter_patterns, content_filter_blocks_requests and pii_filters are legacy fields that inference does not enforce. Use content_filters or content_filter_builtins instead."
+
+// retiredModerationConfigFields names the retired config fields a body carries.
+func retiredModerationConfigFields(v any) []string {
+	cfg, ok := v.(map[string]any)
+	if !ok {
+		return nil
+	}
+	var found []string
+	for _, k := range []string{"content_filter_patterns", "content_filter_blocks_requests", "pii_filters"} {
+		if _, present := cfg[k]; present {
+			found = append(found, k)
+		}
+	}
+	return found
+}
+
 type guardrailPolicyStub struct {
 	mu sync.Mutex
 	// orgKey makes every read and delete require a workspace scope, the way the
@@ -99,6 +122,9 @@ type guardrailPolicyStub struct {
 	// still completes a destroy cleanly, so the request count is the only
 	// signal that a destroy reached the API.
 	deleteCalls map[string]int
+	// retiredRejections counts writes the stub answered with the retired-field
+	// message, which is how a test proves the provider never sent one.
+	retiredRejections int
 }
 
 func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStub) {
@@ -181,6 +207,13 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 			var body map[string]any
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				writeJSON(w, http.StatusBadRequest, map[string]any{"error": map[string]any{"code": 400, "message": "bad json"}})
+				return
+			}
+			if retired := retiredModerationConfigFields(body["config"]); len(retired) > 0 {
+				s.mu.Lock()
+				s.retiredRejections++
+				s.mu.Unlock()
+				badRequest(w, retiredModerationConfigMessage)
 				return
 			}
 			body["id"] = stubPolicyID
@@ -273,6 +306,13 @@ func newGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPolicyStu
 					return
 				}
 			}
+			if retired := retiredModerationConfigFields(body["config"]); len(retired) > 0 {
+				s.mu.Lock()
+				s.retiredRejections++
+				s.mu.Unlock()
+				badRequest(w, retiredModerationConfigMessage)
+				return
+			}
 			s.mu.Lock()
 			s.updateBodies[slug] = body
 			// The route replaces what it is given, so the stored policy is the
@@ -331,6 +371,27 @@ func newOrgKeyGuardrailPolicyStub(t *testing.T) (*httptest.Server, *guardrailPol
 	srv, s := newGuardrailPolicyStub(t)
 	s.orgKey = true
 	return srv, s
+}
+
+// seedRetiredModerationConfig gives the stored moderation policy the three
+// retired config fields, the way a policy created before the retirement reads
+// back. A test then proves the provider neither hydrates them into state nor
+// sends them on an update.
+func (s *guardrailPolicyStub) seedRetiredModerationConfig() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	p := s.policies["moderation"]
+	if p == nil {
+		return
+	}
+	cfg, _ := p["config"].(map[string]any)
+	if cfg == nil {
+		cfg = map[string]any{}
+	}
+	cfg["content_filter_blocks_requests"] = false
+	cfg["content_filter_patterns"] = []any{"legacy-pattern"}
+	cfg["pii_filters"] = []any{map[string]any{"action": "flag", "entity_type": "email"}}
+	p["config"] = cfg
 }
 
 func (s *guardrailPolicyStub) lastUpdate(t *testing.T, slug string) map[string]any {
@@ -850,7 +911,7 @@ func TestStubGuardrailPolicyModerationOmittedConfigValueComesFromState(t *testin
 	config := func(name string, blocksRequests bool) string {
 		scalar := ""
 		if blocksRequests {
-			scalar = "\n    content_filter_blocks_requests = true"
+			scalar = "\n    broadcast_model_armor_flagged_requests = true"
 		}
 		return guardrailPolicyStubConfig(srv.URL, "moderation", "moderation", fmt.Sprintf(`
   config = {
@@ -877,8 +938,8 @@ func TestStubGuardrailPolicyModerationOmittedConfigValueComesFromState(t *testin
 	if !ok {
 		t.Fatalf("update sent config as %T, want an object", body["config"])
 	}
-	if got := cfg["content_filter_blocks_requests"]; got != true {
-		t.Errorf("update sent content_filter_blocks_requests=%v after the configuration omitted it, want the stored true: the update starts from state", got)
+	if got := cfg["broadcast_model_armor_flagged_requests"]; got != true {
+		t.Errorf("update sent broadcast_model_armor_flagged_requests=%v after the configuration omitted it, want the stored true: the update starts from state", got)
 	}
 	armor, ok := cfg["armor"].(map[string]any)
 	if !ok {
@@ -905,7 +966,7 @@ func TestStubGuardrailPolicyModerationRemovingArmorClearsIt(t *testing.T) {
 		}
 		return guardrailPolicyStubConfig(srv.URL, "moderation", "moderation", fmt.Sprintf(`
   config = {%s
-    content_filter_blocks_requests = true
+    broadcast_model_armor_flagged_requests = true
   }
   name = "stub moderation policy"
 `, body))
@@ -1171,4 +1232,63 @@ func containsString(got []string, want string) bool {
 		}
 	}
 	return false
+}
+
+// TestStubGuardrailPolicyModerationRetiredConfigFields covers the three config
+// fields the route retired. A policy created before the retirement still reads
+// them back, so the provider has to ignore them on the read and never send them
+// on a write: a write that carries one is answered 400, which is the failure this
+// test pins. Measured on the workspace route 2026-11-23: a create carrying only
+// the retired trio answers 400 with the message below, while the same create and
+// update with the supported names answer 201 and 200.
+func TestStubGuardrailPolicyModerationRetiredConfigFields(t *testing.T) {
+	t.Setenv("TF_ACC", "1")
+
+	srv, stub := newGuardrailPolicyStub(t)
+
+	config := func(name string) string {
+		return guardrailPolicyStubConfig(srv.URL, "moderation", "moderation", fmt.Sprintf(`
+  config = {
+    content_filter_builtins = [{
+      action     = "block"
+      slug       = "secrets"
+      scan_scope = "all_messages"
+    }]
+  }
+  name = %q
+`, name))
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{Config: config("stub moderation policy")},
+			{
+				// The stored policy now carries the retired fields, the way a
+				// policy created before the retirement reads out.
+				PreConfig: stub.seedRetiredModerationConfig,
+				Config:    config("stub moderation policy renamed"),
+			},
+		},
+	})
+
+	body := stub.lastUpdate(t, "moderation")
+	cfg, ok := body["config"].(map[string]any)
+	if !ok {
+		t.Fatalf("update sent config as %T, want an object", body["config"])
+	}
+	for _, field := range []string{"content_filter_patterns", "content_filter_blocks_requests", "pii_filters"} {
+		if v, present := cfg[field]; present {
+			t.Errorf("update sent config.%s=%v; the route retired the field and answers 400 for a body that carries it", field, v)
+		}
+	}
+	if builtins, ok := cfg["content_filter_builtins"].([]any); !ok || len(builtins) != 1 {
+		t.Errorf("update dropped config.content_filter_builtins, which is still configured: got %#v", cfg["content_filter_builtins"])
+	}
+	stub.mu.Lock()
+	rejections := stub.retiredRejections
+	stub.mu.Unlock()
+	if rejections != 0 {
+		t.Errorf("the stub answered the retired-field 400 %d times, so a write carried one of the three", rejections)
+	}
 }

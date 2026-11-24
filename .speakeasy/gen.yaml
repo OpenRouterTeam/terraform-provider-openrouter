@@ -33,7 +33,7 @@ generation:
     generateNewTests: true
     skipResponseBodyAssertions: false
 terraform:
-  version: 0.3.288
+  version: 0.3.290
   additionalActions: []
   additionalDataSources: []
   additionalDependencies:
@@ -61,8 +61,6 @@ terraform:
     - resource: NewGuardrailPolicyAccountBudgetResource
     - resource: NewGuardrailPolicyAccountModelAvailabilityResource
     - resource: NewGuardrailPolicyAccountModerationResource
-    - resource: NewGuardrailPolicyAPIKeyAssignmentResource
-    - resource: NewGuardrailPolicyMemberAssignmentResource
   author: OpenRouterTeam
   baseErrorName: OpenRouterError
   debugLogging: {}

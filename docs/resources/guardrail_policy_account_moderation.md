@@ -6,6 +6,7 @@ description: |-
   An account (workspace-wide) moderation policy: the content-filtering surface the covered workspaces' traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists.
   A policy that is not the default covers exactly workspace_ids. The default covers every workspace except opted_out_workspace_ids, in which case workspace_ids must be left unset. Only one policy of a type can be the account default.
   Import takes the bare policy id.
+  The retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource either: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable.
 ---
 
 # openrouter_guardrail_policy_account_moderation (Resource)
@@ -15,6 +16,8 @@ An account (workspace-wide) moderation policy: the content-filtering surface the
 A policy that is not the default covers exactly `workspace_ids`. The default covers every workspace except `opted_out_workspace_ids`, in which case `workspace_ids` must be left unset. Only one policy of a type can be the account default.
 
 Import takes the bare policy id.
+
+The retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource either: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable.
 
 ## Example Usage
 
@@ -64,15 +67,12 @@ Optional:
 
 - `armor` (Attributes) (see [below for nested schema](#nestedatt--config--armor))
 - `broadcast_model_armor_flagged_requests` (Boolean)
-- `content_filter_blocks_requests` (Boolean)
 - `content_filter_builtins` (Attributes List) (see [below for nested schema](#nestedatt--config--content_filter_builtins))
-- `content_filter_patterns` (List of String)
 - `content_filters` (Attributes List) (see [below for nested schema](#nestedatt--config--content_filters))
 - `enable_model_armor_injection_protection` (Boolean)
 - `lakera_injection_protection_mode` (String) must be one of ["block", "flag"]
 - `model_armor_injection_confidence_level` (String) must be one of ["low", "medium", "high"]
 - `model_armor_injection_protection_mode` (String) must be one of ["block", "flag"]
-- `pii_filters` (Attributes List) (see [below for nested schema](#nestedatt--config--pii_filters))
 - `platform_image_moderated_providers` (List of String)
 - `platform_moderated_providers` (List of String)
 
@@ -205,16 +205,6 @@ Optional:
 - `action` (String) Not Null; must be one of ["redact", "block", "flag"]
 - `label` (String)
 - `pattern` (String) Not Null
-
-
-<a id="nestedatt--config--pii_filters"></a>
-### Nested Schema for `config.pii_filters`
-
-Optional:
-
-- `action` (String) Not Null; must be one of ["redact", "block", "flag"]
-- `entity_type` (String) Not Null
-- `score_threshold` (Number)
 
 ## Import
 
