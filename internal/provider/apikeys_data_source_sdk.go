@@ -75,10 +75,17 @@ func (r *APIKeysDataSourceModel) ToOperationsListRequest(ctx context.Context) (*
 	} else {
 		workspaceID = nil
 	}
+	creatorUserID := new(string)
+	if !r.CreatorUserID.IsUnknown() && !r.CreatorUserID.IsNull() {
+		*creatorUserID = r.CreatorUserID.ValueString()
+	} else {
+		creatorUserID = nil
+	}
 	out := operations.ListRequest{
 		IncludeDisabled: includeDisabled,
 		IncludeExpired:  includeExpired,
 		WorkspaceID:     workspaceID,
+		CreatorUserID:   creatorUserID,
 	}
 
 	return &out, diags

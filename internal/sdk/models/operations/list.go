@@ -19,6 +19,8 @@ type ListRequest struct {
 	Offset *int64 `queryParam:"style=form,explode=true,name=offset"`
 	// Filter API keys by workspace ID. By default an organization-scoped management key gets the default workspace; a workspace-scoped management key always gets its own workspace and cannot list another.
 	WorkspaceID *string `queryParam:"style=form,explode=true,name=workspace_id"`
+	// Only return API keys created by this user ID (the `creator_user_id` on each key). Requires a management key that can view key creators.
+	CreatorUserID *string `queryParam:"style=form,explode=true,name=creator_user_id"`
 }
 
 func (l *ListRequest) GetIncludeDisabled() *string {
@@ -47,6 +49,13 @@ func (l *ListRequest) GetWorkspaceID() *string {
 		return nil
 	}
 	return l.WorkspaceID
+}
+
+func (l *ListRequest) GetCreatorUserID() *string {
+	if l == nil {
+		return nil
+	}
+	return l.CreatorUserID
 }
 
 type ListData struct {
