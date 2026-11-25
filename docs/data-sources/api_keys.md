@@ -14,6 +14,7 @@ APIKeys DataSource
 
 ```terraform
 data "openrouter_api_keys" "my_apikeys" {
+  creator_user_id  = "user_2dHFtVWx2n56w6HkM0000000000"
   include_disabled = "false"
   include_expired  = "false"
   workspace_id     = "0df9e665-d932-5740-b2c7-b52af166bc11"
@@ -25,6 +26,7 @@ data "openrouter_api_keys" "my_apikeys" {
 
 ### Optional
 
+- `creator_user_id` (String) Only return API keys created by this user ID (the `creator_user_id` on each key). Requires a management key that can view key creators.
 - `include_disabled` (String) Whether to include disabled API keys in the response
 - `include_expired` (String) Whether to include expired API keys in the response. Expired keys are excluded by default and returned only when this is true.
 - `workspace_id` (String) Filter API keys by workspace ID. By default an organization-scoped management key gets the default workspace; a workspace-scoped management key always gets its own workspace and cannot list another.

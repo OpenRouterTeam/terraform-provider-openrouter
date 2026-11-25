@@ -8,8 +8,10 @@ import (
 	"fmt"
 	tfTypes "github.com/OpenRouterTeam/terraform-provider-openrouter/internal/provider/types"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
@@ -30,6 +32,7 @@ type APIKeysDataSource struct {
 
 // APIKeysDataSourceModel describes the data model.
 type APIKeysDataSourceModel struct {
+	CreatorUserID   types.String       `queryParam:"style=form,explode=true,name=creator_user_id" tfsdk:"creator_user_id"`
 	Data            []tfTypes.ListData `tfsdk:"data"`
 	IncludeDisabled types.String       `queryParam:"style=form,explode=true,name=include_disabled" tfsdk:"include_disabled"`
 	IncludeExpired  types.String       `queryParam:"style=form,explode=true,name=include_expired" tfsdk:"include_expired"`
@@ -47,6 +50,13 @@ func (r *APIKeysDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 		MarkdownDescription: "APIKeys DataSource",
 
 		Attributes: map[string]schema.Attribute{
+			"creator_user_id": schema.StringAttribute{
+				Optional:    true,
+				Description: `Only return API keys created by this user ID (the ` + "`" + `creator_user_id` + "`" + ` on each key). Requires a management key that can view key creators.`,
+				Validators: []validator.String{
+					stringvalidator.UTF8LengthBetween(1, 255),
+				},
+			},
 			"data": schema.ListNestedAttribute{
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
