@@ -73,6 +73,17 @@
 # from both generated methods are propagated rather than dropped, and the fixtures require the result
 # to be empty, so a generation that starts reporting one fails a test rather than passing unnoticed.
 # This reuse needs no edit inside generated code.
+#
+# internal/provider/guardrailpolicyapikeyassignment_resource.go and
+# internal/provider/guardrailpolicymemberassignment_resource.go are hand-written and registered
+# through terraform.additionalResources in gen.yaml, so generation never writes them. They manage
+# one policy's assignment to one subject rather than an entity the spec models: the read returns a
+# set (the directly assigned policy ids, the workspace-default policies the subject inherits, and an
+# opt-out flag), the write changes one member of that set and must carry the state it was read from,
+# and the route has no create or delete of its own. A generated resource would have to expose the
+# inherited list and the opt-out flag as writable attributes it cannot write. The read-modify-write
+# they share lives in guardrailpolicyassignment.go. This comment is the declaration that makes
+# regenerate.yaml run on the PR that adds them.
 overlay: 1.0.0
 x-speakeasy-jsonpath: rfc9535
 info:

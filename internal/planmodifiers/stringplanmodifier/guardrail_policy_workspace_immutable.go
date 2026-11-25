@@ -33,11 +33,20 @@ var _ planmodifier.String = StringGuardrailPolicyWorkspaceImmutablePlanModifier{
 // both the update reaches the API, which answers a change with 400. A policy
 // that replaced a legacy default guardrail is one the API refuses to delete, so
 // a replacement of one fails at the destroy half.
-type StringGuardrailPolicyWorkspaceImmutablePlanModifier struct{}
+type StringGuardrailPolicyWorkspaceImmutablePlanModifier struct {
+	// assignment words the descriptions and the removal diagnostic for an
+	// assignment rather than for a policy. An assignment's update path never
+	// reaches the API, so the policy text would describe a route the resource
+	// does not call, and its scope is what the read and the destroy need.
+	assignment bool
+}
 
 // Description describes the plan modification in plain text formatting.
 func (v StringGuardrailPolicyWorkspaceImmutablePlanModifier) Description(_ context.Context) string {
-	return "Replaces the policy when the workspace changes, and refuses a plan that removes the workspace."
+	if v.assignment {
+		return "Replaces the assignment when the workspace changes or is added, and refuses a plan that removes the workspace."
+	}
+	return "Replaces the policy when the stored workspace changes, and refuses a plan that removes the workspace."
 }
 
 // MarkdownDescription describes the plan modification in Markdown formatting.
@@ -55,10 +64,14 @@ func (v StringGuardrailPolicyWorkspaceImmutablePlanModifier) PlanModifyString(ct
 	if guardrailPolicyWorkspaceRemoved(req.StateValue, req.PlanValue) {
 		// Attribute-scoped, matching how the sibling resources report a
 		// resource that belongs to another workspace.
+		detail := "A guardrail policy stays in the workspace it was created in. The API answers an update that omits workspace_id by keeping the policy where it is, so removing the attribute would leave something else in charge of where the policy lives while Terraform recorded no workspace, and the read that follows needs that workspace as its scope. Keep the configured value, or declare a separate policy in the destination workspace and remove this one deliberately."
+		if v.assignment {
+			detail = "An assignment is addressed with a workspace scope, and no response carries that scope back, so state is the only place it is recorded: removing the attribute would leave a later read resolving the scope from the credential instead of from the assignment. Keep the configured value, or destroy this assignment and declare the one you mean."
+		}
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
 			"workspace_id cannot be removed",
-			"A guardrail policy stays in the workspace it was created in. The API answers an update that omits workspace_id by keeping the policy where it is, so removing the attribute would leave something else in charge of where the policy lives while Terraform recorded no workspace, and the read that follows needs that workspace as its scope. Keep the configured value, or declare a separate policy in the destination workspace and remove this one deliberately.",
+			detail,
 		)
 		return
 	}
@@ -72,6 +85,14 @@ func (v StringGuardrailPolicyWorkspaceImmutablePlanModifier) PlanModifyString(ct
 // it.
 func GuardrailPolicyWorkspaceImmutable() planmodifier.String {
 	return StringGuardrailPolicyWorkspaceImmutablePlanModifier{}
+}
+
+// GuardrailPolicyAssignmentWorkspaceImmutable returns the same behaviour worded
+// for an assignment: a changed scope replaces the resource, and a plan that
+// removes it is refused with a diagnostic that names the assignment and the read
+// that needs the scope.
+func GuardrailPolicyAssignmentWorkspaceImmutable() planmodifier.String {
+	return StringGuardrailPolicyWorkspaceImmutablePlanModifier{assignment: true}
 }
 
 // guardrailPolicyWorkspaceRemoved reports whether a stored workspace is absent
