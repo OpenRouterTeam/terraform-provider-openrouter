@@ -1,21 +1,21 @@
 lockVersion: 2.0.0
 id: 99eb0f12-1284-4d88-8f4f-1768f3247814
 management:
-  docChecksum: c1e9209ee5f18b573f48688179890693
+  docChecksum: 80013ab35852a9e08cf6dd88f44555db
   docVersion: 1.0.0
   speakeasyVersion: 1.803.1
   generationVersion: 2.950.2
-  releaseVersion: 0.3.293
-  configChecksum: d6c9fef1b03292b98311ef1e9d680cc6
+  releaseVersion: 0.3.294
+  configChecksum: 8ee64ad24c9519ad5090af44a8865e24
   repoURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter.git
   installationURL: https://github.com/OpenRouterTeam/terraform-provider-openrouter
   generation_id: df6e72ea-1ae5-472c-8da9-34d86c5b6768
   pristine_commit_hash: 7bd19e647a10dab60fd50537eab58a99f4eb5e64
   pristine_tree_hash: cc8adbdb55e1549f6f9d66b7fbae10f62575ed71
 persistentEdits:
-  generation_id: 603d46af-c0a5-45b1-9310-6a9b309d252e
-  pristine_commit_hash: c0dd8fce8834f4f7208d0de622ab0d77f8df8eed
-  pristine_tree_hash: f644e09fc2b8f8ab537ab083469bc2f4a0e6b33a
+  generation_id: 1d586cd1-cbad-4063-9781-64dc3c13a9ed
+  pristine_commit_hash: 2dc4ffacf8fc654d7b0654673f6ef22cbeaa7765
+  pristine_tree_hash: b82f9148fb124fc792daaf85bf14e555b62488b9
 features:
   terraform:
     additionalDependencies: 0.1.0
@@ -165,8 +165,8 @@ trackedFiles:
     pristine_git_object: 07c8babc3926caa4112b661a7363984702415bd5
   examples/provider/provider.tf:
     id: 954e955c0240
-    last_write_checksum: sha1:ac3a6f48c88cc9a44b33330edccff4268a4422d2
-    pristine_git_object: 090cc01abceac9839def7becd36b77e61d655bc9
+    last_write_checksum: sha1:d4bceb0aacec85140f95bfa7715b24aac4dd1987
+    pristine_git_object: 4e7f7cf398d515d782657b113bc6adf9e1f753e0
   examples/resources/openrouter_api_key/import-by-string-id.tf:
     id: 022a3f19241f
     last_write_checksum: sha1:9b04e5d7a906e203dc22974245a1f3118943b469
@@ -5733,8 +5733,8 @@ trackedFiles:
     pristine_git_object: f6f68a9171483613b1efe58b6b4ad5d15580c8c7
   internal/sdk/models/shared/videogenerationrequest.go:
     id: 34204038dd87
-    last_write_checksum: sha1:6a154791c5d57d23b645cbf4c8fa74e82299e626
-    pristine_git_object: d8710e4904f635e5eb1ad99fa1ef340c074e1adf
+    last_write_checksum: sha1:4da699c100ed51d12f3704edbdcc428f226ed77f
+    pristine_git_object: 1669b6ae4bd26675eccf6d2c3f1a518d727c6b7f
   internal/sdk/models/shared/videogenerationresponse.go:
     id: 40b91adbdd71
     last_write_checksum: sha1:66c4778b76d7c2315ebd19f3f54f3f6a7a252c96
@@ -5853,8 +5853,8 @@ trackedFiles:
     pristine_git_object: d5e110a581a84c107105ec37cc1b9ddbd6a86e5f
   internal/sdk/openrouter.go:
     id: 8071f4a0e7d5
-    last_write_checksum: sha1:659d66034c621df3eff90510eaf880b318885302
-    pristine_git_object: b6b69ca21969ac290f55d5f028beae0cd92170d6
+    last_write_checksum: sha1:23344d027b5515078ee0578237f59a8e69dd813a
+    pristine_git_object: 415dfd0766cfab109729bb27cd63330d6616e838
   internal/sdk/optionalnullable/optionalnullable.go:
     id: 4b83aa3f3df3
     last_write_checksum: sha1:35ac10956c16852cc4dcbec54e30be1fe828794e
@@ -7586,7 +7586,7 @@ examples:
     speakeasy-default-list-videos-models:
       responses:
         "200":
-          application/json: {"data": [{"allowed_passthrough_parameters": [], "canonical_slug": "google/veo-3.1", "created": 1700000000, "creativity": [], "description": "Google video generation model", "generate_audio": true, "id": "google/veo-3.1", "name": "Veo 3.1", "pricing_skus": {"generate": "0.50"}, "seed": null, "supported_aspect_ratios": ["16:9"], "supported_durations": [5, 8], "supported_frame_images": ["first_frame", "last_frame"], "supported_resolutions": ["720p"], "supported_sizes": null, "upscale_factor": {}}]}
+          application/json: {"data": [{"allowed_passthrough_parameters": ["personGeneration", "aspectRatio", "negativePrompt", "conditioningScale", "enhancePrompt"], "canonical_slug": "google/veo-3.1-20260320", "created": 1774277148, "creativity": null, "description": "Google video generation model", "generate_audio": true, "hugging_face_id": null, "id": "google/veo-3.1", "name": "Google: Veo 3.1", "pricing_skus": {"duration_seconds_with_audio": "0.40", "duration_seconds_with_audio_4k": "0.60", "duration_seconds_without_audio": "0.20", "duration_seconds_without_audio_4k": "0.40"}, "seed": true, "supported_aspect_ratios": ["16:9", "9:16"], "supported_durations": [4, 6, 8], "supported_frame_images": ["first_frame", "last_frame"], "supported_resolutions": ["720p", "1080p", "4K"], "supported_sizes": ["1280x720", "1080x1920", "1920x1080", "720x1280", "3840x2160", "2160x3840"], "upscale_factor": null}]}
         "400":
           application/json: {"error": {"code": 400, "message": "Invalid request parameters"}}
         "500":
