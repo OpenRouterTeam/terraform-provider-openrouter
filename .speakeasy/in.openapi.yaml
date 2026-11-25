@@ -10802,6 +10802,12 @@ components:
           type:
             - 'boolean'
             - 'null'
+        allow_safety_retention_openai:
+          description: 'Whether ZDR-only requests to openai/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. Applies only while OpenAI ZDR is on for the account or this guardrail; otherwise allow_safety_retention_other applies. Follows allow_safety_retention_other when null; on update, null clears a saved choice and omitting the field leaves it unchanged. While the account enforces ZDR for OpenAI or for other models, a guardrail can only be more restrictive than that account setting.'
+          example: true
+          type:
+            - 'boolean'
+            - 'null'
         allow_safety_retention_other:
           description: 'Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.'
           example: true
@@ -15972,6 +15978,12 @@ components:
           type:
             - 'boolean'
             - 'null'
+        allow_safety_retention_openai:
+          description: 'Whether ZDR-only requests to openai/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. Applies only while OpenAI ZDR is on for the account or this guardrail; otherwise allow_safety_retention_other applies. Follows allow_safety_retention_other when null; on update, null clears a saved choice and omitting the field leaves it unchanged. While the account enforces ZDR for OpenAI or for other models, a guardrail can only be more restrictive than that account setting.'
+          example: true
+          type:
+            - 'boolean'
+            - 'null'
         allow_safety_retention_other:
           description: 'Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.'
           example: true
@@ -16250,6 +16262,10 @@ components:
           type:
             - 'boolean'
             - 'null'
+        allow_safety_retention_openai:
+          type:
+            - 'boolean'
+            - 'null'
         allow_safety_retention_other:
           type:
             - 'boolean'
@@ -16365,6 +16381,10 @@ components:
             - 'boolean'
             - 'null'
         allow_safety_retention_google:
+          type:
+            - 'boolean'
+            - 'null'
+        allow_safety_retention_openai:
           type:
             - 'boolean'
             - 'null'
@@ -33422,7 +33442,7 @@ components:
             - 'integer'
             - 'null'
         error_message:
-          description: 'Stable error message when the job failed.'
+          description: 'Stable message code, or null. On a failed job, the failure reason. On a succeeded job, set when optional work beyond the group synchronization could not be completed; the groups were still synchronized.'
           type:
             - 'string'
             - 'null'
@@ -34776,6 +34796,7 @@ components:
           enum:
             - 'mp3'
             - 'pcm'
+            - 'wav'
           example: 'pcm'
           type: 'string'
         session_id:
@@ -37608,6 +37629,12 @@ components:
           type:
             - 'boolean'
             - 'null'
+        allow_safety_retention_openai:
+          description: 'Whether ZDR-only requests to openai/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. Applies only while OpenAI ZDR is on for the account or this guardrail; otherwise allow_safety_retention_other applies. Follows allow_safety_retention_other when null; on update, null clears a saved choice and omitting the field leaves it unchanged. While the account enforces ZDR for OpenAI or for other models, a guardrail can only be more restrictive than that account setting.'
+          example: false
+          type:
+            - 'boolean'
+            - 'null'
         allow_safety_retention_other:
           description: 'Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.'
           example: false
@@ -39189,7 +39216,7 @@ components:
           example: 'A serene mountain landscape at sunset'
           type: 'string'
         provider:
-          description: 'Provider routing preferences (order, only, ignore), request-level data policy (zdr, data_collection) and provider-specific passthrough configuration. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing.'
+          description: 'Provider routing preferences (order, only, ignore), request-level data policy (zdr, data_collection) and provider-specific passthrough configuration. Sorting by price, latency, or throughput and automatic provider fallbacks are not supported. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing.'
           properties:
             data_collection:
               description: "Data collection setting. If no available model provider meets the requirement, your request will return an error.\n- allow: (default) allow providers that may train on user data\n\n- deny: use only providers that do not train on user data. Providers may still retain prompts; set `zdr: true` to exclude retention."
@@ -39234,10 +39261,9 @@ components:
                       output_config:
                         effort: 'low'
             order:
-              description: 'An ordered list of provider slugs. The router will attempt to use the first provider in the subset of this list that supports your requested model, and fall back to the next if it is unavailable. If no providers are available, the request will fail with an error message.'
+              description: 'An ordered list of provider slugs to prefer when choosing an eligible video endpoint. The request is submitted to one endpoint and is not retried on another provider if submission fails.'
               example:
-                - 'openai'
-                - 'anthropic'
+                - 'minimax'
               items:
                 anyOf:
                   - $ref: '#/components/schemas/ProviderName'
@@ -39373,27 +39399,48 @@ components:
       type: 'object'
     VideoModel:
       example:
-        allowed_passthrough_parameters: []
-        canonical_slug: 'google/veo-3.1'
-        created: 1700000000
+        allowed_passthrough_parameters:
+          - 'personGeneration'
+          - 'aspectRatio'
+          - 'negativePrompt'
+          - 'conditioningScale'
+          - 'enhancePrompt'
+        canonical_slug: 'google/veo-3.1-20260320'
+        created: 1774277148
+        creativity: null
         description: 'Google video generation model'
         generate_audio: true
+        hugging_face_id: null
         id: 'google/veo-3.1'
-        name: 'Veo 3.1'
+        name: 'Google: Veo 3.1'
         pricing_skus:
-          generate: '0.50'
-        seed: null
+          duration_seconds_with_audio: '0.40'
+          duration_seconds_with_audio_4k: '0.60'
+          duration_seconds_without_audio: '0.20'
+          duration_seconds_without_audio_4k: '0.40'
+        seed: true
         supported_aspect_ratios:
           - '16:9'
+          - '9:16'
         supported_durations:
-          - 5
+          - 4
+          - 6
           - 8
         supported_frame_images:
           - 'first_frame'
           - 'last_frame'
         supported_resolutions:
           - '720p'
-        supported_sizes: null
+          - '1080p'
+          - '4K'
+        supported_sizes:
+          - '1280x720'
+          - '1080x1920'
+          - '1920x1080'
+          - '720x1280'
+          - '3840x2160'
+          - '2160x3840'
+        upscale_factor: null
       properties:
         allowed_passthrough_parameters:
           description: 'List of parameters that are allowed to be passed through to the provider'
@@ -39632,27 +39679,48 @@ components:
     VideoModelsListResponse:
       example:
         data:
-          - allowed_passthrough_parameters: []
-            canonical_slug: 'google/veo-3.1'
-            created: 1700000000
+          - allowed_passthrough_parameters:
+              - 'personGeneration'
+              - 'aspectRatio'
+              - 'negativePrompt'
+              - 'conditioningScale'
+              - 'enhancePrompt'
+            canonical_slug: 'google/veo-3.1-20260320'
+            created: 1774277148
+            creativity: null
             description: 'Google video generation model'
             generate_audio: true
+            hugging_face_id: null
             id: 'google/veo-3.1'
-            name: 'Veo 3.1'
+            name: 'Google: Veo 3.1'
             pricing_skus:
-              generate: '0.50'
-            seed: null
+              duration_seconds_with_audio: '0.40'
+              duration_seconds_with_audio_4k: '0.60'
+              duration_seconds_without_audio: '0.20'
+              duration_seconds_without_audio_4k: '0.40'
+            seed: true
             supported_aspect_ratios:
               - '16:9'
+              - '9:16'
             supported_durations:
-              - 5
+              - 4
+              - 6
               - 8
             supported_frame_images:
               - 'first_frame'
               - 'last_frame'
             supported_resolutions:
               - '720p'
-            supported_sizes: null
+              - '1080p'
+              - '4K'
+            supported_sizes:
+              - '1280x720'
+              - '1080x1920'
+              - '1920x1080'
+              - '720x1280'
+              - '3840x2160'
+              - '2160x3840'
+            upscale_factor: null
       properties:
         data:
           items:
@@ -42321,7 +42389,7 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
       summary: 'List batches'
       tags:
         - 'Batch'
@@ -42506,7 +42574,7 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
       summary: 'Create a batch'
       tags:
         - 'Batch'
@@ -42595,7 +42663,17 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
+        '503':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 503
+                  message: 'Failed to delete the upstream batch or its files; retry the request.'
+              schema:
+                $ref: '#/components/schemas/BatchErrorResponse'
+          description: 'The provider did not confirm batch or file cleanup; retry the request.'
       summary: 'Delete a batch'
       tags:
         - 'Batch'
@@ -42685,7 +42763,7 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
       summary: 'Get a batch'
       tags:
         - 'Batch'
@@ -42823,7 +42901,7 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
       summary: 'Get batch results'
       tags:
         - 'Batch'
@@ -62352,27 +62430,48 @@ paths:
             application/json:
               example:
                 data:
-                  - allowed_passthrough_parameters: []
-                    canonical_slug: 'google/veo-3.1'
-                    created: 1700000000
+                  - allowed_passthrough_parameters:
+                      - 'personGeneration'
+                      - 'aspectRatio'
+                      - 'negativePrompt'
+                      - 'conditioningScale'
+                      - 'enhancePrompt'
+                    canonical_slug: 'google/veo-3.1-20260320'
+                    created: 1774277148
+                    creativity: null
                     description: 'Google video generation model'
                     generate_audio: true
+                    hugging_face_id: null
                     id: 'google/veo-3.1'
-                    name: 'Veo 3.1'
+                    name: 'Google: Veo 3.1'
                     pricing_skus:
-                      generate: '0.50'
-                    seed: null
+                      duration_seconds_with_audio: '0.40'
+                      duration_seconds_with_audio_4k: '0.60'
+                      duration_seconds_without_audio: '0.20'
+                      duration_seconds_without_audio_4k: '0.40'
+                    seed: true
                     supported_aspect_ratios:
                       - '16:9'
+                      - '9:16'
                     supported_durations:
-                      - 5
+                      - 4
+                      - 6
                       - 8
                     supported_frame_images:
                       - 'first_frame'
                       - 'last_frame'
                     supported_resolutions:
                       - '720p'
-                    supported_sizes: null
+                      - '1080p'
+                      - '4K'
+                    supported_sizes:
+                      - '1280x720'
+                      - '1080x1920'
+                      - '1920x1080'
+                      - '720x1280'
+                      - '3840x2160'
+                      - '2160x3840'
+                    upscale_factor: null
               schema:
                 $ref: '#/components/schemas/VideoModelsListResponse'
           description: 'Returns a list of video generation models'

@@ -5,6 +5,7 @@ resource "openrouter_guardrail_policy_model_availability" "my_guardrailpolicymod
   config = {
     allow_provisional_providers   = false
     allow_safety_retention_google = true
+    allow_safety_retention_openai = true
     allow_safety_retention_other  = false
     allowed_data_regions = [
       "..."

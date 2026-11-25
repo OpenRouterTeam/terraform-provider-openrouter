@@ -10584,7 +10584,7 @@ components:
         - 'config'
       type: 'object'
       x-speakeasy-entity: GuardrailPolicyBudget
-      x-speakeasy-entity-description: "A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. `policy_type` must be `budget`, and is fixed for this resource: the corresponding resource manages another policy family.\n\n`config` is required, and the provider sends it whole on every update: a step that changes only `name` still sends `include_byok_in_budgets`, `limit_usd` and `reset_interval`. `include_byok_in_budgets` decides whether bring-your-own-key spend counts toward the limit alongside OpenRouter credit spend. `limit_usd` and `reset_interval` are optional and travel as explicit nulls when unset.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. An omitted list is taken from state rather than re-read, so an apply that also removes an `openrouter_guardrail_policy_api_key_assignment` or `openrouter_guardrail_policy_member_assignment` puts the subject back: Terraform destroys the assignment first, this policy's update then re-sends the list the plan read, and the apply reports success with the subject still assigned. Remove an assignment in its own apply, or name every subject the policy should keep in both lists, because an update replaces the stored lists wholesale and `[]` clears every subject on the policy. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. It is a UUID in every case: create, update, read and delete all validate the field as one, so a workspace slug is refused with 400 `Invalid guardrail policy request`, the same answer an omitted scope gets, rather than being looked up. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
+      x-speakeasy-entity-description: "A workspace budget policy: the spend limit a workspace's traffic is measured against, and the members and API keys it applies to. `policy_type` must be `budget`, and is fixed for this resource: the corresponding resource manages another policy family.\n\n`config` is required, and the provider sends it whole on every update: a step that changes only `name` still sends `include_byok_in_budgets`, `limit_usd` and `reset_interval`. `include_byok_in_budgets` decides whether bring-your-own-key spend counts toward the limit alongside OpenRouter credit spend. `limit_usd` and `reset_interval` are optional and travel as explicit nulls when unset.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
     CreateBYOKKeyRequest:
       example:
         key: 'sk-proj-abc123...'
@@ -10807,6 +10807,12 @@ components:
             - 'null'
         allow_safety_retention_google:
           description: 'Whether ZDR-only requests to google/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.'
+          example: true
+          type:
+            - 'boolean'
+            - 'null'
+        allow_safety_retention_openai:
+          description: 'Whether ZDR-only requests to openai/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. Applies only while OpenAI ZDR is on for the account or this guardrail; otherwise allow_safety_retention_other applies. Follows allow_safety_retention_other when null; on update, null clears a saved choice and omitting the field leaves it unchanged. While the account enforces ZDR for OpenAI or for other models, a guardrail can only be more restrictive than that account setting.'
           example: true
           type:
             - 'boolean'
@@ -11093,7 +11099,7 @@ components:
         - 'config'
       type: 'object'
       x-speakeasy-entity: GuardrailPolicyModelAvailability
-      x-speakeasy-entity-description: "A workspace model-availability policy: which models, providers and data regions a workspace's traffic may use, plus ZDR enforcement and the model training and publication toggles. `policy_type` must be `model_availability`, with an underscore, while this resource's API route is hyphenated; the type is fixed for this resource, and the corresponding resource manages another policy family.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. An empty list is sent as `[]` to clear that dimension and `false` travels explicitly, so name every field you want applied rather than expecting an update to clear one by leaving it out.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. An omitted list is taken from state rather than re-read, so an apply that also removes an `openrouter_guardrail_policy_api_key_assignment` or `openrouter_guardrail_policy_member_assignment` puts the subject back: Terraform destroys the assignment first, this policy's update then re-sends the list the plan read, and the apply reports success with the subject still assigned. Remove an assignment in its own apply, or name every subject the policy should keep in both lists, because an update replaces the stored lists wholesale and `[]` clears every subject on the policy. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. It is a UUID in every case: create, update, read and delete all validate the field as one, so a workspace slug is refused with 400 `Invalid guardrail policy request`, the same answer an omitted scope gets, rather than being looked up. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
+      x-speakeasy-entity-description: "A workspace model-availability policy: which models, providers and data regions a workspace's traffic may use, plus ZDR enforcement and the model training and publication toggles. `policy_type` must be `model_availability`, with an underscore, while this resource's API route is hyphenated; the type is fixed for this resource, and the corresponding resource manages another policy family.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. An empty list is sent as `[]` to clear that dimension and `false` travels explicitly, so name every field you want applied rather than expecting an update to clear one by leaving it out.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it."
     CreateModerationGuardrailPolicyRequest:
       properties:
         api_key_hashes:
@@ -11158,7 +11164,7 @@ components:
         - 'config'
       type: 'object'
       x-speakeasy-entity: GuardrailPolicyModeration
-      x-speakeasy-entity-description: "A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation`, and is fixed for this resource: the corresponding resource manages another policy family.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. An omitted list is taken from state rather than re-read, so an apply that also removes an `openrouter_guardrail_policy_api_key_assignment` or `openrouter_guardrail_policy_member_assignment` puts the subject back: Terraform destroys the assignment first, this policy's update then re-sends the list the plan read, and the apply reports success with the subject still assigned. Remove an assignment in its own apply, or name every subject the policy should keep in both lists, because an update replaces the stored lists wholesale and `[]` clears every subject on the policy. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. It is a UUID in every case: create, update, read and delete all validate the field as one, so a workspace slug is refused with 400 `Invalid guardrail policy request`, the same answer an omitted scope gets, rather than being looked up. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.\n\nThe retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable."
+      x-speakeasy-entity-description: "A workspace moderation policy: the content-filtering surface a workspace's traffic passes through, including Model Armor, the built-in content filters, PII filters and the platform-moderated provider lists. `policy_type` must be `moderation`, and is fixed for this resource: the corresponding resource manages another policy family.\n\n`config` is required, and an update sends every field the policy already holds: it starts from state, so a field you configured once keeps travelling with its stored value even when a step names none of it. `false` travels explicitly and an empty list is sent as `[]` to clear that filter, so name every field you want applied rather than expecting an update to clear one by leaving it out. `armor` is the exception that is cleared by removal: dropping the block omits it from the update, which replaces the stored configuration with none.\n\n`member_ids` and `api_key_hashes` replace the stored assignments and must be sent together: omit both to keep them, or set both to `[]` to clear them. `is_workspace_default` is optional, and omitting it keeps the stored status while `false` unsets the policy as the workspace default. Only one policy of a type can hold that status, so setting it on a second policy of the same type unsets it on the first, and a configuration that declares it on two policies of one type plans a change on every run.\n\n`workspace_id` is required for an organization management key and may be omitted for a workspace-scoped key, which defaults to its own workspace. A policy cannot be moved between workspaces: the API answers an update that changes `workspace_id` with 400. Where state records the policy's workspace, a change plans a replacement instead, destroying the policy in that workspace and creating it in the new one; a policy that replaced a legacy default guardrail cannot be deleted, so a replacement of one fails at the destroy. Removing `workspace_id` from configuration is refused at plan time, because the read that follows needs that scope and no response carries it. The comparison needs a stored workspace and a value known at plan time, so a policy whose workspace state does not record, which is what a workspace-scoped key's create and an import by bare id both produce, and a `workspace_id` Terraform cannot resolve until apply, both keep the update path, where the API answers a change with 400. Import takes `<workspace_id>/<policy_id>` for an organization management key and the policy id alone for a workspace-scoped key. The API never returns the workspace, so the read that follows an import needs its scope from state, and the import identifier is the only channel that can supply it.\n\nThe retired content_filter_blocks_requests, content_filter_patterns and pii_filters fields are not part of this resource: the route rejects all three on the create and the update path with 400, naming content_filters or content_filter_builtins instead, and a policy created before the retirement that still stores them is read without them so that it stays updatable."
     CreateObservabilityDestinationRequest:
       example:
         config:
@@ -16013,6 +16019,12 @@ components:
           type:
             - 'boolean'
             - 'null'
+        allow_safety_retention_openai:
+          description: 'Whether ZDR-only requests to openai/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. Applies only while OpenAI ZDR is on for the account or this guardrail; otherwise allow_safety_retention_other applies. Follows allow_safety_retention_other when null; on update, null clears a saved choice and omitting the field leaves it unchanged. While the account enforces ZDR for OpenAI or for other models, a guardrail can only be more restrictive than that account setting.'
+          example: true
+          type:
+            - 'boolean'
+            - 'null'
         allow_safety_retention_other:
           description: 'Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.'
           example: true
@@ -16292,6 +16304,10 @@ components:
           type:
             - 'boolean'
             - 'null'
+        allow_safety_retention_openai:
+          type:
+            - 'boolean'
+            - 'null'
         allow_safety_retention_other:
           type:
             - 'boolean'
@@ -16407,6 +16423,10 @@ components:
             - 'boolean'
             - 'null'
         allow_safety_retention_google:
+          type:
+            - 'boolean'
+            - 'null'
+        allow_safety_retention_openai:
           type:
             - 'boolean'
             - 'null'
@@ -33483,7 +33503,7 @@ components:
             - 'integer'
             - 'null'
         error_message:
-          description: 'Stable error message when the job failed.'
+          description: 'Stable message code, or null. On a failed job, the failure reason. On a succeeded job, set when optional work beyond the group synchronization could not be completed; the groups were still synchronized.'
           type:
             - 'string'
             - 'null'
@@ -34837,6 +34857,7 @@ components:
           enum:
             - 'mp3'
             - 'pcm'
+            - 'wav'
           example: 'pcm'
           type: 'string'
         session_id:
@@ -37672,6 +37693,12 @@ components:
           type:
             - 'boolean'
             - 'null'
+        allow_safety_retention_openai:
+          description: 'Whether ZDR-only requests to openai/* models may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. Applies only while OpenAI ZDR is on for the account or this guardrail; otherwise allow_safety_retention_other applies. Follows allow_safety_retention_other when null; on update, null clears a saved choice and omitting the field leaves it unchanged. While the account enforces ZDR for OpenAI or for other models, a guardrail can only be more restrictive than that account setting.'
+          example: false
+          type:
+            - 'boolean'
+            - 'null'
         allow_safety_retention_other:
           description: 'Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may also use Safety Retention endpoints, which may retain prompts and responses from any request, only to prevent abuse, and do not use them for training. false allows only ZDR endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided.'
           example: false
@@ -39264,7 +39291,7 @@ components:
           example: 'A serene mountain landscape at sunset'
           type: 'string'
         provider:
-          description: 'Provider routing preferences (order, only, ignore), request-level data policy (zdr, data_collection) and provider-specific passthrough configuration. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing.'
+          description: 'Provider routing preferences (order, only, ignore), request-level data policy (zdr, data_collection) and provider-specific passthrough configuration. Sorting by price, latency, or throughput and automatic provider fallbacks are not supported. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing.'
           properties:
             data_collection:
               description: "Data collection setting. If no available model provider meets the requirement, your request will return an error.\n- allow: (default) allow providers that may train on user data\n\n- deny: use only providers that do not train on user data. Providers may still retain prompts; set `zdr: true` to exclude retention."
@@ -39309,10 +39336,9 @@ components:
                       output_config:
                         effort: 'low'
             order:
-              description: 'An ordered list of provider slugs. The router will attempt to use the first provider in the subset of this list that supports your requested model, and fall back to the next if it is unavailable. If no providers are available, the request will fail with an error message.'
+              description: 'An ordered list of provider slugs to prefer when choosing an eligible video endpoint. The request is submitted to one endpoint and is not retried on another provider if submission fails.'
               example:
-                - 'openai'
-                - 'anthropic'
+                - 'minimax'
               items:
                 anyOf:
                   - $ref: '#/components/schemas/ProviderName'
@@ -39448,27 +39474,48 @@ components:
       type: 'object'
     VideoModel:
       example:
-        allowed_passthrough_parameters: []
-        canonical_slug: 'google/veo-3.1'
-        created: 1700000000
+        allowed_passthrough_parameters:
+          - 'personGeneration'
+          - 'aspectRatio'
+          - 'negativePrompt'
+          - 'conditioningScale'
+          - 'enhancePrompt'
+        canonical_slug: 'google/veo-3.1-20260320'
+        created: 1774277148
+        creativity: null
         description: 'Google video generation model'
         generate_audio: true
+        hugging_face_id: null
         id: 'google/veo-3.1'
-        name: 'Veo 3.1'
+        name: 'Google: Veo 3.1'
         pricing_skus:
-          generate: '0.50'
-        seed: null
+          duration_seconds_with_audio: '0.40'
+          duration_seconds_with_audio_4k: '0.60'
+          duration_seconds_without_audio: '0.20'
+          duration_seconds_without_audio_4k: '0.40'
+        seed: true
         supported_aspect_ratios:
           - '16:9'
+          - '9:16'
         supported_durations:
-          - 5
+          - 4
+          - 6
           - 8
         supported_frame_images:
           - 'first_frame'
           - 'last_frame'
         supported_resolutions:
           - '720p'
-        supported_sizes: null
+          - '1080p'
+          - '4K'
+        supported_sizes:
+          - '1280x720'
+          - '1080x1920'
+          - '1920x1080'
+          - '720x1280'
+          - '3840x2160'
+          - '2160x3840'
+        upscale_factor: null
       properties:
         allowed_passthrough_parameters:
           description: 'List of parameters that are allowed to be passed through to the provider'
@@ -39707,27 +39754,48 @@ components:
     VideoModelsListResponse:
       example:
         data:
-          - allowed_passthrough_parameters: []
-            canonical_slug: 'google/veo-3.1'
-            created: 1700000000
+          - allowed_passthrough_parameters:
+              - 'personGeneration'
+              - 'aspectRatio'
+              - 'negativePrompt'
+              - 'conditioningScale'
+              - 'enhancePrompt'
+            canonical_slug: 'google/veo-3.1-20260320'
+            created: 1774277148
+            creativity: null
             description: 'Google video generation model'
             generate_audio: true
+            hugging_face_id: null
             id: 'google/veo-3.1'
-            name: 'Veo 3.1'
+            name: 'Google: Veo 3.1'
             pricing_skus:
-              generate: '0.50'
-            seed: null
+              duration_seconds_with_audio: '0.40'
+              duration_seconds_with_audio_4k: '0.60'
+              duration_seconds_without_audio: '0.20'
+              duration_seconds_without_audio_4k: '0.40'
+            seed: true
             supported_aspect_ratios:
               - '16:9'
+              - '9:16'
             supported_durations:
-              - 5
+              - 4
+              - 6
               - 8
             supported_frame_images:
               - 'first_frame'
               - 'last_frame'
             supported_resolutions:
               - '720p'
-            supported_sizes: null
+              - '1080p'
+              - '4K'
+            supported_sizes:
+              - '1280x720'
+              - '1080x1920'
+              - '1920x1080'
+              - '720x1280'
+              - '3840x2160'
+              - '2160x3840'
+            upscale_factor: null
       properties:
         data:
           items:
@@ -42466,7 +42534,7 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
       summary: 'List batches'
       tags:
         - 'Batch'
@@ -42651,7 +42719,7 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
       summary: 'Create a batch'
       tags:
         - 'Batch'
@@ -42740,7 +42808,17 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
+        '503':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 503
+                  message: 'Failed to delete the upstream batch or its files; retry the request.'
+              schema:
+                $ref: '#/components/schemas/BatchErrorResponse'
+          description: 'The provider did not confirm batch or file cleanup; retry the request.'
       summary: 'Delete a batch'
       tags:
         - 'Batch'
@@ -42830,7 +42908,7 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
       summary: 'Get a batch'
       tags:
         - 'Batch'
@@ -42968,7 +43046,7 @@ paths:
                   message: 'Upstream batch-api is unavailable.'
               schema:
                 $ref: '#/components/schemas/BatchErrorResponse'
-          description: 'The batch service is unavailable, or an upstream provider operation failed, including batch or file cleanup.'
+          description: 'The batch service is unavailable, or an upstream provider operation failed.'
       summary: 'Get batch results'
       tags:
         - 'Batch'
@@ -62599,27 +62677,48 @@ paths:
             application/json:
               example:
                 data:
-                  - allowed_passthrough_parameters: []
-                    canonical_slug: 'google/veo-3.1'
-                    created: 1700000000
+                  - allowed_passthrough_parameters:
+                      - 'personGeneration'
+                      - 'aspectRatio'
+                      - 'negativePrompt'
+                      - 'conditioningScale'
+                      - 'enhancePrompt'
+                    canonical_slug: 'google/veo-3.1-20260320'
+                    created: 1774277148
+                    creativity: null
                     description: 'Google video generation model'
                     generate_audio: true
+                    hugging_face_id: null
                     id: 'google/veo-3.1'
-                    name: 'Veo 3.1'
+                    name: 'Google: Veo 3.1'
                     pricing_skus:
-                      generate: '0.50'
-                    seed: null
+                      duration_seconds_with_audio: '0.40'
+                      duration_seconds_with_audio_4k: '0.60'
+                      duration_seconds_without_audio: '0.20'
+                      duration_seconds_without_audio_4k: '0.40'
+                    seed: true
                     supported_aspect_ratios:
                       - '16:9'
+                      - '9:16'
                     supported_durations:
-                      - 5
+                      - 4
+                      - 6
                       - 8
                     supported_frame_images:
                       - 'first_frame'
                       - 'last_frame'
                     supported_resolutions:
                       - '720p'
-                    supported_sizes: null
+                      - '1080p'
+                      - '4K'
+                    supported_sizes:
+                      - '1280x720'
+                      - '1080x1920'
+                      - '1920x1080'
+                      - '720x1280'
+                      - '3840x2160'
+                      - '2160x3840'
+                    upscale_factor: null
               schema:
                 $ref: '#/components/schemas/VideoModelsListResponse'
           description: 'Returns a list of video generation models'
