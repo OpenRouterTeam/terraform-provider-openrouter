@@ -445,6 +445,7 @@ type SpeechRequestResponseFormat string
 const (
 	SpeechRequestResponseFormatMp3 SpeechRequestResponseFormat = "mp3"
 	SpeechRequestResponseFormatPcm SpeechRequestResponseFormat = "pcm"
+	SpeechRequestResponseFormatWav SpeechRequestResponseFormat = "wav"
 )
 
 func (e SpeechRequestResponseFormat) ToPointer() *SpeechRequestResponseFormat {
@@ -459,6 +460,8 @@ func (e *SpeechRequestResponseFormat) UnmarshalJSON(data []byte) error {
 	case "mp3":
 		fallthrough
 	case "pcm":
+		fallthrough
+	case "wav":
 		*e = SpeechRequestResponseFormat(v)
 		return nil
 	default:
