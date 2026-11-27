@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/internal/utils"
-	"github.com/OpenRouterTeam/terraform-provider-openrouter/internal/sdk/types"
 )
 
 type BatchResultError struct {
@@ -1101,50 +1100,50 @@ func (c *ContentTopLogprob) GetToken() string {
 	return c.Token
 }
 
-type LogprobsContent struct {
+type BatchResultContent struct {
 	Bytes       []int64             `json:"bytes"`
 	Logprob     float64             `json:"logprob"`
 	Token       string              `json:"token"`
 	TopLogprobs []ContentTopLogprob `json:"top_logprobs"`
 }
 
-func (l LogprobsContent) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(l, "", false)
+func (b BatchResultContent) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(b, "", false)
 }
 
-func (l *LogprobsContent) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &l, "", false, nil); err != nil {
+func (b *BatchResultContent) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &b, "", false, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (l *LogprobsContent) GetBytes() []int64 {
-	if l == nil {
+func (b *BatchResultContent) GetBytes() []int64 {
+	if b == nil {
 		return nil
 	}
-	return l.Bytes
+	return b.Bytes
 }
 
-func (l *LogprobsContent) GetLogprob() float64 {
-	if l == nil {
+func (b *BatchResultContent) GetLogprob() float64 {
+	if b == nil {
 		return 0.0
 	}
-	return l.Logprob
+	return b.Logprob
 }
 
-func (l *LogprobsContent) GetToken() string {
-	if l == nil {
+func (b *BatchResultContent) GetToken() string {
+	if b == nil {
 		return ""
 	}
-	return l.Token
+	return b.Token
 }
 
-func (l *LogprobsContent) GetTopLogprobs() []ContentTopLogprob {
-	if l == nil {
+func (b *BatchResultContent) GetTopLogprobs() []ContentTopLogprob {
+	if b == nil {
 		return []ContentTopLogprob{}
 	}
-	return l.TopLogprobs
+	return b.TopLogprobs
 }
 
 type RefusalTopLogprob struct {
@@ -1232,8 +1231,8 @@ func (r *Refusal) GetTopLogprobs() []RefusalTopLogprob {
 }
 
 type Logprobs struct {
-	Content []LogprobsContent `json:"content"`
-	Refusal []Refusal         `json:"refusal"`
+	Content []BatchResultContent `json:"content"`
+	Refusal []Refusal            `json:"refusal"`
 }
 
 func (l Logprobs) MarshalJSON() ([]byte, error) {
@@ -1247,7 +1246,7 @@ func (l *Logprobs) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (l *Logprobs) GetContent() []LogprobsContent {
+func (l *Logprobs) GetContent() []BatchResultContent {
 	if l == nil {
 		return nil
 	}
@@ -1259,508 +1258,6 @@ func (l *Logprobs) GetRefusal() []Refusal {
 		return nil
 	}
 	return l.Refusal
-}
-
-type WebSearchCitation struct {
-	CitedText      *string `json:"cited_text,omitzero"`
-	EncryptedIndex *string `json:"encrypted_index,omitzero"`
-	Title          *string `json:"title"`
-	URL            string  `json:"url"`
-}
-
-func (w WebSearchCitation) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(w, "", false)
-}
-
-func (w *WebSearchCitation) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &w, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (w *WebSearchCitation) GetCitedText() *string {
-	if w == nil {
-		return nil
-	}
-	return w.CitedText
-}
-
-func (w *WebSearchCitation) GetEncryptedIndex() *string {
-	if w == nil {
-		return nil
-	}
-	return w.EncryptedIndex
-}
-
-func (w *WebSearchCitation) GetTitle() *string {
-	if w == nil {
-		return nil
-	}
-	return w.Title
-}
-
-func (w *WebSearchCitation) GetURL() string {
-	if w == nil {
-		return ""
-	}
-	return w.URL
-}
-
-type AnnotationWebSearchCitation struct {
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_             string            `const:"web_search_citation" json:"type"`
-	WebSearchCitation WebSearchCitation `json:"web_search_citation"`
-}
-
-func (a AnnotationWebSearchCitation) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(a, "", false)
-}
-
-func (a *AnnotationWebSearchCitation) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &a, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (a *AnnotationWebSearchCitation) GetType() string {
-	return "web_search_citation"
-}
-
-func (a *AnnotationWebSearchCitation) GetWebSearchCitation() WebSearchCitation {
-	if a == nil {
-		return WebSearchCitation{}
-	}
-	return a.WebSearchCitation
-}
-
-type BatchResultURLCitation struct {
-	Content    *string `json:"content,omitzero"`
-	EndIndex   int64   `json:"end_index"`
-	StartIndex int64   `json:"start_index"`
-	Title      string  `json:"title"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	uncited *bool  `const:"true" json:"uncited,omitzero"`
-	URL     string `json:"url"`
-}
-
-func (b BatchResultURLCitation) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(b, "", false)
-}
-
-func (b *BatchResultURLCitation) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &b, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (b *BatchResultURLCitation) GetContent() *string {
-	if b == nil {
-		return nil
-	}
-	return b.Content
-}
-
-func (b *BatchResultURLCitation) GetEndIndex() int64 {
-	if b == nil {
-		return 0
-	}
-	return b.EndIndex
-}
-
-func (b *BatchResultURLCitation) GetStartIndex() int64 {
-	if b == nil {
-		return 0
-	}
-	return b.StartIndex
-}
-
-func (b *BatchResultURLCitation) GetTitle() string {
-	if b == nil {
-		return ""
-	}
-	return b.Title
-}
-
-func (b *BatchResultURLCitation) GetUncited() *bool {
-	return types.Pointer(true)
-}
-
-func (b *BatchResultURLCitation) GetURL() string {
-	if b == nil {
-		return ""
-	}
-	return b.URL
-}
-
-type AnnotationURLCitation struct {
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_       string                 `const:"url_citation" json:"type"`
-	URLCitation BatchResultURLCitation `json:"url_citation"`
-}
-
-func (a AnnotationURLCitation) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(a, "", false)
-}
-
-func (a *AnnotationURLCitation) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &a, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (a *AnnotationURLCitation) GetType() string {
-	return "url_citation"
-}
-
-func (a *AnnotationURLCitation) GetURLCitation() BatchResultURLCitation {
-	if a == nil {
-		return BatchResultURLCitation{}
-	}
-	return a.URLCitation
-}
-
-type ContentImageURLImageURL struct {
-	URL string `json:"url"`
-}
-
-func (c ContentImageURLImageURL) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(c, "", false)
-}
-
-func (c *ContentImageURLImageURL) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &c, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *ContentImageURLImageURL) GetURL() string {
-	if c == nil {
-		return ""
-	}
-	return c.URL
-}
-
-type ContentImageURL struct {
-	ImageURL ContentImageURLImageURL `json:"image_url"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"image_url" json:"type"`
-}
-
-func (c ContentImageURL) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(c, "", false)
-}
-
-func (c *ContentImageURL) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &c, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *ContentImageURL) GetImageURL() ContentImageURLImageURL {
-	if c == nil {
-		return ContentImageURLImageURL{}
-	}
-	return c.ImageURL
-}
-
-func (c *ContentImageURL) GetType() string {
-	return "image_url"
-}
-
-type ContentText struct {
-	Text string `json:"text"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"text" json:"type"`
-}
-
-func (c ContentText) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(c, "", false)
-}
-
-func (c *ContentText) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &c, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *ContentText) GetText() string {
-	if c == nil {
-		return ""
-	}
-	return c.Text
-}
-
-func (c *ContentText) GetType() string {
-	return "text"
-}
-
-type AnnotationContentUnionType string
-
-const (
-	AnnotationContentUnionTypeText     AnnotationContentUnionType = "text"
-	AnnotationContentUnionTypeImageURL AnnotationContentUnionType = "image_url"
-)
-
-type AnnotationContentUnion struct {
-	ContentText     *ContentText     `queryParam:"inline" union:"member"`
-	ContentImageURL *ContentImageURL `queryParam:"inline" union:"member"`
-
-	Type AnnotationContentUnionType
-}
-
-func CreateAnnotationContentUnionText(text ContentText) AnnotationContentUnion {
-	typ := AnnotationContentUnionTypeText
-
-	return AnnotationContentUnion{
-		ContentText: &text,
-		Type:        typ,
-	}
-}
-
-func CreateAnnotationContentUnionImageURL(imageURL ContentImageURL) AnnotationContentUnion {
-	typ := AnnotationContentUnionTypeImageURL
-
-	return AnnotationContentUnion{
-		ContentImageURL: &imageURL,
-		Type:            typ,
-	}
-}
-
-func (u *AnnotationContentUnion) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = AnnotationContentUnion{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
-
-	type discriminator struct {
-		Type string `json:"type"`
-	}
-
-	dis := new(discriminator)
-	if err := json.Unmarshal(data, &dis); err != nil {
-		return fmt.Errorf("could not unmarshal discriminator: %w", err)
-	}
-
-	switch dis.Type {
-	case "text":
-		contentText := new(ContentText)
-		if err := utils.UnmarshalJSON(data, &contentText, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == text) type ContentText within AnnotationContentUnion: %w", string(data), err)
-		}
-
-		u.ContentText = contentText
-		u.Type = AnnotationContentUnionTypeText
-		return nil
-	case "image_url":
-		contentImageURL := new(ContentImageURL)
-		if err := utils.UnmarshalJSON(data, &contentImageURL, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == image_url) type ContentImageURL within AnnotationContentUnion: %w", string(data), err)
-		}
-
-		u.ContentImageURL = contentImageURL
-		u.Type = AnnotationContentUnionTypeImageURL
-		return nil
-	}
-
-	return fmt.Errorf("could not unmarshal `%s` into any supported union types for AnnotationContentUnion", string(data))
-}
-
-func (u AnnotationContentUnion) MarshalJSON() ([]byte, error) {
-	if u.ContentText != nil {
-		return utils.MarshalJSON(u.ContentText, "", true)
-	}
-
-	if u.ContentImageURL != nil {
-		return utils.MarshalJSON(u.ContentImageURL, "", true)
-	}
-
-	return nil, errors.New("could not marshal union type AnnotationContentUnion: all fields are null")
-}
-
-type BatchResultFile struct {
-	Content []AnnotationContentUnion `json:"content"`
-	Hash    string                   `json:"hash"`
-	Name    *string                  `json:"name,omitzero"`
-}
-
-func (b BatchResultFile) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(b, "", false)
-}
-
-func (b *BatchResultFile) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &b, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (b *BatchResultFile) GetContent() []AnnotationContentUnion {
-	if b == nil {
-		return []AnnotationContentUnion{}
-	}
-	return b.Content
-}
-
-func (b *BatchResultFile) GetHash() string {
-	if b == nil {
-		return ""
-	}
-	return b.Hash
-}
-
-func (b *BatchResultFile) GetName() *string {
-	if b == nil {
-		return nil
-	}
-	return b.Name
-}
-
-type AnnotationFile struct {
-	File BatchResultFile `json:"file"`
-	//lint:ignore U1000 accessed via reflection for JSON marshaling
-	type_ string `const:"file" json:"type"`
-}
-
-func (a AnnotationFile) MarshalJSON() ([]byte, error) {
-	return utils.MarshalJSON(a, "", false)
-}
-
-func (a *AnnotationFile) UnmarshalJSON(data []byte) error {
-	if err := utils.UnmarshalJSON(data, &a, "", false, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (a *AnnotationFile) GetFile() BatchResultFile {
-	if a == nil {
-		return BatchResultFile{}
-	}
-	return a.File
-}
-
-func (a *AnnotationFile) GetType() string {
-	return "file"
-}
-
-type AnnotationType string
-
-const (
-	AnnotationTypeFileValue         AnnotationType = "file"
-	AnnotationTypeURLCitationValue  AnnotationType = "url_citation"
-	AnnotationTypeWebSearchCitation AnnotationType = "web_search_citation"
-)
-
-type Annotation struct {
-	AnnotationFile              *AnnotationFile              `queryParam:"inline" union:"member"`
-	AnnotationURLCitation       *AnnotationURLCitation       `queryParam:"inline" union:"member"`
-	AnnotationWebSearchCitation *AnnotationWebSearchCitation `queryParam:"inline" union:"member"`
-
-	Type AnnotationType
-}
-
-func CreateAnnotationFile(file AnnotationFile) Annotation {
-	typ := AnnotationTypeFileValue
-
-	return Annotation{
-		AnnotationFile: &file,
-		Type:           typ,
-	}
-}
-
-func CreateAnnotationURLCitation(urlCitation AnnotationURLCitation) Annotation {
-	typ := AnnotationTypeURLCitationValue
-
-	return Annotation{
-		AnnotationURLCitation: &urlCitation,
-		Type:                  typ,
-	}
-}
-
-func CreateAnnotationWebSearchCitation(webSearchCitation AnnotationWebSearchCitation) Annotation {
-	typ := AnnotationTypeWebSearchCitation
-
-	return Annotation{
-		AnnotationWebSearchCitation: &webSearchCitation,
-		Type:                        typ,
-	}
-}
-
-func (u *Annotation) UnmarshalJSON(data []byte) (err error) {
-	previous := *u
-	*u = Annotation{}
-	defer func() {
-		if err != nil {
-			*u = previous
-		}
-	}()
-
-	type discriminator struct {
-		Type string `json:"type"`
-	}
-
-	dis := new(discriminator)
-	if err := json.Unmarshal(data, &dis); err != nil {
-		return fmt.Errorf("could not unmarshal discriminator: %w", err)
-	}
-
-	switch dis.Type {
-	case "file":
-		annotationFile := new(AnnotationFile)
-		if err := utils.UnmarshalJSON(data, &annotationFile, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == file) type AnnotationFile within Annotation: %w", string(data), err)
-		}
-
-		u.AnnotationFile = annotationFile
-		u.Type = AnnotationTypeFileValue
-		return nil
-	case "url_citation":
-		annotationURLCitation := new(AnnotationURLCitation)
-		if err := utils.UnmarshalJSON(data, &annotationURLCitation, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == url_citation) type AnnotationURLCitation within Annotation: %w", string(data), err)
-		}
-
-		u.AnnotationURLCitation = annotationURLCitation
-		u.Type = AnnotationTypeURLCitationValue
-		return nil
-	case "web_search_citation":
-		annotationWebSearchCitation := new(AnnotationWebSearchCitation)
-		if err := utils.UnmarshalJSON(data, &annotationWebSearchCitation, "", true, nil); err != nil {
-			return fmt.Errorf("could not unmarshal `%s` into expected (Type == web_search_citation) type AnnotationWebSearchCitation within Annotation: %w", string(data), err)
-		}
-
-		u.AnnotationWebSearchCitation = annotationWebSearchCitation
-		u.Type = AnnotationTypeWebSearchCitation
-		return nil
-	}
-
-	return fmt.Errorf("could not unmarshal `%s` into any supported union types for Annotation", string(data))
-}
-
-func (u Annotation) MarshalJSON() ([]byte, error) {
-	if u.AnnotationFile != nil {
-		return utils.MarshalJSON(u.AnnotationFile, "", true)
-	}
-
-	if u.AnnotationURLCitation != nil {
-		return utils.MarshalJSON(u.AnnotationURLCitation, "", true)
-	}
-
-	if u.AnnotationWebSearchCitation != nil {
-		return utils.MarshalJSON(u.AnnotationWebSearchCitation, "", true)
-	}
-
-	return nil, errors.New("could not marshal union type Annotation: all fields are null")
 }
 
 type BatchResultImageURL struct {
@@ -1785,32 +1282,32 @@ func (b *BatchResultImageURL) GetURL() string {
 	return b.URL
 }
 
-type ChoiceTypeImageURLEnum string
+type ChoiceTypeImageURL string
 
 const (
-	ChoiceTypeImageURLEnumImageURL ChoiceTypeImageURLEnum = "image_url"
+	ChoiceTypeImageURLImageURL ChoiceTypeImageURL = "image_url"
 )
 
-func (e ChoiceTypeImageURLEnum) ToPointer() *ChoiceTypeImageURLEnum {
+func (e ChoiceTypeImageURL) ToPointer() *ChoiceTypeImageURL {
 	return &e
 }
-func (e *ChoiceTypeImageURLEnum) UnmarshalJSON(data []byte) error {
+func (e *ChoiceTypeImageURL) UnmarshalJSON(data []byte) error {
 	var v string
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
 	switch v {
 	case "image_url":
-		*e = ChoiceTypeImageURLEnum(v)
+		*e = ChoiceTypeImageURL(v)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for ChoiceTypeImageURLEnum: %v", v)
+		return fmt.Errorf("invalid value for ChoiceTypeImageURL: %v", v)
 	}
 }
 
 type Image struct {
-	ImageURL BatchResultImageURL    `json:"image_url"`
-	Type     ChoiceTypeImageURLEnum `json:"type"`
+	ImageURL BatchResultImageURL `json:"image_url"`
+	Type     ChoiceTypeImageURL  `json:"type"`
 }
 
 func (i Image) MarshalJSON() ([]byte, error) {
@@ -1831,9 +1328,9 @@ func (i *Image) GetImageURL() BatchResultImageURL {
 	return i.ImageURL
 }
 
-func (i *Image) GetType() ChoiceTypeImageURLEnum {
+func (i *Image) GetType() ChoiceTypeImageURL {
 	if i == nil {
-		return ChoiceTypeImageURLEnum("")
+		return ChoiceTypeImageURL("")
 	}
 	return i.Type
 }
@@ -2095,7 +1592,7 @@ func (t *ToolCall) GetType() ChoiceTypeFunction {
 }
 
 type Message struct {
-	Annotations      []Annotation       `json:"annotations,omitzero"`
+	Annotations      []ChatAnnotation   `json:"annotations,omitzero"`
 	Content          *string            `json:"content"`
 	Images           []Image            `json:"images,omitzero"`
 	Reasoning        *string            `json:"reasoning,omitzero"`
@@ -2116,7 +1613,7 @@ func (m *Message) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m *Message) GetAnnotations() []Annotation {
+func (m *Message) GetAnnotations() []ChatAnnotation {
 	if m == nil {
 		return nil
 	}
